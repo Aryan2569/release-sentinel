@@ -236,6 +236,7 @@ def run_worker(pair: dict[str, str]) -> None:
         elapsed = round(time.perf_counter() - t0, 3)
         ev_types = sorted({e.id for e in eval_res.evidence})
         max_sev = get_max_severity_name(eval_res.evidence)
+        status = "inspection_incomplete" if "inspection_incomplete" in ev_types else "ok"
         row = {
             "package": package,
             "old": old_ver,
@@ -243,7 +244,7 @@ def run_worker(pair: dict[str, str]) -> None:
             "discovery_date": discovery_date,
             "cluster_id": "pending",
             "split": split,
-            "status": "ok",
+            "status": status,
             "decision": eval_res.decision.name,
             "max_severity": max_sev,
             "evidence_types": ev_types,
@@ -364,11 +365,11 @@ def run_one_pair(
                 "discovery_date": discovery_date,
                 "cluster_id": "pending",
                 "split": split,
-                "status": "timeout",
-                "decision": None,
-                "max_severity": None,
-                "evidence_types": [],
-                "limitation_count": 0,
+                "status": "inspection_incomplete",
+                "decision": "WARN",
+                "max_severity": "MEDIUM",
+                "evidence_types": ["inspection_incomplete"],
+                "limitation_count": 1,
                 "seconds": elapsed,
             },
             [],
@@ -406,7 +407,10 @@ def run_one_pair(
         if line.startswith("EVAL_WORKER_RESULT:"):
             try:
                 data = json.loads(line[len("EVAL_WORKER_RESULT:"):])
-                return (data["row"], data["payload_hashes"])
+                row = data["row"]
+                if "inspection_incomplete" in row.get("evidence_types", []):
+                    row["status"] = "inspection_incomplete"
+                return (row, data["payload_hashes"])
             except Exception as exc:
                 logger.error("Failed to decode worker result for %s: %s", package, exc)
                 break
@@ -505,10 +509,28 @@ def cluster_all_pairs(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Run Release Sentinel Stage 3b evaluation.")
+    parser = argparse.ArgumentParser(description="Run Release Sentinel evaluation.")
     parser.add_argument("--limit", type=int, default=None, help="Limit number of pairs to process")
     parser.add_argument(
         "--workers", type=int, default=8, help="Number of worker threads (default: 8)"
+    )
+    parser.add_argument(
+        "--results-file",
+        type=Path,
+        default=Path("data/eval_results_v2.jsonl"),
+        help="Path to results jsonl file (default: data/eval_results_v2.jsonl)",
+    )
+    parser.add_argument(
+        "--hashes-file",
+        type=Path,
+        default=Path("data/eval_payload_hashes_v2.json"),
+        help="Path to hashes cache file (default: data/eval_payload_hashes_v2.json)",
+    )
+    parser.add_argument(
+        "--clusters-file",
+        type=Path,
+        default=Path("data/eval_clusters_v2.json"),
+        help="Path to clusters json file (default: data/eval_clusters_v2.json)",
     )
     parser.add_argument("--force-recluster", action="store_true", help="Only run re-clustering")
     parser.add_argument(
@@ -525,6 +547,10 @@ def main() -> int:
         run_worker(data["pair"])
         return 0
 
+    results_jsonl = args.results_file
+    hashes_cache_file = args.hashes_file
+    clusters_json = args.clusters_file
+
     pairs = load_eval_pairs(EVAL_PAIRS_CSV)
     if args.limit:
         pairs = pairs[: args.limit]
@@ -532,9 +558,9 @@ def main() -> int:
     total_pairs = len(pairs)
     print(f"Loaded {total_pairs} buildable pairs from {EVAL_PAIRS_CSV}")
 
-    existing_results = load_existing_results(RESULTS_JSONL)
-    hashes_cache = load_hashes_cache(HASHES_CACHE_FILE)
-    print(f"Found {len(existing_results)} already completed pairs in {RESULTS_JSONL}")
+    existing_results = load_existing_results(results_jsonl)
+    hashes_cache = load_hashes_cache(hashes_cache_file)
+    print(f"Found {len(existing_results)} already completed pairs in {results_jsonl}")
 
     if not args.force_recluster:
         registry_client = NpmRegistryClient(cache_dir=CACHE_DIR)
@@ -552,8 +578,8 @@ def main() -> int:
         print(f"Processing {len(pending_pairs)} pending pairs with {args.workers} workers...")
 
         # Open jsonl file in append mode
-        RESULTS_JSONL.parent.mkdir(parents=True, exist_ok=True)
-        jsonl_f = open(RESULTS_JSONL, "a", encoding="utf-8")
+        results_jsonl.parent.mkdir(parents=True, exist_ok=True)
+        jsonl_f = open(results_jsonl, "a", encoding="utf-8")
 
         try:
             if pending_pairs:
@@ -595,11 +621,11 @@ def main() -> int:
                             processed_count += 1
                             if processed_count % 50 == 0 or processed_count == total_pairs:
                                 print(f"[{processed_count}/{total_pairs}] processed...", flush=True)
-                                save_hashes_cache(HASHES_CACHE_FILE, hashes_cache)
+                                save_hashes_cache(hashes_cache_file, hashes_cache)
         finally:
             jsonl_f.close()
             registry_client.close()
-            save_hashes_cache(HASHES_CACHE_FILE, hashes_cache)
+            save_hashes_cache(hashes_cache_file, hashes_cache)
 
     # 3. Campaign clustering over all loaded pairs
     print("Running Union-Find campaign clustering...")
@@ -632,11 +658,11 @@ def main() -> int:
         cinfo["decision"] = cluster_decision
         cinfo["statuses"] = dict(defaultdict(int, {s: statuses.count(s) for s in set(statuses)}))
 
-    with open(CLUSTERS_JSON, "w", encoding="utf-8") as f:
+    with open(clusters_json, "w", encoding="utf-8") as f:
         json.dump(cluster_meta, f, indent=2)
 
     # Rewrite data/eval_results.jsonl with final cluster_id
-    tmp_jsonl = RESULTS_JSONL.with_suffix(".tmp")
+    tmp_jsonl = results_jsonl.with_suffix(".tmp")
     with open(tmp_jsonl, "w", encoding="utf-8") as f:
         for pair in pairs:
             key = (pair["package"], pair["old_version"], pair["new_version"])
@@ -644,7 +670,7 @@ def main() -> int:
             if row:
                 row["cluster_id"] = pair_to_cluster.get(key, "singleton")
                 f.write(json.dumps(row) + "\n")
-    tmp_jsonl.replace(RESULTS_JSONL)
+    tmp_jsonl.replace(results_jsonl)
 
     # Print summary
     statuses_cnt: dict[str, int] = defaultdict(int)
@@ -656,7 +682,7 @@ def main() -> int:
         if row.get("decision"):
             decisions_cnt[row["decision"]] += 1
 
-    print("\n=== Stage 3b Execution Complete ===")
+    print("\n=== Stage 4a Execution Complete ===")
     print(f"Total pairs: {len(pairs)}")
     print(f"Statuses: {dict(statuses_cnt)}")
     print(f"Decisions: {dict(decisions_cnt)}")
