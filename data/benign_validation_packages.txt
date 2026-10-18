@@ -1,0 +1,32 @@
+# Benign validation packages for Release Sentinel (Stage 2.6).
+# 20 popular, actively maintained npm packages with 0 overlap with tuning set:
+# - Web middleware & HTTP: body-parser, cors, cookie, qs
+# - Networking & clients: ws, node-fetch, superagent
+# - Build tools & transformers: postcss
+# - Utilities: dayjs, nanoid, rxjs
+# - CLI & terminal: inquirer, ora
+# - Logging: winston
+# - Filesystem & streams: chokidar, fast-glob, tar
+# - Testing & runner: mocha
+# - HTML parsing: cheerio
+# - Native addon / build steps: sharp
+body-parser
+cors
+cookie
+qs
+ws
+node-fetch
+superagent
+postcss
+dayjs
+nanoid
+rxjs
+inquirer
+ora
+winston
+chokidar
+fast-glob
+tar
+mocha
+cheerio
+sharp

@@ -1,0 +1,76 @@
+# Default policy for Release Sentinel
+# Override with: sentinel diff ... --policy my_policy.toml
+# Any key set here overrides the corresponding default.
+
+[decision]
+# When only ONE distinct signal type is present, cap the decision at this level.
+# Prevents a single noisy signal from blocking an update.
+single_signal_cap = "WARN"
+
+# BLOCK is only issued when at least one of these corroboration pairs is satisfied.
+# Each entry is a pair of evidence IDs that must *both* be present.
+# If none of the pairs match, the decision is capped at WARN even with HIGH severity items.
+[[decision.block_requires]]
+signals = ["install_script_added", "network_access"]
+description = "New install hook that also makes network calls"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "dynamic_code"]
+description = "New install hook that uses eval or new Function"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "credential_file_read"]
+description = "New install hook that reads credential files"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "long_encoded_blob"]
+description = "New install hook combined with obfuscated blobs"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "high_entropy_string"]
+description = "New install hook combined with high-entropy strings"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "shell_profile_write"]
+description = "New install hook that modifies shell profiles"
+
+[[decision.block_requires]]
+signals = ["native_binary_present", "install_script_added"]
+description = "New native binary added alongside a new install hook"
+
+[[decision.block_requires]]
+signals = ["process_exec", "credential_file_read"]
+description = "Process execution co-occurring with credential file access"
+
+[[decision.block_requires]]
+signals = ["dynamic_code", "network_access"]
+description = "Dynamic code evaluation combined with network access"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "process_exec"]
+description = "New install hook that executes system processes"
+
+[[decision.block_requires]]
+signals = ["env_enumeration", "network_access"]
+description = "Environment variable enumeration combined with network access"
+
+[[decision.block_requires]]
+signals = ["env_enumeration", "hardcoded_url"]
+description = "Environment variable enumeration combined with outbound URL"
+
+[[decision.block_requires]]
+signals = ["env_enumeration", "hardcoded_ip"]
+description = "Environment variable enumeration combined with outbound IP"
+
+# Per-evidence severity overrides.
+# Use this to tune noisy signals without changing code.
+[severity_overrides]
+# install_script_changed alone is concerning but not grounds for a block
+install_script_changed = "MEDIUM"
+# A single new dep is LOW noise
+dependency_added = "LOW"
+dependency_removed = "INFO"
+dependency_version_changed = "INFO"
+# File count / size stats are informational
+large_file_count_jump = "LOW"
+new_files_summary = "LOW"

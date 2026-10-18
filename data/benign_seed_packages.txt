@@ -1,0 +1,32 @@
+# Benign seed packages for the smoke test.
+# ~20 popular, actively maintained npm packages representing diverse categories:
+# - CLI helpers: commander, yargs
+# - Web framework: express
+# - Build tools / bundlers: webpack, typescript
+# - Utility libraries: lodash, uuid, semver, ms, mime
+# - Plugin-heavy tools: eslint, prettier
+# - Package with native or install-time build steps: bcrypt
+# - HTTP client: axios
+# - UI library: react
+# - Filesystem / matching: glob, minimatch
+# - Config / env / terminal: dotenv, chalk, debug
+lodash
+express
+chalk
+axios
+react
+typescript
+eslint
+prettier
+webpack
+commander
+yargs
+uuid
+dotenv
+semver
+glob
+minimatch
+mime
+ms
+debug
+bcrypt
