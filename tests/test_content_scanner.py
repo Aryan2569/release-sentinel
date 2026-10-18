@@ -594,8 +594,16 @@ class TestTimeoutFixes:
         assert elapsed < 1.5, f"Scan of 1.44 MB single line took {elapsed:.4f}s"
         assert not any(e.id == "inspection_incomplete" for e in ev)
 
-    def test_oversized_file_triggers_inspection_incomplete_and_cheap_checks(self, tmp_path: Path):
-        """A file exceeding PER_FILE_SIZE_BUDGET (2 MB) triggers inspection_incomplete."""
+    def test_oversized_file_triggers_inspection_incomplete_and_cheap_checks(
+        self, tmp_path: Path, monkeypatch
+    ):
+        """A file exceeding PER_FILE_SIZE_BUDGET triggers inspection_incomplete."""
+        monkeypatch.setattr(
+            "release_sentinel.content_scanner.PER_FILE_SIZE_BUDGET", 2 * 1024 * 1024
+        )
+        monkeypatch.setattr(
+            "release_sentinel.content_scanner._MAX_SCAN_SIZE", 2 * 1024 * 1024
+        )
         oversized_content = "var x = 1;\n" * 250_000  # ~2.75 MB
         t0 = time.perf_counter()
         ev = _scan(

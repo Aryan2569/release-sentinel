@@ -191,5 +191,26 @@ Eliminated root causes of false alarms discovered in smoke testing:
   - Cluster Recall (282 clusters): ALL lenient reached 52.13% WARN+ / 9.57% BLOCK (macro: 51.67% / 9.29%); DEV lenient reached 84.29% WARN+ / 17.14% BLOCK (macro: 82.43% / 16.54%); TEST lenient reached 41.51% WARN+ / 7.08% BLOCK (macro: 41.51% / 6.90%).
   - Benign Smoke Sets: Tuning smoke test yielded 16.0 alerts per 100 updates (5 `typescript` incomplete files); Validation smoke test yielded 4.0 alerts per 100 updates (0 incomplete files). Zero false blocks (0.0% false block rate) on both benign sets.
 
+### D21 — Walk-Forward Re-Split, Budget Calibration, and Matched Negatives Benchmark (Stage 4b)
+- **Walk-Forward Re-Split Protocol**:
+  Stage 4a showed a major temporal generalization drop in 2026 (DEV cluster WARN+ 84% vs TEST 42%). To enable learning from recent 2026 campaigns without burning the held-out test set, the evaluation dataset was re-split into:
+  - **DEV** (< 2026-01-01; 857 pairs, 71 clusters): heuristic development baseline.
+  - **VAL** (2026-01-01 to 2026-04-30; 94 pairs, 12 clusters): newly opened for failure analysis and tuning.
+  - **TEST** (>= 2026-05-01; 398 pairs, 203 clusters): held-out final test set; reported strictly as aggregate metrics, evaluated once at the conclusion of tuning.
+  *Rationale*: Combined TEST aggregates were inspected only once in Stage 4a without per-pair failure analysis. All subsequent rule tuning is confined to DEV+VAL evidence only.
+- **Budget Calibration (25 MB / 10.0s)**:
+  The 2 MB / 2.0s per-file budget caused 5 benign TypeScript compiler pairs to warn on `inspection_incomplete`. Throughput benchmarking on `lib/typescript.js` (8.65 MB, ~200k lines) demonstrated linear throughput of ~13.0 MB/s for comment stripping and >180 MB/s for regex scanning, completing full diff analysis in 12.5s.
+  The budgets were calibrated to `PER_FILE_SIZE_BUDGET = 25 * 1024 * 1024` (25 MB) and `PER_FILE_TIME_BUDGET = 10.0`s. Legitimate multi-megabyte JS bundles are now scanned completely. Incomplete inspection dropped from 1,010 pairs (74.87%) to 12 pairs (0.89%) across the 1,349 malicious updates, and from 5 pairs to 0 pairs in the tuning smoke test.
+- **Honest Recall Reporting**:
+  All evaluation tables cleanly separate (a) detections driven by genuine security evidence from (b) pairs that warned solely due to `inspection_incomplete` (fail-closed elevation). Headline recall counts only (a). Evidence-only recall reached:
+  - DEV: 97.55% WARN+ (836/857) / 90.20% BLOCK (773/857); Lenient cluster: 77.46% WARN+ / 16.90% BLOCK; Macro cluster: 75.63% WARN+ / 16.32% BLOCK.
+  - VAL: 98.94% WARN+ (93/94) / 89.36% BLOCK (84/94); Lenient cluster: 91.67% WARN+ / 66.67% BLOCK; Macro cluster: 91.67% WARN+ / 63.54% BLOCK.
+  - TEST (aggregates only): 67.09% WARN+ (267/398) / 39.20% BLOCK (156/398); Lenient cluster: 35.96% WARN+ / 11.33% BLOCK; Macro cluster: 35.96% WARN+ / 11.33% BLOCK.
+- **Matched Negatives Benchmark**:
+  Constructed `data/matched_negatives.csv` containing 600 benign-to-benign pairs from packages that were later compromised (at most one per campaign cluster where possible, same major, pre-baseline to baseline version, verifying neither version is listed in the DataDog manifest). Evaluated with 8 workers, process isolation, and caching:
+  - 502 ALLOW (83.67%), 98 WARN (16.33%), 0 BLOCK (0.00%).
+  - Alert rate: **16.33 alerts per 100 updates**; False BLOCK rate: **0.00%**.
+
+
 
 

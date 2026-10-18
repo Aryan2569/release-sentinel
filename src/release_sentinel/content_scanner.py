@@ -42,15 +42,15 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ---------------------------------------------------------------------------
 
-# Per-file resource budgets (Stage 4a robustness)
-PER_FILE_SIZE_BUDGET = 2 * 1024 * 1024  # 2 MB
-PER_FILE_TIME_BUDGET = 2.0  # 2.0 seconds
+# Per-file resource budgets (Stage 4b calibrated)
+PER_FILE_SIZE_BUDGET = 25 * 1024 * 1024  # 25 MB
+PER_FILE_TIME_BUDGET = 10.0  # 10.0 seconds
 
 # Windowed scanning parameters for very long single lines
 _WINDOW_SIZE = 10_000
 _WINDOW_OVERLAP = 1_000
 
-# Maximum file size to scan for content (2 MB)
+# Maximum file size to scan for content (25 MB)
 _MAX_SCAN_SIZE = PER_FILE_SIZE_BUDGET
 
 # Minimum string length for entropy check

@@ -33,6 +33,7 @@ from typing import Any
 
 import httpx
 
+from release_sentinel.engine import decide
 from release_sentinel.eval import analyze_eval_pair, parse_discovery_date_as_of
 from release_sentinel.models import Severity
 from release_sentinel.registry import (
@@ -43,6 +44,17 @@ from release_sentinel.registry import (
 
 logging.basicConfig(level=logging.WARNING, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger("run_eval")
+
+
+def get_split(discovery_date: str) -> str:
+    """Walk-forward split: DEV (< 2026-01-01), VAL (2026-01-01 to 2026-04-30),
+    TEST (>= 2026-05-01).
+    """
+    if discovery_date < "2026-01-01":
+        return "DEV"
+    if discovery_date <= "2026-04-30":
+        return "VAL"
+    return "TEST"
 
 # Severity ordering (highest first)
 _SEV_ORDER = [
@@ -201,7 +213,7 @@ def run_worker(pair: dict[str, str]) -> None:
     new_ver = pair["new_version"]
     discovery_date = pair["discovery_date"]
     zip_rel_path = pair["zip_path"]
-    split = "DEV" if discovery_date < "2026-01-01" else "TEST"
+    split = get_split(discovery_date)
 
     zip_path = SAMPLES_ROOT / zip_rel_path
     if not zip_path.exists():
@@ -214,6 +226,7 @@ def run_worker(pair: dict[str, str]) -> None:
             "split": split,
             "status": "error",
             "decision": None,
+            "evidence_only_decision": None,
             "max_severity": None,
             "evidence_types": [],
             "limitation_count": 0,
@@ -237,6 +250,11 @@ def run_worker(pair: dict[str, str]) -> None:
         ev_types = sorted({e.id for e in eval_res.evidence})
         max_sev = get_max_severity_name(eval_res.evidence)
         status = "inspection_incomplete" if "inspection_incomplete" in ev_types else "ok"
+
+        # Evidence-only decision without inspection_incomplete
+        ev_without_inc = [e for e in eval_res.evidence if e.id != "inspection_incomplete"]
+        ev_only_dec, _ = decide(ev_without_inc)
+
         row = {
             "package": package,
             "old": old_ver,
@@ -246,6 +264,7 @@ def run_worker(pair: dict[str, str]) -> None:
             "split": split,
             "status": status,
             "decision": eval_res.decision.name,
+            "evidence_only_decision": ev_only_dec.name,
             "max_severity": max_sev,
             "evidence_types": ev_types,
             "limitation_count": len(eval_res.limitations),
@@ -265,6 +284,7 @@ def run_worker(pair: dict[str, str]) -> None:
             "split": split,
             "status": "error",
             "decision": None,
+            "evidence_only_decision": None,
             "max_severity": None,
             "evidence_types": [],
             "limitation_count": 0,
@@ -286,7 +306,7 @@ def run_one_pair(
     new_ver = pair["new_version"]
     discovery_date = pair["discovery_date"]
     zip_rel_path = pair["zip_path"]
-    split = "DEV" if discovery_date < "2026-01-01" else "TEST"
+    split = get_split(discovery_date)
 
     zip_path = SAMPLES_ROOT / zip_rel_path
     if not zip_path.exists():
@@ -300,6 +320,7 @@ def run_one_pair(
                 "split": split,
                 "status": "error",
                 "decision": None,
+                "evidence_only_decision": None,
                 "max_severity": None,
                 "evidence_types": [],
                 "limitation_count": 0,
@@ -334,6 +355,7 @@ def run_one_pair(
                 "split": split,
                 "status": "baseline_download_failed",
                 "decision": None,
+                "evidence_only_decision": None,
                 "max_severity": None,
                 "evidence_types": [],
                 "limitation_count": 0,
@@ -367,6 +389,7 @@ def run_one_pair(
                 "split": split,
                 "status": "inspection_incomplete",
                 "decision": "WARN",
+                "evidence_only_decision": "ALLOW",
                 "max_severity": "MEDIUM",
                 "evidence_types": ["inspection_incomplete"],
                 "limitation_count": 1,
@@ -394,6 +417,7 @@ def run_one_pair(
                 "split": split,
                 "status": "error",
                 "decision": None,
+                "evidence_only_decision": None,
                 "max_severity": None,
                 "evidence_types": [],
                 "limitation_count": 0,
@@ -406,7 +430,7 @@ def run_one_pair(
     for line in reversed(proc.stdout.splitlines()):
         if line.startswith("EVAL_WORKER_RESULT:"):
             try:
-                data = json.loads(line[len("EVAL_WORKER_RESULT:"):])
+                data = json.loads(line[len("EVAL_WORKER_RESULT:") :])
                 row = data["row"]
                 if "inspection_incomplete" in row.get("evidence_types", []):
                     row["status"] = "inspection_incomplete"
@@ -425,6 +449,7 @@ def run_one_pair(
             "split": split,
             "status": "error",
             "decision": None,
+            "evidence_only_decision": None,
             "max_severity": None,
             "evidence_types": [],
             "limitation_count": 0,
@@ -517,20 +542,20 @@ def main() -> int:
     parser.add_argument(
         "--results-file",
         type=Path,
-        default=Path("data/eval_results_v2.jsonl"),
-        help="Path to results jsonl file (default: data/eval_results_v2.jsonl)",
+        default=Path("data/eval_results_v3.jsonl"),
+        help="Path to results jsonl file (default: data/eval_results_v3.jsonl)",
     )
     parser.add_argument(
         "--hashes-file",
         type=Path,
-        default=Path("data/eval_payload_hashes_v2.json"),
-        help="Path to hashes cache file (default: data/eval_payload_hashes_v2.json)",
+        default=Path("data/eval_payload_hashes_v3.json"),
+        help="Path to hashes cache file (default: data/eval_payload_hashes_v3.json)",
     )
     parser.add_argument(
         "--clusters-file",
         type=Path,
-        default=Path("data/eval_clusters_v2.json"),
-        help="Path to clusters json file (default: data/eval_clusters_v2.json)",
+        default=Path("data/eval_clusters_v3.json"),
+        help="Path to clusters json file (default: data/eval_clusters_v3.json)",
     )
     parser.add_argument("--force-recluster", action="store_true", help="Only run re-clustering")
     parser.add_argument(
@@ -596,7 +621,7 @@ def main() -> int:
                             row, payload_hashes = future.result()
                         except Exception as exc:
                             logger.error("Pair %s raised unhandled: %s", key_str, exc)
-                            split = "DEV" if pair["discovery_date"] < "2026-01-01" else "TEST"
+                            split = get_split(pair["discovery_date"])
                             row = {
                                 "package": pair["package"],
                                 "old": pair["old_version"],
@@ -606,6 +631,7 @@ def main() -> int:
                                 "split": split,
                                 "status": "error",
                                 "decision": None,
+                                "evidence_only_decision": None,
                                 "max_severity": None,
                                 "evidence_types": [],
                                 "limitation_count": 0,
@@ -635,6 +661,7 @@ def main() -> int:
     for cid, cinfo in cluster_meta.items():
         # Find decisions of all members
         decisions: list[str] = []
+        ev_only_decisions: list[str] = []
         statuses: list[str] = []
         for pair in pairs:
             m_key = (pair["package"], pair["old_version"], pair["new_version"])
@@ -645,6 +672,9 @@ def main() -> int:
                     dec = res.get("decision")
                     if dec:
                         decisions.append(dec)
+                    ev_dec = res.get("evidence_only_decision")
+                    if ev_dec:
+                        ev_only_decisions.append(ev_dec)
 
         if "BLOCK" in decisions:
             cluster_decision = "BLOCK"
@@ -655,7 +685,17 @@ def main() -> int:
         else:
             cluster_decision = "UNDETECTED"
 
+        if "BLOCK" in ev_only_decisions:
+            ev_only_cluster_dec = "BLOCK"
+        elif "WARN" in ev_only_decisions:
+            ev_only_cluster_dec = "WARN"
+        elif "ALLOW" in ev_only_decisions:
+            ev_only_cluster_dec = "ALLOW"
+        else:
+            ev_only_cluster_dec = "UNDETECTED"
+
         cinfo["decision"] = cluster_decision
+        cinfo["evidence_only_decision"] = ev_only_cluster_dec
         cinfo["statuses"] = dict(defaultdict(int, {s: statuses.count(s) for s in set(statuses)}))
 
     with open(clusters_json, "w", encoding="utf-8") as f:
