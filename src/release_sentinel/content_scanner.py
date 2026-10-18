@@ -25,8 +25,10 @@ import hashlib
 import logging
 import math
 import re
+import time
 import urllib.parse
 from collections import defaultdict
+from collections.abc import Iterator
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -40,8 +42,16 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ---------------------------------------------------------------------------
 
+# Per-file resource budgets (Stage 4a robustness)
+PER_FILE_SIZE_BUDGET = 2 * 1024 * 1024  # 2 MB
+PER_FILE_TIME_BUDGET = 2.0  # 2.0 seconds
+
+# Windowed scanning parameters for very long single lines
+_WINDOW_SIZE = 10_000
+_WINDOW_OVERLAP = 1_000
+
 # Maximum file size to scan for content (2 MB)
-_MAX_SCAN_SIZE = 2 * 1024 * 1024
+_MAX_SCAN_SIZE = PER_FILE_SIZE_BUDGET
 
 # Minimum string length for entropy check
 _ENTROPY_MIN_LEN = 64
@@ -465,106 +475,103 @@ def strip_js_comments(text: str) -> str:
     Every newline character is preserved so line numbering remains identical to original.
     Non-newline comment characters are replaced with space (' ').
     """
+    if "//" not in text and "/*" not in text:
+        return text
+
     out: list[str] = []
     i = 0
     n = len(text)
-    state = "NORMAL"
+    chunk_start = 0
 
     while i < n:
         c = text[i]
-        if state == "NORMAL":
-            if c == "'":
-                state = "S_QUOTE"
-                out.append(c)
-                i += 1
-            elif c == '"':
-                state = "D_QUOTE"
-                out.append(c)
-                i += 1
-            elif c == "`":
-                state = "B_QUOTE"
-                out.append(c)
-                i += 1
-            elif c == "/":
-                if i + 1 < n and text[i + 1] == "/":
-                    state = "LINE_COMMENT"
-                    out.append("  ")
-                    i += 2
-                elif i + 1 < n and text[i + 1] == "*":
-                    state = "BLOCK_COMMENT"
-                    out.append("  ")
-                    i += 2
-                else:
-                    out.append(c)
-                    i += 1
-            else:
-                out.append(c)
-                i += 1
-        elif state == "LINE_COMMENT":
-            if c == "\n":
-                out.append("\n")
-                state = "NORMAL"
-            else:
-                out.append(" ")
+        if c in ("'", '"', "`"):
+            quote = c
             i += 1
-        elif state == "BLOCK_COMMENT":
-            if c == "*" and i + 1 < n and text[i + 1] == "/":
-                out.append("  ")
-                i += 2
-                state = "NORMAL"
-            elif c == "\n":
-                out.append("\n")
-                i += 1
-            else:
-                out.append(" ")
-                i += 1
-        elif state == "S_QUOTE":
-            if c == "\\":
-                out.append(c)
-                if i + 1 < n:
-                    out.append(text[i + 1])
+            while i < n:
+                if text[i] == "\\":
                     i += 2
+                elif text[i] == quote:
+                    i += 1
+                    break
                 else:
                     i += 1
-            elif c == "'":
-                out.append(c)
-                state = "NORMAL"
-                i += 1
-            else:
-                out.append(c)
-                i += 1
-        elif state == "D_QUOTE":
-            if c == "\\":
-                out.append(c)
-                if i + 1 < n:
-                    out.append(text[i + 1])
-                    i += 2
+        elif c == "/":
+            if i + 1 < n and text[i + 1] == "/":
+                if i > chunk_start:
+                    out.append(text[chunk_start:i])
+                end = text.find("\n", i + 2)
+                if end == -1:
+                    out.append(" " * (n - i))
+                    i = n
                 else:
-                    i += 1
-            elif c == '"':
-                out.append(c)
-                state = "NORMAL"
-                i += 1
-            else:
-                out.append(c)
-                i += 1
-        elif state == "B_QUOTE":
-            if c == "\\":
-                out.append(c)
-                if i + 1 < n:
-                    out.append(text[i + 1])
-                    i += 2
+                    out.append(" " * (end - i))
+                    i = end
+                chunk_start = i
+            elif i + 1 < n and text[i + 1] == "*":
+                if i > chunk_start:
+                    out.append(text[chunk_start:i])
+                end = text.find("*/", i + 2)
+                if end == -1:
+                    comment = text[i:]
+                    i = n
                 else:
-                    i += 1
-            elif c == "`":
-                out.append(c)
-                state = "NORMAL"
-                i += 1
+                    comment = text[i : end + 2]
+                    i = end + 2
+                out.append("".join("\n" if ch == "\n" else " " for ch in comment))
+                chunk_start = i
             else:
-                out.append(c)
                 i += 1
+        else:
+            i += 1
+
+    if chunk_start < n:
+        out.append(text[chunk_start:])
 
     return "".join(out)
+
+
+# ---------------------------------------------------------------------------
+# Windowed regex helpers for very long lines
+# ---------------------------------------------------------------------------
+
+
+def _finditer_windowed(
+    pattern: re.Pattern[str], text: str
+) -> Iterator[re.Match[str]]:
+    """Yield regex match objects across `text` using overlapping windows if text is long."""
+    n = len(text)
+    if n <= _WINDOW_SIZE:
+        yield from pattern.finditer(text)
+        return
+
+    step = _WINDOW_SIZE - _WINDOW_OVERLAP
+    for start in range(0, n, step):
+        end = min(start + _WINDOW_SIZE, n)
+        chunk = text[start:end]
+        for m in pattern.finditer(chunk):
+            if start > 0 and m.start() < _WINDOW_OVERLAP:
+                continue
+            yield m
+        if end >= n:
+            break
+
+
+def _search_windowed(pattern: re.Pattern[str], text: str) -> re.Match[str] | None:
+    """Return first match of `pattern` in `text` using windowing for very long text."""
+    n = len(text)
+    if n <= _WINDOW_SIZE:
+        return pattern.search(text)
+    step = _WINDOW_SIZE - _WINDOW_OVERLAP
+    for start in range(0, n, step):
+        end = min(start + _WINDOW_SIZE, n)
+        chunk = text[start:end]
+        m = pattern.search(chunk)
+        if m is not None:
+            return m
+        if end >= n:
+            break
+    return None
 
 
 # ---------------------------------------------------------------------------
@@ -629,36 +636,48 @@ def find_process_exec_matches(text: str) -> list[tuple[int, str, str]]:
     Returns list of (line_no, matched_text, normalized_capability).
     Never matches bare .exec( from RegExp.
     """
+    if "child_process" not in text and "spawn_sync" not in text:
+        return []
+
     matches: list[tuple[int, str, str]] = []
     lines = text.splitlines()
 
     # 1. Direct process.binding('spawn_sync')
-    for line_no, line in enumerate(lines, 1):
-        m = _SPAWN_SYNC_BINDING_RE.search(line)
-        if m:
-            matches.append((line_no, m.group(0), "process.binding('spawn_sync')"))
+    if "spawn_sync" in text:
+        for line_no, line in enumerate(lines, 1):
+            if "spawn_sync" not in line:
+                continue
+            m = _search_windowed(_SPAWN_SYNC_BINDING_RE, line)
+            if m:
+                matches.append((line_no, m.group(0), "process.binding('spawn_sync')"))
 
     # 2. Direct chained calls: require('child_process').execSync(...)
-    for line_no, line in enumerate(lines, 1):
-        for m in _DIRECT_EXEC_RE.finditer(line):
-            method = m.group(1)
-            matches.append((line_no, m.group(0), f"child_process.{method}"))
+    if "child_process" in text:
+        for line_no, line in enumerate(lines, 1):
+            if "child_process" not in line:
+                continue
+            for m in _finditer_windowed(_DIRECT_EXEC_RE, line):
+                method = m.group(1)
+                matches.append((line_no, m.group(0), f"child_process.{method}"))
 
     # 3. Find namespaces and destructured identifiers
     ns_vars: set[str] = set()
     fn_vars: dict[str, str] = {}
 
-    for line in lines:
-        for m in _CP_REQUIRE_NS_RE.finditer(line):
-            ns_vars.add(m.group(1))
-        for m in _CP_IMPORT_NS_RE.finditer(line):
-            ns_vars.add(m.group(1))
-        for m in _CP_DIRECT_METHOD_ASSIGN_RE.finditer(line):
-            fn_vars[m.group(1)] = m.group(2)
-        for m in _CP_REQUIRE_DESTRUCT_RE.finditer(line):
-            _parse_destructure(m.group(1), fn_vars)
-        for m in _CP_IMPORT_DESTRUCT_RE.finditer(line):
-            _parse_destructure(m.group(1), fn_vars)
+    if "child_process" in text:
+        for line in lines:
+            if "child_process" not in line:
+                continue
+            for m in _finditer_windowed(_CP_REQUIRE_NS_RE, line):
+                ns_vars.add(m.group(1))
+            for m in _finditer_windowed(_CP_IMPORT_NS_RE, line):
+                ns_vars.add(m.group(1))
+            for m in _finditer_windowed(_CP_DIRECT_METHOD_ASSIGN_RE, line):
+                fn_vars[m.group(1)] = m.group(2)
+            for m in _finditer_windowed(_CP_REQUIRE_DESTRUCT_RE, line):
+                _parse_destructure(m.group(1), fn_vars)
+            for m in _finditer_windowed(_CP_IMPORT_DESTRUCT_RE, line):
+                _parse_destructure(m.group(1), fn_vars)
 
     # 4. Check for calls using namespace vars: cp.exec(...)
     if ns_vars:
@@ -668,7 +687,9 @@ def find_process_exec_matches(text: str) -> list[tuple[int, str, str]]:
             rf"""\b({ns_pattern})\s*(?:\.\s*|\[\s*['"])({methods_pattern})(?:['"]\s*\]|\b)\s*\("""
         )
         for line_no, line in enumerate(lines, 1):
-            for m in call_re.finditer(line):
+            if not any(v in line for v in ns_vars):
+                continue
+            for m in _finditer_windowed(call_re, line):
                 method = m.group(2)
                 matches.append((line_no, m.group(0), f"child_process.{method}"))
 
@@ -677,11 +698,13 @@ def find_process_exec_matches(text: str) -> list[tuple[int, str, str]]:
         for var_name, canonical_method in fn_vars.items():
             call_re = re.compile(rf"""(?<![\.\?])\b{re.escape(var_name)}\s*\(""")
             for line_no, line in enumerate(lines, 1):
+                if var_name not in line:
+                    continue
                 if "require" in line and "child_process" in line:
                     continue
                 if "import" in line and "child_process" in line:
                     continue
-                for m in call_re.finditer(line):
+                for m in _finditer_windowed(call_re, line):
                     matches.append((line_no, m.group(0), f"child_process.{canonical_method}"))
 
     return matches
@@ -689,9 +712,32 @@ def find_process_exec_matches(text: str) -> list[tuple[int, str, str]]:
 
 _FS_READ_RE = re.compile(
     r"""(?x)
-    (?<![\.\?])\b(?:fs(?:\.promises)?|fsPromises|fsp)?\s*\.?\s*
-    (readFile|readFileSync|createReadStream|open|openSync)\s*\(
+    (?<![\.\?])\b
+    (?:
+        (?:fs(?:\.promises)?|fsPromises|fsp)\s*\.\s*(readFile|readFileSync|createReadStream|open|openSync)
+        |
+        (readFile|readFileSync|createReadStream|open|openSync)
+    )\s*\(
     """
+)
+
+_FS_READ_KEYWORDS = ("readFile", "readFileSync", "createReadStream", "open", "openSync")
+
+_CREDENTIAL_FAST_KEYWORDS = (
+    ".npmrc",
+    ".netrc",
+    ".ssh",
+    "id_rsa",
+    "id_ed25519",
+    "id_ecdsa",
+    ".aws",
+    ".git-credentials",
+    ".gitconfig",
+    ".docker",
+    "gcloud",
+    "keychain",
+    "Login Data",
+    "Cookies",
 )
 
 _CREDENTIAL_TARGETS: list[tuple[re.Pattern[str], str]] = [
@@ -727,25 +773,42 @@ def find_credential_read_matches(text: str) -> list[tuple[int, str, str]]:
     Returns list of (line_no, matched_text, normalized_capability).
     Never matches bare word 'credentials'.
     """
+    if not any(kw in text for kw in _FS_READ_KEYWORDS):
+        return []
+    if not any(kw in text for kw in _CREDENTIAL_FAST_KEYWORDS):
+        return []
+
     matches: list[tuple[int, str, str]] = []
     lines = text.splitlines()
 
     for line_no, line in enumerate(lines, 1):
-        m_api = _FS_READ_RE.search(line)
-        if not m_api:
+        if not any(kw in line for kw in _FS_READ_KEYWORDS):
             continue
 
-        # Look for credential target in current line OR within nearby window (previous 8 lines)
-        start_win = max(0, line_no - 9)
-        window_lines = lines[start_win:line_no]
-        window_text = "\n".join(window_lines)
+        if len(line) > _WINDOW_SIZE:
+            api_matches = list(_finditer_windowed(_FS_READ_RE, line))
+        else:
+            api_matches = list(_FS_READ_RE.finditer(line))
 
-        for pat, norm_name in _CREDENTIAL_TARGETS:
-            m_target = pat.search(window_text)
-            if m_target:
-                snippet = m_api.group(0)
-                matches.append((line_no, snippet, f"fs_read:{norm_name}"))
-                break
+        if not api_matches:
+            continue
+
+        for m_api in api_matches:
+            if len(line) > 2000:
+                m_pos = m_api.start()
+                win_start = max(0, m_pos - 1000)
+                win_end = min(len(line), m_api.end() + 1000)
+                window_text = line[win_start:win_end]
+            else:
+                start_win = max(0, line_no - 9)
+                window_lines = lines[start_win:line_no]
+                window_text = "\n".join(window_lines)
+
+            for pat, norm_name in _CREDENTIAL_TARGETS:
+                if pat.search(window_text):
+                    snippet = m_api.group(0)
+                    matches.append((line_no, snippet, f"fs_read:{norm_name}"))
+                    break
 
     return matches
 
@@ -859,6 +922,93 @@ class ReleaseCapabilities:
     existing_minified_paths: set[str] = field(default_factory=set)
 
 
+def _apply_budget_exceeded_cheap_checks(
+    rel_path: str,
+    file_bytes: bytes,
+    old: ReleaseContents,
+    old_caps: ReleaseCapabilities,
+    is_install_target: bool,
+    reason: str,
+) -> list[Evidence]:
+    """Execute cheap checks on a file that exceeded size or time budget."""
+    ev_list: list[Evidence] = []
+    file_hash = hashlib.sha256(file_bytes).hexdigest()
+
+    # 1. Hash novelty against old release
+    if file_hash in old_caps.blob_hashes:
+        hash_status = "blob matches existing release file (unchanged)"
+    else:
+        hash_status = "novel blob (not found in old release)"
+
+    # 2. Install-script reference
+    script_status = (
+        "is an install-script target"
+        if is_install_target
+        else "not targeted by install scripts"
+    )
+
+    # 3. Size jump
+    file_size = len(file_bytes)
+    if rel_path in old.files:
+        old_size = len(old.files[rel_path])
+        size_diff = file_size - old_size
+        pct = (size_diff / old_size * 100) if old_size > 0 else 0
+        size_status = (
+            f"size changed from {old_size} to {file_size} bytes "
+            f"({size_diff:+d} bytes, {pct:+.1f}%)"
+        )
+    else:
+        size_status = f"newly added file ({file_size} bytes)"
+
+    # 4. Shannon entropy on 64KB sample
+    sample_bytes = file_bytes[:65536]
+    sample_str = sample_bytes.decode("utf-8", errors="replace")
+    sample_entropy = _shannon_entropy(sample_str)
+    entropy_status = f"64KB sample entropy: {sample_entropy:.2f} bits/char"
+
+    cheap_summary = f"{hash_status}; {script_status}; {size_status}; {entropy_status}"
+
+    sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
+    ev_list.append(
+        Evidence(
+            id="inspection_incomplete",
+            severity=sev,
+            file=rel_path,
+            explanation=(
+                f"File '{rel_path}' exceeded resource budget ({reason}); "
+                f"deep content inspection was stopped. Cheap checks applied: {cheap_summary}."
+            ),
+            legitimate_use_note=(
+                "Extremely large files, minified bundles, or generated files can exceed "
+                "inspection budgets. Verify the provenance and integrity of the file."
+            ),
+        )
+    )
+
+    if (
+        sample_entropy >= _ENTROPY_THRESHOLD
+        and hash_status == "novel blob (not found in old release)"
+    ):
+        sev_ent = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
+        ev_list.append(
+            Evidence(
+                id="high_entropy_string",
+                severity=sev_ent,
+                file=rel_path,
+                explanation=(
+                    f"File '{rel_path}' exceeded budget and its 64KB sample has "
+                    f"high Shannon entropy ({sample_entropy:.2f} bits/char)."
+                ),
+                legitimate_use_note=(
+                    "Cryptographic tables, compressed assets, or encrypted payloads "
+                    "have high entropy."
+                ),
+            )
+        )
+
+    return ev_list
+
+
 def _scan_release_capabilities(
     release: ExtractionResult | ReleaseContents,
 ) -> ReleaseCapabilities:
@@ -878,9 +1028,17 @@ def _scan_release_capabilities(
         }:
             continue
 
+        file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
+        file_hash = hashlib.sha256(file_bytes).hexdigest()
+        caps.blob_hashes.add(file_hash)
+
         is_min = is_minified_or_bundled(data, rel_path, cat)
         if is_min:
             caps.existing_minified_paths.add(rel_path)
+
+        # Skip deep scanning on files that exceed the size budget in the baseline release
+        if len(file_bytes) > PER_FILE_SIZE_BUDGET:
+            continue
 
         is_exempt = is_exempt_path(rel_path, cat)
         raw_text = release.read_text(rel_path)
@@ -914,12 +1072,12 @@ def _scan_release_capabilities(
                     caps.blob_hashes.add(h)
 
             # Env access
-            if re.search(r"process\.env\b", line):
+            if "process.env" in line and re.search(r"process\.env\b", line):
                 env_lines.add(stripped[:80])
 
             # Signals
             for signal in _SIGNALS:
-                for m in signal.pattern.finditer(line):
+                for m in _finditer_windowed(signal.pattern, line):
                     match_text = m.group(0)
                     if signal.id == "hardcoded_url":
                         host = _extract_host(match_text)
@@ -986,15 +1144,45 @@ def scan_new_content(
         }:
             continue
 
+        file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
+        file_size = len(file_bytes)
         is_min = is_minified_or_bundled(data, rel_path, cat)
         is_exempt = is_exempt_path(rel_path, cat)
         is_install_target = rel_path in install_script_targets
         was_previously_minified = rel_path in old_caps.existing_minified_paths
 
+        # Check 1: Size budget exceedance
+        if file_size > PER_FILE_SIZE_BUDGET:
+            ev_inc = _apply_budget_exceeded_cheap_checks(
+                rel_path=rel_path,
+                file_bytes=file_bytes,
+                old=old,
+                old_caps=old_caps,
+                is_install_target=is_install_target,
+                reason=f"size {file_size} exceeds {PER_FILE_SIZE_BUDGET} bytes limit",
+            )
+            evidence.extend(ev_inc)
+            continue
+
+        t_file_start = time.perf_counter()
+
         raw_text = new.read_text(rel_path)
         if not raw_text:
             continue
         clean_text = strip_js_comments(raw_text) if _is_js_or_ts_file(rel_path) else raw_text
+
+        # Time check after comment stripping
+        if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
+            ev_inc = _apply_budget_exceeded_cheap_checks(
+                rel_path=rel_path,
+                file_bytes=file_bytes,
+                old=old,
+                old_caps=old_caps,
+                is_install_target=is_install_target,
+                reason=f"processing time exceeded {PER_FILE_TIME_BUDGET}s budget",
+            )
+            evidence.extend(ev_inc)
+            continue
 
         seen_signals: set[str] = set()
 
@@ -1047,7 +1235,22 @@ def scan_new_content(
         in_block_comment = False
         env_access_lines: set[str] = set()
 
+        budget_timed_out = False
+
         for line_no, line in enumerate(inspect_lines, 1):
+            if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
+                ev_inc = _apply_budget_exceeded_cheap_checks(
+                    rel_path=rel_path,
+                    file_bytes=file_bytes,
+                    old=old,
+                    old_caps=old_caps,
+                    is_install_target=is_install_target,
+                    reason=f"processing time exceeded {PER_FILE_TIME_BUDGET}s budget",
+                )
+                evidence.extend(ev_inc)
+                budget_timed_out = True
+                break
+
             stripped = line.strip()
 
             # Track block comment state
@@ -1059,7 +1262,7 @@ def scan_new_content(
             is_license = line_no in license_header_lines
 
             # Bulk env enumeration tracking
-            if re.search(r"process\.env\b", line):
+            if "process.env" in line and re.search(r"process\.env\b", line):
                 env_access_lines.add(stripped[:80])
 
             # Entropy and long-line blobs:
@@ -1126,7 +1329,7 @@ def scan_new_content(
                 if signal.id in seen_signals:
                     continue
 
-                m = signal.pattern.search(line)
+                m = _search_windowed(signal.pattern, line)
                 if not m:
                     continue
                 match_text = m.group(0)
@@ -1200,6 +1403,9 @@ def scan_new_content(
                             legitimate_use_note=signal.legitimate_use_note,
                         )
                     )
+
+        if budget_timed_out:
+            continue
 
         # Bulk environment enumeration
         if len(env_access_lines) >= _ENV_ENUM_MIN_ACCESSES:

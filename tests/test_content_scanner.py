@@ -9,10 +9,16 @@ Negative tests: same pattern present in old version → no evidence.
 
 from __future__ import annotations
 
+import time
 from pathlib import Path
 
-from release_sentinel.content_scanner import _shannon_entropy, scan_new_content
+from release_sentinel.content_scanner import (
+    _shannon_entropy,
+    find_credential_read_matches,
+    scan_new_content,
+)
 from release_sentinel.extractor import ExtractionResult, FileEntry
+from release_sentinel.policy import decide
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -556,3 +562,73 @@ class TestShannonEntropy:
 
     def test_empty_string(self):
         assert _shannon_entropy("") == 0.0
+
+
+# ---------------------------------------------------------------------------
+# Stage 4a: Robustness and Timeout Fixes
+# ---------------------------------------------------------------------------
+
+
+class TestTimeoutFixes:
+    def test_pathological_regex_backtracking_completes_fast(self):
+        """Pathological regex input with spaces after 'fs' must finish in <0.05s."""
+        pathological = "fs" + " " * 200_000 + "x"
+        t0 = time.perf_counter()
+        matches = find_credential_read_matches(pathological)
+        elapsed = time.perf_counter() - t0
+
+        assert matches == []
+        assert elapsed < 0.1, f"Pathological regex took too long: {elapsed:.4f}s"
+
+    def test_synthetic_large_single_line_file_finishes_fast(self, tmp_path: Path):
+        """A 1.5 MB single-line minified file must scan in < 1.5 seconds."""
+        single_line = "var a=1;function foo(x){return x+2;}" * 40_000  # ~1.44 MB single line
+        t0 = time.perf_counter()
+        ev = _scan(
+            {"bundle.js": "var a=1;"},
+            {"bundle.js": single_line},
+            tmp_path,
+        )
+        elapsed = time.perf_counter() - t0
+
+        assert elapsed < 1.5, f"Scan of 1.44 MB single line took {elapsed:.4f}s"
+        assert not any(e.id == "inspection_incomplete" for e in ev)
+
+    def test_oversized_file_triggers_inspection_incomplete_and_cheap_checks(self, tmp_path: Path):
+        """A file exceeding PER_FILE_SIZE_BUDGET (2 MB) triggers inspection_incomplete."""
+        oversized_content = "var x = 1;\n" * 250_000  # ~2.75 MB
+        t0 = time.perf_counter()
+        ev = _scan(
+            {"big.js": "var x = 1;\n"},
+            {"big.js": oversized_content},
+            tmp_path,
+            install_targets={"big.js"},
+        )
+        elapsed = time.perf_counter() - t0
+
+        assert elapsed < 1.0, f"Oversized file handling took {elapsed:.4f}s"
+        incomplete_ev = [e for e in ev if e.id == "inspection_incomplete"]
+        assert len(incomplete_ev) == 1
+        assert "exceeded resource budget" in incomplete_ev[0].explanation
+        assert "size changed from" in incomplete_ev[0].explanation
+        assert "is an install-script target" in incomplete_ev[0].explanation
+
+        # Test policy fail-closed behavior
+        decision, limitations = decide(ev)
+        assert decision.value in ("WARN", "BLOCK")
+        assert any("Inspection incomplete" in lim for lim in limitations)
+
+    def test_time_budget_triggers_gracefully(self, tmp_path: Path, monkeypatch):
+        """Per-file time budget triggers gracefully if processing time exceeds budget."""
+        monkeypatch.setattr("release_sentinel.content_scanner.PER_FILE_TIME_BUDGET", 0.00001)
+
+        ev = _scan(
+            {"lib.js": "var a = 1;"},
+            {"lib.js": "var a = 2;\n" * 500},
+            tmp_path,
+        )
+
+        incomplete_ev = [e for e in ev if e.id == "inspection_incomplete"]
+        assert len(incomplete_ev) == 1
+        assert "processing time exceeded" in incomplete_ev[0].explanation
+

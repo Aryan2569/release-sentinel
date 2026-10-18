@@ -183,6 +183,16 @@ def decide(
 
     limitations = list(_STATIC_LIMITATIONS)
 
+    has_incomplete = any(ev.id == "inspection_incomplete" for ev in evidence)
+    if has_incomplete:
+        for ev in evidence:
+            if ev.id == "inspection_incomplete":
+                file_desc = f" ({ev.file})" if ev.file else ""
+                limitations.append(
+                    f"Inspection incomplete{file_desc}: deep analysis skipped due to resource "
+                    "budget; decision fails closed."
+                )
+
     if not evidence:
         return Decision.ALLOW, limitations
 
@@ -193,7 +203,8 @@ def decide(
     alerting = [ev for ev in effective if ev.severity != Severity.INFO]
 
     if not alerting:
-        return Decision.ALLOW, limitations
+        decision = Decision.WARN if has_incomplete else Decision.ALLOW
+        return decision, limitations
 
     # Collect distinct signal IDs present in alerting evidence
     signal_ids = {ev.id for ev in alerting}
@@ -202,8 +213,9 @@ def decide(
     if len(signal_ids) == 1:
         max_sev = _max_severity(alerting)
         if max_sev == Severity.LOW:
-            # A single LOW signal -> ALLOW (evidence still listed in the report)
-            return Decision.ALLOW, limitations
+            # A single LOW signal -> ALLOW unless incomplete inspection
+            decision = Decision.WARN if has_incomplete else Decision.ALLOW
+            return decision, limitations
         if max_sev == Severity.MEDIUM:
             # A single MEDIUM -> WARN
             return Decision.WARN, limitations
@@ -228,7 +240,7 @@ def decide(
             all(sig in signal_ids for sig in pair.signals)
             for pair in policy.block_requires
         )
-        if any_pair_matched:
+        if any_pair_matched or has_incomplete:
             return Decision.WARN, limitations
         return Decision.ALLOW, limitations
 
