@@ -45,6 +45,9 @@ class Policy:
     single_signal_cap: Decision = Decision.WARN
     block_requires: list[BlockRequires] = field(default_factory=list)
     severity_overrides: dict[str, Severity] = field(default_factory=dict)
+    full_scan_single_signal_cap: Decision = Decision.WARN
+    full_scan_block_requires: list[BlockRequires] = field(default_factory=list)
+    full_scan_severity_overrides: dict[str, Severity] = field(default_factory=dict)
 
 
 # Limitations that are always true regardless of policy
@@ -136,7 +139,7 @@ def _parse_policy(raw: dict) -> Policy:
     block_requires: list[BlockRequires] = []
     for entry in decision_raw.get("block_requires", []):
         signals = entry.get("signals", [])
-        if len(signals) >= 2:
+        if len(signals) >= 1:
             block_requires.append(
                 BlockRequires(signals=signals, description=entry.get("description", ""))
             )
@@ -148,10 +151,38 @@ def _parse_policy(raw: dict) -> Policy:
         except ValueError:
             logger.warning("Unknown severity %r for %r in policy; ignoring", sev_str, ev_id)
 
+    # Full-scan section
+    full_scan_raw = raw.get("full_scan", {})
+    fs_cap_str = full_scan_raw.get("single_signal_cap", "WARN").upper()
+    try:
+        fs_cap = Decision(fs_cap_str)
+    except ValueError:
+        fs_cap = Decision.WARN
+
+    fs_block_requires: list[BlockRequires] = []
+    for entry in full_scan_raw.get("block_requires", []):
+        signals = entry.get("signals", [])
+        if len(signals) >= 1:
+            fs_block_requires.append(
+                BlockRequires(signals=signals, description=entry.get("description", ""))
+            )
+
+    fs_sev_overrides: dict[str, Severity] = {}
+    for ev_id, sev_str in full_scan_raw.get("severity_overrides", {}).items():
+        try:
+            fs_sev_overrides[ev_id] = Severity(sev_str.upper())
+        except ValueError:
+            logger.warning(
+                "Unknown severity %r for %r in full_scan policy; ignoring", sev_str, ev_id
+            )
+
     return Policy(
         single_signal_cap=cap,
         block_requires=block_requires,
         severity_overrides=sev_overrides,
+        full_scan_single_signal_cap=fs_cap,
+        full_scan_block_requires=fs_block_requires,
+        full_scan_severity_overrides=fs_sev_overrides,
     )
 
 
@@ -163,6 +194,7 @@ def _parse_policy(raw: dict) -> Policy:
 def decide(
     evidence: list[Evidence],
     policy: Policy | None = None,
+    is_full_scan: bool = False,
 ) -> tuple[Decision, list[str]]:
     """Apply *policy* to *evidence* and return ``(decision, limitations)``.
 
@@ -172,6 +204,8 @@ def decide(
         Evidence list from the differ + content scanner.
     policy:
         Policy to use.  Loads the default policy if ``None``.
+    is_full_scan:
+        Whether the evidence was produced in full-scan (no baseline) mode.
 
     Returns
     -------
@@ -196,8 +230,17 @@ def decide(
     if not evidence:
         return Decision.ALLOW, limitations
 
+    if is_full_scan:
+        block_reqs = policy.full_scan_block_requires or policy.block_requires
+        single_cap = policy.full_scan_single_signal_cap
+        overrides = {**policy.severity_overrides, **policy.full_scan_severity_overrides}
+    else:
+        block_reqs = policy.block_requires
+        single_cap = policy.single_signal_cap
+        overrides = policy.severity_overrides
+
     # Apply severity overrides
-    effective = _apply_overrides(evidence, policy.severity_overrides)
+    effective = _apply_overrides(evidence, overrides)
 
     # INFO-level evidence never alerts
     alerting = [ev for ev in effective if ev.severity != Severity.INFO]
@@ -208,6 +251,14 @@ def decide(
 
     # Collect distinct signal IDs present in alerting evidence
     signal_ids = {ev.id for ev in alerting}
+
+    # Check block_requires (both multi-signal pairs and standalone corroborated patterns)
+    for pair in block_reqs:
+        if all(sig in signal_ids for sig in pair.signals):
+            # Corroboration satisfied — check that at least one HIGH/CRITICAL present
+            matching_ev = [ev for ev in alerting if ev.id in pair.signals]
+            if any(ev.severity in (Severity.HIGH, Severity.CRITICAL) for ev in matching_ev):
+                return Decision.BLOCK, limitations
 
     # Single-signal rule: only one distinct alerting signal type
     if len(signal_ids) == 1:
@@ -220,25 +271,16 @@ def decide(
             # A single MEDIUM -> WARN
             return Decision.WARN, limitations
         # Single HIGH or CRITICAL signal -> capped at single_signal_cap (default WARN)
-        final = max(policy.single_signal_cap, Decision.WARN, key=_decision_order)
+        final = max(single_cap, Decision.WARN, key=_decision_order)
         return final, limitations
 
-    # Multi-signal: check corroboration pairs for BLOCK
-    # BLOCK still requires corroboration of at least two distinct signals
-    for pair in policy.block_requires:
-        if all(sig in signal_ids for sig in pair.signals):
-            # Corroboration satisfied — check that at least one HIGH/CRITICAL present
-            matching_ev = [ev for ev in alerting if ev.id in pair.signals]
-            if any(ev.severity in (Severity.HIGH, Severity.CRITICAL) for ev in matching_ev):
-                return Decision.BLOCK, limitations
-
-    # Multi-signal but no corroboration pair matches
+    # Multi-signal but no block_requires matches
     max_sev = _max_severity(alerting)
     if max_sev == Severity.LOW:
         # Check if any corroboration pair was matched (all-low pair falls back to WARN)
         any_pair_matched = any(
             all(sig in signal_ids for sig in pair.signals)
-            for pair in policy.block_requires
+            for pair in block_reqs
         )
         if any_pair_matched or has_incomplete:
             return Decision.WARN, limitations

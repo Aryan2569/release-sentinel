@@ -16,7 +16,7 @@ from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from pathlib import Path
 
-from release_sentinel.differ import compare_releases
+from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, ReleaseContents, extract_release_in_memory
 from release_sentinel.models import Decision, Evidence
@@ -27,6 +27,7 @@ from release_sentinel.zip_loader import load_zip_release
 logger = logging.getLogger(__name__)
 
 _DEFAULT_CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
+_DEFAULT_SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
 
 
 @dataclass
@@ -41,6 +42,11 @@ class EvalPairResult:
     evidence: list[Evidence]
     limitations: list[str]
     payload_hashes: list[str] = field(default_factory=list)
+    is_full_scan: bool = False
+    dependencies_added_count: int = 0
+    dependencies_resolved_live: int = 0
+    dependencies_resolved_replayed: int = 0
+    dependencies_unresolvable: int = 0
 
 
 def parse_discovery_date_as_of(discovery_date: str | datetime) -> datetime:
@@ -76,6 +82,7 @@ def analyze_eval_pair(
     registry_client: NpmRegistryClient | None = None,
     policy: Policy | None = None,
     config: ExtractionConfig | None = None,
+    samples_root: Path | None = None,
 ) -> EvalPairResult:
     """Analyze one eval pair end-to-end completely in memory.
 
@@ -97,6 +104,8 @@ def analyze_eval_pair(
         Optional detection policy. If None, bundled default policy is used.
     config:
         Optional extraction caps and limits.
+    samples_root:
+        Optional path to local Datadog repository for replay dependency resolution.
 
     Returns
     -------
@@ -105,6 +114,8 @@ def analyze_eval_pair(
     """
     as_of = parse_discovery_date_as_of(discovery_date)
     zip_path = Path(zip_path)
+    if samples_root is None and _DEFAULT_SAMPLES_ROOT.exists():
+        samples_root = _DEFAULT_SAMPLES_ROOT
 
     # 1. Load new compromised release from encrypted ZIP in memory
     logger.debug("Loading compromised release from %s into memory...", zip_path)
@@ -126,6 +137,7 @@ def analyze_eval_pair(
         registry_client = NpmRegistryClient(cache_dir=_DEFAULT_CACHE_DIR)
         owned_client = True
 
+    old_release: ReleaseContents | None = None
     try:
         dest_temp = _DEFAULT_CACHE_DIR / "tarballs" / "eval_tmp"
         tarball_path = registry_client.download_tarball(
@@ -136,18 +148,58 @@ def analyze_eval_pair(
         )
         logger.debug("Loading baseline release %s@%s into memory...", package, old_version)
         old_release = extract_release_in_memory(tarball_path, config=config)
+    except Exception as exc:
+        logger.warning(
+            "Baseline fetch/extraction failed for %s@%s (%s); falling back to full-scan mode",
+            package,
+            old_version,
+            exc,
+        )
+        old_release = None
     finally:
         if owned_client:
             registry_client.close()
 
-    # 3. Static diff in memory
-    evidence = compare_releases(old_release, new_release)
+    # 3. Analyze release (diff mode if baseline exists, full-scan mode if not)
+    evidence = analyze_release(
+        new=new_release,
+        baseline=old_release,
+        policy=policy,
+        config=config,
+        as_of=as_of,
+        registry_client=registry_client,
+        samples_root=samples_root,
+    )
 
     # 4. Policy decision
-    decision, limitations = decide(evidence, policy=policy)
+    decision, limitations = decide(
+        evidence,
+        policy=policy,
+        is_full_scan=(old_release is None),
+    )
 
     # 5. Payload hashes for campaign clustering
     payload_hashes = compute_payload_hashes(old_release, new_release)
+
+    # 6. Dependency resolution statistics
+    deps_added_count = 0
+    if old_release is not None:
+        old_deps = set((old_release.package_json() or {}).get("dependencies", {}).keys())
+        new_deps = (new_release.package_json() or {}).get("dependencies", {})
+        deps_added_count = len([k for k in new_deps if k not in old_deps])
+
+    unres_count = sum(1 for e in evidence if e.id == "unresolvable_dependency")
+    replayed_count = sum(
+        1 for e in evidence if "[dep:" in e.explanation and "replayed_from_dataset" in e.explanation
+    )
+    live_deps = {
+        m.group(1)
+        for e in evidence
+        if "[dep:" in e.explanation
+        and "replayed_from_dataset" not in e.explanation
+        and (m := re.search(r"\[dep:\s*([^@\s\]]+)@", e.explanation))
+    }
+    live_count = len(live_deps)
 
     return EvalPairResult(
         package=package,
@@ -162,11 +214,16 @@ def analyze_eval_pair(
         evidence=evidence,
         limitations=limitations,
         payload_hashes=payload_hashes,
+        is_full_scan=(old_release is None),
+        dependencies_added_count=deps_added_count,
+        dependencies_resolved_live=live_count,
+        dependencies_resolved_replayed=replayed_count,
+        dependencies_unresolvable=unres_count,
     )
 
 
 def compute_payload_hashes(
-    old_release: ReleaseContents,
+    old_release: ReleaseContents | None,
     new_release: ReleaseContents,
 ) -> list[str]:
     """Compute SHA-256 hashes of new or changed files for campaign clustering.
@@ -179,7 +236,7 @@ def compute_payload_hashes(
     - files under 200 bytes
     """
     hashes: set[str] = set()
-    old_files = old_release.files
+    old_files = old_release.files if old_release is not None else {}
     for rel_path, new_bytes in new_release.files.items():
         filename = Path(rel_path).name.lower()
         if filename == "package.json":

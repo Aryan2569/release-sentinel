@@ -211,6 +211,25 @@ Eliminated root causes of false alarms discovered in smoke testing:
   - 502 ALLOW (83.67%), 98 WARN (16.33%), 0 BLOCK (0.00%).
   - Alert rate: **16.33 alerts per 100 updates**; False BLOCK rate: **0.00%**.
 
+### D22 — Full-Scan Mode, Dependency-Aware Updates, and Benign False-Alarm Breakdown (Stage 5a)
+- **Full-Scan (No-Baseline) Mode**:
+  Added `analyze_release(new_release, baseline=None)` to inspect releases standalone in memory when no baseline release is available (or when baseline download fails). Because legitimate packages use network, child process, and environment APIs in their normal runtime code, full-scan mode detects only standalone corroborated patterns:
+  - Install hook target actions: downloading from network (`install_script_network`), executing commands (`install_script_executes`), dynamic eval (`install_script_dynamic`), or dumping environment (`install_script_env_harvesting`).
+  - Decode-then-execute chains: Base64/hex decode directly piped or within proximity to dynamic evaluation sinks or process execution sinks (`decode_and_execute`).
+  - Credential exfiltration: Credential file reads (.npmrc, id_rsa, .aws/credentials) co-occurring with network calls (`credential_leak`).
+  - Persistence & CI modifications: Modifications to shell profiles (`shell_profile_write`) or CI workflows (`ci_write`).
+  Full-scan operates under the calibrated 25 MB / 10.0s fail-closed budgets. Baseline download failures no longer abort evaluation; they seamlessly fall back to full-scan mode (0 baseline download failures across 1,349 eval pairs).
+- **Dependency-Aware Updates**:
+  When an update adds direct runtime dependencies (`dependencies` in `new_pkg` not in `old_pkg`), `analyze_release` resolves the highest version satisfying the declared range as of `as_of` via `node-semver`. It limits resolution to depth 1 and at most 5 added dependencies per release. Each added dependency is extracted in memory, scanned via full-scan mode, and returned evidence is prefixed with `[dep: pkg@ver]`. In evaluation mode, if a dependency is absent from the live registry (e.g. placeholder/delisted packages like `plain-crypto-js` added in `axios@1.14.1`), a REPLAY resolver loads it from `C:\rs-data\datadog`. Dependencies that cannot be resolved emit `unresolvable_dependency` (INFO; never alerts). Across 1,349 malicious updates, 153 releases added dependencies; 24 resolved live, 1 was replayed, and 2 were unresolvable.
+- **Benign Gate & Signal Value Breakdown**:
+  Re-evaluated all 800 benign updates across the three independent benchmarks:
+  - Tuning Smoke (100 pairs): 89 ALLOW, 11 WARN, 0 BLOCK (11.0 alerts/100, +0.0 change).
+  - Validation Smoke (100 pairs): 96 ALLOW, 4 WARN, 0 BLOCK (4.0 alerts/100, +0.0 change).
+  - Matched Negatives (600 pairs): 501 ALLOW, 99 WARN, 0 BLOCK (16.50 alerts/100, +0.17 change).
+  Total false BLOCKs: **0** across all 800 updates.
+  The benign false-alarm breakdown identified `high_entropy_string` (8 sole WARNs) and `inspection_incomplete` (7 sole WARNs) as the costliest individual signals, while `long_encoded_blob` (56 clusters helped, 2 sole WARNs), `large_size_jump` (32 clusters, 0 sole WARNs), and `install_script_added` (26 clusters, 2 sole WARNs) demonstrated the highest signal-to-noise value.
+
+
 
 
 

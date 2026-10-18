@@ -62,6 +62,27 @@ description = "Environment variable enumeration combined with outbound URL"
 signals = ["env_enumeration", "hardcoded_ip"]
 description = "Environment variable enumeration combined with outbound IP"
 
+[[decision.block_requires]]
+signals = ["install_script_network"]
+description = "Install hook downloads from network"
+
+[[decision.block_requires]]
+signals = ["install_script_executes"]
+description = "Install hook executes system commands"
+
+[[decision.block_requires]]
+signals = ["install_script_dynamic"]
+description = "Install hook executes dynamic code"
+
+[[decision.block_requires]]
+signals = ["decode_and_execute"]
+description = "Decode-then-execute obfuscated payload chain"
+
+[[decision.block_requires]]
+signals = ["credential_leak"]
+description = "Credential file read co-occurring with network access in same file"
+
+
 # Per-evidence severity overrides.
 # Use this to tune noisy signals without changing code.
 [severity_overrides]
@@ -71,6 +92,37 @@ install_script_changed = "MEDIUM"
 dependency_added = "LOW"
 dependency_removed = "INFO"
 dependency_version_changed = "INFO"
+unresolvable_dependency = "INFO"
 # File count / size stats are informational
 large_file_count_jump = "LOW"
 new_files_summary = "LOW"
+
+# Full-scan (no-baseline) policy configuration
+[full_scan]
+single_signal_cap = "WARN"
+
+[[full_scan.block_requires]]
+signals = ["install_script_network"]
+description = "Install-time script that downloads from the network"
+
+[[full_scan.block_requires]]
+signals = ["install_script_executes"]
+description = "Install-time script that executes system processes"
+
+[[full_scan.block_requires]]
+signals = ["install_script_dynamic"]
+description = "Install-time script that evaluates dynamic code"
+
+[[full_scan.block_requires]]
+signals = ["decode_and_execute"]
+description = "Decode-then-execute obfuscated payload chain"
+
+[[full_scan.block_requires]]
+signals = ["credential_leak"]
+description = "Credential file read co-occurring with network access in the same file"
+
+
+[full_scan.severity_overrides]
+native_binary_present = "LOW"
+unresolvable_dependency = "INFO"
+

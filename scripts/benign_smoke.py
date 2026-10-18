@@ -26,7 +26,7 @@ from typing import Any
 
 import httpx
 
-from release_sentinel.differ import compare_releases
+from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, extract_release
 from release_sentinel.models import Severity
@@ -181,7 +181,13 @@ def process_pair(
         ext_cfg = ExtractionConfig()
         old_res = extract_release(old_tgz, tmp_path / "old_ext", config=ext_cfg)
         new_res = extract_release(new_tgz, tmp_path / "new_ext", config=ext_cfg)
-        evidence = compare_releases(old_res, new_res)
+        evidence = analyze_release(
+            new=new_res,
+            baseline=old_res,
+            as_of=as_of,
+            registry_client=client,
+            dest_dir=tmp_path / "dep_tarballs",
+        )
 
     decision, limitations = decide(evidence)
     elapsed = time.time() - t0

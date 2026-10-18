@@ -23,7 +23,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
-from release_sentinel.differ import compare_releases
+from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, extract_release
 from release_sentinel.registry import NpmRegistryClient
@@ -87,7 +87,13 @@ def run_worker(pair: dict[str, Any]) -> None:
         old_res = extract_release(old_tgz, tmp_path / "old_ext", config=ext_cfg)
         new_res = extract_release(new_tgz, tmp_path / "new_ext", config=ext_cfg)
 
-        evidence = compare_releases(old_res, new_res)
+        evidence = analyze_release(
+            new=new_res,
+            baseline=old_res,
+            as_of=as_of,
+            registry_client=client,
+            dest_dir=tmp_path / "dep_tarballs",
+        )
         decision, limitations = decide(evidence)
         elapsed = round(time.perf_counter() - t0, 3)
 
@@ -235,6 +241,12 @@ def main() -> int:
         "--workers", type=int, default=8, help="Number of worker threads (default: 8)"
     )
     parser.add_argument(
+        "--results-file",
+        type=Path,
+        default=RESULTS_JSONL,
+        help="Path to results jsonl file (default: data/matched_negatives_results.jsonl)",
+    )
+    parser.add_argument(
         "--worker", action="store_true", help="Run in worker mode for a single pair"
     )
     args = parser.parse_args()
@@ -250,9 +262,10 @@ def main() -> int:
     with open(MATCHED_CSV, encoding="utf-8") as f:
         pairs = list(csv.DictReader(f))
 
+    results_file = args.results_file
     print(f"Loaded {len(pairs)} matched negative pairs from {MATCHED_CSV}")
-    existing_results = load_existing_results(RESULTS_JSONL)
-    print(f"Found {len(existing_results)} already completed in {RESULTS_JSONL}")
+    existing_results = load_existing_results(results_file)
+    print(f"Found {len(existing_results)} already completed in {results_file}")
 
     pending = [
         p for p in pairs
@@ -260,8 +273,8 @@ def main() -> int:
     ]
     print(f"Processing {len(pending)} pending pairs with {args.workers} workers...")
 
-    RESULTS_JSONL.parent.mkdir(parents=True, exist_ok=True)
-    jsonl_f = open(RESULTS_JSONL, "a", encoding="utf-8")
+    results_file.parent.mkdir(parents=True, exist_ok=True)
+    jsonl_f = open(results_file, "a", encoding="utf-8")
     write_lock = threading.Lock()
     download_lock = threading.Lock()
     client = NpmRegistryClient(cache_dir=CACHE_DIR)

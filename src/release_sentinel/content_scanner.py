@@ -1497,3 +1497,454 @@ def _extract_string_tokens(line: str) -> list[str]:
         if tok and len(tok) >= _ENTROPY_MIN_LEN:
             tokens.append(tok)
     return tokens
+
+
+# ---------------------------------------------------------------------------
+# Full-scan (no-baseline) scanner
+# ---------------------------------------------------------------------------
+
+
+_DIRECT_DECODE_EXEC_RE = re.compile(
+    r"""(?x)
+    (?:
+        \beval\s*\(
+        | new\s+Function\s*\(
+        | vm\.runIn(?:New)?Context\s*\(
+        | vm\.Script\s*\(
+        | (?:child_process(?:\.\w+)?|exec|execSync|spawn|spawnSync|fork)\s*\(
+    )
+    \s*
+    (?:
+        Buffer\.from\s*\(
+        | atob\s*\(
+        | unescape\s*\(
+        | decodeURIComponent\s*\(
+        | ['"][0-9a-fA-F]{32,}['"]
+    )
+    """,
+)
+
+_CHAIN_DECODE_EXEC_RE = re.compile(
+    r"""(?x)
+    (?:
+        Buffer\.from\s*\([^)]*['"](?:base64|hex)['"]
+        | atob\s*\([^)]+\)
+        | unescape\s*\([^)]+\)
+        | decodeURIComponent\s*\([^)]+\)
+    )
+    [\s\S]{0,300}?
+    (?:
+        \beval\s*\(
+        | new\s+Function\s*\(
+        | vm\.runIn(?:New)?Context\s*\(
+        | (?:child_process(?:\.\w+)?|exec|execSync|spawn|spawnSync|fork)\s*\(
+    )
+    |
+    (?:
+        \beval\s*\(
+        | new\s+Function\s*\(
+        | vm\.runIn(?:New)?Context\s*\(
+        | (?:child_process(?:\.\w+)?|exec|execSync|spawn|spawnSync|fork)\s*\(
+    )
+    [\s\S]{0,100}?
+    (?:
+        Buffer\.from\s*\(
+        | atob\s*\(
+        | unescape\s*\(
+        | decodeURIComponent\s*\(
+    )
+    """,
+)
+
+
+def scan_full_release(
+    release: ExtractionResult | ReleaseContents,
+    install_script_targets: set[str],
+) -> list[Evidence]:
+    """Scan an entire release in memory without a baseline diff (Stage 5a).
+
+    Only standalone corroborated patterns are emitted:
+    1. Install-time script targets that execute processes, download from network, or eval code.
+    2. Decode-then-execute chains (eval/Function/vm fed by base64/hex decode, or co-occurring).
+    3. Credential-file read plus network access in the same file.
+    4. Bulk env enumeration plus network access in the same file.
+    5. Shell profile or CI workflow writes.
+    6. Native binaries present (as notable inspection limitation).
+    """
+    if isinstance(release, ExtractionResult):
+        release = release.to_release_contents()
+
+    evidence: list[Evidence] = []
+    targets = install_script_targets or set()
+
+    for rel_path, data in release.files.items():
+        cat = classify(data, rel_path)
+
+        if cat == FileCategory.NATIVE_BINARY:
+            evidence.append(
+                Evidence(
+                    id="native_binary_present",
+                    severity=Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"Native binary present: {rel_path!r}. Native binaries cannot be "
+                        "inspected for malicious content by static analysis alone."
+                    ),
+                    legitimate_use_note=(
+                        "Packages often include pre-built native add-ons. Verify the binary "
+                        "matches trusted build signatures."
+                    ),
+                )
+            )
+
+        if cat not in {
+            FileCategory.SCRIPT,
+            FileCategory.OTHER,
+            FileCategory.DOTFILE,
+            FileCategory.MINIFIED,
+        }:
+            continue
+
+        if is_exempt_path(rel_path, cat):
+            continue
+
+        file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
+        file_size = len(file_bytes)
+        is_install_target = rel_path in targets
+
+        # Check 1: Size budget exceedance
+        if file_size > PER_FILE_SIZE_BUDGET:
+            evidence.append(
+                Evidence(
+                    id="inspection_incomplete",
+                    severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' size ({file_size} bytes) exceeds resource budget "
+                        f"({PER_FILE_SIZE_BUDGET} bytes); deep inspection skipped."
+                    ),
+                    legitimate_use_note=(
+                        "Extremely large files can exceed analysis resource budgets."
+                    ),
+                )
+            )
+            continue
+
+        t_file_start = time.perf_counter()
+        raw_text = release.read_text(rel_path)
+        if not raw_text:
+            continue
+
+        clean_text = strip_js_comments(raw_text) if _is_js_or_ts_file(rel_path) else raw_text
+
+        if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
+            evidence.append(
+                Evidence(
+                    id="inspection_incomplete",
+                    severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"Processing time for file '{rel_path}' exceeded "
+                        f"{PER_FILE_TIME_BUDGET}s budget; deep inspection skipped."
+                    ),
+                    legitimate_use_note=(
+                        "Complex or generated files can exceed processing time budgets."
+                    ),
+                )
+            )
+            continue
+
+        # Extract features from clean_text
+        proc_matches = list(find_process_exec_matches(clean_text))
+        cred_matches = list(find_credential_read_matches(clean_text))
+
+        has_network_apis = bool(
+            re.search(
+                r"""(?x)
+                require\s*\(\s*['"](?:http|https|net|dgram)['"]\s*\)
+                | \bfetch\s*\(
+                | \.get\s*\(\s*['"](http|https)
+                | new\s+XMLHttpRequest
+                | require\s*\(\s*['"](?:axios|node-fetch|got|request|superagent)['"]\s*\)
+                """,
+                clean_text,
+            )
+        )
+        has_network_url = bool(
+            re.search(
+                r"""(?x)
+                https?://(?!
+                  (?:(?:www\.|registry\.)?npmjs\.(?:com|org))
+                  | (?:www\.)?github\.com
+                  | (?:www\.)?githubusercontent\.com
+                  | (?:www\.)?jsdelivr\.net
+                  | (?:www\.)?unpkg\.com
+                  | (?:www\.)?cdnjs\.cloudflare\.com
+                  | localhost
+                )
+                [^\s"'`>]{20,}
+                """,
+                clean_text,
+            )
+        )
+        has_network_ip = bool(
+            re.search(
+                r"""(?x)
+                \b(?!
+                  127\.\d+\.\d+\.\d+
+                  | 0\.0\.0\.0
+                  | 10\.\d+\.\d+\.\d+
+                  | 192\.168\.\d+\.\d+
+                  | 172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+
+                )
+                (?:\d{1,3}\.){3}\d{1,3}
+                \b
+                """,
+                clean_text,
+            )
+        )
+        has_network = has_network_apis or has_network_url or has_network_ip
+
+        has_dynamic = bool(
+            re.search(
+                r"""(?x)
+                \beval\s*\(
+                | new\s+Function\s*\(
+                | vm\.runIn(?:New)?Context
+                | vm\.Script\s*\(
+                """,
+                clean_text,
+            )
+        )
+
+        has_direct_decode_exec = bool(_search_windowed(_DIRECT_DECODE_EXEC_RE, clean_text))
+        has_chain_decode_exec = bool(_search_windowed(_CHAIN_DECODE_EXEC_RE, clean_text))
+
+        env_matches = set(
+            re.findall(r"process\.env(?:\.[a-zA-Z0-9_]+|\[['\"][a-zA-Z0-9_]+['\"]\])", clean_text)
+        )
+        has_env_dump = bool(
+            re.search(
+                r"""(?x)
+                Object\.(?:keys|values|entries)\s*\(\s*process\.env\s*\)
+                | JSON\.stringify\s*\(\s*process\.env\s*\)
+                | for\s*\([^)]*\bin\s+process\.env\b
+                """,
+                clean_text,
+            )
+        )
+        has_env_bulk = has_env_dump or len(env_matches) >= 10
+
+        has_shell_profile = bool(
+            re.search(
+                r"""(?x)
+                ['"`.+]\.(?:bashrc|zshrc|profile|bash_profile|zprofile)['"`]
+                """,
+                clean_text,
+            )
+        )
+        has_ci_write = bool(
+            re.search(
+                r"""(?x)
+                ['"`.+]\.(?:github[/\\]workflows|gitlab-ci|circleci)
+                """,
+                clean_text,
+            )
+        )
+
+        # ------------------------------------------------------------------
+        # Corroborated Standalone Patterns
+        # ------------------------------------------------------------------
+
+        # Pattern 1: Install script target actions
+        if is_install_target:
+            if has_network:
+                evidence.append(
+                    Evidence(
+                        id="install_script_network",
+                        severity=Severity.CRITICAL,
+                        file=rel_path,
+                        explanation=(
+                            f"Install-script target '{rel_path}' performs outbound network access "
+                            "or references external URLs/IPs during package installation."
+                        ),
+                        legitimate_use_note=(
+                            "Install scripts should avoid arbitrary outbound network requests. "
+                            "Verify whether this is downloading a documented pre-built binary."
+                        ),
+                    )
+                )
+            if proc_matches:
+                snippet = proc_matches[0][1]
+                evidence.append(
+                    Evidence(
+                        id="install_script_executes",
+                        severity=Severity.CRITICAL,
+                        file=rel_path,
+                        explanation=(
+                            f"Install-script target '{rel_path}' invokes system process execution "
+                            f"({snippet}) during package installation."
+                        ),
+                        legitimate_use_note=(
+                            "Some packages compile native code via node-gyp. Verify whether "
+                            "the executed command is expected."
+                        ),
+                    )
+                )
+            if has_dynamic:
+                evidence.append(
+                    Evidence(
+                        id="install_script_dynamic",
+                        severity=Severity.CRITICAL,
+                        file=rel_path,
+                        explanation=(
+                            f"Install-script target '{rel_path}' uses dynamic code evaluation "
+                            "(eval, Function, vm) during package installation."
+                        ),
+                        legitimate_use_note=(
+                            "Dynamic code execution at install time is almost never legitimate."
+                        ),
+                    )
+                )
+            if cred_matches:
+                snippet = cred_matches[0][1]
+                evidence.append(
+                    Evidence(
+                        id="install_script_credential_read",
+                        severity=Severity.CRITICAL,
+                        file=rel_path,
+                        explanation=(
+                            f"Install-script target '{rel_path}' accesses credential files "
+                            f"({snippet}) during package installation."
+                        ),
+                        legitimate_use_note=(
+                            "Credential access during package installation is high risk."
+                        ),
+                    )
+                )
+            if has_env_bulk:
+                evidence.append(
+                    Evidence(
+                        id="install_script_env_harvesting",
+                        severity=Severity.CRITICAL,
+                        file=rel_path,
+                        explanation=(
+                            f"Install-script target '{rel_path}' enumerates environment variables "
+                            "in bulk during package installation."
+                        ),
+                        legitimate_use_note=(
+                            "Bulk env enumeration during installation is an exfiltration "
+                            "indicator."
+                        ),
+                    )
+                )
+
+        # Pattern 2: Decode-then-execute chains
+        if has_direct_decode_exec or has_chain_decode_exec:
+            evidence.append(
+                Evidence(
+                    id="decode_and_execute",
+                    severity=Severity.CRITICAL,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' contains a decode-then-execute chain: encoded "
+                        "content (base64/hex) is decoded and passed to an execution sink "
+                        "(eval, Function, vm, or process exec)."
+                    ),
+                    legitimate_use_note=(
+                        "Obfuscated dynamic execution is a hallmark of supply-chain attacks. "
+                        "Template engines rarely decode base64 into eval."
+                    ),
+                )
+            )
+
+        # Pattern 3: Credential-file read plus network in same file
+        if cred_matches and has_network:
+            snippet = cred_matches[0][1]
+            evidence.append(
+                Evidence(
+                    id="credential_leak",
+                    severity=Severity.CRITICAL,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' reads credential files ({snippet}) and performs "
+                        "outbound network communication in the same file."
+                    ),
+                    legitimate_use_note=(
+                        "Co-occurrence of credential reads and network APIs indicates "
+                        "exfiltration."
+                    ),
+                )
+            )
+
+        # Pattern 4: Bulk env enumeration plus network in same file
+        if has_env_bulk and has_network:
+            evidence.append(
+                Evidence(
+                    id="env_harvesting",
+                    severity=Severity.HIGH,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' accesses environment variables in bulk "
+                        f"({len(env_matches)} distinct vars) and performs outbound "
+                        "network communication in the same file."
+                    ),
+                    legitimate_use_note=(
+                        "Bulk env reading combined with network access indicates "
+                        "credential harvesting."
+                    ),
+                )
+            )
+
+        # Pattern 5: Shell profile write
+        if has_shell_profile:
+            evidence.append(
+                Evidence(
+                    id="shell_profile_write",
+                    severity=Severity.HIGH,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' references shell profile files (.bashrc, .zshrc, "
+                        ".profile). Writing to shell profiles provides persistence."
+                    ),
+                    legitimate_use_note=(
+                        "CLI installers may legitimately configure shell PATH variables."
+                    ),
+                )
+            )
+
+        # Pattern 6: CI workflow write
+        if has_ci_write:
+            evidence.append(
+                Evidence(
+                    id="ci_write",
+                    severity=Severity.HIGH,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' references CI workflow configurations "
+                        "(.github/workflows). Modifying CI files can inject steps into "
+                        "automated build pipelines."
+                    ),
+                    legitimate_use_note=(
+                        "Scaffolding tools and generators legitimately write CI workflows."
+                    ),
+                )
+            )
+
+        # Check time budget at end of file
+        if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
+            evidence.append(
+                Evidence(
+                    id="inspection_incomplete",
+                    severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"Processing time for file '{rel_path}' exceeded "
+                        f"{PER_FILE_TIME_BUDGET}s budget; inspection incomplete."
+                    ),
+                    legitimate_use_note="Complex files can exceed resource budgets.",
+                )
+            )
+
+    return evidence
+

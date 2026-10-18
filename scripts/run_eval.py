@@ -253,7 +253,7 @@ def run_worker(pair: dict[str, str]) -> None:
 
         # Evidence-only decision without inspection_incomplete
         ev_without_inc = [e for e in eval_res.evidence if e.id != "inspection_incomplete"]
-        ev_only_dec, _ = decide(ev_without_inc)
+        ev_only_dec, _ = decide(ev_without_inc, is_full_scan=eval_res.is_full_scan)
 
         row = {
             "package": package,
@@ -269,6 +269,11 @@ def run_worker(pair: dict[str, str]) -> None:
             "evidence_types": ev_types,
             "limitation_count": len(eval_res.limitations),
             "seconds": elapsed,
+            "mode": "full_scan" if eval_res.is_full_scan else "diff",
+            "deps_added_count": eval_res.dependencies_added_count,
+            "deps_resolved_live": eval_res.dependencies_resolved_live,
+            "deps_resolved_replayed": eval_res.dependencies_resolved_replayed,
+            "deps_unresolvable": eval_res.dependencies_unresolvable,
         }
         res_payload = {"row": row, "payload_hashes": eval_res.payload_hashes}
         print("EVAL_WORKER_RESULT:" + json.dumps(res_payload))
@@ -344,24 +349,10 @@ def run_one_pair(
         download_lock=download_lock,
     )
     if not tarball_ok:
-        elapsed = round(time.perf_counter() - t0, 3)
-        return (
-            {
-                "package": package,
-                "old": old_ver,
-                "new": new_ver,
-                "discovery_date": discovery_date,
-                "cluster_id": "pending",
-                "split": split,
-                "status": "baseline_download_failed",
-                "decision": None,
-                "evidence_only_decision": None,
-                "max_severity": None,
-                "evidence_types": [],
-                "limitation_count": 0,
-                "seconds": elapsed,
-            },
-            [],
+        logger.info(
+            "Baseline tarball unavailable for %s@%s; proceeding to full-scan mode in worker",
+            package,
+            old_ver,
         )
 
     # 2. Run in isolated subprocess with 60-second timeout
@@ -542,20 +533,20 @@ def main() -> int:
     parser.add_argument(
         "--results-file",
         type=Path,
-        default=Path("data/eval_results_v3.jsonl"),
-        help="Path to results jsonl file (default: data/eval_results_v3.jsonl)",
+        default=Path("data/eval_results_v4.jsonl"),
+        help="Path to results jsonl file (default: data/eval_results_v4.jsonl)",
     )
     parser.add_argument(
         "--hashes-file",
         type=Path,
-        default=Path("data/eval_payload_hashes_v3.json"),
-        help="Path to hashes cache file (default: data/eval_payload_hashes_v3.json)",
+        default=Path("data/eval_payload_hashes_v4.json"),
+        help="Path to hashes cache file (default: data/eval_payload_hashes_v4.json)",
     )
     parser.add_argument(
         "--clusters-file",
         type=Path,
-        default=Path("data/eval_clusters_v3.json"),
-        help="Path to clusters json file (default: data/eval_clusters_v3.json)",
+        default=Path("data/eval_clusters_v4.json"),
+        help="Path to clusters json file (default: data/eval_clusters_v4.json)",
     )
     parser.add_argument("--force-recluster", action="store_true", help="Only run re-clustering")
     parser.add_argument(

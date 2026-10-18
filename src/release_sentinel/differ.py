@@ -21,12 +21,18 @@ import logging
 import re
 from collections import Counter
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from release_sentinel.content_scanner import is_exempt_path, scan_new_content
-from release_sentinel.extractor import ExtractionResult, ReleaseContents
+from release_sentinel.content_scanner import is_exempt_path, scan_full_release, scan_new_content
+from release_sentinel.extractor import ExtractionConfig, ExtractionResult, ReleaseContents
 from release_sentinel.file_classifier import FileCategory, classify, is_ignorable, is_notable
 from release_sentinel.models import Evidence, Severity
+
+if TYPE_CHECKING:
+    from datetime import datetime
+
+    from release_sentinel.policy import Policy
+    from release_sentinel.registry import NpmRegistryClient
 
 logger = logging.getLogger(__name__)
 
@@ -146,6 +152,209 @@ def compare_releases(
         Severity.LOW: 3,
         Severity.INFO: 4,
     }
+    evidence.sort(key=lambda e: _sev_order[e.severity])
+    return evidence
+
+
+def analyze_release(
+    new: ExtractionResult | ReleaseContents,
+    baseline: ExtractionResult | ReleaseContents | None = None,
+    policy: Policy | None = None,
+    config: ExtractionConfig | None = None,
+    as_of: datetime | None = None,
+    registry_client: NpmRegistryClient | None = None,
+    samples_root: Path | None = None,
+    dest_dir: Path | None = None,
+) -> list[Evidence]:
+    """Analyze a release either against a baseline (diff mode) or standalone (full-scan mode).
+
+    Parameters
+    ----------
+    new:
+        The target release to analyze (ExtractionResult or ReleaseContents).
+    baseline:
+        Optional baseline release. If None, full-scan mode is executed.
+    policy:
+        Optional Policy object.
+    config:
+        Optional ExtractionConfig object.
+    as_of:
+        Optional cut-off timestamp for time-bounding dependency resolution.
+    registry_client:
+        Optional NpmRegistryClient for resolving added dependencies.
+    samples_root:
+        Optional Datadog repo root for replay dependency resolution in evaluation mode.
+    dest_dir:
+        Optional directory for downloaded dependency tarballs.
+
+    Returns
+    -------
+    list[Evidence]
+        All findings, ordered by severity (highest first).
+    """
+    _sev_order = {
+        Severity.CRITICAL: 0,
+        Severity.HIGH: 1,
+        Severity.MEDIUM: 2,
+        Severity.LOW: 3,
+        Severity.INFO: 4,
+    }
+
+    if baseline is not None:
+        evidence = compare_releases(baseline, new)
+
+        # Check added dependencies if registry_client and as_of are provided
+        if registry_client is not None and as_of is not None:
+            old_rc = (
+                baseline.to_release_contents()
+                if isinstance(baseline, ExtractionResult)
+                else baseline
+            )
+            new_rc = (
+                new.to_release_contents()
+                if isinstance(new, ExtractionResult)
+                else new
+            )
+            old_pkg = old_rc.package_json() or {}
+            new_pkg = new_rc.package_json() or {}
+            old_deps = set((old_pkg.get("dependencies") or {}).keys())
+            new_deps = new_pkg.get("dependencies") or {}
+            added_deps = [(k, str(v)) for k, v in new_deps.items() if k not in old_deps]
+
+            if added_deps:
+                from release_sentinel.dependency_resolver import resolve_added_dependency
+
+                target_dir = dest_dir or (registry_client._cache_dir / "tarballs" / "eval_tmp")
+                for dep_name, dep_spec in added_deps[:5]:
+                    _, dep_evidence, _ = resolve_added_dependency(
+                        name=dep_name,
+                        spec=dep_spec,
+                        as_of=as_of,
+                        registry_client=registry_client,
+                        dest_dir=target_dir,
+                        samples_root=samples_root,
+                        config=config,
+                        policy=policy,
+                        analyze_fn=analyze_release,
+                    )
+                    evidence.extend(dep_evidence)
+
+        evidence.sort(key=lambda e: _sev_order[e.severity])
+        return evidence
+
+    # Full-scan (no-baseline) mode
+    new_rc = new.to_release_contents() if isinstance(new, ExtractionResult) else new
+    evidence = []
+    new_pkg = new_rc.package_json()
+
+    if new_pkg is None:
+        evidence.append(
+            Evidence(
+                id="inspection_failed",
+                severity=Severity.MEDIUM,
+                file="package.json",
+                explanation=(
+                    "Could not read or parse package.json from the release. "
+                    "Script and dependency comparisons are unavailable."
+                ),
+                legitimate_use_note=(
+                    "This should never happen for a valid npm package. "
+                    "May indicate a corrupted tarball."
+                ),
+            )
+        )
+        install_targets: set[str] = set()
+    else:
+        install_targets = _extract_install_script_targets(new_pkg)
+        scripts: dict[str, str] = new_pkg.get("scripts", {}) or {}
+        has_install_script = False
+
+        for hook in _INSTALL_SCRIPTS:
+            if hook in scripts:
+                has_install_script = True
+                cmd = str(scripts[hook])
+                if re.search(
+                    r"\b(?:curl|wget|fetch)\b|Invoke-WebRequest|powershell.*download",
+                    cmd,
+                    re.I,
+                ):
+                    evidence.append(
+                        Evidence(
+                            id="install_script_network",
+                            severity=Severity.CRITICAL,
+                            file="package.json",
+                            explanation=(
+                                f"Lifecycle script '{hook}' contains inline download command: "
+                                f"{cmd!r}."
+                            ),
+                            legitimate_use_note=(
+                                "Packages should not download arbitrary payloads during install."
+                            ),
+                        )
+                    )
+                if re.search(
+                    r"\b(?:bash|sh|powershell|cmd(?:\.exe)?|sudo)\b|\bnode\s+-e\b|\bpython(?:\d)?\s+-c\b|rm\s+-rf\b",
+                    cmd,
+                    re.I,
+                ):
+                    evidence.append(
+                        Evidence(
+                            id="install_script_executes",
+                            severity=Severity.CRITICAL,
+                            file="package.json",
+                            explanation=(
+                                f"Lifecycle script '{hook}' contains inline shell/process command: "
+                                f"{cmd!r}."
+                            ),
+                            legitimate_use_note=(
+                                "Lifecycle scripts should avoid arbitrary process invocation."
+                            ),
+                        )
+                    )
+                parts = cmd.strip().split()
+                if len(parts) >= 2 and parts[0] in {"node", "nodejs"}:
+                    target = re.sub(r"^\./", "", parts[1])
+                    if target not in new_rc.files:
+                        evidence.append(
+                            Evidence(
+                                id="install_script_present",
+                                severity=Severity.HIGH,
+                                file="package.json",
+                                explanation=(
+                                    f"Lifecycle script '{hook}' references script target "
+                                    f"'{target}' that is missing from the package."
+                                ),
+                                legitimate_use_note="Broken or incomplete package packaging.",
+                            )
+                        )
+
+        if has_install_script and not any(
+            e.id in {"install_script_network", "install_script_executes", "install_script_present"}
+            for e in evidence
+        ):
+            evidence.append(
+                Evidence(
+                    id="install_script_present",
+                    severity=Severity.LOW,
+                    file="package.json",
+                    explanation="Package defines an install-time lifecycle script.",
+                    legitimate_use_note="Many packages legitimately use install scripts.",
+                )
+            )
+
+    evidence.extend(scan_full_release(new_rc, install_targets))
+
+    if new_rc.capped and new_rc.cap_reason:
+        evidence.append(
+            Evidence(
+                id="inspection_failed",
+                severity=Severity.MEDIUM,
+                file=None,
+                explanation=f"Extraction of the release hit a soft cap: {new_rc.cap_reason}.",
+                legitimate_use_note="Large packages may legitimately exceed extraction caps.",
+            )
+        )
+
     evidence.sort(key=lambda e: _sev_order[e.severity])
     return evidence
 
