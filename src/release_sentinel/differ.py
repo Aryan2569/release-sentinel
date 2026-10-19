@@ -37,7 +37,14 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # Lifecycle script keys that run at install time
-_INSTALL_SCRIPTS = {"preinstall", "install", "postinstall", "prepare"}
+_INSTALL_SCRIPTS = {
+    "preinstall",
+    "install",
+    "postinstall",
+    "prepare",
+    "prepublish",
+    "prepublishOnly",
+}
 
 # Dependency manifest keys to compare
 _DEP_KEYS = ("dependencies", "devDependencies", "optionalDependencies", "peerDependencies")
@@ -45,6 +52,10 @@ _DEP_KEYS = ("dependencies", "devDependencies", "optionalDependencies", "peerDep
 # Thresholds
 _SIZE_RATIO_THRESHOLD = 2.0
 _FILE_COUNT_JUMP_THRESHOLD = 50
+
+_CI_WORKFLOW_FILE_RE = re.compile(
+    r"^\.github/workflows/|^\.gitlab-ci\.ya?ml$|^\.circleci/|azure-pipelines"
+)
 
 
 def compare_releases(
@@ -165,6 +176,7 @@ def analyze_release(
     registry_client: NpmRegistryClient | None = None,
     samples_root: Path | None = None,
     dest_dir: Path | None = None,
+    dep_stats: dict[str, int] | None = None,
 ) -> list[Evidence]:
     """Analyze a release either against a baseline (diff mode) or standalone (full-scan mode).
 
@@ -186,6 +198,9 @@ def analyze_release(
         Optional Datadog repo root for replay dependency resolution in evaluation mode.
     dest_dir:
         Optional directory for downloaded dependency tarballs.
+    dep_stats:
+        Optional dictionary to record dependency resolution counts
+        (live, replayed, unresolvable, skipped).
 
     Returns
     -------
@@ -226,7 +241,7 @@ def analyze_release(
 
                 target_dir = dest_dir or (registry_client._cache_dir / "tarballs" / "eval_tmp")
                 for dep_name, dep_spec in added_deps[:5]:
-                    _, dep_evidence, _ = resolve_added_dependency(
+                    _, dep_evidence, status = resolve_added_dependency(
                         name=dep_name,
                         spec=dep_spec,
                         as_of=as_of,
@@ -238,6 +253,10 @@ def analyze_release(
                         analyze_fn=analyze_release,
                     )
                     evidence.extend(dep_evidence)
+                    if dep_stats is not None:
+                        dep_stats[status] = dep_stats.get(status, 0) + 1
+                if dep_stats is not None and len(added_deps) > 5:
+                    dep_stats["skipped"] = dep_stats.get("skipped", 0) + (len(added_deps) - 5)
 
         evidence.sort(key=lambda e: _sev_order[e.severity])
         return evidence
@@ -273,44 +292,7 @@ def analyze_release(
             if hook in scripts:
                 has_install_script = True
                 cmd = str(scripts[hook])
-                if re.search(
-                    r"\b(?:curl|wget|fetch)\b|Invoke-WebRequest|powershell.*download",
-                    cmd,
-                    re.I,
-                ):
-                    evidence.append(
-                        Evidence(
-                            id="install_script_network",
-                            severity=Severity.CRITICAL,
-                            file="package.json",
-                            explanation=(
-                                f"Lifecycle script '{hook}' contains inline download command: "
-                                f"{cmd!r}."
-                            ),
-                            legitimate_use_note=(
-                                "Packages should not download arbitrary payloads during install."
-                            ),
-                        )
-                    )
-                if re.search(
-                    r"\b(?:bash|sh|powershell|cmd(?:\.exe)?|sudo)\b|\bnode\s+-e\b|\bpython(?:\d)?\s+-c\b|rm\s+-rf\b",
-                    cmd,
-                    re.I,
-                ):
-                    evidence.append(
-                        Evidence(
-                            id="install_script_executes",
-                            severity=Severity.CRITICAL,
-                            file="package.json",
-                            explanation=(
-                                f"Lifecycle script '{hook}' contains inline shell/process command: "
-                                f"{cmd!r}."
-                            ),
-                            legitimate_use_note=(
-                                "Lifecycle scripts should avoid arbitrary process invocation."
-                            ),
-                        )
-                    )
+                evidence.extend(_check_lifecycle_script_command(hook, cmd))
                 parts = cmd.strip().split()
                 if len(parts) >= 2 and parts[0] in {"node", "nodejs"}:
                     target = re.sub(r"^\./", "", parts[1])
@@ -327,6 +309,25 @@ def analyze_release(
                                 legitimate_use_note="Broken or incomplete package packaging.",
                             )
                         )
+
+        # Check for CI workflow configuration files in full-scan mode
+        for f_path in new_rc.files:
+            f_norm = f_path.replace("\\", "/").lower()
+            if _CI_WORKFLOW_FILE_RE.search(f_norm):
+                evidence.append(
+                    Evidence(
+                        id="ci_write",
+                        severity=Severity.MEDIUM,
+                        file=f_path,
+                        explanation=(
+                            f"CI workflow configuration file present: {f_path!r}. "
+                            "Modifying CI files can inject steps into automated build pipelines."
+                        ),
+                        legitimate_use_note=(
+                            "Scaffolding tools and repositories legitimately include CI workflows."
+                        ),
+                    )
+                )
 
         if has_install_script and not any(
             e.id in {"install_script_network", "install_script_executes", "install_script_present"}
@@ -364,6 +365,78 @@ def analyze_release(
 # ------------------------------------------------------------------
 
 
+def _check_lifecycle_script_command(hook: str, cmd: str) -> list[Evidence]:
+    """Inspect inline shell/lifecycle script commands for dangerous patterns."""
+    evs: list[Evidence] = []
+    # 1. Network download tools
+    if re.search(
+        r"\b(?:curl|wget|fetch|certutil|bitsadmin)\b|Invoke-WebRequest|\biwr\b|powershell.*download",
+        cmd,
+        re.I,
+    ):
+        evs.append(
+            Evidence(
+                id="install_script_network",
+                severity=Severity.CRITICAL,
+                file="package.json",
+                explanation=(
+                    f"Lifecycle script '{hook}' contains inline download command: "
+                    f"{cmd!r}."
+                ),
+                legitimate_use_note=(
+                    "Packages should not download arbitrary payloads during install."
+                ),
+            )
+        )
+
+    # 2. Piping to shells / interpreters or execution wrappers
+    if re.search(
+        r"\|\s*(?:sh|bash|zsh|dash|powershell|pwsh|cmd(?:\.exe)?)\b"
+        r"|\b(?:bash|sh|powershell|cmd(?:\.exe)?|sudo)\b"
+        r"|\bnode\s+(?:-e|--eval)\b|\bpython(?:\d)?\s+-c\b|rm\s+-rf\b",
+        cmd,
+        re.I,
+    ):
+        evs.append(
+            Evidence(
+                id="install_script_executes",
+                severity=Severity.CRITICAL,
+                file="package.json",
+                explanation=(
+                    f"Lifecycle script '{hook}' contains inline shell/process command: "
+                    f"{cmd!r}."
+                ),
+                legitimate_use_note=(
+                    "Lifecycle scripts should avoid arbitrary process invocation."
+                ),
+            )
+        )
+
+    # 3. Base64 decode pipes
+    if re.search(
+        r"base64\s+(?:-d|--decode)|certutil\s+-(?:decode|f|decodehex)"
+        r"|\[System\.Convert\]::FromBase64String|\[Convert\]::FromBase64String|atob\(",
+        cmd,
+        re.I,
+    ):
+        if not any(e.id == "install_script_executes" for e in evs):
+            evs.append(
+                Evidence(
+                    id="install_script_executes",
+                    severity=Severity.CRITICAL,
+                    file="package.json",
+                    explanation=(
+                        f"Lifecycle script '{hook}' contains base64 decode pipe / execution: "
+                        f"{cmd!r}."
+                    ),
+                    legitimate_use_note=(
+                        "Lifecycle scripts should not decode and execute base64 payloads."
+                    ),
+                )
+            )
+    return evs
+
+
 def _diff_install_scripts(old_pkg: dict[str, Any], new_pkg: dict[str, Any]) -> list[Evidence]:
     """Detect added or changed install-time lifecycle scripts."""
     evidence: list[Evidence] = []
@@ -392,6 +465,7 @@ def _diff_install_scripts(old_pkg: dict[str, Any], new_pkg: dict[str, Any]) -> l
                     ),
                 )
             )
+            evidence.extend(_check_lifecycle_script_command(key, str(new_val)))
         elif old_val is not None and new_val is not None and old_val != new_val:
             evidence.append(
                 Evidence(
@@ -409,6 +483,7 @@ def _diff_install_scripts(old_pkg: dict[str, Any], new_pkg: dict[str, Any]) -> l
                     ),
                 )
             )
+            evidence.extend(_check_lifecycle_script_command(key, str(new_val)))
 
     return evidence
 
@@ -557,6 +632,23 @@ def _diff_files(
                     legitimate_use_note=(
                         "Packages legitimately add install helper scripts. "
                         "Review the file content to verify it performs only expected setup."
+                    ),
+                )
+            )
+        # Check if the file itself is a CI workflow file
+        rel_norm = rel_path.replace("\\", "/").lower()
+        if _CI_WORKFLOW_FILE_RE.search(rel_norm):
+            evidence.append(
+                Evidence(
+                    id="ci_write",
+                    severity=Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"A CI workflow configuration file was added: {rel_path!r}. "
+                        "Modifying CI files can inject steps into automated build pipelines."
+                    ),
+                    legitimate_use_note=(
+                        "Scaffolding tools and repositories legitimately include CI workflows."
                     ),
                 )
             )

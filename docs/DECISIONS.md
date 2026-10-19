@@ -227,9 +227,32 @@ Eliminated root causes of false alarms discovered in smoke testing:
   - Validation Smoke (100 pairs): 96 ALLOW, 4 WARN, 0 BLOCK (4.0 alerts/100, +0.0 change).
   - Matched Negatives (600 pairs): 501 ALLOW, 99 WARN, 0 BLOCK (16.50 alerts/100, +0.17 change).
   Total false BLOCKs: **0** across all 800 updates.
-  The benign false-alarm breakdown identified `high_entropy_string` (8 sole WARNs) and `inspection_incomplete` (7 sole WARNs) as the costliest individual signals, while `long_encoded_blob` (56 clusters helped, 2 sole WARNs), `large_size_jump` (32 clusters, 0 sole WARNs), and `install_script_added` (26 clusters, 2 sole WARNs) demonstrated the highest signal-to-noise value.
-
-
-
-
-
+  
+### D23 — General Rule Gaps, BLOCK Policy Sweep, and v1.0 Freeze (Stage 5b)
+- **General Rule Gaps Implemented**:
+  - *Inline Lifecycle Command Analysis*: Analyzed inline commands in `package.json` lifecycle hooks (`preinstall`, `install`, `postinstall`, `prepare`, `prepublish`) for network downloaders (`curl`, `wget`, `Invoke-WebRequest`/`iwr`, `certutil`, `bitsadmin`), shell/interpreter pipes (`| sh`, `| bash`, `node -e`), and base64 decode pipes. Emits `install_script_network` and `install_script_executes`. Supported by 5 DEV+VAL clusters (`@toptal/picasso-shared`, `picasso-tailwind`, `picasso-typography`, `picasso-utils`, `@xene/core`).
+  - *CI Workflow Injection*: Addition or alteration of CI workflow configurations (`.github/workflows`, `.gitlab-ci.yml`, `.circleci`, `azure-pipelines`) emitted as `ci_write` at MEDIUM severity alone; corroborated with secret tokens (`registry_token`) or external hosts/IPs (`hardcoded_ip`, `hardcoded_url`) elevates to BLOCK. Supported by 3 DEV+VAL clusters (`cluster_0016`, `cluster_0019`, `cluster_0024`; 18 malicious pairs).
+  - *Obfuscated Code Detection*: Implemented `_detect_obfuscated_code` detecting bulk hex identifiers ($\ge 20$), string-array rotation (`function(_0x...){...push...shift...}`), heavy `\x`/`\u` escape density ($\ge 25$), and dynamic char-code assembly (`String.fromCharCode` $\ge 8$ args or $\ge 10$ calls) in non-minified, non-exempt JS/TS source files.
+- **BLOCK Policy Sweep & Operating Point Selection**:
+  Evaluated 5 TOML policy variants across all 80 DEV+VAL clusters (945 buildable pairs) and 800 real benign updates (100 Tuning, 100 Validation, 600 Matched Negatives).
+  - Variant 3 (`data/policies/variant_3_ci_and_obf_corroborated.toml`) was selected as the v1.0 default:
+    - Zero false BLOCKs across all 800 benign updates (0.00% false block rate).
+    - Highest cluster BLOCK recall on DEV+VAL: **28/80 clusters (35.0% lenient, 34.58% macro)**, unlocking +3 clusters (+4.32% macro) over baseline.
+    - Lowest benign alert burden: 11.38% overall (Tuning: 6.0%, Validation: 5.0%, Matched Negatives: 13.33%).
+  - Statistical 95% false BLOCK upper bound: By the Rule of Three, with $k = 0$ events in $N = 800$ trials, $p_{95\%} \approx 3/800 = 0.375\%$ (exact Clopper-Pearson: $0.3737\%$, or $< 3.74$ false BLOCKs per 1,000 updates).
+- **v1.0 Freeze & Code Hashes**:
+  Detection rules and default policy frozen at tag `v1.0`:
+  - `src/release_sentinel/differ.py`: `d2f242fba6e701b159e3d1431c175be4880784cec7c5adc89e39b59bc308807a`
+  - `src/release_sentinel/content_scanner.py`: `cd718fbd17380d81065397d0a417899fac65ec13c3adaeea3e02ea21ee6f0cdc`
+  - `data/policy_default.toml`: `64ae77647929a616fa127181d659ccaf648c0fdc654a7fb1396df3351f172d8d`
+  - **Combined SHA-256**: `5cc63ec781c5f7a05c366701b0a41c59c9220287edb5f68247ae9b6df50cb7d7`
+- **TEST Cohort Monthly Breakdown and TEST-A / TEST-B Partition**:
+  - Monthly cluster counts for TEST ($\ge 2026-05-01$, 196 clusters total):
+    - May 2026: 16 clusters
+    - June 2026: 177 clusters (117 clusters occurred on a single date, 2026-06-17)
+    - September 2026: 1 cluster
+    - October 2026: 2 clusters
+  - Partition: Because no pure calendar date cutoff can split the single-day cohort of 117 clusters without yielding fewer than 80 clusters on one side (before 2026-06-17 has 75 clusters; after 2026-06-17 has 4 clusters), the 196 TEST clusters are partitioned chronologically by discovery date and deterministically by cluster rank into:
+    - **TEST-A** (98 clusters): Earlier half of TEST (May 2026 through the first 23 clusters of 2026-06-17).
+    - **TEST-B** (98 clusters): Later half of TEST (remaining 94 clusters of 2026-06-17 through October 2026).
+  - *Evaluation Honesty Note*: Aggregate performance metrics for the combined TEST set were observed during Stage 4a and 4b re-split before establishing this partition. No per-pair inspection of TEST has ever taken place.

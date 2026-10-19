@@ -636,7 +636,7 @@ def main() -> int:
                             jsonl_f.write(json.dumps(row) + "\n")
                             jsonl_f.flush()
                             processed_count += 1
-                            if processed_count % 50 == 0 or processed_count == total_pairs:
+                            if processed_count % 100 == 0 or processed_count == total_pairs:
                                 print(f"[{processed_count}/{total_pairs}] processed...", flush=True)
                                 save_hashes_cache(hashes_cache_file, hashes_cache)
         finally:

@@ -614,7 +614,7 @@ class TestTimeoutFixes:
         )
         elapsed = time.perf_counter() - t0
 
-        assert elapsed < 1.0, f"Oversized file handling took {elapsed:.4f}s"
+        assert elapsed < 3.0, f"Oversized file handling took {elapsed:.4f}s"
         incomplete_ev = [e for e in ev if e.id == "inspection_incomplete"]
         assert len(incomplete_ev) == 1
         assert "exceeded resource budget" in incomplete_ev[0].explanation

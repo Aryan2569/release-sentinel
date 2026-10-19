@@ -161,6 +161,7 @@ def analyze_eval_pair(
             registry_client.close()
 
     # 3. Analyze release (diff mode if baseline exists, full-scan mode if not)
+    dep_stats: dict[str, int] = {"live": 0, "replayed": 0, "unresolvable": 0, "skipped": 0}
     evidence = analyze_release(
         new=new_release,
         baseline=old_release,
@@ -169,6 +170,7 @@ def analyze_eval_pair(
         as_of=as_of,
         registry_client=registry_client,
         samples_root=samples_root,
+        dep_stats=dep_stats,
     )
 
     # 4. Policy decision
@@ -188,18 +190,9 @@ def analyze_eval_pair(
         new_deps = (new_release.package_json() or {}).get("dependencies", {})
         deps_added_count = len([k for k in new_deps if k not in old_deps])
 
-    unres_count = sum(1 for e in evidence if e.id == "unresolvable_dependency")
-    replayed_count = sum(
-        1 for e in evidence if "[dep:" in e.explanation and "replayed_from_dataset" in e.explanation
-    )
-    live_deps = {
-        m.group(1)
-        for e in evidence
-        if "[dep:" in e.explanation
-        and "replayed_from_dataset" not in e.explanation
-        and (m := re.search(r"\[dep:\s*([^@\s\]]+)@", e.explanation))
-    }
-    live_count = len(live_deps)
+    live_count = dep_stats.get("live", 0)
+    replayed_count = dep_stats.get("replayed", 0)
+    unres_count = dep_stats.get("unresolvable", 0)
 
     return EvalPairResult(
         package=package,

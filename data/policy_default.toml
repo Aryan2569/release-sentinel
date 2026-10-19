@@ -1,15 +1,7 @@
-# Default policy for Release Sentinel
-# Override with: sentinel diff ... --policy my_policy.toml
-# Any key set here overrides the corresponding default.
-
+# Policy Variant 3: CI Workflow + Obfuscated Code Corroborated with Network/Execution/Tokens
 [decision]
-# When only ONE distinct signal type is present, cap the decision at this level.
-# Prevents a single noisy signal from blocking an update.
 single_signal_cap = "WARN"
 
-# BLOCK is only issued when at least one of these corroboration pairs is satisfied.
-# Each entry is a pair of evidence IDs that must *both* be present.
-# If none of the pairs match, the decision is capped at WARN even with HIGH severity items.
 [[decision.block_requires]]
 signals = ["install_script_added", "network_access"]
 description = "New install hook that also makes network calls"
@@ -82,22 +74,57 @@ description = "Decode-then-execute obfuscated payload chain"
 signals = ["credential_leak"]
 description = "Credential file read co-occurring with network access in same file"
 
+# CI workflow corroborations
+[[decision.block_requires]]
+signals = ["ci_write", "registry_token"]
+description = "CI workflow modification combined with secret or credential token"
 
-# Per-evidence severity overrides.
-# Use this to tune noisy signals without changing code.
+[[decision.block_requires]]
+signals = ["ci_write", "hardcoded_ip"]
+description = "CI workflow modification combined with hardcoded IP address"
+
+[[decision.block_requires]]
+signals = ["ci_write", "hardcoded_url"]
+description = "CI workflow modification combined with outbound URL"
+
+# Obfuscated code corroborations
+[[decision.block_requires]]
+signals = ["obfuscated_code", "network_access"]
+description = "Obfuscated code combined with network access"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "hardcoded_ip"]
+description = "Obfuscated code combined with hardcoded IP address"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "hardcoded_url"]
+description = "Obfuscated code combined with outbound URL"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "process_exec"]
+description = "Obfuscated code combined with process execution"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "env_enumeration"]
+description = "Obfuscated code combined with environment enumeration"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "install_script_added"]
+description = "Obfuscated code combined with new lifecycle script"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "registry_token"]
+description = "Obfuscated code combined with secret token"
+
 [severity_overrides]
-# install_script_changed alone is concerning but not grounds for a block
 install_script_changed = "MEDIUM"
-# A single new dep is LOW noise
 dependency_added = "LOW"
 dependency_removed = "INFO"
 dependency_version_changed = "INFO"
 unresolvable_dependency = "INFO"
-# File count / size stats are informational
 large_file_count_jump = "LOW"
 new_files_summary = "LOW"
 
-# Full-scan (no-baseline) policy configuration
 [full_scan]
 single_signal_cap = "WARN"
 
@@ -121,8 +148,34 @@ description = "Decode-then-execute obfuscated payload chain"
 signals = ["credential_leak"]
 description = "Credential file read co-occurring with network access in the same file"
 
+[[full_scan.block_requires]]
+signals = ["ci_write", "registry_token"]
+description = "CI workflow modification combined with secret or credential token"
+
+[[full_scan.block_requires]]
+signals = ["ci_write", "hardcoded_ip"]
+description = "CI workflow modification combined with hardcoded IP address"
+
+[[full_scan.block_requires]]
+signals = ["ci_write", "hardcoded_url"]
+description = "CI workflow modification combined with outbound URL"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "network_access"]
+description = "Obfuscated code combined with network access"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "hardcoded_ip"]
+description = "Obfuscated code combined with hardcoded IP address"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "hardcoded_url"]
+description = "Obfuscated code combined with outbound URL"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "process_exec"]
+description = "Obfuscated code combined with process execution"
 
 [full_scan.severity_overrides]
 native_binary_present = "LOW"
 unresolvable_dependency = "INFO"
-
