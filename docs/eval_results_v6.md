@@ -94,18 +94,31 @@ The table below disaggregates sample-level and cluster-level recall across all s
 
 All three benign benchmark datasets were re-scanned in full under v1.1.
 
+### 3.1 Canonical Benchmark Dataset (800 Release Pairs)
+The canonical benign benchmark established in Stage 4b consists of exactly 800 release pairs (100 Tuning Smoke + 100 Validation Smoke + 600 Matched Negatives, using `--pairs-per-package 5`):
+
 | Benchmark Set | Total Pairs | ALLOW | WARN | BLOCK | Alert Rate (alerts / 100) | False BLOCK Rate |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Tuning Smoke** (`data/smoke_results_v6.csv`) | 200 | 174 | 26 | **0** | **13.00** | **0.00%** |
-| **Validation Smoke** (`data/smoke_validation_v6.csv`) | 200 | 187 | 13 | **0** | **6.50** | **0.00%** |
+| **Tuning Smoke** (`data/smoke_results_v6.csv` @ 5 pairs/pkg) | 100 | 87 | 13 | **0** | **13.00** | **0.00%** |
+| **Validation Smoke** (`data/smoke_validation_v6.csv` @ 5 pairs/pkg) | 100 | 93 | 7 | **0** | **7.00** | **0.00%** |
 | **Matched Negatives** (`data/matched_negatives_results_v6.jsonl`)| 600 | 503 | 97 | **0** | **16.17** | **0.00%** |
-| **Total Benign Benchmark** | **800** | **683 (85.38%)** | **117 (14.62%)** | **0 (0.00%)** | **14.62** | **0.00%** |
+| **Canonical Benign Total** | **800** | **683 (85.38%)** | **117 (14.62%)** | **0 (0.00%)** | **14.62** | **0.00%** |
+
+### 3.2 Extended Benchmark Sensitivity Test (1,000 Release Pairs)
+In the Stage 5c candidate evaluations, an extended smoke test was additionally conducted with `--pairs-per-package 10` (200 pairs each for tuning and validation), confirming stability under deeper historical releases:
+
+| Benchmark Set | Total Pairs | ALLOW | WARN | BLOCK | Alert Rate (alerts / 100) | False BLOCK Rate |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Tuning Smoke (Extended)** | 200 | 174 | 26 | **0** | **13.00** | **0.00%** |
+| **Validation Smoke (Extended)** | 200 | 187 | 13 | **0** | **6.50** | **0.00%** |
+| **Matched Negatives** | 600 | 503 | 97 | **0** | **16.17** | **0.00%** |
+| **Extended Benign Total** | **1,000** | **864 (86.40%)** | **136 (13.60%)** | **0 (0.00%)** | **13.60** | **0.00%** |
 
 ### Statistical Confidence on Zero False BLOCKs
-Across $N = 800$ independent benign release pairs evaluated, zero false BLOCK decisions occurred ($k = 0$).
+Across $N = 800$ canonical benign release pairs evaluated, zero false BLOCK decisions occurred ($k = 0$).
 By the **Rule of Three**, the 95% upper confidence bound on the probability of a false BLOCK is:
 $$p_{95\%} \le \frac{-\ln(0.05)}{N} \approx \frac{3}{800} = 0.375\%$$
-Under exact Clopper-Pearson binomial confidence intervals, the 95% one-sided upper limit is **0.3737%** (less than **3.74 false BLOCKs per 1,000 release updates**).
+Under exact Clopper-Pearson binomial confidence intervals, the 95% one-sided upper limit is **0.3737%** (less than **3.74 false BLOCKs per 1,000 release updates**). Across the extended $N = 1,000$ cohort, the Clopper-Pearson upper bound drops to **0.299%** (< 3.0 false BLOCKs per 1,000 updates).
 
 ---
 
@@ -120,15 +133,35 @@ The aggregate metrics for **TEST-B** (7.22% cluster recall) contrast sharply wit
 | **Lifecycle Hooks Added** (`install`, `preinstall`) | **92.88%** | **94.68%** | **45.48%** | **1.01%** |
 | **Direct Dependency Added** (`package.json`) | 7.93% | 7.45% | 18.39% | **94.95%** |
 
-### TEST-B Recall Conditional on Inspectability:
-- **Inspectable Pairs ($n = 10$)**:
+### 4.1 TEST-B Pair Accounting and Honest Inspectability Analysis
+In earlier documentation, TEST-B was occasionally rounded in prose as "100 pairs". The exact canonical count is **99 pairs** (299 in TEST-A + 99 in TEST-B = 398 in TEST; 857 DEV + 94 VAL + 398 TEST = 1,349 total).
+
+Conditional recall on TEST-B disaggregates as:
+- **Inspectable Pairs ($n = 10$, 10.1% of TEST-B)**:
+  - Fail-Closed $\ge$WARN: **9 / 10 (90.0%)**
   - Evidence-Only $\ge$WARN: **9 / 10 (90.0%)**
   - Evidence-Only BLOCK: **3 / 10 (30.0%)**
-  *(Recall on inspectable packages in TEST-B matches DEV and VAL baselines exactly).*
-- **Non-Inspectable Pairs ($n = 89$)**:
+  - *Honest Assessment*: The earlier claim of "no detection decay" has been corrected. While 9 of the 10 inspectable packages (90.0%) were successfully flagged at WARN+, the **BLOCK recall dropped significantly to 30.0% (3 / 10)** compared to **94.28% in DEV**. Furthermore, with $n = 10$, the sample size is too small for statistical certainty.
+- **Non-Inspectable / Hollow Pairs ($n = 89$, 89.9% of TEST-B)**:
   - Evidence-Only $\ge$WARN: **0 / 89 (0.0%)**
   - Evidence-Only BLOCK: **0 / 89 (0.0%)**
-  *(These packages consist entirely of empty diffs or metadata-only references to unresolvable/delisted packages like `easy-day-js`, where zero code exists in the npm release archive).*
+  - *Root Cause*: These releases contained zero modified or added JavaScript code; payloads were shifted into transitive dependencies.
+
+### 4.2 Direct Runtime Dependency Reconciliation (Field: `dependencies` in `package.json`)
+Under the strict definition of added direct runtime dependencies (`package.json` `dependencies` section, excluding `devDependencies`, `peerDependencies`, and `optionalDependencies`), added dependencies reconcile across splits as follows:
+
+| Split | Total Pairs | Pairs Adding Direct Deps | % of Split | Distinct Added Dep Names | Real on npm | Security Holding | 404 / Delisted | Unsupported Spec |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **DEV** (< 2026-01-01) | 857 | 17 | 1.98% | 65 | 64 (98.5%) | 0 | 0 | 1 (`workspace:^`) |
+| **VAL** (2026-01 to 04) | 94 | 1 | 1.06% | 1 | 0 | 1 (`plain-crypto-js`) | 0 | 0 |
+| **TEST-A** (Tuned on) | 299 | 54 | 18.06% | 94 | 94 (100.0%) | 0 | 0 | 0 |
+| **TEST-B** (Held out) | 99 | 94 | 94.95% | 4 | 4 (100.0%) | 0 | 0 | 0 |
+| **TOTAL** | **1,349** | **166** | **12.31%** | **156** | **154 (98.7%)** | **1 (0.6%)** | **0 (0.0%)** | **1 (0.6%)** |
+
+*Key Findings*:
+- In TEST-B, 94 of 99 pairs (94.95%) add direct runtime dependencies.
+- 93 of those 94 pairs injected the same package (`easy-day-js`), while the remaining pair injected `@mastra/core`, `zod`, and `ws`.
+- All 4 distinct dependency names resolve to packages currently on the public npm registry (e.g. `easy-day-js` exists on npm as a typosquat of `dayjs`).
 
 ---
 

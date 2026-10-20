@@ -2,27 +2,26 @@
 
 ## 1. Decision Distribution
 
-- **Total Pairs Evaluated**: 200
-- **ALLOW**: 187 (93.5%)
-- **WARN**: 13 (6.5%)
+- **Total Pairs Evaluated**: 100
+- **ALLOW**: 96 (96.0%)
+- **WARN**: 4 (4.0%)
 - **BLOCK**: 0 (0.0%)
 - **Skipped (Large Tarball)**: 0 (0.0%)
-- **Alert Burden (WARN + BLOCK)**: **6.5 alerts per 100 updates**
+- **Alert Burden (WARN + BLOCK)**: **4.0 alerts per 100 updates**
 
 ## 2. Top 10 Evidence Types
 
 | Evidence Type | Total Frequency | Sole Evidence for WARN/BLOCK |
 |:---|:---:|:---:|
-| `dependency_version_changed` | 85 | 0 |
-| `dependency_added` | 32 | 0 |
-| `dependency_removed` | 21 | 0 |
-| `new_files_summary` | 19 | 0 |
-| `high_entropy_string` | 6 | 1 |
-| `hardcoded_url` | 4 | 0 |
-| `install_script_changed` | 4 | 1 |
-| `long_encoded_blob` | 3 | 1 |
-| `notable_new_file` | 2 | 0 |
+| `dependency_version_changed` | 48 | 0 |
+| `dependency_added` | 14 | 0 |
+| `dependency_removed` | 11 | 0 |
+| `new_files_summary` | 8 | 0 |
+| `hardcoded_url` | 3 | 0 |
+| `high_entropy_string` | 2 | 1 |
 | `install_script_present` | 1 | 0 |
+| `install_script_added` | 1 | 0 |
+| `long_encoded_blob` | 1 | 1 |
 
 ## 3. Every BLOCK Decision
 
@@ -32,9 +31,9 @@
 
 | Package | Alerts (WARN/BLOCK) | Total Evidence Items | Most Common Signals |
 |:---|:---:|:---:|:---|
-| `sharp` | 5 | 31 | `dependency_version_changed` (10), `dependency_added` (7), `dependency_removed` (5) |
-| `rxjs` | 2 | 7 | `new_files_summary` (2), `dependency_added` (1), `dependency_version_changed` (1) |
-| `cheerio` | 1 | 28 | `dependency_version_changed` (10), `dependency_added` (7), `dependency_removed` (4) |
+| `sharp` | 1 | 10 | `dependency_version_changed` (5), `dependency_added` (2), `new_files_summary` (1) |
+| `superagent` | 1 | 4 | `dependency_version_changed` (3), `install_script_added` (1) |
+| `nanoid` | 1 | 2 | `new_files_summary` (1), `high_entropy_string` (1) |
 
 ## 5. Suggested Rule & Policy Changes (Measurement Only)
 

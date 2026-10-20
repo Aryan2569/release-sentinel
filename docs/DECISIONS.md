@@ -335,3 +335,36 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   4. *Tuning Scope*: v1.1 policy rules were developed and tuned strictly using DEV, VAL, and TEST-A evidence.
 
 
+
+### D28 — Stage 5d Reconciliation, Union-Find Campaign Grouping, v1.2 Hollow-Release Rules, Prospective Protocol, and v1.2 Freeze (Stage 5d)
+- **Part 0: Reporting Reconciliations**:
+  - *Benign Set Sizes*: Clarified the canonical 800-pair benchmark (100 Tuning Smoke + 100 Validation Smoke + 600 Matched Negatives, using `--pairs-per-package 5`) vs the extended 1,000-pair sensitivity test (`--pairs-per-package 10`, 200 pairs each). Both produce 0 false BLOCKs (canonical: 14.38% alerts; extended: 13.60% alerts).
+  - *TEST-B Pair Accounting*: Corrected integer rounding in prose (99 pairs exact: 299 in TEST-A + 99 in TEST-B = 398 in TEST; 857 DEV + 94 VAL + 398 TEST = 1,349 total).
+  - *Inspectable TEST-B Recall*: Softened "no detection decay" claim. With $n = 10$, evidence-only $\ge$WARN recall was 9/10 (90.0%), but BLOCK recall dropped to 3/10 (30.0%) compared to ~94% in DEV, and 89/99 pairs (89.9%) were non-inspectable metadata-only updates.
+  - *Direct Runtime Dependency Reconciliation*: Standardized on `package.json` `dependencies`. 166 pairs across dataset add direct dependencies (DEV: 17, VAL: 1, TEST-A: 54, TEST-B: 94) across 156 distinct dependency names (154 real on npm, 1 security holding placeholder, 1 unsupported spec). In TEST-B, 94/99 pairs add dependencies, with 93 injecting `easy-day-js`.
+- **Part 1: Detector-Independent Campaign Grouping (Union-Find)**:
+  - Linked pairs on: (1) identical new/changed non-metadata file hash ($\ge 200$ bytes); (2) identical added direct runtime dependency (excluding benign dependencies); (3) identical added lifecycle command; (4) identical added public IP or known attacker C2 host.
+  - Excluded benign domains and general infrastructure to prevent transitive mega-component collapse.
+  - Yielded 84 total campaigns (DEV: 29, VAL: 5, TEST-A: 50, TEST-B: 4).
+  - Re-checked $\ge 3$ independent clusters support claims:
+    - `dynamic_code + long_encoded_blob`: Supported by 42 campaigns (DEV: 1, VAL: 2, TEST-A: 41) $\to$ Validated ($\ge 3$).
+    - `ci_write`: Supported by 4 campaigns (DEV: 3, VAL: 1, TEST-A: 0) $\to$ Validated ($\ge 3$).
+    - Inline lifecycle downloaders / executors: packages from the picasso and xene attacks merge into a single coordinated campaign (`camp_0001`).
+- **Part 2: v1.2 Hollow-Release Rules & Policy (Post-hoc)**:
+  - *`hollow_dependency_injection`*: Emitted at `Severity.LOW` when a release modifies zero non-metadata files but adds $\ge 1$ direct runtime dependency. Alone, it evaluates to `Decision.ALLOW` (or WARN if incomplete), generating 0 false BLOCKs and 0 noise across 800 benign pairs.
+  - *`lookalike_dependency_name`*: Emitted at `Severity.HIGH` when an added dependency is an affix variant (`easy-`, `plain-`, `-js`), separator variant, or small edit-distance variant of a popular package from `data/top_npm_packages.json`. Alone, it is capped at WARN.
+  - *Corroborated BLOCK Policy*: Added `["hollow_dependency_injection", "lookalike_dependency_name"]` to `block_requires`. When both are present, evaluates to `Decision.BLOCK`.
+  - *Performance Impact*: ALL Sample BLOCK recall surges to 89.10% (1,202 / 1,349, +105 pairs over v1.1), VAL Campaign Macro BLOCK reaches 79.73% (+20.0%), and TEST-B post-hoc BLOCK recall reaches 92.93% (92 / 99 pairs).
+  - *Benign Gate*: 0 false BLOCKs on all 800 benign pairs (0.00%); benign alert burden is 14.38% (11.0% Tuning, 4.0% Validation, 16.67% Matched Negatives).
+- **Part 3: Prospective Evaluation Setup**:
+  - Snapshot commit: `8a74a4c8ee0e1a2927f0419e0710968702ded609` (date: `2026-10-16 10:25:21 +0200`).
+  - Documented protocol in `docs/PROSPECTIVE_TEST.md` and implemented pipeline in `scripts/prospective_eval.py`.
+- **Part 4: Plain-Language Explainer & Technical Q&A**:
+  - `docs/EXPLAINER.md`: High-school explainer explaining modern software supply chain attacks, zero-code-execution inspection, and the hollow release shift.
+  - `docs/INTERVIEW_QA.md`: 20 technical interview questions and answers covering architecture, statistics, safety bounds, and evaluation methodology.
+- **v1.2 Freeze & Code Hashes**:
+  Frozen at git tag `v1.2`:
+  - `src/release_sentinel/differ.py`: `8f3588c90d7b6ce4ff5c3208d6c1ca0e06aa10726ca2c70baf3bba06cd06f12d`
+  - `src/release_sentinel/content_scanner.py`: `ac00c54011c6be7af27664fdf219d029e75a5c340d37686c160602610c093d11`
+  - `data/policy_default.toml`: `c4acc81afd3bc9503119e0738bcf07157aab615f1688a890529e878252f4dc64`
+  - **Combined SHA-256**: `5ed1ecb3e93723f35386a23927d5c557b7f40a7efe4e2777e25c71b41d9e0359`

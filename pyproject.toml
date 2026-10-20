@@ -71,6 +71,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN", "S"]
+"scripts/*" = ["ANN", "S", "E501"]
 
 [tool.coverage.run]
 source = ["src/release_sentinel"]

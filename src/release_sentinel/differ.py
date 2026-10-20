@@ -128,6 +128,7 @@ def compare_releases(
         evidence.extend(_diff_install_scripts(old_pkg, new_pkg))
         evidence.extend(_diff_dependencies(old_pkg, new_pkg))
         evidence.extend(_diff_bin_entries(old_pkg, new_pkg))
+        evidence.extend(_check_hollow_and_lookalike(old, new, old_pkg, new_pkg))
 
     evidence.extend(_diff_files(old, new, install_targets))
     evidence.extend(_diff_sizes(old, new))
@@ -593,6 +594,175 @@ def _diff_bin_entries(old_pkg: dict[str, Any], new_pkg: dict[str, Any]) -> list[
                     ),
                 )
             )
+
+    return evidence
+
+
+_METADATA_BASENAME_RE = re.compile(
+    r"^(package\.json|(?:readme|changelog|license|licence|\.npmignore|\.gitignore)(?:\.[\w.-]+)?)$",
+    re.I,
+)
+
+_LOOKALIKE_PREFIXES = (
+    "easy-",
+    "simple-",
+    "plain-",
+    "official-",
+    "open-",
+    "free-",
+    "fast-",
+    "node-",
+    "lib-",
+    "js-",
+)
+_LOOKALIKE_SUFFIXES = ("-js", "-lib", "-node", "-ts", "-api", ".js", "_js")
+
+_TOP_PACKAGES_CACHE: set[str] | None = None
+
+
+def _get_top_packages() -> set[str]:
+    global _TOP_PACKAGES_CACHE
+    if _TOP_PACKAGES_CACHE is None:
+        top_p = Path("data/top_npm_packages.json")
+        if top_p.exists():
+            try:
+                _TOP_PACKAGES_CACHE = set(json.loads(top_p.read_text(encoding="utf-8")))
+            except Exception:
+                _TOP_PACKAGES_CACHE = set()
+        else:
+            _TOP_PACKAGES_CACHE = set()
+    return _TOP_PACKAGES_CACHE
+
+
+def _levenshtein(s1: str, s2: str) -> int:
+    if len(s1) < len(s2):
+        return _levenshtein(s2, s1)
+    if len(s2) == 0:
+        return len(s1)
+    previous_row = list(range(len(s2) + 1))
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    return previous_row[-1]
+
+
+def is_lookalike_dependency(
+    name: str, top_set: set[str] | None = None
+) -> tuple[bool, str | None, str | None]:
+    """Check if dependency name is a lookalike/typosquat of a popular package."""
+    top_packages = top_set if top_set is not None else _get_top_packages()
+    name_clean = name.lower().strip()
+    if name_clean in top_packages:
+        return False, None, None
+
+    norm = re.sub(r"[-_.]", "", name_clean)
+
+    # Candidate variants with prefixes/suffixes stripped
+    candidates = {name_clean}
+    for pfx in _LOOKALIKE_PREFIXES:
+        if name_clean.startswith(pfx):
+            candidates.add(name_clean[len(pfx) :])
+    for sfx in _LOOKALIKE_SUFFIXES:
+        if name_clean.endswith(sfx):
+            candidates.add(name_clean[: -len(sfx)])
+    for pfx in _LOOKALIKE_PREFIXES:
+        for sfx in _LOOKALIKE_SUFFIXES:
+            if name_clean.startswith(pfx) and name_clean.endswith(sfx):
+                candidates.add(name_clean[len(pfx) : -len(sfx)])
+
+    for cand in candidates:
+        cand_norm = re.sub(r"[-_.]", "", cand)
+        for pop in top_packages:
+            pop_clean = pop.lower()
+            pop_norm = re.sub(r"[-_.]", "", pop_clean)
+
+            if cand == pop_clean or cand_norm == pop_norm:
+                return True, pop, f"affix_variant_of_{pop}"
+
+    for pop in top_packages:
+        pop_clean = pop.lower()
+        pop_norm = re.sub(r"[-_.]", "", pop_clean)
+
+        if norm == pop_norm and len(norm) >= 4:
+            return True, pop, f"separator_variant_of_{pop}"
+
+        if abs(len(name_clean) - len(pop_clean)) <= 2:
+            dist = _levenshtein(name_clean, pop_clean)
+            if dist == 1 and len(pop_clean) >= 5:
+                return True, pop, f"edit_distance_1_of_{pop}"
+            if dist == 2 and len(pop_clean) >= 7:
+                return True, pop, f"edit_distance_2_of_{pop}"
+
+    return False, None, None
+
+
+def _check_hollow_and_lookalike(
+    old: ReleaseContents,
+    new: ReleaseContents,
+    old_pkg: dict[str, Any],
+    new_pkg: dict[str, Any],
+) -> list[Evidence]:
+    """Detect hollow releases adding dependencies and lookalike dependency names."""
+    evidence: list[Evidence] = []
+    old_deps = set((old_pkg.get("dependencies") or {}).keys())
+    new_deps = set((new_pkg.get("dependencies") or {}).keys())
+    added_direct = new_deps - old_deps
+
+    if not added_direct:
+        return evidence
+
+    # Check for lookalike dependency name
+    top_packages = _get_top_packages()
+    for dep_name in sorted(added_direct):
+        matched, target_pkg, reason = is_lookalike_dependency(dep_name, top_packages)
+        if matched:
+            evidence.append(
+                Evidence(
+                    id="lookalike_dependency_name",
+                    severity=Severity.HIGH,
+                    file="package.json",
+                    explanation=(
+                        f"Added direct runtime dependency {dep_name!r} is a lookalike / variant of "
+                        f"popular package {target_pkg!r} ({reason})."
+                    ),
+                    legitimate_use_note=(
+                        "Verify whether this is an intended new package or an accidental typosquat."
+                    ),
+                )
+            )
+
+    # Check if this release is hollow (metadata-only update: zero code files changed)
+    has_non_meta_diff = False
+    for fn, new_bytes in new.files.items():
+        base = Path(fn).name
+        if not _METADATA_BASENAME_RE.match(base):
+            if fn not in old.files or old.files[fn] != new_bytes:
+                has_non_meta_diff = True
+                break
+
+    if not has_non_meta_diff:
+        deps_sample = ", ".join(sorted(added_direct)[:3])
+        evidence.append(
+            Evidence(
+                id="hollow_dependency_injection",
+                severity=Severity.LOW,
+                file="package.json",
+                explanation=(
+                    "Release is hollow: zero non-metadata files were added or modified, but "
+                    f"{len(added_direct)} direct runtime dependency(ies) added ({deps_sample}). "
+                    "This pattern delivers payloads through transitive dependencies while "
+                    "keeping the package diff clean."
+                ),
+                legitimate_use_note=(
+                    "Packages rarely add new runtime dependencies without writing code using them."
+                ),
+            )
+        )
 
     return evidence
 

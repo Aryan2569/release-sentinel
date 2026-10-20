@@ -1,0 +1,977 @@
+{
+  "counts_per_split": {
+    "DEV": {
+      "pairs_adding_dependency": 17,
+      "distinct_dependency_names": 65,
+      "resolution": {
+        "real": 64,
+        "unsupported_spec": 1
+      }
+    },
+    "VAL": {
+      "pairs_adding_dependency": 1,
+      "distinct_dependency_names": 1,
+      "resolution": {
+        "placeholder": 1
+      }
+    },
+    "TEST-A": {
+      "pairs_adding_dependency": 54,
+      "distinct_dependency_names": 94,
+      "resolution": {
+        "real": 94
+      }
+    },
+    "TEST-B": {
+      "pairs_adding_dependency": 94,
+      "distinct_dependency_names": 4,
+      "resolution": {
+        "real": 4
+      }
+    }
+  },
+  "distinct_dependencies": {
+    "@ai-sdk/openai": {
+      "status": "real",
+      "specs": [
+        "^2.0.59"
+      ]
+    },
+    "@ai-sdk/react": {
+      "status": "real",
+      "specs": [
+        "^2.0.86"
+      ]
+    },
+    "@ant-design/cssinjs": {
+      "status": "real",
+      "specs": [
+        "^1.23.0"
+      ]
+    },
+    "@ant-design/icons": {
+      "status": "real",
+      "specs": [
+        "^4.8.3"
+      ]
+    },
+    "@ant-design/pro-components": {
+      "status": "real",
+      "specs": [
+        "^2.8.7"
+      ]
+    },
+    "@ant-design/x": {
+      "status": "real",
+      "specs": [
+        "^1.6.1"
+      ]
+    },
+    "@antv/event-emitter": {
+      "status": "real",
+      "specs": [
+        "^0.1.3"
+      ]
+    },
+    "@antv/g-lite": {
+      "status": "real",
+      "specs": [
+        "2.7.0"
+      ]
+    },
+    "@antv/g-math": {
+      "status": "real",
+      "specs": [
+        "3.1.0"
+      ]
+    },
+    "@antv/g2": {
+      "status": "real",
+      "specs": [
+        "^5.4.1"
+      ]
+    },
+    "@antv/g6": {
+      "status": "real",
+      "specs": [
+        "^5.1.0"
+      ]
+    },
+    "@antv/t8": {
+      "status": "real",
+      "specs": [
+        "^0.3.0"
+      ]
+    },
+    "@antv/util": {
+      "status": "real",
+      "specs": [
+        "^3.3.5"
+      ]
+    },
+    "@antv/vendor": {
+      "status": "real",
+      "specs": [
+        "^1.0.3"
+      ]
+    },
+    "@babel/plugin-syntax-unicode-sets-regex": {
+      "status": "real",
+      "specs": [
+        "^7.18.6"
+      ]
+    },
+    "@babel/runtime": {
+      "status": "real",
+      "specs": [
+        "^7.25.6"
+      ]
+    },
+    "@babel/standalone": {
+      "status": "real",
+      "specs": [
+        "^7.26.2"
+      ]
+    },
+    "@docsearch/css": {
+      "status": "real",
+      "specs": [
+        "^3.8.0"
+      ]
+    },
+    "@docsearch/react": {
+      "status": "real",
+      "specs": [
+        "^3.8.0"
+      ]
+    },
+    "@emotion/server": {
+      "status": "real",
+      "specs": [
+        "^11.11.0"
+      ]
+    },
+    "@fingerprintjs/fingerprintjs": {
+      "status": "real",
+      "specs": [
+        "^4.6.2"
+      ]
+    },
+    "@material-ui/core": {
+      "status": "real",
+      "specs": [
+        "4.12.4"
+      ]
+    },
+    "@material-ui/utils": {
+      "status": "real",
+      "specs": [
+        "4.11.3"
+      ]
+    },
+    "@module-federation/enhanced": {
+      "status": "real",
+      "specs": [
+        "^0.18.0"
+      ]
+    },
+    "@monaco-editor/react": {
+      "status": "real",
+      "specs": [
+        "4.7.0"
+      ]
+    },
+    "@napi-rs/wasm-runtime": {
+      "status": "real",
+      "specs": [
+        "^0.2.4"
+      ]
+    },
+    "@nx/devkit": {
+      "status": "real",
+      "specs": [
+        "21.3.11"
+      ]
+    },
+    "@nx/key": {
+      "status": "real",
+      "specs": [
+        "3.1.0"
+      ]
+    },
+    "@petercatai/assistant": {
+      "status": "real",
+      "specs": [
+        "^2.0.24"
+      ]
+    },
+    "@scure/bip32": {
+      "status": "real",
+      "specs": [
+        "^1.3.1"
+      ]
+    },
+    "@scure/bip39": {
+      "status": "real",
+      "specs": [
+        "^1.2.1"
+      ]
+    },
+    "@stackblitz/sdk": {
+      "status": "real",
+      "specs": [
+        "^1.11.0"
+      ]
+    },
+    "@tanstack/react-query": {
+      "status": "real",
+      "specs": [
+        "^5.90.2"
+      ]
+    },
+    "@toptal/picasso-autocomplete": {
+      "status": "real",
+      "specs": [
+        "5.2.2"
+      ]
+    },
+    "@toptal/picasso-avatar-upload": {
+      "status": "real",
+      "specs": [
+        "3.0.27"
+      ]
+    },
+    "@toptal/picasso-button": {
+      "status": "real",
+      "specs": [
+        "4.0.23"
+      ]
+    },
+    "@toptal/picasso-checkbox": {
+      "status": "real",
+      "specs": [
+        "5.0.13"
+      ]
+    },
+    "@toptal/picasso-container": {
+      "status": "real",
+      "specs": [
+        "3.1.2"
+      ]
+    },
+    "@toptal/picasso-date-picker": {
+      "status": "real",
+      "specs": [
+        "3.2.2"
+      ]
+    },
+    "@toptal/picasso-dropzone": {
+      "status": "real",
+      "specs": [
+        "5.0.23"
+      ]
+    },
+    "@toptal/picasso-file-input": {
+      "status": "real",
+      "specs": [
+        "4.0.22"
+      ]
+    },
+    "@toptal/picasso-form": {
+      "status": "real",
+      "specs": [
+        "6.3.2"
+      ]
+    },
+    "@toptal/picasso-form-label": {
+      "status": "real",
+      "specs": [
+        "1.0.2"
+      ]
+    },
+    "@toptal/picasso-icons": {
+      "status": "real",
+      "specs": [
+        "1.12.1"
+      ]
+    },
+    "@toptal/picasso-input": {
+      "status": "real",
+      "specs": [
+        "4.1.2"
+      ]
+    },
+    "@toptal/picasso-input-adornment": {
+      "status": "real",
+      "specs": [
+        "3.0.10"
+      ]
+    },
+    "@toptal/picasso-loader": {
+      "status": "real",
+      "specs": [
+        "3.0.3"
+      ]
+    },
+    "@toptal/picasso-menu": {
+      "status": "real",
+      "specs": [
+        "3.0.17"
+      ]
+    },
+    "@toptal/picasso-notification": {
+      "status": "real",
+      "specs": [
+        "4.0.23"
+      ]
+    },
+    "@toptal/picasso-number-input": {
+      "status": "real",
+      "specs": [
+        "4.2.2"
+      ]
+    },
+    "@toptal/picasso-outlined-input": {
+      "status": "real",
+      "specs": [
+        "4.1.2"
+      ]
+    },
+    "@toptal/picasso-password-input": {
+      "status": "real",
+      "specs": [
+        "5.1.2"
+      ]
+    },
+    "@toptal/picasso-popper": {
+      "status": "real",
+      "specs": [
+        "2.0.0"
+      ]
+    },
+    "@toptal/picasso-radio": {
+      "status": "real",
+      "specs": [
+        "5.0.13"
+      ]
+    },
+    "@toptal/picasso-rating": {
+      "status": "real",
+      "specs": [
+        "3.0.10"
+      ]
+    },
+    "@toptal/picasso-rich-text-editor": {
+      "status": "real",
+      "specs": [
+        "17.2.2"
+      ]
+    },
+    "@toptal/picasso-select": {
+      "status": "real",
+      "specs": [
+        "4.1.2"
+      ]
+    },
+    "@toptal/picasso-shared": {
+      "status": "real",
+      "specs": [
+        "15.0.0"
+      ]
+    },
+    "@toptal/picasso-switch": {
+      "status": "real",
+      "specs": [
+        "4.0.11"
+      ]
+    },
+    "@toptal/picasso-tagselector": {
+      "status": "real",
+      "specs": [
+        "3.3.2"
+      ]
+    },
+    "@toptal/picasso-timepicker": {
+      "status": "real",
+      "specs": [
+        "4.1.2"
+      ]
+    },
+    "@toptal/picasso-typography": {
+      "status": "real",
+      "specs": [
+        "4.0.4"
+      ]
+    },
+    "@toptal/picasso-utils": {
+      "status": "real",
+      "specs": [
+        "3.1.0"
+      ]
+    },
+    "@vant/use": {
+      "status": "unsupported_spec",
+      "specs": [
+        "^1.6.0",
+        "workspace:^"
+      ]
+    },
+    "@vercel/sandbox": {
+      "status": "real",
+      "specs": [
+        "2.0.2"
+      ]
+    },
+    "@vue/shared": {
+      "status": "real",
+      "specs": [
+        "^3.5.13"
+      ]
+    },
+    "@xrplf/isomorphic": {
+      "status": "real",
+      "specs": [
+        "^1.0.1"
+      ]
+    },
+    "@xrplf/secret-numbers": {
+      "status": "real",
+      "specs": [
+        "^1.0.0"
+      ]
+    },
+    "@zumer/snapdom": {
+      "status": "real",
+      "specs": [
+        "^1.9.14"
+      ]
+    },
+    "ahooks": {
+      "status": "real",
+      "specs": [
+        "^3.9.5"
+      ]
+    },
+    "ai": {
+      "status": "real",
+      "specs": [
+        "^5.0.86"
+      ]
+    },
+    "antd": {
+      "status": "real",
+      "specs": [
+        "^5.24.5"
+      ]
+    },
+    "antd-style": {
+      "status": "real",
+      "specs": [
+        "^3.7.1"
+      ]
+    },
+    "ap-style-title-case": {
+      "status": "real",
+      "specs": [
+        "^1.1.2"
+      ]
+    },
+    "axios": {
+      "status": "real",
+      "specs": [
+        "^1.13.2",
+        "^1.6.7"
+      ]
+    },
+    "axios-retry": {
+      "status": "real",
+      "specs": [
+        "^4.5.0"
+      ]
+    },
+    "babel-loader": {
+      "status": "real",
+      "specs": [
+        "^10.0.0"
+      ]
+    },
+    "babel-plugin-import": {
+      "status": "real",
+      "specs": [
+        "^1.13.8"
+      ]
+    },
+    "bun": {
+      "status": "real",
+      "specs": [
+        "^1.3.13"
+      ]
+    },
+    "chalk": {
+      "status": "real",
+      "specs": [
+        "4.1.2",
+        "^4.1.2"
+      ]
+    },
+    "cheerio": {
+      "status": "real",
+      "specs": [
+        "^1.0.0-rc.12"
+      ]
+    },
+    "classnames": {
+      "status": "real",
+      "specs": [
+        "^2.5.1"
+      ]
+    },
+    "codesandbox": {
+      "status": "real",
+      "specs": [
+        "^2.2.3"
+      ]
+    },
+    "critters-webpack-plugin": {
+      "status": "real",
+      "specs": [
+        "^3.0.2"
+      ]
+    },
+    "d3-array": {
+      "status": "real",
+      "specs": [
+        "^3.2.2"
+      ]
+    },
+    "d3-dsv": {
+      "status": "real",
+      "specs": [
+        "^3.0.1"
+      ]
+    },
+    "debounce": {
+      "status": "real",
+      "specs": [
+        "^1.2.1"
+      ]
+    },
+    "detect-browser": {
+      "status": "real",
+      "specs": [
+        "^5.3.0"
+      ]
+    },
+    "docsearch.js": {
+      "status": "real",
+      "specs": [
+        "^2.6.3"
+      ]
+    },
+    "easy-day-js": {
+      "status": "real",
+      "specs": [
+        "^1.11.21"
+      ]
+    },
+    "enquirer": {
+      "status": "real",
+      "specs": [
+        "^2.4.1"
+      ]
+    },
+    "eventemitter3": {
+      "status": "real",
+      "specs": [
+        "^5.0.1"
+      ]
+    },
+    "final-form": {
+      "status": "real",
+      "specs": [
+        "^4.20.9"
+      ]
+    },
+    "final-form-arrays": {
+      "status": "real",
+      "specs": [
+        "3.0.2"
+      ]
+    },
+    "front-matter": {
+      "status": "real",
+      "specs": [
+        "^4.0.2"
+      ]
+    },
+    "fs-extra": {
+      "status": "real",
+      "specs": [
+        "^10.1.0",
+        "^11.3.0"
+      ]
+    },
+    "gl-matrix": {
+      "status": "real",
+      "specs": [
+        "^3.4.3"
+      ]
+    },
+    "glob": {
+      "status": "real",
+      "specs": [
+        "^8.1.0"
+      ]
+    },
+    "hast": {
+      "status": "real",
+      "specs": [
+        "^1.0.0"
+      ]
+    },
+    "hono": {
+      "status": "real",
+      "specs": [
+        "^4.12.8"
+      ]
+    },
+    "html2canvas": {
+      "status": "real",
+      "specs": [
+        "^1.4.1"
+      ]
+    },
+    "indent-string": {
+      "status": "real",
+      "specs": [
+        "^5.0.0"
+      ]
+    },
+    "insert-css": {
+      "status": "real",
+      "specs": [
+        "^2.0.0"
+      ]
+    },
+    "leancloud-storage": {
+      "status": "real",
+      "specs": [
+        "^4.15.2"
+      ]
+    },
+    "localforage": {
+      "status": "real",
+      "specs": [
+        "^1.10.0"
+      ]
+    },
+    "lodash": {
+      "status": "real",
+      "specs": [
+        "^4.17.21"
+      ]
+    },
+    "lodash-es": {
+      "status": "real",
+      "specs": [
+        "^4.17.21"
+      ]
+    },
+    "lodash.merge": {
+      "status": "real",
+      "specs": [
+        "^4.6.2"
+      ]
+    },
+    "measury": {
+      "status": "real",
+      "specs": [
+        "^0.1.5"
+      ]
+    },
+    "mini-css-extract-plugin": {
+      "status": "real",
+      "specs": [
+        "^2.9.2"
+      ]
+    },
+    "moment": {
+      "status": "real",
+      "specs": [
+        "^2.30.1"
+      ]
+    },
+    "monaco-editor": {
+      "status": "real",
+      "specs": [
+        "0.51.0"
+      ]
+    },
+    "notistack": {
+      "status": "real",
+      "specs": [
+        "3.0.1"
+      ]
+    },
+    "nprogress": {
+      "status": "real",
+      "specs": [
+        "^0.2.0"
+      ]
+    },
+    "ora": {
+      "status": "real",
+      "specs": [
+        "^5.4.1"
+      ]
+    },
+    "p-limit": {
+      "status": "real",
+      "specs": [
+        "^3.1.0"
+      ]
+    },
+    "parse-github-url": {
+      "status": "real",
+      "specs": [
+        "^1.0.3"
+      ]
+    },
+    "plain-crypto-js": {
+      "status": "placeholder",
+      "specs": [
+        "^4.2.1"
+      ]
+    },
+    "preact": {
+      "status": "real",
+      "specs": [
+        "^10.26.5"
+      ]
+    },
+    "rc-drawer": {
+      "status": "real",
+      "specs": [
+        "^4.4.3"
+      ]
+    },
+    "rc-footer": {
+      "status": "real",
+      "specs": [
+        "^0.6.8"
+      ]
+    },
+    "react": {
+      "status": "real",
+      "specs": [
+        "^19.1.0"
+      ]
+    },
+    "react-dom": {
+      "status": "real",
+      "specs": [
+        "^19.1.0"
+      ]
+    },
+    "react-error-boundary": {
+      "status": "real",
+      "specs": [
+        "^3.1.4"
+      ]
+    },
+    "react-final-form": {
+      "status": "real",
+      "specs": [
+        "^6.5.9"
+      ]
+    },
+    "react-final-form-arrays": {
+      "status": "real",
+      "specs": [
+        "^3.1.4"
+      ]
+    },
+    "react-final-form-listeners": {
+      "status": "real",
+      "specs": [
+        "^1.0.3"
+      ]
+    },
+    "react-github-button": {
+      "status": "real",
+      "specs": [
+        "^0.1.11"
+      ]
+    },
+    "react-helmet-async": {
+      "status": "real",
+      "specs": [
+        "2.0.3"
+      ]
+    },
+    "react-intersection-observer": {
+      "status": "real",
+      "specs": [
+        "^9.16.0"
+      ]
+    },
+    "react-markdown": {
+      "status": "real",
+      "specs": [
+        "^9.0.1"
+      ]
+    },
+    "react-router-dom": {
+      "status": "real",
+      "specs": [
+        "^6.28.0"
+      ]
+    },
+    "react-slick": {
+      "status": "real",
+      "specs": [
+        "^0.29.0"
+      ]
+    },
+    "react-split-pane": {
+      "status": "real",
+      "specs": [
+        "^0.1.92"
+      ]
+    },
+    "react-syntax-highlighter": {
+      "status": "real",
+      "specs": [
+        "^15.6.6"
+      ]
+    },
+    "react-use": {
+      "status": "real",
+      "specs": [
+        "^17.5.1"
+      ]
+    },
+    "reading-time": {
+      "status": "real",
+      "specs": [
+        "^1.5.0"
+      ]
+    },
+    "recharts": {
+      "status": "real",
+      "specs": [
+        "^2.12.3"
+      ]
+    },
+    "rehype-raw": {
+      "status": "real",
+      "specs": [
+        "^7.0.0"
+      ]
+    },
+    "remark-gfm": {
+      "status": "real",
+      "specs": [
+        "^4.0.0"
+      ]
+    },
+    "semver": {
+      "status": "real",
+      "specs": [
+        "7.5.4",
+        "^7.6.3"
+      ]
+    },
+    "size-sensor": {
+      "status": "real",
+      "specs": [
+        "^1.0.2"
+      ]
+    },
+    "slick-carousel": {
+      "status": "real",
+      "specs": [
+        "^1.8.1"
+      ]
+    },
+    "styled-components": {
+      "status": "real",
+      "specs": [
+        "^6.1.14"
+      ]
+    },
+    "swr": {
+      "status": "real",
+      "specs": [
+        "^2.2.5"
+      ]
+    },
+    "sylvanas": {
+      "status": "real",
+      "specs": [
+        "^0.6.1"
+      ]
+    },
+    "tslib": {
+      "status": "real",
+      "specs": [
+        "^2.5.3",
+        "^2.8.1"
+      ]
+    },
+    "unified": {
+      "status": "real",
+      "specs": [
+        "^10.1.2"
+      ]
+    },
+    "unist-util-visit": {
+      "status": "real",
+      "specs": [
+        "^4.1.2"
+      ]
+    },
+    "uri-parse": {
+      "status": "real",
+      "specs": [
+        "^1.0.0"
+      ]
+    },
+    "uuid": {
+      "status": "real",
+      "specs": [
+        "^11.1.0"
+      ]
+    },
+    "valtio": {
+      "status": "real",
+      "specs": [
+        "^1.13.2"
+      ]
+    },
+    "video-react": {
+      "status": "real",
+      "specs": [
+        "^0.16.0"
+      ]
+    },
+    "ws": {
+      "status": "real",
+      "specs": [
+        "^8.18.3"
+      ]
+    },
+    "xmlbuilder": {
+      "status": "real",
+      "specs": [
+        "^15.1.1"
+      ]
+    },
+    "zod": {
+      "status": "real",
+      "specs": [
+        "^3.25.76"
+      ]
+    }
+  }
+}
