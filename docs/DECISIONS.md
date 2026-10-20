@@ -268,3 +268,70 @@ Eliminated root causes of false alarms discovered in smoke testing:
   - *Ground Truth*: The true scanner baseline alert rate is **121 / 800 = 15.13 alerts per 100 updates** (Tuning: 11/100 = 11.0%, Validation: 7/100 = 7.0%, Matched Negatives: 103/600 = 17.17%). False BLOCK rate is **0.00%** (0 / 800).
   - *Tooling Fix*: Created `scripts/policy_sweep.py`, which runs and caches full, uncompressed `Evidence` objects extracted directly by the true scanner. The cache is automatically invalidated if any scanner source file (`differ.py`, `content_scanner.py`, `extractor.py`, `engine.py`, `eval.py`) changes hash. Sweep decisions are computed strictly through `release_sentinel.policy.decide()`, guaranteeing exact parity with the true scanner.
 
+### D25 — Error Analysis on DEV, VAL, and TEST-A (Stage 5c Part 3)
+Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1.0 produced 53 BLOCK clusters, 92 WARN-only clusters, and 34 Undetected clusters. In compliance with Rule 7, no malicious snippets or payload contents are documented.
+
+- **Undetected Clusters (34 clusters)**:
+  - **U1: Unresolvable / Delisted External Dependency Injection** (30 clusters):
+    Hollow metadata-only releases where only `package.json` changed to inject an external dependency that is absent from the public npm registry (or unresolvable as of `as_of`). Because no malicious code exists in the release archive and the dependency cannot be fetched, no executable payload could be scanned.
+    *Examples*: `@mastra/claude@1.0.3`, `@opensearch-project/opensearch@3.5.3`, `@opensearch-project/opensearch@3.7.0`, `@opensearch-project/opensearch@3.8.0`, `echarts-for-react@3.0.7`, `jest-canvas-mock@2.5.3`, `jest-date-mock@1.0.11`, `size-sensor@1.0.4`, `@mastra/acp@0.2.2`, `@mastra/agent-browser@0.3.2`.
+  - **U2: Standalone Low-Severity Outbound URL** (1 cluster):
+    Release diff contained a single outbound URL (`hardcoded_url`, Severity.LOW) without any lifecycle script changes or execution sinks.
+    *Example*: `@solana/web3.js@1.95.7`.
+  - **U3: Native Binary / WASM diff without JS script changes** (3 clusters):
+    Release modified precompiled binary or WebAssembly assets (`vant`, `@duckdb/duckdb-wasm`) without altering JavaScript runtime code or npm scripts.
+    *Examples*: `vant@4.9.12`, `vant@4.9.13`, `@duckdb/duckdb-wasm@1.29.2`.
+
+- **WARN-Only Clusters under v1.0 (92 clusters)**:
+  - **W1: Dynamic Code Execution + Long Encoded Blob** (41 clusters):
+    Malicious updates injecting `eval` or `Function` calls alongside base64/hex encoded payload blobs directly into runtime JavaScript modules without lifecycle scripts. In v1.0, this produced two MEDIUM/HIGH signals but lacked a matching `block_requires` rule, capping at WARN.
+    *Examples*: `@aifabrix/miso-client@4.7.2`, `autotel@2.26.4`, `autotel-devtools@3.0.2`, `autotel-eventcatalog@3.0.1`, `autotel-mcp@20.0.1`, `autotel-mcp@4.0.1`, `autotel-mcp-instrumentation@32.0.1`, `autotel-mongoose@6.0.1`, `autotel-pact@1.0.3`, `autotel-subscribers@17.0.1`.
+  - **W3: Long Encoded Blob + Sudden Archive Size Jump** (17 clusters):
+    Payload introduced a heavy obfuscated/encoded blob accompanied by a sudden package size increase, but without dynamic eval calls.
+    *Examples*: `@tanstack/arktype-adapter@1.166.12`, `@gluestack-ui/utils@0.1.17`, `ansi-regex@6.2.1`, `ansi-styles@6.2.2`, `backslash@0.2.1`, `chalk-template@1.1.1`, `color-convert@3.1.1`, `color-name@2.0.1`, `debug@4.4.2`, `error-ex@1.3.3`.
+  - **W4: Long Encoded Blob + Notable New File** (2 clusters):
+    Injected encoded blob placed in a newly added source file.
+    *Examples*: `@vapi-ai/server-sdk@1.2.1`, `@vapi-ai/server-sdk@1.2.2`.
+  - **W5: Standalone Long Encoded Blob / Heuristic Blobs** (20 clusters):
+    Single obfuscated string literal in existing files without structural archive anomalies or dynamic evaluation.
+    *Examples*: `xrpl@2.14.2`, `@react-native-aria/focus@0.2.10`, `@gluestack-ui/utils@0.1.16`, `@react-native-aria/button@0.2.11`, `@react-native-aria/checkbox@0.2.11`, `@react-native-aria/combobox@0.2.8`, `@react-native-aria/disclosure@0.2.9`, `@react-native-aria/interactions@0.2.17`, `@react-native-aria/listbox@0.2.10`, `@react-native-aria/menu@0.2.16`.
+  - **W6: Fail-Closed Only (`inspection_incomplete`)** (9 clusters):
+    Multi-megabyte files exceeding per-file or per-pair size/time limits; protected by fail-closed WARN elevation.
+    *Examples*: `duckdb@1.3.3`, `@asyncapi/studio@1.0.2`, `@asyncapi/studio@1.0.3`, `@posthog/variance-plugin@0.0.8`, `@strapbuild/react-native-perspective-image-cropper@0.4.15`, `cline@2.3.0`, `@uipath/ap-chat@1.5.7`, `@uipath/apollo-core@5.9.2`, `@uipath/apollo-react@4.24.5`.
+  - **W7: Other Single Heuristics** (3 clusters):
+    Single medium-severity signals without corroborating evidence.
+    *Examples*: `@rxap/ngx-bootstrap@19.0.3` (`notable_new_file`), `axios@1.14.1` (`install_script_changed`), `@velora-dex/sdk@9.4.1` (`notable_new_file`).
+
+### D26 — Selection and Calibration of Policy Candidate Variant 5 for v1.1 (Stage 5c Part 4)
+- **Candidate Evaluations & Lift Considerations**:
+  - *`dependency_added` Standalone Severity vs. Corroboration*:
+    In benign packages, 98 / 800 updates (12.25%) legitimately add dependencies. Elevating `dependency_added` alone to `Severity.MEDIUM` (WARN) causes benign alerts to spike from 14.25% to 21.625% (+7.38 per 100), violating the benign gate (+3 per 100 limit). Consequently, `dependency_added` must remain `Severity.LOW` and act strictly as a **corroborator** (`["dependency_added", "install_script_added"]`, `["dependency_added", "dynamic_code"]`, `["dependency_added", "hardcoded_ip"]`).
+  - *Low-Lift Signal Downgrades*:
+    Signals with lift < 1.5x were audited. `bin_entry_added` and `bin_entry_changed` had lift 1.49x (3 benign occurrences vs 1 malicious cluster). Downgrading both to `Severity.LOW` dropped the benign alert burden from 14.25% to 13.75% (-0.50% reduction) with zero loss of true detections.
+  - *W1 Corroboration Rule*:
+    Adding `["dynamic_code", "long_encoded_blob"]` to `block_requires` safely promotes 41 clusters from WARN to BLOCK. Both signals possess exceptional lift (268.16x and 10.43x) and co-occur 0 times across all 800 benign packages.
+- **Candidate Sweep Outcomes (DEV + VAL + TEST-A: 179 Clusters | Benign: 800 Updates)**:
+  - *v1.0 Frozen Baseline*: 0 False BLOCKs | 14.25% Alert Rate | Cluster BLOCK: 53/179 (29.61%) [DEV: 36.2%, VAL: 66.7%, TEST-A: 20.4%]
+  - *Variant 1 (+ Dynamic + Encoded Blob)*: 0 False BLOCKs | 14.25% Alert Rate | Cluster BLOCK: 94/179 (52.51%) [+41 clusters! DEV: 36.2%, VAL: 75.0%, TEST-A: 61.2%]
+  - *Variant 2 (+ Dynamic + Encoded Blob + Size Jump)*: 0 False BLOCKs | 14.25% Alert Rate | Cluster BLOCK: 94/179 (52.51%)
+  - *Variant 3 (+ Corroborated Dep Added)*: 0 False BLOCKs | 14.25% Alert Rate | Cluster BLOCK: 94/179 (52.51%)
+  - *Variant 4 (+ Low-Lift Downgrades)*: 0 False BLOCKs | 14.25% Alert Rate | Cluster BLOCK: 94/179 (52.51%)
+  - *Variant 5 (+ Bin Entry Downgrades)*: **0 False BLOCKs** | **13.75% Alert Rate** (-0.5% noise reduction) | **Cluster BLOCK: 94/179 (52.51%)**
+- **Decision: Selection of Variant 5 as v1.1 Default**:
+  Variant 5 was selected under the decision criteria: 0 false BLOCKs $\to$ maximum cluster BLOCK recall (52.51% vs 29.61%) $\to$ minimum benign alert burden (13.75%).
+  - Statistical 95% false BLOCK upper bound: Rule of Three with $k=0, N=800$ yields $p_{95\%} \approx 3/800 = 0.375\%$ ($< 3.75$ false BLOCKs per 1,000 updates).
+
+### D27 — Freeze v1.1, Code Hashes, and Final Evaluator Protocol (Stage 5c Part 5)
+- **v1.1 Freeze & Code Hashes**:
+  Detection rules, content scanner, and default policy frozen at tag `v1.1`:
+  - `src/release_sentinel/differ.py`: `17c40b56af0658687b524d5f28bf8a004b63887468fef1ead5571f3e4fa910ae`
+  - `src/release_sentinel/content_scanner.py`: `f748e22c7bf4d20c88b92a4ffe3f68972bb72bb97d498c6247b1e0017c190bdb`
+  - `data/policy_default.toml`: `623aa8a83864aa5085059ef2168f5298f52b10d4e2d878c82d004806f602ca72`
+  - **Combined SHA-256**: `a274452d0641c8877a1548f25b3b6d26c679815fdbb586ad0757d1ca18149093`
+- **Protocol Disclosures**:
+  1. *Combined-TEST aggregates*: Observed once in Stage 4a/4b before establishing the A/B partition; no per-pair inspection of TEST has ever taken place.
+  2. *Split Cutoff*: 2026-06-17 partition allocating the first 23 clusters to TEST-A and the remaining 94 clusters through October 2026 to TEST-B.
+  3. *TEST-B Usage*: TEST-B remained strictly locked. It was evaluated prior to final run solely via data-only detectability audit (archive inspection without detector execution) and aggregate conditional recall.
+  4. *Tuning Scope*: v1.1 policy rules were developed and tuned strictly using DEV, VAL, and TEST-A evidence.
+
+

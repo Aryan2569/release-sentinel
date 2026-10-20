@@ -1,4 +1,4 @@
-# Policy Variant 3: CI Workflow + Obfuscated Code Corroborated with Network/Execution/Tokens
+# Policy Variant 5 (v1.1): CI Workflow + Obfuscated Code + Dynamic Code / Blob Corroboration with Bin Entry Downgrades
 [decision]
 single_signal_cap = "WARN"
 
@@ -116,6 +116,28 @@ description = "Obfuscated code combined with new lifecycle script"
 signals = ["obfuscated_code", "registry_token"]
 description = "Obfuscated code combined with secret token"
 
+# v1.1 Dynamic Code & Obfuscation additions (Decision 26)
+[[decision.block_requires]]
+signals = ["dynamic_code", "long_encoded_blob"]
+description = "Dynamic code execution combined with encoded blob"
+
+[[decision.block_requires]]
+signals = ["dynamic_code", "large_size_jump"]
+description = "Dynamic code execution combined with large size jump"
+
+# v1.1 Dependency Added Corroborations (Decision 26)
+[[decision.block_requires]]
+signals = ["dependency_added", "install_script_added"]
+description = "Added dependency alongside added lifecycle script"
+
+[[decision.block_requires]]
+signals = ["dependency_added", "dynamic_code"]
+description = "Added dependency combined with dynamic code execution"
+
+[[decision.block_requires]]
+signals = ["dependency_added", "hardcoded_ip"]
+description = "Added dependency combined with hardcoded IP"
+
 [severity_overrides]
 install_script_changed = "MEDIUM"
 dependency_added = "LOW"
@@ -124,6 +146,8 @@ dependency_version_changed = "INFO"
 unresolvable_dependency = "INFO"
 large_file_count_jump = "LOW"
 new_files_summary = "LOW"
+bin_entry_added = "LOW"
+bin_entry_changed = "LOW"
 
 [full_scan]
 single_signal_cap = "WARN"
@@ -176,6 +200,12 @@ description = "Obfuscated code combined with outbound URL"
 signals = ["obfuscated_code", "process_exec"]
 description = "Obfuscated code combined with process execution"
 
+[[full_scan.block_requires]]
+signals = ["dynamic_code", "long_encoded_blob"]
+description = "Dynamic code evaluation combined with encoded blob"
+
 [full_scan.severity_overrides]
 native_binary_present = "LOW"
 unresolvable_dependency = "INFO"
+bin_entry_added = "LOW"
+bin_entry_changed = "LOW"
