@@ -500,8 +500,10 @@ def _detect_obfuscated_code(text: str) -> tuple[bool, str]:
     if bool(re.search(r"(?:\\x[0-9a-fA-F]{2}){4,}", text)):
         return True, "consecutive hex-escaped bytecode string"
 
+    if bool(re.search(r"(?:\\u[0-9a-fA-F]{4}){8,}", text)):
+        return True, "consecutive unicode-escaped bytecode sequence"
     unicode_escapes = len(re.findall(r"\\u[0-9a-fA-F]{4}", text))
-    if unicode_escapes >= 25:
+    if unicode_escapes >= 150:
         return True, f"dense unicode escapes: {unicode_escapes} occurrences"
 
     # 4. Bulk String.fromCharCode assembly

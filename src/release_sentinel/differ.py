@@ -43,7 +43,6 @@ _INSTALL_SCRIPTS = {
     "postinstall",
     "prepare",
     "prepublish",
-    "prepublishOnly",
 }
 
 # Dependency manifest keys to compare
@@ -392,7 +391,10 @@ def _check_lifecycle_script_command(hook: str, cmd: str) -> list[Evidence]:
     # 2. Piping to shells / interpreters or execution wrappers
     if re.search(
         r"\|\s*(?:sh|bash|zsh|dash|powershell|pwsh|cmd(?:\.exe)?)\b"
-        r"|\b(?:bash|sh|powershell|cmd(?:\.exe)?|sudo)\b"
+        r"|\b(?:bash|sh|zsh|dash)\s+-c\b"
+        r"|\bpowershell(?:\.exe)?\s+(?:-e|-enc|-encodedcommand)\b"
+        r"|\bcmd(?:\.exe)?\s+/c\b"
+        r"|\bsudo\b"
         r"|\bnode\s+(?:-e|--eval)\b|\bpython(?:\d)?\s+-c\b|rm\s+-rf\b",
         cmd,
         re.I,

@@ -324,10 +324,10 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
 ### D27 — Freeze v1.1, Code Hashes, and Final Evaluator Protocol (Stage 5c Part 5)
 - **v1.1 Freeze & Code Hashes**:
   Detection rules, content scanner, and default policy frozen at tag `v1.1`:
-  - `src/release_sentinel/differ.py`: `17c40b56af0658687b524d5f28bf8a004b63887468fef1ead5571f3e4fa910ae`
-  - `src/release_sentinel/content_scanner.py`: `f748e22c7bf4d20c88b92a4ffe3f68972bb72bb97d498c6247b1e0017c190bdb`
-  - `data/policy_default.toml`: `623aa8a83864aa5085059ef2168f5298f52b10d4e2d878c82d004806f602ca72`
-  - **Combined SHA-256**: `a274452d0641c8877a1548f25b3b6d26c679815fdbb586ad0757d1ca18149093`
+  - `src/release_sentinel/differ.py`: `aa70120050bc7630cf564f031733eefbab33a3350795cd46d8717994c02aa07a`
+  - `src/release_sentinel/content_scanner.py`: `ac00c54011c6be7af27664fdf219d029e75a5c340d37686c160602610c093d11`
+  - `data/policy_default.toml`: `a054dc8c35496420e4b99b6643ed0e13343412cdee845366124f4d2eb0a71898`
+  - **Combined SHA-256**: `863bb4e12846950b0c934d0e5b5c8443f8643ac8280a510770023320e980418e`
 - **Protocol Disclosures**:
   1. *Combined-TEST aggregates*: Observed once in Stage 4a/4b before establishing the A/B partition; no per-pair inspection of TEST has ever taken place.
   2. *Split Cutoff*: 2026-06-17 partition allocating the first 23 clusters to TEST-A and the remaining 94 clusters through October 2026 to TEST-B.

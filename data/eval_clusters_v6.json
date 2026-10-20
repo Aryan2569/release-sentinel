@@ -1,0 +1,5203 @@
+{
+  "cluster_0001": {
+    "rank": 1,
+    "size": 405,
+    "share_pct": 30.02,
+    "earliest_discovery": "2025-11-24",
+    "hashes_count": 7,
+    "members": [
+      "02-echo@0.0.7",
+      "@accordproject/concerto-linter-default-ruleset@3.24.1",
+      "@accordproject/concerto-metamodel@3.12.5",
+      "@accordproject/concerto-types@3.24.1",
+      "@accordproject/markdown-it-cicero@0.16.26",
+      "@accordproject/template-engine@2.7.2",
+      "@actbase/css-to-react-native-transform@1.0.3",
+      "@actbase/native@0.1.32",
+      "@actbase/node-server@1.1.19",
+      "@actbase/react-absolute@0.8.3",
+      "@actbase/react-daum-postcode@1.0.5",
+      "@actbase/react-kakaosdk@0.9.27",
+      "@actbase/react-native-actionsheet@1.0.3",
+      "@actbase/react-native-devtools@0.1.3",
+      "@actbase/react-native-fast-image@8.5.13",
+      "@actbase/react-native-kakao-channel@1.0.2",
+      "@actbase/react-native-kakao-navi@2.0.4",
+      "@actbase/react-native-less-transformer@1.0.6",
+      "@actbase/react-native-naver-login@1.0.1",
+      "@actbase/react-native-simple-video@1.0.13",
+      "@actbase/react-native-tiktok@1.1.3",
+      "@alexcolls/nuxt-socket.io@0.0.8",
+      "@alexcolls/nuxt-ux@0.6.2",
+      "@antstackio/eslint-config-antstack@0.0.3",
+      "@antstackio/express-graphql-proxy@0.2.8",
+      "@antstackio/graphql-body-parser@0.1.1",
+      "@antstackio/json-to-graphql@1.0.3",
+      "@antstackio/shelbysam@1.1.7",
+      "@aryanhussain/my-angular-lib@0.0.23",
+      "@asyncapi/avro-schema-parser@3.0.26",
+      "@asyncapi/bundler@0.6.6",
+      "@asyncapi/cli@4.1.3",
+      "@asyncapi/converter@1.6.4",
+      "@asyncapi/diff@0.5.1",
+      "@asyncapi/generator@2.8.6",
+      "@asyncapi/generator-components@0.3.3",
+      "@asyncapi/generator-helpers@0.2.2",
+      "@asyncapi/generator-react-sdk@1.1.4",
+      "@asyncapi/html-template@3.3.2",
+      "@asyncapi/java-spring-template@1.6.2",
+      "@asyncapi/java-template@0.3.5",
+      "@asyncapi/keeper@0.0.3",
+      "@asyncapi/markdown-template@1.6.8",
+      "@asyncapi/modelina@5.10.2",
+      "@asyncapi/modelina@5.10.3",
+      "@asyncapi/multi-parser@2.2.2",
+      "@asyncapi/nodejs-template@3.0.5",
+      "@asyncapi/nunjucks-filters@2.1.2",
+      "@asyncapi/openapi-schema-parser@3.0.26",
+      "@asyncapi/optimizer@1.0.6",
+      "@asyncapi/parser@3.4.1",
+      "@asyncapi/parser@3.4.2",
+      "@asyncapi/php-template@0.1.1",
+      "@asyncapi/problem@1.0.1",
+      "@asyncapi/protobuf-schema-parser@3.5.2",
+      "@asyncapi/protobuf-schema-parser@3.5.3",
+      "@asyncapi/python-paho-template@0.2.14",
+      "@asyncapi/react-component@2.6.7",
+      "@asyncapi/server-api@0.16.24",
+      "@asyncapi/specs@6.10.1",
+      "@asyncapi/specs@6.8.2",
+      "@asyncapi/specs@6.8.3",
+      "@browserbasehq/bb9@1.2.21",
+      "@browserbasehq/director-ai@1.0.3",
+      "@browserbasehq/mcp@2.1.1",
+      "@browserbasehq/sdk-functions@0.0.4",
+      "@browserbasehq/stagehand@3.0.4",
+      "@clausehq/flows-step-mqtt@0.1.14",
+      "@clausehq/flows-step-sendgridemail@0.1.14",
+      "@clausehq/flows-step-taskscreateurl@0.1.14",
+      "@dev-blinq/cucumber-js@1.0.131",
+      "@dev-blinq/cucumber_client@1.0.738",
+      "@ensdomains/address-encoder@1.1.5",
+      "@ensdomains/blacklist@1.0.1",
+      "@ensdomains/ccip-read-dns-gateway@0.1.1",
+      "@ensdomains/ccip-read-worker-viem@0.0.4",
+      "@ensdomains/curvearithmetics@1.0.1",
+      "@ensdomains/ensjs@4.0.3",
+      "@ensdomains/hardhat-chai-matchers-viem@0.1.15",
+      "@ensdomains/hardhat-toolbox-viem-extended@0.0.6",
+      "@ensdomains/react-ens-address@0.0.32",
+      "@ensdomains/renewal@0.0.13",
+      "@ensdomains/server-analytics@0.0.2",
+      "@ensdomains/subdomain-registrar@0.2.4",
+      "@ensdomains/test-utils@1.3.1",
+      "@ensdomains/thorin@0.6.51",
+      "@ensdomains/ui@3.4.6",
+      "@ensdomains/vite-plugin-i18next-loader@4.0.4",
+      "@ensdomains/web3modal@1.10.2",
+      "@everreal/validate-esmoduleinterop-imports@1.4.4",
+      "@everreal/validate-esmoduleinterop-imports@1.4.5",
+      "@faq-component/core@0.0.4",
+      "@faq-component/react@1.0.1",
+      "@hapheus/n8n-nodes-pgp@1.5.1",
+      "@ifelsedeveloper/protocol-contracts-svm-idl@0.1.2",
+      "@kvytech/cli@0.0.7",
+      "@kvytech/components@0.0.2",
+      "@kvytech/habbit-e2e-test@0.0.2",
+      "@kvytech/medusa-plugin-announcement@0.0.8",
+      "@kvytech/medusa-plugin-management@0.0.5",
+      "@kvytech/medusa-plugin-newsletter@0.0.5",
+      "@kvytech/medusa-plugin-product-reviews@0.0.9",
+      "@kvytech/medusa-plugin-promotion@0.0.2",
+      "@kvytech/web@0.0.2",
+      "@lessondesk/schoolbus@5.2.3",
+      "@markvivanco/app-version-checker@1.0.1",
+      "@markvivanco/app-version-checker@1.0.2",
+      "@mcp-use/cli@2.2.6",
+      "@mcp-use/cli@2.2.7",
+      "@mcp-use/inspector@0.6.2",
+      "@mcp-use/inspector@0.6.3",
+      "@mcp-use/mcp-use@1.0.1",
+      "@mcp-use/mcp-use@1.0.2",
+      "@orbitgtbelgium/mapbox-gl-draw-cut-polygon-mode@2.0.5",
+      "@orbitgtbelgium/mapbox-gl-draw-scale-rotate-mode@1.1.1",
+      "@orbitgtbelgium/orbit-components@1.2.9",
+      "@orbitgtbelgium/time-slider@1.0.187",
+      "@osmanekrem/bmad@1.0.6",
+      "@osmanekrem/error-handler@1.2.2",
+      "@posthog/agent@1.24.1",
+      "@posthog/core@1.5.6",
+      "@posthog/currency-normalization-plugin@0.0.8",
+      "@posthog/databricks-plugin@0.0.8",
+      "@posthog/drop-events-on-property-plugin@0.0.8",
+      "@posthog/filter-out-plugin@0.0.8",
+      "@posthog/first-time-event-tracker@0.0.8",
+      "@posthog/heartbeat-plugin@0.0.8",
+      "@posthog/hedgehog-mode@0.0.42",
+      "@posthog/maxmind-plugin@0.1.6",
+      "@posthog/nextjs@0.0.3",
+      "@posthog/pagerduty-plugin@0.0.8",
+      "@posthog/plugin-server@1.10.8",
+      "@posthog/postgres-plugin@0.0.8",
+      "@posthog/rrweb@0.0.31",
+      "@posthog/rrweb-player@0.0.31",
+      "@posthog/rrweb-record@0.0.31",
+      "@posthog/rrweb-replay@0.0.19",
+      "@posthog/taxonomy-plugin@0.0.8",
+      "@posthog/twitter-followers-plugin@0.0.8",
+      "@posthog/web-dev-server@1.0.5",
+      "@posthog/wizard@1.18.1",
+      "@postman/csv-parse@4.0.4",
+      "@postman/csv-parse@4.0.5",
+      "@postman/final-node-keytar@7.9.1",
+      "@postman/final-node-keytar@7.9.2",
+      "@postman/final-node-keytar@7.9.3",
+      "@postman/mcp-ui-client@5.5.1",
+      "@postman/mcp-ui-client@5.5.2",
+      "@postman/mcp-ui-client@5.5.3",
+      "@postman/node-keytar@7.9.4",
+      "@postman/node-keytar@7.9.5",
+      "@postman/node-keytar@7.9.6",
+      "@postman/pm-bin-linux-x64@1.24.3",
+      "@postman/pm-bin-linux-x64@1.24.4",
+      "@postman/pm-bin-linux-x64@1.24.5",
+      "@postman/pm-bin-macos-arm64@1.24.3",
+      "@postman/pm-bin-macos-arm64@1.24.4",
+      "@postman/pm-bin-macos-arm64@1.24.5",
+      "@postman/pm-bin-macos-x64@1.24.3",
+      "@postman/pm-bin-macos-x64@1.24.4",
+      "@postman/pm-bin-macos-x64@1.24.5",
+      "@postman/pm-bin-windows-x64@1.24.3",
+      "@postman/pm-bin-windows-x64@1.24.4",
+      "@postman/pm-bin-windows-x64@1.24.5",
+      "@postman/postman-collection-fork@4.3.3",
+      "@postman/postman-collection-fork@4.3.4",
+      "@postman/postman-collection-fork@4.3.5",
+      "@postman/postman-mcp-cli@1.0.3",
+      "@postman/postman-mcp-cli@1.0.4",
+      "@postman/postman-mcp-server@2.4.11",
+      "@postman/postman-mcp-server@2.4.12",
+      "@postman/pretty-ms@6.1.1",
+      "@postman/pretty-ms@6.1.2",
+      "@postman/pretty-ms@6.1.3",
+      "@postman/tunnel-agent@0.6.5",
+      "@postman/tunnel-agent@0.6.6",
+      "@postman/wdio-allure-reporter@0.0.7",
+      "@postman/wdio-allure-reporter@0.0.8",
+      "@postman/wdio-allure-reporter@0.0.9",
+      "@postman/wdio-junit-reporter@0.0.4",
+      "@postman/wdio-junit-reporter@0.0.5",
+      "@postman/wdio-junit-reporter@0.0.6",
+      "@pradhumngautam/common-app@1.0.2",
+      "@pruthvi21/use-debounce@1.0.3",
+      "@quick-start-soft/quick-document-translator@1.4.2511142126",
+      "@quick-start-soft/quick-git-clean-markdown@1.4.2511142126",
+      "@quick-start-soft/quick-markdown@1.4.2511142126",
+      "@quick-start-soft/quick-markdown-compose@1.4.2506300029",
+      "@quick-start-soft/quick-markdown-image@1.4.2511142126",
+      "@quick-start-soft/quick-markdown-print@1.4.2511142126",
+      "@quick-start-soft/quick-markdown-translator@1.4.2509202331",
+      "@quick-start-soft/quick-remove-image-background@1.4.2511142126",
+      "@quick-start-soft/quick-task-refine@1.4.2511142126",
+      "@seezo/sdr-mcp-server@0.0.5",
+      "@seung-ju/next@0.0.2",
+      "@seung-ju/openapi-generator@0.0.4",
+      "@seung-ju/react-hooks@0.0.2",
+      "@seung-ju/react-native-action-sheet@0.2.1",
+      "@strapbuild/react-native-date-time-picker@2.0.4",
+      "@strapbuild/react-native-perspective-image-cropper@0.4.15",
+      "@strapbuild/react-native-perspective-image-cropper-2@0.4.7",
+      "@strapbuild/react-native-perspective-image-cropper-poojan31@0.4.6",
+      "@trpc-rate-limiter/cloudflare@0.1.4",
+      "@trpc-rate-limiter/hono@0.1.4",
+      "@vishadtyagi/full-year-calendar@0.1.11",
+      "@voiceflow/alexa-types@2.15.60",
+      "@voiceflow/alexa-types@2.15.61",
+      "@voiceflow/api-sdk@3.28.58",
+      "@voiceflow/api-sdk@3.28.59",
+      "@voiceflow/backend-utils@5.0.1",
+      "@voiceflow/backend-utils@5.0.2",
+      "@voiceflow/base-types@2.136.3",
+      "@voiceflow/chat-types@2.14.58",
+      "@voiceflow/chat-types@2.14.59",
+      "@voiceflow/common@8.9.1",
+      "@voiceflow/common@8.9.2",
+      "@voiceflow/dependency-cruiser-config@1.8.11",
+      "@voiceflow/dependency-cruiser-config@1.8.12",
+      "@voiceflow/dtos-interact@1.40.2",
+      "@voiceflow/encryption@0.3.2",
+      "@voiceflow/encryption@0.3.3",
+      "@voiceflow/eslint-plugin@1.6.2",
+      "@voiceflow/exception@1.10.1",
+      "@voiceflow/exception@1.10.2",
+      "@voiceflow/fetch@1.11.1",
+      "@voiceflow/fetch@1.11.2",
+      "@voiceflow/general-types@3.2.22",
+      "@voiceflow/general-types@3.2.23",
+      "@voiceflow/google-dfes-types@2.17.12",
+      "@voiceflow/google-dfes-types@2.17.13",
+      "@voiceflow/google-types@2.21.13",
+      "@voiceflow/logger@2.4.2",
+      "@voiceflow/logger@2.4.3",
+      "@voiceflow/natural-language-commander@0.5.3",
+      "@voiceflow/openai@3.2.3",
+      "@voiceflow/pino@6.11.3",
+      "@voiceflow/pino@6.11.4",
+      "@voiceflow/pino-pretty@4.4.2",
+      "@voiceflow/react-chat@1.65.4",
+      "@voiceflow/runtime@1.29.1",
+      "@voiceflow/runtime@1.29.2",
+      "@voiceflow/runtime-client-js@1.17.2",
+      "@voiceflow/runtime-client-js@1.17.3",
+      "@voiceflow/sdk-runtime@1.43.1",
+      "@voiceflow/sdk-runtime@1.43.2",
+      "@voiceflow/slate-serializer@1.7.4",
+      "@voiceflow/stitches-react@2.3.2",
+      "@voiceflow/test-common@2.1.1",
+      "@voiceflow/test-common@2.1.2",
+      "@voiceflow/tsconfig-paths@1.1.4",
+      "@voiceflow/tsconfig-paths@1.1.5",
+      "@voiceflow/vite-config@2.6.2",
+      "@voiceflow/vite-config@2.6.3",
+      "@voiceflow/voice-types@2.10.58",
+      "@voiceflow/voice-types@2.10.59",
+      "@voiceflow/voiceflow-types@3.32.46",
+      "@zapier/ai-actions@0.1.19",
+      "@zapier/ai-actions-react@0.1.12",
+      "@zapier/ai-actions-react@0.1.13",
+      "@zapier/babel-preset-zapier@6.4.2",
+      "@zapier/browserslist-config-zapier@1.0.4",
+      "@zapier/eslint-plugin-zapier@11.0.3",
+      "@zapier/eslint-plugin-zapier@11.0.4",
+      "@zapier/mcp-integration@3.0.1",
+      "@zapier/mcp-integration@3.0.2",
+      "@zapier/secret-scrubber@1.1.4",
+      "@zapier/spectral-api-ruleset@1.9.2",
+      "@zapier/stubtree@0.1.2",
+      "@zapier/stubtree@0.1.3",
+      "@zapier/zapier-sdk@0.15.5",
+      "@zapier/zapier-sdk@0.15.6",
+      "ai-crowl-shield@1.0.7",
+      "asyncapi-preview@1.0.1",
+      "automation_model@1.0.491",
+      "axios-builder@1.2.1",
+      "axios-timed@1.0.2",
+      "best_gpio_controller@1.0.10",
+      "bytecode-checker-cli@1.0.10",
+      "bytecode-checker-cli@1.0.9",
+      "calc-loan-interest@1.0.4",
+      "chrome-extension-downloads@0.0.4",
+      "claude-token-updater@1.0.3",
+      "coinmarketcap-api@3.1.2",
+      "coinmarketcap-api@3.1.3",
+      "colors-regex@2.0.1",
+      "command-irail@0.5.4",
+      "compare-obj@1.1.1",
+      "compare-obj@1.1.2",
+      "create-director-app@0.1.1",
+      "create-glee-app@0.2.3",
+      "create-hardhat3-app@1.1.2",
+      "create-hardhat3-app@1.1.3",
+      "create-mcp-use-app@0.5.3",
+      "create-mcp-use-app@0.5.4",
+      "designstudiouiux@1.0.1",
+      "discord-bot-server@0.1.2",
+      "docusaurus-plugin-vanilla-extract@1.0.3",
+      "dotnet-template@0.0.3",
+      "email-deliverability-tester@1.1.1",
+      "eslint-config-zeallat-base@1.0.4",
+      "evm-checkcode-cli@1.0.13",
+      "evm-checkcode-cli@1.0.14",
+      "exact-ticker@0.3.5",
+      "fat-fingered@1.0.2",
+      "feature-flip@1.0.2",
+      "fittxt@1.0.3",
+      "gate-evm-check-code2@2.0.4",
+      "gate-evm-check-code2@2.0.5",
+      "gate-evm-check-code2@2.0.6",
+      "gate-evm-tools-test@1.0.6",
+      "gate-evm-tools-test@1.0.7",
+      "generator-ng-itobuz@0.0.15",
+      "github-action-for-generator@2.1.27",
+      "gitsafe@1.0.5",
+      "go-template@0.1.9",
+      "hope-mapboxdraw@0.1.1",
+      "hopedraw@1.0.3",
+      "hover-design-prototype@0.0.5",
+      "ids-css@1.5.1",
+      "ids-enterprise-mcp-server@0.0.2",
+      "ids-enterprise-typings@20.1.6",
+      "iron-shield-miniapp@0.0.2",
+      "ito-button@8.0.3",
+      "itobuz-angular@0.0.1",
+      "itobuz-angular-button@8.0.11",
+      "jaetut-varit-test@1.0.2",
+      "jquery-bindings@1.1.2",
+      "jquery-bindings@1.1.3",
+      "jsonsurge@1.0.7",
+      "kill-port@2.0.3",
+      "korea-administrative-area-geo-json-util@1.0.7",
+      "kwami@1.5.10",
+      "lang-codes@1.0.2",
+      "manual-billing-system-miniapp-api@1.3.1",
+      "mcp-use@1.4.2",
+      "mcp-use@1.4.3",
+      "medusa-plugin-logs@0.0.17",
+      "medusa-plugin-momo@0.0.68",
+      "medusa-plugin-product-reviews-kvy@0.0.4",
+      "medusa-plugin-zalopay@0.0.40",
+      "mon-package-react-typescript@1.0.1",
+      "n8n-nodes-vercel-ai-sdk@0.1.7",
+      "n8n-nodes-viral-app@0.2.5",
+      "ngx-useful-swiper-prosenjit@9.0.2",
+      "ngx-wooapi@12.0.1",
+      "okta-react-router-6@5.0.1",
+      "orbit-boxicons@2.1.3",
+      "orbit-nebula-draw-tools@1.0.10",
+      "orbit-nebula-editor@1.0.2",
+      "orbit-soap@0.43.13",
+      "parcel-plugin-asset-copier@1.1.3",
+      "pdf-annotation@0.0.2",
+      "poper-react-sdk@0.1.2",
+      "posthog-docusaurus@2.0.6",
+      "posthog-js@1.297.3",
+      "posthog-node@4.18.1",
+      "posthog-node@5.11.3",
+      "posthog-node@5.13.3",
+      "posthog-react-native@4.11.1",
+      "posthog-react-native@4.12.5",
+      "prime-one-table@0.0.19",
+      "ra-data-firebase@1.0.8",
+      "react-element-prompt-inspector@0.1.18",
+      "react-jam-icons@1.0.2",
+      "react-keycloak-context@1.0.8",
+      "react-keycloak-context@1.0.9",
+      "react-library-setup@0.0.6",
+      "react-micromodal.js@1.0.2",
+      "react-native-email@2.1.1",
+      "react-native-get-pixel-dimensions@1.0.1",
+      "react-native-google-maps-directions@2.1.2",
+      "react-native-retriable-fetch@2.0.2",
+      "react-native-use-modal@1.0.3",
+      "react-native-view-finder@1.2.2",
+      "react-native-websocket@1.0.4",
+      "react-native-worklet-functions@3.3.3",
+      "rediff@1.0.5",
+      "rediff-viewer@0.0.7",
+      "redux-router-kit@1.2.3",
+      "shinhan-limit-scrap@1.0.3",
+      "skills-use@0.1.1",
+      "super-commit@1.0.1",
+      "tanstack-shadcn-table@1.1.5",
+      "tcsp@2.0.2",
+      "tcsp-draw-test@1.0.5",
+      "tcsp-test-vd@2.4.4",
+      "template-micro-service@1.0.3",
+      "test-hardhat-app@1.0.2",
+      "test-hardhat-app@1.0.3",
+      "test23112222-api@1.0.1",
+      "tiaan@1.0.2",
+      "undefsafe-typed@1.0.3",
+      "undefsafe-typed@1.0.4",
+      "url-encode-decode@1.0.1",
+      "web-scraper-mcp@1.1.4",
+      "zapier-async-storage@1.0.1",
+      "zapier-async-storage@1.0.2",
+      "zapier-platform-cli@18.0.2",
+      "zapier-platform-cli@18.0.3",
+      "zapier-platform-core@18.0.2",
+      "zapier-platform-core@18.0.3",
+      "zapier-platform-legacy-scripting-runner@4.0.3",
+      "zapier-platform-schema@18.0.3",
+      "zuper-sdk@1.0.57",
+      "zuper-stream@2.0.9"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 405
+    }
+  },
+  "cluster_0002": {
+    "rank": 2,
+    "size": 198,
+    "share_pct": 14.68,
+    "earliest_discovery": "2025-09-15",
+    "hashes_count": 1,
+    "members": [
+      "@ctrl/deluge@7.2.1",
+      "@ctrl/deluge@7.2.2",
+      "@ctrl/golang-template@1.4.2",
+      "@ctrl/golang-template@1.4.3",
+      "@ctrl/magnet-link@4.0.3",
+      "@ctrl/magnet-link@4.0.4",
+      "@ctrl/ngx-codemirror@7.0.1",
+      "@ctrl/ngx-codemirror@7.0.2",
+      "@ctrl/ngx-csv@6.0.1",
+      "@ctrl/ngx-csv@6.0.2",
+      "@ctrl/ngx-rightclick@4.0.1",
+      "@ctrl/ngx-rightclick@4.0.2",
+      "@ctrl/qbittorrent@9.7.1",
+      "@ctrl/qbittorrent@9.7.2",
+      "@ctrl/react-adsense@2.0.1",
+      "@ctrl/react-adsense@2.0.2",
+      "@ctrl/shared-torrent@6.3.1",
+      "@ctrl/shared-torrent@6.3.2",
+      "@ctrl/tinycolor@4.1.1",
+      "@ctrl/tinycolor@4.1.2",
+      "@ctrl/torrent-file@4.1.1",
+      "@ctrl/torrent-file@4.1.2",
+      "@ctrl/transmission@7.3.1",
+      "@ctrl/ts-base32@4.0.1",
+      "@ctrl/ts-base32@4.0.2",
+      "@nativescript-community/gesturehandler@2.0.35",
+      "@nativescript-community/perms@3.0.9",
+      "@nativescript-community/sentry@4.6.43",
+      "@nativescript-community/text@1.6.13",
+      "@nativescript-community/ui-collectionview@6.0.6",
+      "@nativescript-community/ui-drawer@0.1.30",
+      "@nativescript-community/ui-image@4.5.6",
+      "@nativescript-community/ui-material-bottomsheet@7.2.72",
+      "@nativescript-community/ui-material-core@7.2.76",
+      "@nativescript-community/ui-material-core-tabs@7.2.76",
+      "@operato/board@9.0.35",
+      "@operato/board@9.0.36",
+      "@operato/board@9.0.37",
+      "@operato/board@9.0.39",
+      "@operato/board@9.0.40",
+      "@operato/board@9.0.41",
+      "@operato/board@9.0.42",
+      "@operato/board@9.0.43",
+      "@operato/board@9.0.45",
+      "@operato/board@9.0.46",
+      "@operato/board@9.0.48",
+      "@operato/board@9.0.51",
+      "@operato/data-grist@9.0.29",
+      "@operato/data-grist@9.0.35",
+      "@operato/data-grist@9.0.36",
+      "@operato/data-grist@9.0.37",
+      "@operato/graphql@9.0.22",
+      "@operato/graphql@9.0.35",
+      "@operato/graphql@9.0.36",
+      "@operato/graphql@9.0.37",
+      "@operato/graphql@9.0.39",
+      "@operato/graphql@9.0.40",
+      "@operato/graphql@9.0.41",
+      "@operato/graphql@9.0.42",
+      "@operato/graphql@9.0.43",
+      "@operato/graphql@9.0.44",
+      "@operato/graphql@9.0.45",
+      "@operato/graphql@9.0.48",
+      "@operato/graphql@9.0.51",
+      "@operato/headroom@9.0.2",
+      "@operato/headroom@9.0.35",
+      "@operato/headroom@9.0.36",
+      "@operato/headroom@9.0.37",
+      "@operato/help@9.0.35",
+      "@operato/help@9.0.36",
+      "@operato/help@9.0.37",
+      "@operato/help@9.0.39",
+      "@operato/help@9.0.40",
+      "@operato/help@9.0.41",
+      "@operato/help@9.0.42",
+      "@operato/help@9.0.43",
+      "@operato/help@9.0.45",
+      "@operato/help@9.0.48",
+      "@operato/help@9.0.51",
+      "@operato/i18n@9.0.35",
+      "@operato/i18n@9.0.36",
+      "@operato/input@9.0.27",
+      "@operato/input@9.0.35",
+      "@operato/input@9.0.36",
+      "@operato/input@9.0.37",
+      "@operato/input@9.0.39",
+      "@operato/input@9.0.40",
+      "@operato/input@9.0.41",
+      "@operato/input@9.0.42",
+      "@operato/input@9.0.43",
+      "@operato/input@9.0.45",
+      "@operato/input@9.0.46",
+      "@operato/input@9.0.47",
+      "@operato/input@9.0.48",
+      "@operato/layout@9.0.35",
+      "@operato/layout@9.0.36",
+      "@operato/layout@9.0.37",
+      "@operato/popup@9.0.22",
+      "@operato/popup@9.0.35",
+      "@operato/popup@9.0.36",
+      "@operato/popup@9.0.37",
+      "@operato/popup@9.0.39",
+      "@operato/popup@9.0.40",
+      "@operato/popup@9.0.41",
+      "@operato/popup@9.0.42",
+      "@operato/popup@9.0.43",
+      "@operato/popup@9.0.44",
+      "@operato/popup@9.0.45",
+      "@operato/popup@9.0.48",
+      "@operato/popup@9.0.51",
+      "@operato/pull-to-refresh@9.0.35",
+      "@operato/pull-to-refresh@9.0.36",
+      "@operato/pull-to-refresh@9.0.37",
+      "@operato/pull-to-refresh@9.0.38",
+      "@operato/pull-to-refresh@9.0.39",
+      "@operato/pull-to-refresh@9.0.40",
+      "@operato/pull-to-refresh@9.0.41",
+      "@operato/pull-to-refresh@9.0.43",
+      "@operato/pull-to-refresh@9.0.44",
+      "@operato/pull-to-refresh@9.0.47",
+      "@operato/shell@9.0.22",
+      "@operato/shell@9.0.35",
+      "@operato/shell@9.0.36",
+      "@operato/shell@9.0.37",
+      "@operato/shell@9.0.39",
+      "@operato/styles@9.0.2",
+      "@operato/styles@9.0.35",
+      "@operato/styles@9.0.36",
+      "@operato/styles@9.0.37",
+      "@operato/utils@9.0.22",
+      "@operato/utils@9.0.35",
+      "@operato/utils@9.0.36",
+      "@operato/utils@9.0.37",
+      "@operato/utils@9.0.39",
+      "@operato/utils@9.0.40",
+      "@operato/utils@9.0.41",
+      "@operato/utils@9.0.42",
+      "@operato/utils@9.0.43",
+      "@operato/utils@9.0.45",
+      "@operato/utils@9.0.48",
+      "@operato/utils@9.0.50",
+      "@operato/utils@9.0.51",
+      "@things-factory/attachment-base@9.0.42",
+      "@things-factory/attachment-base@9.0.43",
+      "@things-factory/attachment-base@9.0.44",
+      "@things-factory/attachment-base@9.0.45",
+      "@things-factory/attachment-base@9.0.46",
+      "@things-factory/attachment-base@9.0.47",
+      "@things-factory/attachment-base@9.0.48",
+      "@things-factory/attachment-base@9.0.49",
+      "@things-factory/attachment-base@9.0.51",
+      "@things-factory/attachment-base@9.0.52",
+      "@things-factory/attachment-base@9.0.55",
+      "@things-factory/auth-base@9.0.42",
+      "@things-factory/auth-base@9.0.43",
+      "@things-factory/auth-base@9.0.44",
+      "@things-factory/auth-base@9.0.45",
+      "@things-factory/email-base@9.0.42",
+      "@things-factory/email-base@9.0.43",
+      "@things-factory/email-base@9.0.44",
+      "@things-factory/email-base@9.0.45",
+      "@things-factory/email-base@9.0.47",
+      "@things-factory/email-base@9.0.48",
+      "@things-factory/email-base@9.0.49",
+      "@things-factory/email-base@9.0.50",
+      "@things-factory/email-base@9.0.51",
+      "@things-factory/email-base@9.0.53",
+      "@things-factory/email-base@9.0.54",
+      "@things-factory/email-base@9.0.55",
+      "@things-factory/email-base@9.0.56",
+      "@things-factory/email-base@9.0.59",
+      "@things-factory/env@9.0.42",
+      "@things-factory/env@9.0.43",
+      "@things-factory/env@9.0.44",
+      "@things-factory/env@9.0.45",
+      "@things-factory/integration-base@9.0.42",
+      "@things-factory/integration-base@9.0.43",
+      "@things-factory/integration-base@9.0.44",
+      "@things-factory/integration-base@9.0.45",
+      "@things-factory/integration-marketplace@9.0.42",
+      "@things-factory/integration-marketplace@9.0.43",
+      "@things-factory/integration-marketplace@9.0.44",
+      "@things-factory/integration-marketplace@9.0.45",
+      "@things-factory/shell@9.0.42",
+      "@things-factory/shell@9.0.43",
+      "@things-factory/shell@9.0.44",
+      "@things-factory/shell@9.0.45",
+      "koa2-swagger-ui@5.11.1",
+      "koa2-swagger-ui@5.11.2",
+      "ngx-color@10.0.1",
+      "ngx-color@10.0.2",
+      "ngx-toastr@19.0.1",
+      "ngx-toastr@19.0.2",
+      "ngx-trend@8.0.1",
+      "swc-plugin-component-annotate@1.9.1",
+      "swc-plugin-component-annotate@1.9.2",
+      "ts-gaussian@3.0.5",
+      "ts-gaussian@3.0.6"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 198
+    }
+  },
+  "cluster_0003": {
+    "rank": 3,
+    "size": 83,
+    "share_pct": 6.15,
+    "earliest_discovery": "2025-09-15",
+    "hashes_count": 1,
+    "members": [
+      "@ahmedhfarag/ngx-perfect-scrollbar@20.0.20",
+      "@ahmedhfarag/ngx-virtual-scroller@4.0.4",
+      "@art-ws/common@2.0.28",
+      "@art-ws/config-eslint@2.0.4",
+      "@art-ws/config-ts@2.0.7",
+      "@art-ws/config-ts@2.0.8",
+      "@art-ws/db-context@2.0.24",
+      "@art-ws/di@2.0.28",
+      "@art-ws/di@2.0.32",
+      "@art-ws/di-node@2.0.13",
+      "@art-ws/eslint@1.0.5",
+      "@art-ws/eslint@1.0.6",
+      "@art-ws/fastify-http-server@2.0.24",
+      "@art-ws/fastify-http-server@2.0.27",
+      "@art-ws/http-server@2.0.21",
+      "@art-ws/http-server@2.0.25",
+      "@art-ws/openapi@0.1.12",
+      "@art-ws/openapi@0.1.9",
+      "@art-ws/package-base@1.0.5",
+      "@art-ws/prettier@1.0.5",
+      "@art-ws/slf@2.0.15",
+      "@art-ws/slf@2.0.22",
+      "@art-ws/ssl-info@1.0.10",
+      "@art-ws/ssl-info@1.0.9",
+      "@art-ws/web-app@1.0.3",
+      "@nativescript-community/arraybuffers@1.1.6",
+      "@nativescript-community/arraybuffers@1.1.7",
+      "@nativescript-community/perms@3.0.5",
+      "@nativescript-community/perms@3.0.6",
+      "@nativescript-community/sqlite@3.5.4",
+      "@nativescript-community/sqlite@3.5.5",
+      "@nativescript-community/text@1.6.10",
+      "@nativescript-community/text@1.6.9",
+      "@nativescript-community/ui-document-picker@1.1.28",
+      "@nativescript-community/ui-label@1.3.35",
+      "@nativescript-community/ui-label@1.3.36",
+      "@nativescript-community/ui-material-bottom-navigation@7.2.73",
+      "@nativescript-community/ui-material-core@7.2.73",
+      "@nativescript-community/ui-material-core-tabs@7.2.73",
+      "@nativescript-community/ui-material-core-tabs@7.2.75",
+      "@nativescript-community/ui-material-tabs@7.2.73",
+      "@nativescript-community/ui-pager@14.1.36",
+      "@nativescript-community/ui-pager@14.1.38",
+      "@nativescript-community/ui-pulltorefresh@2.5.5",
+      "@nstudio/angular@20.0.4",
+      "@nstudio/angular@20.0.5",
+      "@nstudio/focus@20.0.5",
+      "@nstudio/focus@20.0.6",
+      "@nstudio/nativescript-checkbox@2.0.6",
+      "@nstudio/nativescript-checkbox@2.0.7",
+      "@nstudio/nativescript-checkbox@2.0.9",
+      "@nstudio/nativescript-loading-indicator@5.0.1",
+      "@nstudio/nativescript-loading-indicator@5.0.2",
+      "@nstudio/nativescript-loading-indicator@5.0.4",
+      "@nstudio/ui-collectionview@5.1.11",
+      "@nstudio/ui-collectionview@5.1.12",
+      "@nstudio/ui-collectionview@5.1.14",
+      "@nstudio/web@20.0.4",
+      "@nstudio/web-angular@20.0.4",
+      "@nstudio/xplat@20.0.5",
+      "@nstudio/xplat@20.0.7",
+      "@nstudio/xplat-utils@20.0.5",
+      "@nstudio/xplat-utils@20.0.6",
+      "ace-colorpicker-rpk@0.0.14",
+      "capacitor-notificationhandler@0.0.2",
+      "capacitor-plugin-healthapp@0.0.2",
+      "capacitor-plugin-ihealth@1.1.8",
+      "capacitor-plugin-ihealth@1.1.9",
+      "capacitor-plugin-vonage@1.0.2",
+      "capacitorandroidpermissions@0.0.4",
+      "db-evo@1.1.4",
+      "db-evo@1.1.5",
+      "globalize-rpk@1.7.4",
+      "ng-imports-checker@0.0.9",
+      "ng2-file-upload@8.0.3",
+      "ngx-bootstrap@20.0.6",
+      "ngx-ws@1.1.5",
+      "ngx-ws@1.1.6",
+      "pm2-gelf-json@1.0.4",
+      "pm2-gelf-json@1.0.5",
+      "ts-imports@1.0.1",
+      "ts-imports@1.0.2",
+      "voip-callkit@1.0.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 81,
+      "inspection_incomplete": 2
+    }
+  },
+  "cluster_0004": {
+    "rank": 4,
+    "size": 72,
+    "share_pct": 5.34,
+    "earliest_discovery": "2026-05-11",
+    "hashes_count": 2,
+    "members": [
+      "@beproduct/nestjs-auth@0.1.14",
+      "@beproduct/nestjs-auth@0.1.16",
+      "@beproduct/nestjs-auth@0.1.8",
+      "@draftlab/auth@0.24.2",
+      "@draftlab/db@0.16.2",
+      "@mesadev/rest@0.28.3",
+      "@mesadev/saguaro@0.4.22",
+      "@mesadev/sdk@0.28.3",
+      "@mistralai/mistralai-azure@1.7.1",
+      "@mistralai/mistralai-azure@1.7.2",
+      "@mistralai/mistralai-azure@1.7.3",
+      "@mistralai/mistralai-gcp@1.7.1",
+      "@mistralai/mistralai-gcp@1.7.2",
+      "@mistralai/mistralai-gcp@1.7.3",
+      "@squawk/airport-data@0.7.4",
+      "@squawk/airspace-data@0.5.3",
+      "@squawk/airway-data@0.5.4",
+      "@squawk/airways@0.4.2",
+      "@squawk/fix-data@0.6.4",
+      "@squawk/flight-math@0.5.4",
+      "@squawk/geo@0.4.4",
+      "@squawk/icao-registry@0.5.2",
+      "@squawk/mcp@0.9.1",
+      "@squawk/navaid-data@0.6.4",
+      "@squawk/navaids@0.4.2",
+      "@squawk/notams@0.3.6",
+      "@squawk/procedures@0.5.2",
+      "@squawk/types@0.8.1",
+      "@squawk/weather@0.5.6",
+      "@supersurkhet/cli@0.0.2",
+      "@supersurkhet/cli@0.0.4",
+      "@supersurkhet/sdk@0.0.2",
+      "@supersurkhet/sdk@0.0.4",
+      "@tallyui/components@1.0.1",
+      "@tallyui/connector-medusa@1.0.1",
+      "@tallyui/connector-shopify@1.0.1",
+      "@tallyui/connector-vendure@1.0.1",
+      "@tallyui/connector-woocommerce@1.0.1",
+      "@tallyui/core@0.2.1",
+      "@tallyui/database@1.0.1",
+      "@tallyui/pos@0.1.1",
+      "@tallyui/storage-sqlite@0.2.1",
+      "@tallyui/theme@0.2.1",
+      "@taskflow-corp/cli@0.1.24",
+      "@taskflow-corp/cli@0.1.26",
+      "@tolka/cli@1.0.2",
+      "@uipath/access-policy-sdk@0.3.1",
+      "@uipath/agent-sdk@1.0.2",
+      "@uipath/agent-tool@1.0.1",
+      "@uipath/apollo-core@5.9.2",
+      "@uipath/apollo-wind@2.16.2",
+      "@uipath/case-tool@1.0.1",
+      "@uipath/data-fabric-tool@1.0.2",
+      "@uipath/flow-tool@1.0.2",
+      "@uipath/integrationservice-tool@1.0.2",
+      "@uipath/maestro-sdk@1.0.1",
+      "@uipath/maestro-tool@1.0.1",
+      "@uipath/packager-tool-workflowcompiler@0.0.16",
+      "@uipath/project-packager@1.1.16",
+      "@uipath/robot@1.3.4",
+      "@uipath/rpa-tool@0.9.5",
+      "@uipath/solution-tool@1.0.1",
+      "@uipath/solutionpackager-sdk@1.0.11",
+      "@uipath/vss@0.1.6",
+      "@uipath/widget.sdk@1.2.3",
+      "cmux-agent-mcp@0.1.3",
+      "cmux-agent-mcp@0.1.5",
+      "cross-stitch@1.1.3",
+      "git-branch-selector@1.3.3",
+      "git-git-git@1.0.8",
+      "nextmove-mcp@0.1.3",
+      "safe-action@0.8.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 71,
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0005": {
+    "rank": 5,
+    "size": 60,
+    "share_pct": 4.45,
+    "earliest_discovery": "2026-05-11",
+    "hashes_count": 1,
+    "members": [
+      "@tanstack/arktype-adapter@1.166.12",
+      "@tanstack/eslint-plugin-router@1.161.12",
+      "@tanstack/eslint-plugin-router@1.161.9",
+      "@tanstack/eslint-plugin-start@0.0.4",
+      "@tanstack/eslint-plugin-start@0.0.7",
+      "@tanstack/history@1.161.9",
+      "@tanstack/nitro-v2-vite-plugin@1.154.12",
+      "@tanstack/react-router@1.169.5",
+      "@tanstack/react-router@1.169.8",
+      "@tanstack/react-router-devtools@1.166.16",
+      "@tanstack/react-start@1.167.68",
+      "@tanstack/react-start@1.167.71",
+      "@tanstack/react-start-client@1.166.51",
+      "@tanstack/react-start-client@1.166.54",
+      "@tanstack/react-start-rsc@0.0.47",
+      "@tanstack/react-start-rsc@0.0.50",
+      "@tanstack/react-start-server@1.166.55",
+      "@tanstack/router-cli@1.166.46",
+      "@tanstack/router-cli@1.166.49",
+      "@tanstack/router-core@1.169.5",
+      "@tanstack/router-core@1.169.8",
+      "@tanstack/router-devtools@1.166.16",
+      "@tanstack/router-devtools-core@1.167.6",
+      "@tanstack/router-devtools-core@1.167.9",
+      "@tanstack/router-generator@1.166.45",
+      "@tanstack/router-generator@1.166.48",
+      "@tanstack/router-plugin@1.167.38",
+      "@tanstack/router-plugin@1.167.41",
+      "@tanstack/router-ssr-query-core@1.168.3",
+      "@tanstack/router-ssr-query-core@1.168.6",
+      "@tanstack/router-utils@1.161.11",
+      "@tanstack/router-utils@1.161.14",
+      "@tanstack/router-vite-plugin@1.166.53",
+      "@tanstack/solid-router@1.169.5",
+      "@tanstack/solid-router@1.169.8",
+      "@tanstack/solid-router-devtools@1.166.16",
+      "@tanstack/solid-router-ssr-query@1.166.15",
+      "@tanstack/solid-start@1.167.65",
+      "@tanstack/solid-start@1.167.68",
+      "@tanstack/solid-start-client@1.166.50",
+      "@tanstack/solid-start-server@1.166.54",
+      "@tanstack/start-client-core@1.168.5",
+      "@tanstack/start-client-core@1.168.8",
+      "@tanstack/start-fn-stubs@1.161.9",
+      "@tanstack/start-plugin-core@1.169.23",
+      "@tanstack/start-plugin-core@1.169.26",
+      "@tanstack/start-server-core@1.167.33",
+      "@tanstack/start-server-core@1.167.36",
+      "@tanstack/start-static-server-functions@1.166.44",
+      "@tanstack/start-storage-context@1.166.38",
+      "@tanstack/virtual-file-routes@1.161.10",
+      "@tanstack/vue-router@1.169.5",
+      "@tanstack/vue-router@1.169.8",
+      "@tanstack/vue-router-devtools@1.166.16",
+      "@tanstack/vue-router-ssr-query@1.166.15",
+      "@tanstack/vue-start@1.167.61",
+      "@tanstack/vue-start@1.167.64",
+      "@tanstack/vue-start-client@1.166.46",
+      "@tanstack/vue-start-server@1.166.50",
+      "@tanstack/zod-adapter@1.166.12"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 60
+    }
+  },
+  "cluster_0006": {
+    "rank": 6,
+    "size": 47,
+    "share_pct": 3.48,
+    "earliest_discovery": "2026-05-19",
+    "hashes_count": 716,
+    "members": [
+      "@antv/algorithm@0.3.26",
+      "@antv/ava@3.6.1",
+      "@antv/ava-react@3.5.2",
+      "@antv/data-samples@1.2.1",
+      "@antv/data-set@0.12.8",
+      "@antv/dumi-theme-antv@0.10.4",
+      "@antv/f-engine@1.11.0",
+      "@antv/f2-graphic@0.2.16",
+      "@antv/f6@0.1.19",
+      "@antv/f6-core@0.2.2",
+      "@antv/g@6.4.1",
+      "@antv/g-device-api@1.7.13",
+      "@antv/g-lite@2.8.0",
+      "@antv/g-lite@2.9.0",
+      "@antv/g2-extension-3d@0.3.0",
+      "@antv/g6-mobile@0.2.2",
+      "@antv/g6-pc@0.10.25",
+      "@antv/g6-pc@0.9.25",
+      "@antv/gi-assets-algorithm@2.4.19",
+      "@antv/gi-assets-scene@2.3.21",
+      "@antv/gi-assets-xlab@0.2.30",
+      "@antv/gi-assets-xlab@0.3.30",
+      "@antv/gpt-vis@1.1.0",
+      "@antv/insight-component@1.1.0",
+      "@antv/l7-component@2.27.10",
+      "@antv/l7-composite-layers@0.19.1",
+      "@antv/l7-core@2.27.10",
+      "@antv/l7-draw@3.2.5",
+      "@antv/l7-map@2.27.10",
+      "@antv/l7-source@2.27.10",
+      "@antv/li-aiearth-assets@0.5.7",
+      "@antv/li-aiearth-assets@0.6.7",
+      "@antv/lite-insight@2.2.1",
+      "@antv/mcp-server-chart@0.10.10",
+      "@antv/narrative-text-editor@0.3.20",
+      "@antv/narrative-text-editor@0.4.20",
+      "@antv/narrative-text-vis@0.5.16",
+      "@antv/s2-react@2.5.1",
+      "@antv/s2-react-components@2.3.2",
+      "@antv/scale@0.6.2",
+      "@antv/t8@0.5.0",
+      "@antv/x6-geometry@2.2.5",
+      "@antv/x6-react-components@2.1.9",
+      "@antv/x6-react-components@2.2.9",
+      "@openclaw-cn/cli@1.4.1",
+      "@openclaw-cn/feishu@0.2.11",
+      "@openclaw-cn/libsignal@2.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 47
+    }
+  },
+  "cluster_0007": {
+    "rank": 7,
+    "size": 35,
+    "share_pct": 2.59,
+    "earliest_discovery": "2025-09-16",
+    "hashes_count": 1,
+    "members": [
+      "@crowdstrike/commitlint@8.1.1",
+      "@crowdstrike/commitlint@8.1.2",
+      "@crowdstrike/falcon-shoelace@0.4.1",
+      "@crowdstrike/falcon-shoelace@0.4.2",
+      "@crowdstrike/foundry-js@0.19.1",
+      "@crowdstrike/foundry-js@0.19.2",
+      "@crowdstrike/glide-core@0.34.2",
+      "@crowdstrike/glide-core@0.34.3",
+      "@crowdstrike/tailwind-toucan-base@5.0.1",
+      "@crowdstrike/tailwind-toucan-base@5.0.2",
+      "@teselagen/bounce-loader@0.3.17",
+      "browser-webdriver-downloader@3.0.8",
+      "ember-browser-services@5.0.2",
+      "ember-browser-services@5.0.3",
+      "ember-headless-form@1.1.2",
+      "ember-headless-form@1.1.3",
+      "ember-headless-form-yup@1.0.1",
+      "ember-headless-table@2.1.5",
+      "ember-headless-table@2.1.6",
+      "ember-url-hash-polyfill@1.0.12",
+      "ember-url-hash-polyfill@1.0.13",
+      "ember-velcro@2.2.1",
+      "ember-velcro@2.2.2",
+      "eslint-config-crowdstrike@11.0.2",
+      "eslint-config-crowdstrike@11.0.3",
+      "eslint-config-crowdstrike-node@4.0.3",
+      "eslint-config-crowdstrike-node@4.0.4",
+      "monorepo-next@13.0.1",
+      "monorepo-next@13.0.2",
+      "ove-auto-annotate@0.0.10",
+      "remark-preset-lint-crowdstrike@4.0.1",
+      "remark-preset-lint-crowdstrike@4.0.2",
+      "tg-seq-gen@1.0.10",
+      "verror-extra@6.0.1",
+      "yargs-help-output@5.0.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 35
+    }
+  },
+  "cluster_0008": {
+    "rank": 8,
+    "size": 25,
+    "share_pct": 1.85,
+    "earliest_discovery": "2026-05-11",
+    "hashes_count": 3,
+    "members": [
+      "@beproduct/nestjs-auth@0.1.17",
+      "@beproduct/nestjs-auth@0.1.19",
+      "@squawk/airports@0.6.3",
+      "@squawk/airspace@0.8.2",
+      "@squawk/fixes@0.3.3",
+      "@squawk/flightplan@0.5.3",
+      "@squawk/icao-registry-data@0.8.5",
+      "@squawk/procedure-data@0.7.4",
+      "@squawk/units@0.4.4",
+      "@supersurkhet/cli@0.0.6",
+      "@supersurkhet/sdk@0.0.6",
+      "@tallyui/components@1.0.3",
+      "@tallyui/connector-medusa@1.0.3",
+      "@tallyui/connector-shopify@1.0.3",
+      "@tallyui/connector-woocommerce@1.0.3",
+      "@tallyui/database@1.0.3",
+      "@tallyui/pos@0.1.3",
+      "@tallyui/storage-sqlite@0.2.2",
+      "@tallyui/storage-sqlite@0.2.3",
+      "@taskflow-corp/cli@0.1.28",
+      "@tolka/cli@1.0.4",
+      "cmux-agent-mcp@0.1.7",
+      "git-branch-selector@1.3.5",
+      "git-git-git@1.0.10",
+      "nextmove-mcp@0.1.5"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 25
+    }
+  },
+  "cluster_0009": {
+    "rank": 9,
+    "size": 24,
+    "share_pct": 1.78,
+    "earliest_discovery": "2025-09-14",
+    "hashes_count": 1,
+    "members": [
+      "@teselagen/bio-parsers@0.4.29",
+      "@teselagen/bounce-loader@0.3.16",
+      "@teselagen/file-utils@0.3.21",
+      "@teselagen/liquibase-tools@0.4.1",
+      "@teselagen/range-utils@0.3.14",
+      "@teselagen/react-list@0.8.19",
+      "@teselagen/sequence-utils@0.3.33",
+      "eslint-config-teselagen@6.1.7",
+      "graphql-sequelize-teselagen@5.3.8",
+      "json-rules-engine-simplified@0.2.3",
+      "ng2-file-upload@8.0.2",
+      "ngx-bootstrap@20.0.5",
+      "oradm-to-gql@35.0.14",
+      "oradm-to-sqlz@1.1.4",
+      "ove-auto-annotate@0.0.9",
+      "react-complaint-image@0.0.34",
+      "react-jsonschema-form-conditionals@0.3.20",
+      "react-jsonschema-form-extras@1.0.3",
+      "react-jsonschema-rxnt-extras@0.4.8",
+      "tg-client-query-builder@2.14.4",
+      "tg-redbird@1.3.1",
+      "tg-seq-gen@1.0.9",
+      "ve-bamreader@0.2.6",
+      "ve-editor@1.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 24
+    }
+  },
+  "cluster_0010": {
+    "rank": 10,
+    "size": 22,
+    "share_pct": 1.63,
+    "earliest_discovery": "2026-03-20",
+    "hashes_count": 2,
+    "members": [
+      "@emilgroup/accounting-sdk@1.27.3",
+      "@emilgroup/customer-sdk@1.54.5",
+      "@emilgroup/discount-sdk@1.5.3",
+      "@emilgroup/discount-sdk-node@1.5.2",
+      "@emilgroup/document-uploader@0.0.12",
+      "@emilgroup/docxtemplater-util@1.1.4",
+      "@emilgroup/gdv-sdk-node@2.6.3",
+      "@emilgroup/numbergenerator-sdk-node@1.3.3",
+      "@emilgroup/partner-portal-sdk@1.1.3",
+      "@emilgroup/partner-sdk@1.19.3",
+      "@emilgroup/process-manager-sdk@1.4.2",
+      "@emilgroup/setting-sdk@0.2.3",
+      "@leafnoise/mirage@2.0.3",
+      "@opengov/ppf-backend-types@1.141.2",
+      "@teale.io/eslint-config@1.8.15",
+      "babel-plugin-react-pure-component@0.1.6",
+      "cit-playwright-tests@1.0.1",
+      "eslint-config-ppf@0.128.2",
+      "opengov-k6-core@1.0.2",
+      "react-autolink-text@2.0.1",
+      "react-leaflet-cluster-layer@0.0.4",
+      "react-leaflet-marker-layer@0.1.5"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 22
+    }
+  },
+  "cluster_0011": {
+    "rank": 11,
+    "size": 17,
+    "share_pct": 1.26,
+    "earliest_discovery": "2026-03-20",
+    "hashes_count": 8,
+    "members": [
+      "@emilgroup/customer-sdk@1.54.3",
+      "@emilgroup/customer-sdk@1.54.4",
+      "@emilgroup/discount-sdk@1.5.1",
+      "@emilgroup/document-sdk-node@1.43.5",
+      "@emilgroup/document-uploader@0.0.10",
+      "@emilgroup/docxtemplater-util@1.1.2",
+      "@emilgroup/gdv-sdk-node@2.6.1",
+      "@emilgroup/insurance-sdk@1.97.4",
+      "@emilgroup/insurance-sdk@1.97.5",
+      "@emilgroup/numbergenerator-sdk-node@1.3.2",
+      "@emilgroup/partner-portal-sdk@1.1.1",
+      "@emilgroup/partner-sdk@1.19.2",
+      "@emilgroup/setting-sdk@0.2.2",
+      "@emilgroup/setting-sdk-node@0.2.2",
+      "@teale.io/eslint-config@1.8.12",
+      "@teale.io/eslint-config@1.8.13",
+      "@teale.io/eslint-config@1.8.14"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 17
+    }
+  },
+  "cluster_0012": {
+    "rank": 12,
+    "size": 16,
+    "share_pct": 1.19,
+    "earliest_discovery": "2026-03-20",
+    "hashes_count": 2,
+    "members": [
+      "@emilgroup/account-sdk@1.41.1",
+      "@emilgroup/account-sdk-node@1.40.1",
+      "@emilgroup/accounting-sdk-node@1.26.1",
+      "@emilgroup/api-documentation@1.19.1",
+      "@emilgroup/auth-sdk@1.25.1",
+      "@emilgroup/auth-sdk-node@1.21.1",
+      "@emilgroup/billing-sdk@1.56.1",
+      "@emilgroup/billing-sdk-node@1.57.1",
+      "@emilgroup/customer-sdk-node@1.55.1",
+      "@emilgroup/document-sdk@1.45.1",
+      "@emilgroup/document-sdk-node@1.43.1",
+      "@emilgroup/notification-sdk-node@1.4.1",
+      "@emilgroup/public-api-sdk@1.33.1",
+      "@emilgroup/public-api-sdk-node@1.35.1",
+      "@emilgroup/tenant-sdk@1.34.1",
+      "@emilgroup/tenant-sdk-node@1.33.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 16
+    }
+  },
+  "cluster_0013": {
+    "rank": 13,
+    "size": 16,
+    "share_pct": 1.19,
+    "earliest_discovery": "2026-04-21",
+    "hashes_count": 29,
+    "members": [
+      "@automagik/genie@4.260421.33",
+      "@automagik/genie@4.260421.34",
+      "@automagik/genie@4.260421.36",
+      "@automagik/genie@4.260421.37",
+      "@automagik/genie@4.260421.38",
+      "@automagik/genie@4.260421.39",
+      "@openwebconcept/design-tokens@1.0.1",
+      "@openwebconcept/design-tokens@1.0.2",
+      "@openwebconcept/design-tokens@1.0.3",
+      "@openwebconcept/theme-owc@1.0.1",
+      "@openwebconcept/theme-owc@1.0.2",
+      "@openwebconcept/theme-owc@1.0.3",
+      "pgserve@1.1.11",
+      "pgserve@1.1.12",
+      "pgserve@1.1.13",
+      "pgserve@1.1.14"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 16
+    }
+  },
+  "cluster_0014": {
+    "rank": 14,
+    "size": 13,
+    "share_pct": 0.96,
+    "earliest_discovery": "2026-03-20",
+    "hashes_count": 2,
+    "members": [
+      "@emilgroup/auth-sdk@1.25.2",
+      "@emilgroup/claim-sdk@1.41.2",
+      "@emilgroup/claim-sdk-node@1.39.2",
+      "@emilgroup/customer-sdk@1.54.2",
+      "@emilgroup/document-sdk@1.45.2",
+      "@emilgroup/gdv-sdk@2.6.2",
+      "@emilgroup/insurance-sdk-node@1.95.2",
+      "@emilgroup/partner-portal-sdk-node@1.1.2",
+      "@emilgroup/partner-sdk-node@1.19.2",
+      "@emilgroup/process-manager-sdk-node@1.13.2",
+      "@emilgroup/tenant-sdk@1.34.2",
+      "@emilgroup/translation-sdk-node@1.1.2",
+      "@teale.io/eslint-config@1.8.10"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 13
+    }
+  },
+  "cluster_0015": {
+    "rank": 15,
+    "size": 11,
+    "share_pct": 0.82,
+    "earliest_discovery": "2025-09-14",
+    "hashes_count": 1,
+    "members": [
+      "@hestjs/core@0.2.1",
+      "@hestjs/cqrs@0.1.6",
+      "@hestjs/demo@0.1.2",
+      "@hestjs/eslint-config@0.1.2",
+      "@hestjs/logger@0.1.6",
+      "@hestjs/scalar@0.1.7",
+      "@hestjs/validation@0.1.6",
+      "@nexe/config-manager@0.1.1",
+      "@nexe/eslint-config@0.1.1",
+      "@nexe/logger@0.1.3",
+      "create-hest-app@0.1.9"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 11
+    }
+  },
+  "cluster_0016": {
+    "rank": 16,
+    "size": 9,
+    "share_pct": 0.67,
+    "earliest_discovery": "2025-09-14",
+    "hashes_count": 1,
+    "members": [
+      "@thangved/callback-window@1.1.4",
+      "@tnf-dev/api@1.0.8",
+      "@tnf-dev/core@1.0.8",
+      "@tnf-dev/js@1.0.8",
+      "@tnf-dev/mui@1.0.8",
+      "@tnf-dev/react@1.0.8",
+      "html-to-base64-image@1.0.2",
+      "oradm-to-sqlz@1.1.2",
+      "thangved-react-grid@1.0.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 9
+    }
+  },
+  "cluster_0017": {
+    "rank": 17,
+    "size": 7,
+    "share_pct": 0.52,
+    "earliest_discovery": "2025-07-18",
+    "hashes_count": 2,
+    "members": [
+      "@pkgr/core@0.2.8",
+      "eslint-config-prettier@10.1.7",
+      "eslint-config-prettier@8.10.1",
+      "eslint-config-prettier@9.1.1",
+      "eslint-plugin-prettier@4.2.3",
+      "napi-postinstall@0.3.1",
+      "synckit@0.11.9"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 7
+    }
+  },
+  "cluster_0018": {
+    "rank": 18,
+    "size": 7,
+    "share_pct": 0.52,
+    "earliest_discovery": "2025-08-26",
+    "hashes_count": 21,
+    "members": [
+      "@nx/devkit@21.5.0",
+      "@nx/enterprise-cloud@3.2.0",
+      "@nx/eslint@21.5.0",
+      "@nx/js@21.5.0",
+      "@nx/key@3.2.0",
+      "@nx/node@21.5.0",
+      "@nx/workspace@21.5.0"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 7
+    }
+  },
+  "cluster_0019": {
+    "rank": 19,
+    "size": 6,
+    "share_pct": 0.44,
+    "earliest_discovery": "2025-09-14",
+    "hashes_count": 1,
+    "members": [
+      "airchief@0.3.1",
+      "airpilot@0.8.8",
+      "jumpgate@0.0.2",
+      "mcp-knowledge-base@0.0.2",
+      "mcp-knowledge-graph@1.2.1",
+      "tvi-cli@0.1.5"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 6
+    }
+  },
+  "cluster_0020": {
+    "rank": 20,
+    "size": 5,
+    "share_pct": 0.37,
+    "earliest_discovery": "2024-12-20",
+    "hashes_count": 740,
+    "members": [
+      "vant@2.13.3",
+      "vant@2.13.4",
+      "vant@2.13.5",
+      "vant@3.6.13",
+      "vant@3.6.14"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 5
+    }
+  },
+  "cluster_0021": {
+    "rank": 21,
+    "size": 5,
+    "share_pct": 0.37,
+    "earliest_discovery": "2025-04-21",
+    "hashes_count": 255,
+    "members": [
+      "xrpl@2.14.2",
+      "xrpl@4.2.1",
+      "xrpl@4.2.2",
+      "xrpl@4.2.3",
+      "xrpl@4.2.4"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 5
+    }
+  },
+  "cluster_0022": {
+    "rank": 22,
+    "size": 4,
+    "share_pct": 0.3,
+    "earliest_discovery": "2026-04-29",
+    "hashes_count": 4,
+    "members": [
+      "@cap-js/db-service@2.10.1",
+      "@cap-js/postgres@2.2.2",
+      "@cap-js/sqlite@2.2.2",
+      "mbt@1.2.48"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 4
+    }
+  },
+  "cluster_0023": {
+    "rank": 23,
+    "size": 3,
+    "share_pct": 0.22,
+    "earliest_discovery": "2024-12-20",
+    "hashes_count": 1,
+    "members": [
+      "@rspack/cli@1.1.7",
+      "@rspack/core@1.1.7",
+      "vant@4.9.14"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 3
+    }
+  },
+  "cluster_0024": {
+    "rank": 24,
+    "size": 3,
+    "share_pct": 0.22,
+    "earliest_discovery": "2025-09-14",
+    "hashes_count": 1,
+    "members": [
+      "json-rules-engine-simplified@0.2.1",
+      "react-complaint-image@0.0.32",
+      "react-jsonschema-form-conditionals@0.3.18"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 3
+    }
+  },
+  "cluster_0025": {
+    "rank": 25,
+    "size": 3,
+    "share_pct": 0.22,
+    "earliest_discovery": "2026-09-23",
+    "hashes_count": 15,
+    "members": [
+      "@memtensor/memos-cloud-openclaw-plugin@0.1.21",
+      "@memtensor/memos-cloud-openclaw-plugin@0.1.23",
+      "@memtensor/memos-cloud-openclaw-plugin@0.1.25"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 3
+    }
+  },
+  "cluster_0026": {
+    "rank": 26,
+    "size": 2,
+    "share_pct": 0.15,
+    "earliest_discovery": "2025-03-20",
+    "hashes_count": 76,
+    "members": [
+      "@rxap/ngx-bootstrap@19.0.3",
+      "@rxap/ngx-bootstrap@19.0.4"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 2
+    }
+  },
+  "cluster_0027": {
+    "rank": 27,
+    "size": 2,
+    "share_pct": 0.15,
+    "earliest_discovery": "2025-07-17",
+    "hashes_count": 3,
+    "members": [
+      "got-fetch@5.1.11",
+      "got-fetch@5.1.12"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 2
+    }
+  },
+  "cluster_0028": {
+    "rank": 28,
+    "size": 2,
+    "share_pct": 0.15,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 14,
+    "members": [
+      "@mastra/claude@1.0.3",
+      "@mastra/openai@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 2
+    }
+  },
+  "cluster_0029": {
+    "rank": 29,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2024-12-03",
+    "hashes_count": 7,
+    "members": [
+      "@solana/web3.js@1.95.7"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0030": {
+    "rank": 30,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2024-12-20",
+    "hashes_count": 0,
+    "members": [
+      "vant@4.9.12"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0031": {
+    "rank": 31,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2024-12-20",
+    "hashes_count": 0,
+    "members": [
+      "vant@4.9.13"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0032": {
+    "rank": 32,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-06",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/focus@0.2.10"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0033": {
+    "rank": 33,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@gluestack-ui/utils@0.1.16"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0034": {
+    "rank": 34,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 7,
+    "members": [
+      "@gluestack-ui/utils@0.1.17"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0035": {
+    "rank": 35,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/button@0.2.11"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0036": {
+    "rank": 36,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/checkbox@0.2.11"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0037": {
+    "rank": 37,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/combobox@0.2.8"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0038": {
+    "rank": 38,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/disclosure@0.2.9"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0039": {
+    "rank": 39,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/interactions@0.2.17"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0040": {
+    "rank": 40,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/listbox@0.2.10"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0041": {
+    "rank": 41,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/menu@0.2.16"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0042": {
+    "rank": 42,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/overlays@0.3.16"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0043": {
+    "rank": 43,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/radio@0.2.14"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0044": {
+    "rank": 44,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/separator@0.2.7"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0045": {
+    "rank": 45,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/slider@0.2.13"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0046": {
+    "rank": 46,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/switch@0.2.5"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0047": {
+    "rank": 47,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/tabs@0.2.14"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0048": {
+    "rank": 48,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/toggle@0.2.12"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0049": {
+    "rank": 49,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-06-07",
+    "hashes_count": 1,
+    "members": [
+      "@react-native-aria/utils@0.2.13"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0050": {
+    "rank": 50,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-19",
+    "hashes_count": 6,
+    "members": [
+      "is@3.3.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0051": {
+    "rank": 51,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 81,
+    "members": [
+      "@toptal/picasso-charts@59.1.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0052": {
+    "rank": 52,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 184,
+    "members": [
+      "@toptal/picasso-forms@73.3.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0053": {
+    "rank": 53,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 182,
+    "members": [
+      "@toptal/picasso-provider@5.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0054": {
+    "rank": 54,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 10,
+    "members": [
+      "@toptal/picasso-quote@2.1.7"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0055": {
+    "rank": 55,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 238,
+    "members": [
+      "@toptal/picasso-select@4.2.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0056": {
+    "rank": 56,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 0,
+    "members": [
+      "@toptal/picasso-shared@15.1.0"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0057": {
+    "rank": 57,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 0,
+    "members": [
+      "@toptal/picasso-tailwind@3.1.0"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0058": {
+    "rank": 58,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 0,
+    "members": [
+      "@toptal/picasso-typography@4.1.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0059": {
+    "rank": 59,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 0,
+    "members": [
+      "@toptal/picasso-utils@3.2.0"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0060": {
+    "rank": 60,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-07-20",
+    "hashes_count": 0,
+    "members": [
+      "@xene/core@0.4.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0061": {
+    "rank": 61,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "ansi-regex@6.2.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0062": {
+    "rank": 62,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "ansi-styles@6.2.2"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0063": {
+    "rank": 63,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "backslash@0.2.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0064": {
+    "rank": 64,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "chalk-template@1.1.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0065": {
+    "rank": 65,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "color-convert@3.1.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0066": {
+    "rank": 66,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "color-name@2.0.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0067": {
+    "rank": 67,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "debug@4.4.2"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0068": {
+    "rank": 68,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "error-ex@1.3.3"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0069": {
+    "rank": 69,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "has-ansi@6.0.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0070": {
+    "rank": 70,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "is-arrayish@0.3.3"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0071": {
+    "rank": 71,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "simple-swizzle@0.2.3"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0072": {
+    "rank": 72,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "slice-ansi@7.1.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0073": {
+    "rank": 73,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 2,
+    "members": [
+      "supports-hyperlinks@4.1.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0074": {
+    "rank": 74,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-08",
+    "hashes_count": 1,
+    "members": [
+      "wrap-ansi@9.0.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0075": {
+    "rank": 75,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-09",
+    "hashes_count": 2,
+    "members": [
+      "@coveops/abi@2.0.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0076": {
+    "rank": 76,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-09",
+    "hashes_count": 27,
+    "members": [
+      "@duckdb/duckdb-wasm@1.29.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0077": {
+    "rank": 77,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-09-09",
+    "hashes_count": 0,
+    "members": [
+      "duckdb@1.3.3"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0078": {
+    "rank": 78,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-11-24",
+    "hashes_count": 0,
+    "members": [
+      "@asyncapi/studio@1.0.2"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0079": {
+    "rank": 79,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-11-24",
+    "hashes_count": 0,
+    "members": [
+      "@asyncapi/studio@1.0.3"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0080": {
+    "rank": 80,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2025-11-24",
+    "hashes_count": 0,
+    "members": [
+      "@posthog/variance-plugin@0.0.8"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0081": {
+    "rank": 81,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-02-17",
+    "hashes_count": 0,
+    "members": [
+      "cline@2.3.0"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0082": {
+    "rank": 82,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-03-07",
+    "hashes_count": 6,
+    "members": [
+      "@aifabrix/miso-client@4.7.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0083": {
+    "rank": 83,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-03-16",
+    "hashes_count": 1,
+    "members": [
+      "react-native-country-select@0.3.91"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0084": {
+    "rank": 84,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-03-31",
+    "hashes_count": 0,
+    "members": [
+      "axios@1.14.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0085": {
+    "rank": 85,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-04-08",
+    "hashes_count": 1,
+    "members": [
+      "@velora-dex/sdk@9.4.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0086": {
+    "rank": 86,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-04-23",
+    "hashes_count": 3,
+    "members": [
+      "@bitwarden/cli@2026.4.0"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0087": {
+    "rank": 87,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-11",
+    "hashes_count": 0,
+    "members": [
+      "@uipath/ap-chat@1.5.7"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0088": {
+    "rank": 88,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-11",
+    "hashes_count": 0,
+    "members": [
+      "@uipath/apollo-react@4.24.5"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "inspection_incomplete": 1
+    }
+  },
+  "cluster_0089": {
+    "rank": 89,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-12",
+    "hashes_count": 119,
+    "members": [
+      "@opensearch-project/opensearch@3.5.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0090": {
+    "rank": 90,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-12",
+    "hashes_count": 2,
+    "members": [
+      "@opensearch-project/opensearch@3.6.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0091": {
+    "rank": 91,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-12",
+    "hashes_count": 0,
+    "members": [
+      "@opensearch-project/opensearch@3.7.0"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0092": {
+    "rank": 92,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-12",
+    "hashes_count": 0,
+    "members": [
+      "@opensearch-project/opensearch@3.8.0"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0093": {
+    "rank": 93,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-14",
+    "hashes_count": 1,
+    "members": [
+      "node-ipc@12.0.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0094": {
+    "rank": 94,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-19",
+    "hashes_count": 0,
+    "members": [
+      "echarts-for-react@3.0.7"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0095": {
+    "rank": 95,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-19",
+    "hashes_count": 0,
+    "members": [
+      "jest-canvas-mock@2.5.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0096": {
+    "rank": 96,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-19",
+    "hashes_count": 0,
+    "members": [
+      "jest-date-mock@1.0.11"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0097": {
+    "rank": 97,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-05-19",
+    "hashes_count": 0,
+    "members": [
+      "size-sensor@1.0.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0098": {
+    "rank": 98,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/chrome@2.3.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0099": {
+    "rank": 99,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/config-manager-client@5.0.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0100": {
+    "rank": 100,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/entitlements-client@4.0.11"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0101": {
+    "rank": 101,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/eslint-config-redhat-cloud-services@3.2.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0102": {
+    "rank": 102,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-config@6.11.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0103": {
+    "rank": 103,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-config-utilities@4.11.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0104": {
+    "rank": 104,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-remediations@4.9.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0105": {
+    "rank": 105,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-testing@1.2.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0106": {
+    "rank": 106,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/hcc-feo-mcp@0.3.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0107": {
+    "rank": 107,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/hcc-kessel-mcp@0.3.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0108": {
+    "rank": 108,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/hcc-pf-mcp@0.6.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0109": {
+    "rank": 109,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/integrations-client@6.0.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0110": {
+    "rank": 110,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/javascript-clients-shared@2.0.8"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0111": {
+    "rank": 111,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/quickstarts-client@4.0.11"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0112": {
+    "rank": 112,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/tsc-transform-imports@1.2.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0113": {
+    "rank": 113,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-01",
+    "hashes_count": 1,
+    "members": [
+      "@redhat-cloud-services/types@3.6.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0114": {
+    "rank": 114,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-03",
+    "hashes_count": 1,
+    "members": [
+      "@vapi-ai/server-sdk@0.11.2"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0115": {
+    "rank": 115,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-03",
+    "hashes_count": 1,
+    "members": [
+      "@vapi-ai/server-sdk@1.2.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0116": {
+    "rank": 116,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-03",
+    "hashes_count": 1,
+    "members": [
+      "@vapi-ai/server-sdk@1.2.2"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0117": {
+    "rank": 117,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel@2.26.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0118": {
+    "rank": 118,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-devtools@3.0.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0119": {
+    "rank": 119,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-eventcatalog@3.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0120": {
+    "rank": 120,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-mcp@20.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0121": {
+    "rank": 121,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-mcp@4.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0122": {
+    "rank": 122,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-mcp-instrumentation@32.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0123": {
+    "rank": 123,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-mongoose@6.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0124": {
+    "rank": 124,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-pact@1.0.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0125": {
+    "rank": 125,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-subscribers@17.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0126": {
+    "rank": 126,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-subscribers@31.1.4"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0127": {
+    "rank": 127,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-subscribers@4.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0128": {
+    "rank": 128,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-terminal@22.0.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0129": {
+    "rank": 129,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-terminal@23.0.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0130": {
+    "rank": 130,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "autotel-terminal@8.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0131": {
+    "rank": 131,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly@1.33.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0132": {
+    "rank": 132,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-analyze@1.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0133": {
+    "rank": 133,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-analyze@8.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0134": {
+    "rank": 134,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-libsql@1.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0135": {
+    "rank": 135,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-libsql@12.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0136": {
+    "rank": 136,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-libsql@22.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0137": {
+    "rank": 137,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-mongo@0.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0138": {
+    "rank": 138,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-mongo@12.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0139": {
+    "rank": 139,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-mongo@23.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0140": {
+    "rank": 140,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-postgres@1.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0141": {
+    "rank": 141,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-postgres@13.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0142": {
+    "rank": 142,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-postgres@23.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0143": {
+    "rank": 143,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-visualizer@13.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0144": {
+    "rank": 144,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-visualizer@2.0.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0145": {
+    "rank": 145,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "awaitly-visualizer@22.0.2"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0146": {
+    "rank": 146,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "effect-analyzer@0.3.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0147": {
+    "rank": 147,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "eslint-plugin-awaitly@1.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0148": {
+    "rank": 148,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "eslint-plugin-executable-stories-jest@2.1.8"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0149": {
+    "rank": 149,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "eslint-plugin-executable-stories-playwright@2.1.8"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0150": {
+    "rank": 150,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "eslint-plugin-executable-stories-vitest@2.1.8"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0151": {
+    "rank": 151,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "executable-stories-cypress@6.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0152": {
+    "rank": 152,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "executable-stories-jest@6.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0153": {
+    "rank": 153,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "executable-stories-playwright@7.0.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0154": {
+    "rank": 154,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "executable-stories-vitest@7.0.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0155": {
+    "rank": 155,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "node-env-resolver@6.5.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0156": {
+    "rank": 156,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-04",
+    "hashes_count": 1,
+    "members": [
+      "node-env-resolver-aws@12.0.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0157": {
+    "rank": 157,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/acp@0.2.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0158": {
+    "rank": 158,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/agent-browser@0.3.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0159": {
+    "rank": 159,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/agentcore@0.2.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0160": {
+    "rank": 160,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/agentfs@0.1.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0161": {
+    "rank": 161,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/ai-sdk@1.4.6"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0162": {
+    "rank": 162,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/arize@1.2.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0163": {
+    "rank": 163,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/arthur@0.3.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0164": {
+    "rank": 164,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0165": {
+    "rank": 165,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-auth0@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0166": {
+    "rank": 166,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-better-auth@1.0.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0167": {
+    "rank": 167,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-clerk@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0168": {
+    "rank": 168,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-cloud@1.1.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0169": {
+    "rank": 169,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-firebase@1.0.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0170": {
+    "rank": 170,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-okta@0.0.5"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0171": {
+    "rank": 171,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-studio@1.2.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0172": {
+    "rank": 172,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-supabase@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0173": {
+    "rank": 173,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/auth-workos@1.5.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0174": {
+    "rank": 174,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/azure@0.2.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0175": {
+    "rank": 175,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/braintrust@1.1.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0176": {
+    "rank": 176,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/brightdata@0.2.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0177": {
+    "rank": 177,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/browser-viewer@0.1.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0178": {
+    "rank": 178,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/chroma@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0179": {
+    "rank": 179,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/clickhouse@1.10.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0180": {
+    "rank": 180,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/client-js@1.24.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0181": {
+    "rank": 181,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/cloud@0.1.24"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0182": {
+    "rank": 182,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/cloudflare@1.4.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0183": {
+    "rank": 183,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/cloudflare-d1@1.0.7"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0184": {
+    "rank": 184,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/codemod@1.0.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0185": {
+    "rank": 185,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/convex@1.2.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0186": {
+    "rank": 186,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/core@1.42.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0187": {
+    "rank": 187,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/couchbase@1.0.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0188": {
+    "rank": 188,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/cursor@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0189": {
+    "rank": 189,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/dane@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0190": {
+    "rank": 190,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/daytona@0.4.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0191": {
+    "rank": 191,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/deployer@1.42.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0192": {
+    "rank": 192,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/deployer-cloud@1.42.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0193": {
+    "rank": 193,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/deployer-cloudflare@1.1.44"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0194": {
+    "rank": 194,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/deployer-netlify@1.1.20"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0195": {
+    "rank": 195,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/deployer-vercel@1.1.38"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0196": {
+    "rank": 196,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/docker@0.3.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0197": {
+    "rank": 197,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/duckdb@1.4.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0198": {
+    "rank": 198,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/dynamodb@1.0.9"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0199": {
+    "rank": 199,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/e2b@0.3.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0200": {
+    "rank": 200,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/editor@0.11.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0201": {
+    "rank": 201,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/elasticsearch@1.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0202": {
+    "rank": 202,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 3,
+    "members": [
+      "@mastra/engine@0.1.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0203": {
+    "rank": 203,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/express@1.3.31"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0204": {
+    "rank": 204,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/files-sdk@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0205": {
+    "rank": 205,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/gcs@0.2.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0206": {
+    "rank": 206,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/github-signals@0.1.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0207": {
+    "rank": 207,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/google-drive@0.1.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0208": {
+    "rank": 208,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/hono@1.4.26"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0209": {
+    "rank": 209,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/inngest@1.5.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0210": {
+    "rank": 210,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/koa@1.5.14"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0211": {
+    "rank": 211,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/laminar@1.2.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0212": {
+    "rank": 212,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/libsql@1.13.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0213": {
+    "rank": 213,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/mcp@1.10.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0214": {
+    "rank": 214,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/mcp-docs-server@1.1.47"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0215": {
+    "rank": 215,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/memory@1.20.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0216": {
+    "rank": 216,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/modal@0.2.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0217": {
+    "rank": 217,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/mongodb@1.9.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0218": {
+    "rank": 218,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/mysql@0.1.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0219": {
+    "rank": 219,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/nestjs@0.1.15"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0220": {
+    "rank": 220,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/node-audio@0.1.8"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0221": {
+    "rank": 221,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/node-speaker@0.1.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0222": {
+    "rank": 222,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/opencode@0.0.47"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0223": {
+    "rank": 223,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/opensearch@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0224": {
+    "rank": 224,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/otel-bridge@1.2.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0225": {
+    "rank": 225,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/otel-exporter@1.2.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0226": {
+    "rank": 226,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/perplexity@0.1.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0227": {
+    "rank": 227,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/pg@1.13.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0228": {
+    "rank": 228,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/pinecone@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0229": {
+    "rank": 229,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/playground-ui@33.0.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0230": {
+    "rank": 230,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/posthog@1.0.29"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0231": {
+    "rank": 231,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/qdrant@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0232": {
+    "rank": 232,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/rag@2.2.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0233": {
+    "rank": 233,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/railway@0.1.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0234": {
+    "rank": 234,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/redis@1.1.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0235": {
+    "rank": 235,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/redis-streams@0.0.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0236": {
+    "rank": 236,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/s3@0.5.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0237": {
+    "rank": 237,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/s3vectors@1.0.7"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0238": {
+    "rank": 238,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/schema-compat@1.2.12"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0239": {
+    "rank": 239,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/sentry@1.1.4"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0240": {
+    "rank": 240,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 553,
+    "members": [
+      "@mastra/server@2.1.1"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0241": {
+    "rank": 241,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/slack@1.3.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0242": {
+    "rank": 242,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/spanner@1.1.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0243": {
+    "rank": 243,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/speech-azure@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0244": {
+    "rank": 244,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/speech-elevenlabs@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0245": {
+    "rank": 245,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/speech-google@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0246": {
+    "rank": 246,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/speech-murf@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0247": {
+    "rank": 247,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/speech-replicate@0.2.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0248": {
+    "rank": 248,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/stagehand@0.2.5"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0249": {
+    "rank": 249,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/tavily@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0250": {
+    "rank": 250,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/temporal@0.1.14"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0251": {
+    "rank": 251,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/turbopuffer@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0252": {
+    "rank": 252,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 18,
+    "members": [
+      "@mastra/twilio@1.0.2"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0253": {
+    "rank": 253,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/upstash@1.1.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0254": {
+    "rank": 254,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/vectorize@1.0.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0255": {
+    "rank": 255,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 10,
+    "members": [
+      "@mastra/vercel@1.0.1"
+    ],
+    "decision": "WARN",
+    "evidence_only_decision": "WARN",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0256": {
+    "rank": 256,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-cloudflare@0.12.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0257": {
+    "rank": 257,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-deepgram@0.12.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0258": {
+    "rank": 258,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-elevenlabs@0.12.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0259": {
+    "rank": 259,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-gladia@0.12.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0260": {
+    "rank": 260,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-google@0.12.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0261": {
+    "rank": 261,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-google-gemini-live@0.12.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0262": {
+    "rank": 262,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-inworld@0.3.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0263": {
+    "rank": 263,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-modelslab@0.1.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0264": {
+    "rank": 264,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-murf@0.12.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0265": {
+    "rank": 265,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-openai@0.12.3"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0266": {
+    "rank": 266,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-openai-realtime@0.12.6"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0267": {
+    "rank": 267,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-playai@0.12.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0268": {
+    "rank": 268,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-sarvam@1.0.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0269": {
+    "rank": 269,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-speechify@0.12.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0270": {
+    "rank": 270,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "@mastra/voice-xai-realtime@0.1.2"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0271": {
+    "rank": 271,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "create-mastra@1.13.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0272": {
+    "rank": 272,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-17",
+    "hashes_count": 0,
+    "members": [
+      "mastra@1.13.1"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0273": {
+    "rank": 273,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-06-25",
+    "hashes_count": 1,
+    "members": [
+      "leo-logger@1.0.8"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0274": {
+    "rank": 274,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-10-05",
+    "hashes_count": 3,
+    "members": [
+      "@subql/common@5.8.3"
+    ],
+    "decision": "BLOCK",
+    "evidence_only_decision": "BLOCK",
+    "statuses": {
+      "ok": 1
+    }
+  },
+  "cluster_0275": {
+    "rank": 275,
+    "size": 1,
+    "share_pct": 0.07,
+    "earliest_discovery": "2026-10-08",
+    "hashes_count": 2,
+    "members": [
+      "tensorlake@0.5.144"
+    ],
+    "decision": "ALLOW",
+    "evidence_only_decision": "ALLOW",
+    "statuses": {
+      "ok": 1
+    }
+  }
+}

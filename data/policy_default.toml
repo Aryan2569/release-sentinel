@@ -97,10 +97,6 @@ signals = ["obfuscated_code", "hardcoded_ip"]
 description = "Obfuscated code combined with hardcoded IP address"
 
 [[decision.block_requires]]
-signals = ["obfuscated_code", "hardcoded_url"]
-description = "Obfuscated code combined with outbound URL"
-
-[[decision.block_requires]]
 signals = ["obfuscated_code", "process_exec"]
 description = "Obfuscated code combined with process execution"
 
@@ -191,10 +187,6 @@ description = "Obfuscated code combined with network access"
 [[full_scan.block_requires]]
 signals = ["obfuscated_code", "hardcoded_ip"]
 description = "Obfuscated code combined with hardcoded IP address"
-
-[[full_scan.block_requires]]
-signals = ["obfuscated_code", "hardcoded_url"]
-description = "Obfuscated code combined with outbound URL"
 
 [[full_scan.block_requires]]
 signals = ["obfuscated_code", "process_exec"]
