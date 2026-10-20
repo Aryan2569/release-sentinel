@@ -256,3 +256,15 @@ Eliminated root causes of false alarms discovered in smoke testing:
     - **TEST-A** (98 clusters): Earlier half of TEST (May 2026 through the first 23 clusters of 2026-06-17).
     - **TEST-B** (98 clusters): Later half of TEST (remaining 94 clusters of 2026-06-17 through October 2026).
   - *Evaluation Honesty Note*: Aggregate performance metrics for the combined TEST set were observed during Stage 4a and 4b re-split before establishing this partition. No per-pair inspection of TEST has ever taken place.
+
+### D24 — Signal Lift Bug Fix & Benign Alert Burden Reconciliation (Stage 5c Part 0)
+- **Part 0a: Signal Lift Calculation Bug**:
+  - *Root Cause*: In the Stage 5b scratch calculation, malicious cluster prevalence (expressed as a fraction $b / N_{mal} \approx 0.76$) was divided by benign prevalence expressed as a percentage ($a / N_{benign} \times 100 \approx 1.5\%$), understating lift by a factor of 100 (e.g. `dependency_added` reported as $0.51\times$ instead of true $\sim 1.69\times$).
+  - *Resolution*: Implemented `compute_lift` and `compute_cluster_macro_prevalence` in `src/release_sentinel/signal_lift.py`. Added unit tests in `tests/test_signal_lift.py` asserting exact mathematical equivalence $lift = (b / N_{mal}) / (a / N_{benign})$ and handling edge cases ($0/0 \to 1.0$, $b > 0, a = 0 \to \infty$).
+  - *Regeneration*: Regenerated `docs/signal_lift.md` across all 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs) against all 800 benign packages. Both Any-Member and Cluster-Macro prevalence and lifts are reported.
+- **Part 0b: Benign Alert Burden Reconciliation**:
+  - *Discrepancy*: Section 4 reported 91 alerts across 800 benign packages (11.38%), whereas Decision 20/22 recorded 121 alerts (15.13 per 100 updates).
+  - *Root Cause*: The fast sweep script (`run_fast_sweep.py`) used a simplified synthetic severity mapping (`SEV_MAP`) that treated `high_entropy_string` and `notable_new_file` as `Severity.LOW` unless corroborated. In reality, the true scanner (`content_scanner.py`) emits them as `Severity.MEDIUM`. Because a single `MEDIUM` signal triggers a `WARN` decision under default policy, the true scanner flagged 30 additional packages that the fast sweep script mistakenly marked `ALLOW`.
+  - *Ground Truth*: The true scanner baseline alert rate is **121 / 800 = 15.13 alerts per 100 updates** (Tuning: 11/100 = 11.0%, Validation: 7/100 = 7.0%, Matched Negatives: 103/600 = 17.17%). False BLOCK rate is **0.00%** (0 / 800).
+  - *Tooling Fix*: Created `scripts/policy_sweep.py`, which runs and caches full, uncompressed `Evidence` objects extracted directly by the true scanner. The cache is automatically invalidated if any scanner source file (`differ.py`, `content_scanner.py`, `extractor.py`, `engine.py`, `eval.py`) changes hash. Sweep decisions are computed strictly through `release_sentinel.policy.decide()`, guaranteeing exact parity with the true scanner.
+
