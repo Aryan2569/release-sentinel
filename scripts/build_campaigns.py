@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import csv
 import json
+import math
 import re
 import zipfile
 from collections import defaultdict
@@ -243,6 +244,41 @@ def build_campaigns() -> tuple[dict[str, Any], dict[str, str]]:
     return campaigns_dict, pair_to_campaign
 
 
+def binom_cdf(k: int, n: int, p: float) -> float:
+    return sum(math.comb(n, j) * (p**j) * ((1 - p) ** (n - j)) for j in range(k + 1))
+
+
+def clopper_pearson(k: int, n: int, alpha: float = 0.05) -> tuple[float, float]:
+    """Exact Clopper-Pearson 95% binomial confidence interval."""
+    if n == 0:
+        return 0.0, 1.0
+    if k == 0:
+        lower = 0.0
+    else:
+        lo, hi = 0.0, 1.0
+        for _ in range(100):
+            mid = (lo + hi) / 2
+            prob = sum(math.comb(n, j) * (mid**j) * ((1 - mid) ** (n - j)) for j in range(k, n + 1))
+            if prob < alpha / 2:
+                lo = mid
+            else:
+                hi = mid
+        lower = (lo + hi) / 2
+    if k == n:
+        upper = 1.0
+    else:
+        lo, hi = 0.0, 1.0
+        for _ in range(100):
+            mid = (lo + hi) / 2
+            prob = binom_cdf(k, n, mid)
+            if prob < alpha / 2:
+                hi = mid
+            else:
+                lo = mid
+        upper = (lo + hi) / 2
+    return lower, upper
+
+
 def evaluate_version_on_campaigns(
     results_path: Path,
     campaigns_dict: dict[str, Any],
@@ -269,8 +305,8 @@ def evaluate_version_on_campaigns(
         else:
             target_cids = [
                 cid
-                for cid in campaigns_dict
-                if any(r["eval_split"] == split for r in camp_rows.get(cid, []))
+                for cid, c in campaigns_dict.items()
+                if c["primary_split"] == split
             ]
 
         n_camps = len(target_cids)
@@ -288,12 +324,7 @@ def evaluate_version_on_campaigns(
         macro_eo_block_sum = 0.0
 
         for cid in target_cids:
-            all_r = camp_rows.get(cid, [])
-            if split != "ALL":
-                r_list = [r for r in all_r if r.get("eval_split") == split]
-            else:
-                r_list = all_r
-
+            r_list = camp_rows.get(cid, [])
             if not r_list:
                 continue
 
@@ -328,6 +359,8 @@ def evaluate_version_on_campaigns(
             "lenient_eo_warn_pct": lenient_eo_warn / n_camps * 100,
             "lenient_eo_block": lenient_eo_block,
             "lenient_eo_block_pct": lenient_eo_block / n_camps * 100,
+            "lenient_eo_warn_ci": list(clopper_pearson(lenient_eo_warn, n_camps)),
+            "lenient_eo_block_ci": list(clopper_pearson(lenient_eo_block, n_camps)),
             "macro_fc_warn_pct": macro_fc_warn_sum / n_camps * 100,
             "macro_fc_block_pct": macro_fc_block_sum / n_camps * 100,
             "macro_eo_warn_pct": macro_eo_warn_sum / n_camps * 100,

@@ -100,9 +100,9 @@ Macro recall provides the truest measure of generalization across disparate thre
 **Answer**:
 Standard cross-validation (randomly shuffling samples into train/test) causes catastrophic **temporal data leakage** in security: the detector "learns" from future attacks to detect past attacks, masking real-world detection decay.
 Stage 4b instituted a **walk-forward chronological protocol**:
-- **DEV**: All attacks discovered before `2026-01-01` (857 pairs).
-- **VAL**: Attacks discovered between `2026-01-01` and `2026-04-30` (94 pairs).
-- **TEST**: Attacks discovered `2026-05-01` onward (398 pairs).
+- **DEV**: All attacks discovered before `2026-01-01` (857 pairs, 29 campaigns).
+- **VAL**: Attacks discovered between `2026-01-01` and `2026-04-30` (94 pairs, 3 campaigns).
+- **TEST**: Attacks discovered `2026-05-01` onward (398 pairs: 299 in TEST-A / 49 campaigns, 99 in TEST-B / 3 campaigns; total = 1,349 pairs / 84 campaigns).
 Rules could only be engineered and tuned using DEV and VAL. TEST was locked and run aggregates-only at the very end of evaluation.
 
 ---
@@ -112,8 +112,8 @@ Rules could only be engineered and tuned using DEV and VAL. TEST was locked and 
 When analyzing the TEST cohort ($\ge 2026-05-01$), a severe temporal anomaly occurred: **117 distinct clusters were discovered on a single calendar day (2026-06-17)**. 
 Because of this concentration, no calendar date cutoff could divide the 196 TEST clusters with at least 80 clusters on both sides.
 The cohort was partitioned chronologically by discovery date and deterministically by cluster rank into:
-- **TEST-A (98 clusters)**: Unlocked in Stage 5c as "VAL2" for error analysis and policy calibration.
-- **TEST-B (98 clusters)**: Kept strictly locked and held-out for the final verification run of v1.1.
+- **TEST-A (299 pairs, 49 campaigns)**: Unlocked in Stage 5c as "VAL2" for error analysis and policy calibration.
+- **TEST-B (99 pairs, 3 campaigns)**: Kept strictly locked and held-out for the final verification run of v1.1.
 
 ---
 
@@ -144,6 +144,8 @@ The rule evaluates whether an added dependency is a disguised variant of a high-
 3. **Separator Normalization**: Strips hyphens, underscores, and dots (e.g. `cryptojs` vs `crypto-js`).
 4. **Bounded Edit Distance**: Computes Levenshtein distance $\le 1$ for names $\ge 5$ chars, or $\le 2$ for names $\ge 7$ chars (e.g. `cha1k` $\to$ `chalk`).
 
+*Stage 5e Audit Disclosure*: Auditing revealed that `"easy-"` was sample-derived from observing `easy-day-js`. Removing `"easy-"` causes `easy-day-js` not to match `dayjs`, dropping v1.2's post-hoc TEST-B BLOCK recall from 92.93% back to 3.03%. This proves that post-hoc numbers on observed test sets are highly vulnerable to subtle sample overfitting.
+
 ---
 
 ### Q15: Why is `hollow_dependency_injection` + `lookalike_dependency_name` required to reach BLOCK together?
@@ -163,17 +165,15 @@ File-hash clustering groups pairs only if they share an identical new-or-changed
 2. Identical added direct runtime dependency (excluding benign dependencies).
 3. Identical added lifecycle command string.
 4. Identical added hardcoded public IP or attacker C2 domain.
-This collapsed the 275 fragmented clusters into **84 coherent real-world campaigns**.
+This collapsed the 275 fragmented clusters into **84 coherent real-world campaigns** (DEV: 29, VAL: 3, TEST-A: 49, TEST-B: 3).
 
 ---
 
-### Q17: Why did early Union-Find implementations collapse all packages into a mega-campaign, and how was it fixed?
+### Q17: Why did early Union-Find implementations collapse packages into a mega-campaign, and how was it investigated?
 **Answer**:
-In an early prototype, condition 4 extracted every URL domain found in any file. Because standard documentation domains (`w3.org`, `schemas.microsoft.com`, `google.com`, `reactjs.org`) appear across thousands of npm packages, transitive Union-Find merged 1,308 pairs into a single mega-cluster.
-The fix required strict domain scoping:
-1. Exclude all domains found in the 800 benign benchmark packages.
-2. Exclude common web infrastructure (`github.com`, `npmjs.org`, `w3.org`, CDNs).
-3. Restrict extraction to **public IPv4 addresses** and known attacker webhook/exfiltration platforms (`api-monitor.com`, `webhook.site`, `oastify.com`).
+In `camp_0001` (1,211 pairs), chaining occurred because the benign dependency exclusion list only drew from the 800 benign smoke pairs, missing standard open-source libraries (`jsonwebtoken`, `jose`, `openai`, `zustand`, `async-mutex`, `@azure/storage-blob`).
+Generic lifecycle commands (`node index.js`, `rm /s /q`) and popular packages acted as hubs in Union-Find, bridging disparate clusters into a single mega-component.
+By assigning each campaign strictly by its earliest discovery date, every campaign belongs to exactly one split (DEV: 29, VAL: 3, TEST-A: 49, TEST-B: 3), preventing multi-counting while accurately recording real-world attacker overlap.
 
 ---
 

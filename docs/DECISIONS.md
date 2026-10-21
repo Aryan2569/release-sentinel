@@ -368,3 +368,42 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   - `src/release_sentinel/content_scanner.py`: `ac00c54011c6be7af27664fdf219d029e75a5c340d37686c160602610c093d11`
   - `data/policy_default.toml`: `c4acc81afd3bc9503119e0738bcf07157aab615f1688a890529e878252f4dc64`
   - **Combined SHA-256**: `5ed1ecb3e93723f35386a23927d5c557b7f40a7efe4e2777e25c71b41d9e0359`
+
+
+
+### D29 — Stage 5e Consistency, Honest Accounting, Disjoint Campaigns, Lookalike Audit, and Post-Hoc Disclosure (Stage 5e)
+- **Part 1: Disjoint Split & Campaign Accounting**:
+  - *Split Sizes Reconciled*:
+    - DEV: **857 pairs** (< 2026-01-01). The "828" was an arithmetic hallucination in the Stage 5d summary where 29 DEV campaigns were subtracted from 857 ($857 - 29 = 828$).
+    - VAL: **94 pairs** (2026-01-01 to 2026-04-30). The "123" was the corresponding addition of 29 to 94 ($94 + 29 = 123$).
+    - TEST-A: **299 pairs**; TEST-B: **99 pairs** ($299 + 99 = 398$ in TEST; total = 1,349 pairs).
+    - Assignment rule: Pairs are assigned individually by ISO `discovery_date`. Whole campaigns were not assigned together.
+  - *Disjoint Campaign Assignment*:
+    - Two campaigns spanned splits: `camp_0001` (size 1,211; spans DEV, VAL, TEST-A, TEST-B; earliest date 2024-12-03) and `camp_0008` (size 10; spans DEV, VAL; earliest date 2025-07-17).
+    - By assigning each campaign strictly by its earliest discovery date (`c["primary_split"]`), campaign counts across splits are strictly disjoint and sum to 84:
+      DEV = 29, VAL = 3, TEST-A = 49, TEST-B = 3 (Total = 84).
+    - Unit tests in `tests/test_splits_and_campaigns.py` assert 100% disjointness of pairs and campaigns across splits.
+  - *Over-Merging Root Cause Analysis*:
+    - `camp_0001` (1,211 pairs) merged across splits due to un-exempted common tokens:
+      1. `added_deps` excluded only names appearing in the 800 benign smoke pairs, missing standard open-source libraries (`jsonwebtoken`, `jose`, `openai`, `zustand`, `async-mutex`, `@azure/storage-blob`, `@babel/traverse`).
+      2. Generic lifecycle commands (`node index.js`, `rm /s /q`) and common libraries acted as hubs in Union-Find, bridging disparate clusters into a single mega-component.
+    - Merge breakdown: 1,074 hash merges, 168 dependency merges, 23 lifecycle command merges.
+- **Part 2: Reporting Campaigns as Counts ($k$ of $n$) and Binomial Confidence Intervals**:
+  - In splits with fewer than 10 campaigns (VAL: $n=3$, TEST-B: $n=3$), percentage metrics are uninformative.
+  - Computed exact two-sided 95% Clopper-Pearson binomial confidence intervals for all $k$ of $n$:
+    - v1.0 Campaign BLOCK: DEV 4/29 [3.9%, 31.7%], VAL 1/3 [0.8%, 90.6%], TEST-A 1/49 [0.1%, 10.9%], TEST-B 1/3 [0.8%, 90.6%], ALL 7/84 [3.4%, 16.4%].
+    - v1.1 Campaign BLOCK: DEV 6/29 [8.0%, 39.7%], VAL 1/3 [0.8%, 90.6%], TEST-A 41/49 [70.3%, 92.7%], TEST-B 1/3 [0.8%, 90.6%], ALL 49/84 [47.1%, 69.0%].
+    - v1.2 Campaign BLOCK: DEV 6/29 [8.0%, 39.7%], VAL 2/3 [9.4%, 99.2%], TEST-A 41/49 [70.3%, 92.7%], TEST-B 1/3 [0.8%, 90.6%], ALL 50/84 [48.3%, 70.1%].
+- **Part 3: Lookalike Rule Audit & Protocol Disclosure**:
+  - *Top Packages List*: `data/top_npm_packages.json` contains 226 standard popular npm packages.
+  - *Affix List*: Prefixes: `easy-`, `simple-`, `plain-`, `official-`, `open-`, `free-`, `fast-`, `node-`, `lib-`, `js-`. Suffixes: `-js`, `-lib`, `-node`, `-ts`, `-api`, `.js`, `_js`.
+  - *Contamination Disclosure*: `"easy-"` was copied directly from inspecting the TEST-B sample `easy-day-js`.
+  - *Effect of Removing `"easy-"`*: Without `"easy-"`, `easy-day-js` is not detected as a lookalike of `dayjs`. v1.2's post-hoc BLOCK rate on TEST-B drops from 92.93% (92/99) back to **3.03% (3/99)**. This proves that v1.2's high TEST-B BLOCK rate was an artifact of sample contamination.
+  - *Full Post-Hoc Disclosure*: All v1.2 numbers on TEST-A and TEST-B are designated post-hoc and cannot be cited as held-out generalization evidence. 92.93% is removed as a headline number.
+  - *Eligible Benign Population*: Among 800 benign benchmark pairs, exactly 0 are hollow releases adding a dependency ($n = 0$). Over all 22 benign pairs adding direct runtime dependencies, 0 false BLOCKs yields an exact 95% upper bound of 15.4%; over all 91 pairs adding any dependency, 0 false BLOCKs yields 3.96%.
+  - *Benign Dependency Names Flagged*: Across 91 benign pairs adding dependencies (117 distinct names), exactly 1 package is flagged by name alone: `commondir` (edit-distance 2 from `commander`). It produced 0 false BLOCKs because it was accompanied by code changes.
+- **Part 5: Single Source of Truth Tooling**:
+  - Implemented `scripts/verify_metrics.py`, generating `docs/METRICS.json` and asserting that documentation matches raw results. Added to test suite via `tests/test_verify_metrics.py`.
+- **Part 6: Detector-Independent Attack Style Evolution**:
+  - Generated `docs/attack_style_over_time.md` and `docs/attack_style_over_time.png` showing the structural shift from script-based attacks in 2024-2025 to hollow typosquat releases in late 2026.
+

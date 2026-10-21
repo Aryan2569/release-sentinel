@@ -214,6 +214,14 @@
         "lenient_eo_warn_pct": 89.28571428571429,
         "lenient_eo_block": 7,
         "lenient_eo_block_pct": 8.333333333333332,
+        "lenient_eo_warn_ci": [
+          0.8063299404553328,
+          0.9498226110134951
+        ],
+        "lenient_eo_block_ci": [
+          0.034162377853966364,
+          0.1641890802707951
+        ],
         "macro_fc_warn_pct": 89.45946875860172,
         "macro_fc_block_pct": 6.780725295898707,
         "macro_eo_warn_pct": 88.26407730722346,
@@ -229,55 +237,87 @@
         "lenient_eo_warn_pct": 86.20689655172413,
         "lenient_eo_block": 4,
         "lenient_eo_block_pct": 13.793103448275861,
-        "macro_fc_warn_pct": 89.62914769030579,
-        "macro_fc_block_pct": 13.66731728475385,
-        "macro_eo_warn_pct": 86.17219692040773,
-        "macro_eo_block_pct": 13.66731728475385
+        "lenient_eo_warn_ci": [
+          0.6833593905608624,
+          0.9611051687045611
+        ],
+        "lenient_eo_block_ci": [
+          0.03889483129543887,
+          0.31664060943913774
+        ],
+        "macro_fc_warn_pct": 89.2963922662946,
+        "macro_fc_block_pct": 13.17520430536177,
+        "macro_eo_warn_pct": 85.83387909678521,
+        "macro_eo_block_pct": 13.17520430536177
       },
       "VAL": {
-        "campaigns": 5,
-        "lenient_fc_warn": 5,
+        "campaigns": 3,
+        "lenient_fc_warn": 3,
         "lenient_fc_warn_pct": 100.0,
-        "lenient_fc_block": 3,
-        "lenient_fc_block_pct": 60.0,
-        "lenient_eo_warn": 5,
+        "lenient_fc_block": 1,
+        "lenient_fc_block_pct": 33.33333333333333,
+        "lenient_eo_warn": 3,
         "lenient_eo_warn_pct": 100.0,
-        "lenient_eo_block": 3,
-        "lenient_eo_block_pct": 60.0,
+        "lenient_eo_block": 1,
+        "lenient_eo_block_pct": 33.33333333333333,
+        "lenient_eo_warn_ci": [
+          0.2924017738212866,
+          1.0
+        ],
+        "lenient_eo_block_ci": [
+          0.008403758659612636,
+          0.9057006759497539
+        ],
         "macro_fc_warn_pct": 100.0,
-        "macro_fc_block_pct": 51.96666666666667,
+        "macro_fc_block_pct": 20.833333333333336,
         "macro_eo_warn_pct": 100.0,
-        "macro_eo_block_pct": 51.96666666666667
+        "macro_eo_block_pct": 20.833333333333336
       },
       "TEST-A": {
-        "campaigns": 50,
-        "lenient_fc_warn": 46,
-        "lenient_fc_warn_pct": 92.0,
-        "lenient_fc_block": 2,
-        "lenient_fc_block_pct": 4.0,
-        "lenient_eo_warn": 46,
-        "lenient_eo_warn_pct": 92.0,
-        "lenient_eo_block": 2,
-        "lenient_eo_block_pct": 4.0,
-        "macro_fc_warn_pct": 90.24898785425101,
-        "macro_fc_block_pct": 1.7388663967611337,
-        "macro_eo_warn_pct": 90.2246963562753,
-        "macro_eo_block_pct": 1.7388663967611337
+        "campaigns": 49,
+        "lenient_fc_warn": 45,
+        "lenient_fc_warn_pct": 91.83673469387756,
+        "lenient_fc_block": 1,
+        "lenient_fc_block_pct": 2.0408163265306123,
+        "lenient_eo_warn": 45,
+        "lenient_eo_warn_pct": 91.83673469387756,
+        "lenient_eo_block": 1,
+        "lenient_eo_block_pct": 2.0408163265306123,
+        "lenient_eo_warn_ci": [
+          0.80398581652111,
+          0.9773091193569268
+        ],
+        "lenient_eo_block_ci": [
+          0.0005165564975932865,
+          0.10854176396840692
+        ],
+        "macro_fc_warn_pct": 90.3061224489796,
+        "macro_fc_block_pct": 0.5102040816326531,
+        "macro_eo_warn_pct": 90.3061224489796,
+        "macro_eo_block_pct": 0.5102040816326531
       },
       "TEST-B": {
-        "campaigns": 4,
-        "lenient_fc_warn": 3,
-        "lenient_fc_warn_pct": 75.0,
-        "lenient_fc_block": 2,
-        "lenient_fc_block_pct": 50.0,
-        "lenient_eo_warn": 3,
-        "lenient_eo_warn_pct": 75.0,
-        "lenient_eo_block": 2,
-        "lenient_eo_block_pct": 50.0,
-        "macro_fc_warn_pct": 51.329787234042556,
-        "macro_fc_block_pct": 25.53191489361702,
-        "macro_eo_warn_pct": 51.329787234042556,
-        "macro_eo_block_pct": 25.53191489361702
+        "campaigns": 3,
+        "lenient_fc_warn": 2,
+        "lenient_fc_warn_pct": 66.66666666666666,
+        "lenient_fc_block": 1,
+        "lenient_fc_block_pct": 33.33333333333333,
+        "lenient_eo_warn": 2,
+        "lenient_eo_warn_pct": 66.66666666666666,
+        "lenient_eo_block": 1,
+        "lenient_eo_block_pct": 33.33333333333333,
+        "lenient_eo_warn_ci": [
+          0.09429932405024608,
+          0.9915962413403874
+        ],
+        "lenient_eo_block_ci": [
+          0.008403758659612636,
+          0.9057006759497539
+        ],
+        "macro_fc_warn_pct": 66.66666666666666,
+        "macro_fc_block_pct": 33.33333333333333,
+        "macro_eo_warn_pct": 66.66666666666666,
+        "macro_eo_block_pct": 33.33333333333333
       }
     },
     "v1.1": {
@@ -291,6 +331,14 @@
         "lenient_eo_warn_pct": 88.09523809523809,
         "lenient_eo_block": 49,
         "lenient_eo_block_pct": 58.333333333333336,
+        "lenient_eo_warn_ci": [
+          0.7919451014387608,
+          0.9414105074553334
+        ],
+        "lenient_eo_block_ci": [
+          0.4706099870036109,
+          0.6900059598419257
+        ],
         "macro_fc_warn_pct": 89.4604518107821,
         "macro_fc_block_pct": 57.24681491093546,
         "macro_eo_warn_pct": 87.0755672211081,
@@ -306,55 +354,87 @@
         "lenient_eo_warn_pct": 82.75862068965517,
         "lenient_eo_block": 6,
         "lenient_eo_block_pct": 20.689655172413794,
-        "macro_fc_warn_pct": 89.62914769030579,
-        "macro_fc_block_pct": 20.64194317935372,
-        "macro_eo_warn_pct": 82.72392105833876,
-        "macro_eo_block_pct": 20.64194317935372
+        "lenient_eo_warn_ci": [
+          0.642252445585356,
+          0.9415439170273656
+        ],
+        "lenient_eo_block_ci": [
+          0.07994184887608008,
+          0.3972469492272396
+        ],
+        "macro_fc_warn_pct": 89.29923972778269,
+        "macro_fc_block_pct": 20.128705259261366,
+        "macro_eo_warn_pct": 82.39129815769242,
+        "macro_eo_block_pct": 20.128705259261366
       },
       "VAL": {
-        "campaigns": 5,
-        "lenient_fc_warn": 5,
+        "campaigns": 3,
+        "lenient_fc_warn": 3,
         "lenient_fc_warn_pct": 100.0,
-        "lenient_fc_block": 3,
-        "lenient_fc_block_pct": 60.0,
-        "lenient_eo_warn": 5,
+        "lenient_fc_block": 1,
+        "lenient_fc_block_pct": 33.33333333333333,
+        "lenient_eo_warn": 3,
         "lenient_eo_warn_pct": 100.0,
-        "lenient_eo_block": 3,
-        "lenient_eo_block_pct": 60.0,
+        "lenient_eo_block": 1,
+        "lenient_eo_block_pct": 33.33333333333333,
+        "lenient_eo_warn_ci": [
+          0.2924017738212866,
+          1.0
+        ],
+        "lenient_eo_block_ci": [
+          0.008403758659612636,
+          0.9057006759497539
+        ],
         "macro_fc_warn_pct": 100.0,
-        "macro_fc_block_pct": 59.73333333333334,
+        "macro_fc_block_pct": 33.33333333333333,
         "macro_eo_warn_pct": 100.0,
-        "macro_eo_block_pct": 59.73333333333334
+        "macro_eo_block_pct": 33.33333333333333
       },
       "TEST-A": {
-        "campaigns": 50,
-        "lenient_fc_warn": 46,
-        "lenient_fc_warn_pct": 92.0,
-        "lenient_fc_block": 42,
-        "lenient_fc_block_pct": 84.0,
-        "lenient_eo_warn": 46,
-        "lenient_eo_warn_pct": 92.0,
-        "lenient_eo_block": 42,
-        "lenient_eo_block_pct": 84.0,
-        "macro_fc_warn_pct": 90.25708502024291,
-        "macro_fc_block_pct": 81.74696356275304,
-        "macro_eo_warn_pct": 90.24089068825911,
-        "macro_eo_block_pct": 81.74696356275304
+        "campaigns": 49,
+        "lenient_fc_warn": 45,
+        "lenient_fc_warn_pct": 91.83673469387756,
+        "lenient_fc_block": 41,
+        "lenient_fc_block_pct": 83.6734693877551,
+        "lenient_eo_warn": 45,
+        "lenient_eo_warn_pct": 91.83673469387756,
+        "lenient_eo_block": 41,
+        "lenient_eo_block_pct": 83.6734693877551,
+        "lenient_eo_warn_ci": [
+          0.80398581652111,
+          0.9773091193569268
+        ],
+        "lenient_eo_block_ci": [
+          0.7034286420002969,
+          0.9267772400920118
+        ],
+        "macro_fc_warn_pct": 90.3061224489796,
+        "macro_fc_block_pct": 82.14285714285714,
+        "macro_eo_warn_pct": 90.3061224489796,
+        "macro_eo_block_pct": 82.14285714285714
       },
       "TEST-B": {
-        "campaigns": 4,
-        "lenient_fc_warn": 3,
-        "lenient_fc_warn_pct": 75.0,
-        "lenient_fc_block": 2,
-        "lenient_fc_block_pct": 50.0,
-        "lenient_eo_warn": 3,
-        "lenient_eo_warn_pct": 75.0,
-        "lenient_eo_block": 2,
-        "lenient_eo_block_pct": 50.0,
-        "macro_fc_warn_pct": 51.329787234042556,
-        "macro_fc_block_pct": 25.53191489361702,
-        "macro_eo_warn_pct": 51.329787234042556,
-        "macro_eo_block_pct": 25.53191489361702
+        "campaigns": 3,
+        "lenient_fc_warn": 2,
+        "lenient_fc_warn_pct": 66.66666666666666,
+        "lenient_fc_block": 1,
+        "lenient_fc_block_pct": 33.33333333333333,
+        "lenient_eo_warn": 2,
+        "lenient_eo_warn_pct": 66.66666666666666,
+        "lenient_eo_block": 1,
+        "lenient_eo_block_pct": 33.33333333333333,
+        "lenient_eo_warn_ci": [
+          0.09429932405024608,
+          0.9915962413403874
+        ],
+        "lenient_eo_block_ci": [
+          0.008403758659612636,
+          0.9057006759497539
+        ],
+        "macro_fc_warn_pct": 66.66666666666666,
+        "macro_fc_block_pct": 33.33333333333333,
+        "macro_eo_warn_pct": 66.66666666666666,
+        "macro_eo_block_pct": 33.33333333333333
       }
     },
     "v1.2": {
@@ -368,6 +448,14 @@
         "lenient_eo_warn_pct": 88.09523809523809,
         "lenient_eo_block": 50,
         "lenient_eo_block_pct": 59.523809523809526,
+        "lenient_eo_warn_ci": [
+          0.7919451014387608,
+          0.9414105074553334
+        ],
+        "lenient_eo_block_ci": [
+          0.4825300068480818,
+          0.7010291395193298
+        ],
         "macro_fc_warn_pct": 89.57251975934882,
         "macro_fc_block_pct": 58.53952852817428,
         "macro_eo_warn_pct": 87.17977075223153,
@@ -383,55 +471,87 @@
         "lenient_eo_warn_pct": 82.75862068965517,
         "lenient_eo_block": 6,
         "lenient_eo_block_pct": 20.689655172413794,
-        "macro_fc_warn_pct": 89.62914769030579,
-        "macro_fc_block_pct": 20.611581001951855,
-        "macro_eo_warn_pct": 82.69355888093689,
-        "macro_eo_block_pct": 20.611581001951855
+        "lenient_eo_warn_ci": [
+          0.642252445585356,
+          0.9415439170273656
+        ],
+        "lenient_eo_block_ci": [
+          0.07994184887608008,
+          0.3972469492272396
+        ],
+        "macro_fc_warn_pct": 89.62385033742419,
+        "macro_fc_block_pct": 20.42484125402204,
+        "macro_eo_warn_pct": 82.69312907542925,
+        "macro_eo_block_pct": 20.42484125402204
       },
       "VAL": {
-        "campaigns": 5,
-        "lenient_fc_warn": 5,
+        "campaigns": 3,
+        "lenient_fc_warn": 3,
         "lenient_fc_warn_pct": 100.0,
-        "lenient_fc_block": 4,
-        "lenient_fc_block_pct": 80.0,
-        "lenient_eo_warn": 5,
+        "lenient_fc_block": 2,
+        "lenient_fc_block_pct": 66.66666666666666,
+        "lenient_eo_warn": 3,
         "lenient_eo_warn_pct": 100.0,
-        "lenient_eo_block": 4,
-        "lenient_eo_block_pct": 80.0,
+        "lenient_eo_block": 2,
+        "lenient_eo_block_pct": 66.66666666666666,
+        "lenient_eo_warn_ci": [
+          0.2924017738212866,
+          1.0
+        ],
+        "lenient_eo_block_ci": [
+          0.09429932405024608,
+          0.9915962413403874
+        ],
         "macro_fc_warn_pct": 100.0,
-        "macro_fc_block_pct": 79.73333333333333,
+        "macro_fc_block_pct": 66.66666666666666,
         "macro_eo_warn_pct": 100.0,
-        "macro_eo_block_pct": 79.73333333333333
+        "macro_eo_block_pct": 66.66666666666666
       },
       "TEST-A": {
-        "campaigns": 50,
-        "lenient_fc_warn": 46,
-        "lenient_fc_warn_pct": 92.0,
-        "lenient_fc_block": 42,
-        "lenient_fc_block_pct": 84.0,
-        "lenient_eo_warn": 46,
-        "lenient_eo_warn_pct": 92.0,
-        "lenient_eo_block": 42,
-        "lenient_eo_block_pct": 84.0,
-        "macro_fc_warn_pct": 90.45951417004048,
-        "macro_fc_block_pct": 81.9251012145749,
-        "macro_eo_warn_pct": 90.43522267206478,
-        "macro_eo_block_pct": 81.9251012145749
+        "campaigns": 49,
+        "lenient_fc_warn": 45,
+        "lenient_fc_warn_pct": 91.83673469387756,
+        "lenient_fc_block": 41,
+        "lenient_fc_block_pct": 83.6734693877551,
+        "lenient_eo_warn": 45,
+        "lenient_eo_warn_pct": 91.83673469387756,
+        "lenient_eo_block": 41,
+        "lenient_eo_block_pct": 83.6734693877551,
+        "lenient_eo_warn_ci": [
+          0.80398581652111,
+          0.9773091193569268
+        ],
+        "lenient_eo_block_ci": [
+          0.7034286420002969,
+          0.9267772400920118
+        ],
+        "macro_fc_warn_pct": 90.3061224489796,
+        "macro_fc_block_pct": 82.14285714285714,
+        "macro_eo_warn_pct": 90.3061224489796,
+        "macro_eo_block_pct": 82.14285714285714
       },
       "TEST-B": {
-        "campaigns": 4,
-        "lenient_fc_warn": 3,
-        "lenient_fc_warn_pct": 75.0,
-        "lenient_fc_block": 2,
-        "lenient_fc_block_pct": 50.0,
-        "lenient_eo_warn": 3,
-        "lenient_eo_warn_pct": 75.0,
-        "lenient_eo_block": 2,
-        "lenient_eo_block_pct": 50.0,
-        "macro_fc_warn_pct": 75.0,
-        "macro_fc_block_pct": 49.202127659574465,
-        "macro_eo_warn_pct": 75.0,
-        "macro_eo_block_pct": 49.202127659574465
+        "campaigns": 3,
+        "lenient_fc_warn": 2,
+        "lenient_fc_warn_pct": 66.66666666666666,
+        "lenient_fc_block": 1,
+        "lenient_fc_block_pct": 33.33333333333333,
+        "lenient_eo_warn": 2,
+        "lenient_eo_warn_pct": 66.66666666666666,
+        "lenient_eo_block": 1,
+        "lenient_eo_block_pct": 33.33333333333333,
+        "lenient_eo_warn_ci": [
+          0.09429932405024608,
+          0.9915962413403874
+        ],
+        "lenient_eo_block_ci": [
+          0.008403758659612636,
+          0.9057006759497539
+        ],
+        "macro_fc_warn_pct": 66.66666666666666,
+        "macro_fc_block_pct": 33.33333333333333,
+        "macro_eo_warn_pct": 66.66666666666666,
+        "macro_eo_block_pct": 33.33333333333333
       }
     }
   }
