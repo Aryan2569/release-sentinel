@@ -38,7 +38,7 @@ def test_campaigns_disjointness() -> None:
     camps_file = Path("data/eval_campaigns.json")
     assert camps_file.exists()
     camps = json.load(open(camps_file, encoding="utf-8"))
-    assert len(camps) == 84
+    assert len(camps) == 140
 
     split_counts: Counter[str] = Counter()
     seen_cids: set[str] = set()
@@ -50,11 +50,11 @@ def test_campaigns_disjointness() -> None:
         assert split in ("DEV", "VAL", "TEST-A", "TEST-B")
         split_counts[split] += 1
 
-    assert split_counts["DEV"] == 29
-    assert split_counts["VAL"] == 3
-    assert split_counts["TEST-A"] == 49
-    assert split_counts["TEST-B"] == 3
-    assert sum(split_counts.values()) == 84
+    assert split_counts["DEV"] == 53
+    assert split_counts["VAL"] == 12
+    assert split_counts["TEST-A"] == 71
+    assert split_counts["TEST-B"] == 4
+    assert sum(split_counts.values()) == 140
 
 
 def test_clopper_pearson_bounds() -> None:

@@ -134,14 +134,9 @@ description = "Added dependency combined with dynamic code execution"
 signals = ["dependency_added", "hardcoded_ip"]
 description = "Added dependency combined with hardcoded IP"
 
-# v1.2 Hollow Release & Lookalike additions (Decision 28)
-[[decision.block_requires]]
-signals = ["hollow_dependency_injection", "lookalike_dependency_name"]
-description = "Hollow metadata-only release injecting lookalike / typosquat dependency"
-
 [severity_overrides]
-hollow_dependency_injection = "LOW"
-lookalike_dependency_name = "HIGH"
+hollow_dependency_injection = "MEDIUM"
+lookalike_dependency_name = "MEDIUM"
 
 install_script_changed = "MEDIUM"
 dependency_added = "LOW"

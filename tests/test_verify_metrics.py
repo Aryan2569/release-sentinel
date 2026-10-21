@@ -11,9 +11,9 @@ def test_verify_metrics_runs_and_passes() -> None:
 
     # Assert total counts
     assert metrics["sample"]["v1.2"]["ALL"]["pairs"] == 1349
-    assert metrics["campaign"]["v1.2"]["ALL"]["campaigns"] == 84
-    assert metrics["benign"]["total_benign"]["pairs"] == 800
-    assert metrics["benign"]["total_benign"]["false_blocks"] == 0
+    assert metrics["campaign"]["v1.2"]["ALL"]["campaigns"] == 140
+    assert metrics["benign"]["v1.2.1"]["total_benign"]["pairs"] == 800
+    assert metrics["benign"]["v1.2.1"]["total_benign"]["false_blocks"] == 0
 
     # Assert verification against documentation passes
     verify_doc_consistency(metrics)

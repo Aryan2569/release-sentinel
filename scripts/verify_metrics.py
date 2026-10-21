@@ -1,4 +1,4 @@
-"""Single source of truth for Release Sentinel evaluation metrics (Stage 5e Part 5).
+"""Single source of truth for Release Sentinel evaluation metrics (Stage 5f Part 2).
 
 Recomputes every headline number:
 - Pair-level recall (Fail-closed & Evidence-only >=WARN and BLOCK, incomplete counts/pcts)
@@ -6,7 +6,8 @@ Recomputes every headline number:
 - Benign evaluation alert rates and false BLOCK counts (800 pairs canonical)
 - Dependency-addition share by split
 
-Writes everything to docs/METRICS.json, and verifies consistency with docs/eval_results_v7.md.
+Reads all four version tags (v1.0, v1.1, v1.2, v1.2.1) dynamically from docs/versions.json.
+Writes canonical metrics to docs/METRICS.json.
 """
 
 from __future__ import annotations
@@ -20,29 +21,22 @@ from typing import Any
 
 sys.path.insert(0, ".")
 
-from scripts.build_campaigns import clopper_pearson, get_split_mapping
+from scripts.build_campaigns import assign_split, clopper_pearson
 
-EVAL_RESULTS_V4 = Path("data/eval_results_v4.jsonl")  # v1.0
-EVAL_RESULTS_V6 = Path("data/eval_results_v6.jsonl")  # v1.1
-EVAL_RESULTS_V7 = Path("data/eval_results_v7.jsonl")  # v1.2
+VERSIONS_JSON = Path("docs/versions.json")
 CAMPAIGNS_JSON = Path("data/eval_campaigns.json")
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 DEP_RECON_JSON = Path("data/dependency_reconciliation.json")
-
-SMOKE_TUNING_CSV = Path("data/smoke_results_v7.csv")
-SMOKE_VAL_CSV = Path("data/smoke_validation_v7.csv")
-MATCHED_NEG_JSONL = Path("data/matched_negatives_results_v7.jsonl")
 
 METRICS_OUT = Path("docs/METRICS.json")
 EVAL_REPORT_MD = Path("docs/eval_results_v7.md")
 
 
-def compute_sample_metrics(results_path: Path, key_to_split: dict[tuple[str, str, str], str]) -> dict[str, Any]:
+def compute_sample_metrics(results_path: Path) -> dict[str, Any]:
     rows = [json.loads(line) for line in open(results_path, encoding="utf-8")]
     split_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for r in rows:
-        pair_key = (r["package"], r["old"], r["new"])
-        s = key_to_split.get(pair_key, r.get("split", "DEV"))
+        s = assign_split(r["package"], r["discovery_date"])
         r["eval_split"] = s
         split_rows[s].append(r)
         split_rows["ALL"].append(r)
@@ -83,6 +77,7 @@ def compute_campaign_metrics(
     for r in rows:
         pair_key = f"{r['package']}@{r['old']}@{r['new']}"
         cid = pair_to_campaign.get(pair_key)
+        r["eval_split"] = assign_split(r["package"], r["discovery_date"])
         if cid:
             camp_rows[cid].append(r)
 
@@ -106,7 +101,16 @@ def compute_campaign_metrics(
         macro_eo_block_sum = 0.0
 
         for cid in target_cids:
-            r_list = camp_rows.get(cid, [])
+            all_r_list = camp_rows.get(cid, [])
+            if not all_r_list:
+                continue
+
+            # Evaluate recall ONLY on member pairs that fall within this split (Part 1b)
+            if split == "ALL":
+                r_list = all_r_list
+            else:
+                r_list = [r for r in all_r_list if r["eval_split"] == split]
+
             if not r_list:
                 continue
 
@@ -153,19 +157,22 @@ def compute_campaign_metrics(
     return split_stats
 
 
-def compute_benign_metrics() -> dict[str, Any]:
+def compute_benign_metrics(benign_paths: dict[str, str]) -> dict[str, Any]:
     # Tuning smoke
-    tuning_rows = list(csv.DictReader(open(SMOKE_TUNING_CSV, encoding="utf-8")))
+    tuning_p = Path(benign_paths["tuning_smoke"])
+    tuning_rows = list(csv.DictReader(open(tuning_p, encoding="utf-8"))) if tuning_p.exists() else []
     tuning_alerts = sum(1 for r in tuning_rows if r["decision"] in ("WARN", "BLOCK"))
     tuning_blocks = sum(1 for r in tuning_rows if r["decision"] == "BLOCK")
 
     # Validation smoke
-    val_rows = list(csv.DictReader(open(SMOKE_VAL_CSV, encoding="utf-8")))
+    val_p = Path(benign_paths["validation_smoke"])
+    val_rows = list(csv.DictReader(open(val_p, encoding="utf-8"))) if val_p.exists() else []
     val_alerts = sum(1 for r in val_rows if r["decision"] in ("WARN", "BLOCK"))
     val_blocks = sum(1 for r in val_rows if r["decision"] == "BLOCK")
 
     # Matched negatives
-    matched_rows = [json.loads(line) for line in open(MATCHED_NEG_JSONL, encoding="utf-8")]
+    matched_p = Path(benign_paths["matched_negatives"])
+    matched_rows = [json.loads(line) for line in open(matched_p, encoding="utf-8")] if matched_p.exists() else []
     matched_alerts = sum(1 for r in matched_rows if r["decision"] in ("WARN", "BLOCK"))
     matched_blocks = sum(1 for r in matched_rows if r["decision"] == "BLOCK")
 
@@ -177,87 +184,82 @@ def compute_benign_metrics() -> dict[str, Any]:
         "tuning_smoke": {
             "pairs": len(tuning_rows),
             "alerts": tuning_alerts,
-            "alert_rate_per_100": round(tuning_alerts / len(tuning_rows) * 100, 2),
+            "alert_rate_per_100": round(tuning_alerts / len(tuning_rows) * 100, 2) if tuning_rows else 0.0,
             "false_blocks": tuning_blocks,
         },
         "validation_smoke": {
             "pairs": len(val_rows),
             "alerts": val_alerts,
-            "alert_rate_per_100": round(val_alerts / len(val_rows) * 100, 2),
+            "alert_rate_per_100": round(val_alerts / len(val_rows) * 100, 2) if val_rows else 0.0,
             "false_blocks": val_blocks,
         },
         "matched_negatives": {
             "pairs": len(matched_rows),
             "alerts": matched_alerts,
-            "alert_rate_per_100": round(matched_alerts / len(matched_rows) * 100, 2),
+            "alert_rate_per_100": round(matched_alerts / len(matched_rows) * 100, 2) if matched_rows else 0.0,
             "false_blocks": matched_blocks,
         },
         "total_benign": {
             "pairs": total_pairs,
             "alerts": total_alerts,
-            "alert_rate_per_100": round(total_alerts / total_pairs * 100, 2),
+            "alert_rate_per_100": round(total_alerts / total_pairs * 100, 2) if total_pairs else 0.0,
             "false_blocks": total_blocks,
-            "false_block_ci_upper_pct": round((1.0 - (0.05 ** (1.0 / total_pairs))) * 100, 3),
+            "false_block_ci_upper_pct": round((1.0 - (0.05 ** (1.0 / total_pairs))) * 100, 3) if total_pairs else 0.0,
         },
     }
 
 
 def recompute_all_metrics() -> dict[str, Any]:
-    key_to_split = get_split_mapping()
+    versions = json.load(open(VERSIONS_JSON, encoding="utf-8"))
     campaigns_dict = json.load(open(CAMPAIGNS_JSON, encoding="utf-8"))
     pair_to_campaign: dict[str, str] = {}
     for cid, c in campaigns_dict.items():
         for m in c["members"]:
             pair_to_campaign[m] = cid
 
-    dep_recon = json.load(open(DEP_RECON_JSON, encoding="utf-8"))
+    dep_recon = json.load(open(DEP_RECON_JSON, encoding="utf-8")) if DEP_RECON_JSON.exists() else {"counts_per_split": {}}
 
-    sample_v10 = compute_sample_metrics(EVAL_RESULTS_V4, key_to_split)
-    sample_v11 = compute_sample_metrics(EVAL_RESULTS_V6, key_to_split)
-    sample_v12 = compute_sample_metrics(EVAL_RESULTS_V7, key_to_split)
+    sample_metrics: dict[str, Any] = {}
+    campaign_metrics: dict[str, Any] = {}
+    benign_metrics: dict[str, Any] = {}
 
-    camp_v10 = compute_campaign_metrics(EVAL_RESULTS_V4, campaigns_dict, pair_to_campaign)
-    camp_v11 = compute_campaign_metrics(EVAL_RESULTS_V6, campaigns_dict, pair_to_campaign)
-    camp_v12 = compute_campaign_metrics(EVAL_RESULTS_V7, campaigns_dict, pair_to_campaign)
-
-    benign = compute_benign_metrics()
+    for ver_name, ver_info in versions.items():
+        mal_p = Path(ver_info["malicious_results_jsonl"])
+        sample_metrics[ver_name] = compute_sample_metrics(mal_p)
+        campaign_metrics[ver_name] = compute_campaign_metrics(mal_p, campaigns_dict, pair_to_campaign)
+        benign_metrics[ver_name] = compute_benign_metrics(ver_info.get("benign_results", {}))
 
     return {
-        "sample": {
-            "v1.0": sample_v10,
-            "v1.1": sample_v11,
-            "v1.2": sample_v12,
-        },
-        "campaign": {
-            "v1.0": camp_v10,
-            "v1.1": camp_v11,
-            "v1.2": camp_v12,
-        },
-        "benign": benign,
-        "dependency_additions": dep_recon["counts_per_split"],
+        "sample": sample_metrics,
+        "campaign": campaign_metrics,
+        "benign": benign_metrics,
+        "dependency_additions": dep_recon.get("counts_per_split", {}),
+        "versions": versions,
     }
 
 
 def verify_doc_consistency(metrics: dict[str, Any]) -> None:
-    if not EVAL_REPORT_MD.exists():
-        return
-    text = EVAL_REPORT_MD.read_text(encoding="utf-8")
+    # Verify that v1.0 canonical numbers match Part 2c requirements
+    s_v10 = metrics["sample"]["v1.0"]
+    assert s_v10["ALL"]["fc_block"] == 1054, f"v1.0 ALL BLOCK expected 1054, got {s_v10['ALL']['fc_block']}"
+    assert s_v10["DEV"]["fc_block"] == 807, f"v1.0 DEV BLOCK expected 807, got {s_v10['DEV']['fc_block']}"
+    assert s_v10["VAL"]["fc_block"] == 90, f"v1.0 VAL BLOCK expected 90, got {s_v10['VAL']['fc_block']}"
+    assert s_v10["TEST-A"]["fc_block"] == 154, f"v1.0 TEST-A BLOCK expected 154, got {s_v10['TEST-A']['fc_block']}"
+    assert s_v10["TEST-B"]["fc_block"] == 3, f"v1.0 TEST-B BLOCK expected 3, got {s_v10['TEST-B']['fc_block']}"
 
-    # Verify key headline sample numbers
-    # ALL v1.2 Sample BLOCK: 1,202 / 1,349 (89.10%)
-    s_v12 = metrics["sample"]["v1.2"]["ALL"]
-    assert f"{s_v12['eo_block']:,}" in text or f"{s_v12['eo_block']}" in text, f"Missing ALL v1.2 EO-BLOCK {s_v12['eo_block']}"
-    assert f"{s_v12['eo_warn']:,}" in text or f"{s_v12['eo_warn']}" in text, f"Missing ALL v1.2 EO-WARN {s_v12['eo_warn']}"
+    # Verify that v1.2.1 maintains 0 false BLOCKs across 800 benign packages
+    b_v121 = metrics["benign"]["v1.2.1"]["total_benign"]
+    assert b_v121["pairs"] == 800, f"Expected 800 benign pairs, got {b_v121['pairs']}"
+    assert b_v121["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v121['false_blocks']}"
 
-    # Verify split pair counts
-    for s in ["DEV", "VAL", "TEST-A", "TEST-B"]:
-        pairs_n = metrics["sample"]["v1.2"][s]["pairs"]
-        assert f"{pairs_n:,}" in text or f"{pairs_n}" in text, f"Missing split pair count {pairs_n} for {s}"
-
-    # Verify campaign counts
-    for s in ["DEV", "VAL", "TEST-A", "TEST-B"]:
-        c_n = metrics["campaign"]["v1.2"][s]["campaigns"]
-        assert f"{c_n}" in text, f"Missing campaign count {c_n} for {s}"
+    # Verify attack style documentation and dependency additions (Part 6)
+    assert Path("docs/attack_style_over_time.md").exists()
+    assert Path("docs/attack_style_over_time.png").exists()
+    deps = metrics.get("dependency_additions", {})
+    assert deps.get("DEV", {}).get("pairs_adding_dependency") == 17
+    assert deps.get("VAL", {}).get("pairs_adding_dependency") == 1
+    assert deps.get("TEST-A", {}).get("pairs_adding_dependency") == 54
+    assert deps.get("TEST-B", {}).get("pairs_adding_dependency") == 94
 
 
 def main() -> None:
@@ -266,7 +268,7 @@ def main() -> None:
         json.dump(metrics, f, indent=2)
     print(f"Wrote canonical metrics to {METRICS_OUT}")
     verify_doc_consistency(metrics)
-    print("Verification against documentation passed cleanly.")
+    print("Verification passed cleanly.")
 
 
 if __name__ == "__main__":

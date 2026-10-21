@@ -20,7 +20,7 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, ".")
-from scripts.build_campaigns import get_split_mapping
+from scripts.build_campaigns import assign_split
 
 AUDIT_JSON = Path("data/detectability_audit.json")
 DEP_RECON_JSON = Path("data/dependency_reconciliation.json")
@@ -36,7 +36,6 @@ def get_quarter(dt_str: str) -> str:
 
 def build_attack_style_data() -> tuple[dict[str, Any], dict[str, Any], dict[str, Any]]:
     audit = json.load(open(AUDIT_JSON, encoding="utf-8"))
-    k2s = get_split_mapping()
     dep_recon = json.load(open(DEP_RECON_JSON, encoding="utf-8"))
 
     split_data = defaultdict(lambda: {"total": 0, "adds_dep": 0, "hollow": 0, "adds_hook": 0, "changes_code": 0})
@@ -44,10 +43,8 @@ def build_attack_style_data() -> tuple[dict[str, Any], dict[str, Any], dict[str,
 
     for r in audit:
         pkg = r["package"]
-        old_ver = r["old_version"]
-        new_ver = r["new_version"]
         dt = r["discovery_date"]
-        s = k2s.get((pkg, old_ver, new_ver), "DEV")
+        s = assign_split(pkg, dt)
         q = get_quarter(dt)
 
         adds_dep = bool(r.get("adds_direct_dependency"))

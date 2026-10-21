@@ -1,10 +1,16 @@
-"""Build detector-independent campaign IDs via Union-Find (Stage 5d Part 1).
+"""Build detector-independent campaign IDs via Union-Find (Stage 5f Part 0 & 1).
 
 Linkage conditions between malicious pairs:
-1. Identical new or changed non-metadata file hash (>= 200 bytes, existing rule).
-2. Identical added direct runtime dependency (excluding any dependency name in ANY of the 800 benign pairs).
-3. Identical added lifecycle command string.
-4. Identical added hardcoded public IP or attacker C2 domain.
+1. Identical new or changed non-metadata file hash (>= 200 bytes, existing rule) within 30 days.
+2. Identical added direct runtime dependency (truly new in both old baselines, not in benign vocabulary) within 30 days.
+3. Identical added lifecycle command string (truly new in both old baselines) within 30 days.
+4. Identical added hardcoded public IP or attacker C2 domain within 30 days.
+
+Suppression rules:
+- Any link key shared by >50 pairs spanning >60 days is suppressed / ignored as a common hub.
+- All dependency names appearing in any of the 800 benign pairs are excluded as common vocabulary.
+- Explicit split assignment (DEV, VAL, TEST-A, TEST-B) with no silent fallback.
+- Campaign recall evaluated strictly on member pairs falling within the campaign's assigned split.
 """
 
 from __future__ import annotations
@@ -12,20 +18,22 @@ from __future__ import annotations
 import csv
 import json
 import math
+import os
 import re
+import tarfile
 import zipfile
 from collections import defaultdict
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
-from release_sentinel.extractor import extract_release_in_memory
+from release_sentinel.registry import _safe_filename
 
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+SAMPLES_ROOT = Path(os.environ.get("RS_SAMPLES_ROOT", r"C:\rs-data\datadog"))
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
-EVAL_RESULTS_V4 = Path("data/eval_results_v4.jsonl")
+EVAL_RESULTS_V5 = Path("data/eval_results_v5.jsonl")
 EVAL_RESULTS_V6 = Path("data/eval_results_v6.jsonl")
-CLUSTERS_V6 = Path("data/eval_clusters_v6.json")
 HASHES_V6 = Path("data/eval_payload_hashes_v6.json")
 
 LIFECYCLE_KEYS = ("preinstall", "install", "postinstall", "prepare", "prepublish", "prepublishOnly")
@@ -72,60 +80,99 @@ class UnionFind:
             self.rank[rx] += 1
 
 
+def assign_split(package: str, discovery_date: str) -> str:
+    """Explicitly assign an eval pair to DEV, VAL, TEST-A, or TEST-B.
+
+    No silent fallbacks allowed.
+    """
+    if not discovery_date:
+        raise ValueError(f"Missing discovery_date for package {package}")
+    if discovery_date < "2026-01-01":
+        return "DEV"
+    if discovery_date <= "2026-04-30":
+        return "VAL"
+    if discovery_date < "2026-06-17":
+        return "TEST-A"
+    if discovery_date == "2026-06-17":
+        if package <= "@mastra/clickhouse" or package == "@mastra/openai":
+            return "TEST-A"
+        return "TEST-B"
+    return "TEST-B"
+
+
 def get_split_mapping() -> dict[tuple[str, str, str], str]:
-    results_v6 = [json.loads(line) for line in open(EVAL_RESULTS_V6, encoding="utf-8")]
-    clusters = json.load(open(CLUSTERS_V6, encoding="utf-8"))
-    test_cids = sorted(
-        {e["cluster_id"] for e in results_v6 if e["split"] == "TEST"},
-        key=lambda cid: (clusters[cid]["earliest_discovery"], clusters[cid]["rank"], cid),
-    )
-    test_a_cids = set(test_cids[:98])
+    """Map every (package, old, new) tuple explicitly to its split."""
+    eval_pairs = [p for p in csv.DictReader(open(EVAL_PAIRS_CSV, encoding="utf-8")) if p.get("status") == "ok"]
     key_to_split: dict[tuple[str, str, str], str] = {}
-    for e in results_v6:
-        s = e["split"]
-        if s == "TEST":
-            s = "TEST-A" if e["cluster_id"] in test_a_cids else "TEST-B"
-        key_to_split[(e["package"], e["old"], e["new"])] = s
+    for p in eval_pairs:
+        s = assign_split(p["package"], p["discovery_date"])
+        key_to_split[(p["package"], p["old_version"], p["new_version"])] = s
     return key_to_split
 
 
+def _read_package_json_from_tarball(tgz_path: Path) -> dict[str, Any] | None:
+    if not tgz_path.exists():
+        return None
+    try:
+        with tarfile.open(tgz_path, "r:*") as tf:
+            for m in tf.getmembers():
+                if m.name.endswith("package.json") and not m.name.startswith((".", "/")) and "node_modules" not in m.name:
+                    f = tf.extractfile(m)
+                    if f:
+                        return json.loads(f.read().decode("utf-8", errors="replace"))
+    except Exception:
+        return None
+    return None
+
+
 def get_benign_dependencies() -> set[str]:
+    """Extract all dependency names from all 800 benign pairs across all sections."""
     benign_deps: set[str] = set()
+    total_benign_checked = 0
+    failed_reads = 0
+
     for p_csv in ["data/smoke_results_v6.csv", "data/smoke_validation_v6.csv", "data/matched_negatives.csv"]:
         if Path(p_csv).exists():
             for r in csv.DictReader(open(p_csv, encoding="utf-8")):
-                pkg = r.get("package")
-                new_v = r.get("new") or r.get("new_version")
-                tgz = CACHE_DIR / pkg / f"{pkg}-{new_v}.tgz"
-                if tgz.exists():
-                    try:
-                        rc = extract_release_in_memory(tgz)
-                        pj = rc.package_json() or {}
-                        for dep_sec in ("dependencies", "devDependencies", "optionalDependencies", "peerDependencies"):
-                            benign_deps.update((pj.get(dep_sec) or {}).keys())
-                    except Exception:
-                        pass
+                total_benign_checked += 1
+                pkg = r.get("package") or ""
+                new_v = r.get("new") or r.get("new_version") or ""
+                safe_name = _safe_filename(pkg)
+                tgz = CACHE_DIR / safe_name / f"{safe_name}-{new_v}.tgz"
+                pj = _read_package_json_from_tarball(tgz)
+                if pj is not None:
+                    for dep_sec in ("dependencies", "devDependencies", "optionalDependencies", "peerDependencies"):
+                        benign_deps.update((pj.get(dep_sec) or {}).keys())
+                else:
+                    failed_reads += 1
+
+    if total_benign_checked > 0 and (failed_reads / total_benign_checked) > 0.01:
+        raise RuntimeError(
+            f"Failed to read {failed_reads}/{total_benign_checked} benign package.jsons (>1% failure limit)"
+        )
+
     return benign_deps
 
 
 def build_campaigns() -> tuple[dict[str, Any], dict[str, str]]:
     benign_deps = get_benign_dependencies()
     payload_hashes: dict[str, list[str]] = json.load(open(HASHES_V6, encoding="utf-8"))
-    key_to_split = get_split_mapping()
     eval_pairs = [p for p in csv.DictReader(open(EVAL_PAIRS_CSV, encoding="utf-8")) if p.get("status") == "ok"]
 
     pair_features: dict[str, dict[str, Any]] = {}
+    old_pj_failures = 0
 
     for p in eval_pairs:
         pkg = p["package"]
         old_ver = p["old_version"]
         new_ver = p["new_version"]
         pair_key = f"{pkg}@{old_ver}@{new_ver}"
-        split = key_to_split.get((pkg, old_ver, new_ver), "DEV")
+        d_date = datetime.strptime(p["discovery_date"], "%Y-%m-%d")
+        split = assign_split(pkg, p["discovery_date"])
 
         hashes = set(payload_hashes.get(pair_key, []))
 
-        # Fast load new package.json
+        # Fast load new package.json from encrypted sample zip
         zp = SAMPLES_ROOT / p["zip_path"]
         new_pj: dict[str, Any] = {}
         try:
@@ -133,47 +180,49 @@ def build_campaigns() -> tuple[dict[str, Any], dict[str, str]]:
                 z.setpassword(b"infected")
                 for info in z.infolist():
                     if info.filename.endswith("package.json"):
-                        new_pj = json.loads(z.read(info))
+                        new_pj = json.loads(z.read(info).decode("utf-8", errors="replace"))
                         break
         except Exception:
             pass
 
-        # Fast load old package.json
-        old_pj: dict[str, Any] = {}
-        tar_path = CACHE_DIR / pkg / f"{pkg}-{old_ver}.tgz"
-        if tar_path.exists():
-            try:
-                rc = extract_release_in_memory(tar_path)
-                old_pj = rc.package_json() or {}
-            except Exception:
-                pass
+        # Fast load old baseline package.json from registry disk cache
+        safe_name = _safe_filename(pkg)
+        tar_path = CACHE_DIR / safe_name / f"{safe_name}-{old_ver}.tgz"
+        old_pj = _read_package_json_from_tarball(tar_path)
+        if old_pj is None:
+            old_pj_failures += 1
+            old_loaded = False
+        else:
+            old_loaded = True
 
-        # 2. Added direct dependencies
-        old_deps = set((old_pj.get("dependencies") or {}).keys()) if isinstance(old_pj, dict) else set()
+        # Added direct runtime dependencies
+        old_deps = set((old_pj.get("dependencies") or {}).keys()) if old_loaded and isinstance(old_pj, dict) else set()
         new_deps = set((new_pj.get("dependencies") or {}).keys()) if isinstance(new_pj, dict) else set()
-        added_deps = (new_deps - old_deps) - benign_deps
+        added_deps = (new_deps - old_deps) - benign_deps if old_loaded else set()
 
-        # 3. Added lifecycle commands
-        old_scripts = (old_pj.get("scripts") or {}) if isinstance(old_pj, dict) else {}
+        # Added lifecycle commands
+        old_scripts = (old_pj.get("scripts") or {}) if old_loaded and isinstance(old_pj, dict) else {}
         new_scripts = (new_pj.get("scripts") or {}) if isinstance(new_pj, dict) else {}
         added_cmds = set()
         hosts_or_ips = set()
-        for k in LIFECYCLE_KEYS:
-            n_cmd = new_scripts.get(k)
-            o_cmd = old_scripts.get(k)
-            if n_cmd and n_cmd != o_cmd:
-                cmd_str = str(n_cmd).strip()
-                if len(cmd_str) > 5 and not cmd_str.lower().startswith(("echo", "exit")):
-                    added_cmds.add(cmd_str)
-                    for ip in IP_RE.findall(cmd_str):
-                        if is_public_ip(ip):
-                            hosts_or_ips.add(ip)
-                    for c2 in C2_RE.findall(cmd_str):
-                        hosts_or_ips.add(c2.lower())
+        if old_loaded:
+            for k in LIFECYCLE_KEYS:
+                n_cmd = new_scripts.get(k)
+                o_cmd = old_scripts.get(k)
+                if n_cmd and n_cmd != o_cmd:
+                    cmd_str = str(n_cmd).strip()
+                    if len(cmd_str) > 5 and not cmd_str.lower().startswith(("echo", "exit")):
+                        added_cmds.add(cmd_str)
+                        for ip in IP_RE.findall(cmd_str):
+                            if is_public_ip(ip):
+                                hosts_or_ips.add(ip)
+                        for c2 in C2_RE.findall(cmd_str):
+                            hosts_or_ips.add(c2.lower())
 
         pair_features[pair_key] = {
             "pair": p,
             "split": split,
+            "date": d_date,
             "discovery_date": p["discovery_date"],
             "hashes": hashes,
             "added_deps": added_deps,
@@ -181,35 +230,45 @@ def build_campaigns() -> tuple[dict[str, Any], dict[str, str]]:
             "hosts_or_ips": hosts_or_ips,
         }
 
+    if (old_pj_failures / len(eval_pairs)) > 0.01:
+        raise RuntimeError(
+            f"Failed to load old package.json for {old_pj_failures}/{len(eval_pairs)} pairs (>1% threshold)"
+        )
+
     all_keys = list(pair_features.keys())
     uf = UnionFind(all_keys)
 
-    hash_to_pairs: dict[str, list[str]] = defaultdict(list)
-    dep_to_pairs: dict[str, list[str]] = defaultdict(list)
-    cmd_to_pairs: dict[str, list[str]] = defaultdict(list)
-    host_to_pairs: dict[str, list[str]] = defaultdict(list)
-
+    # Collect keys to pairs
+    all_keys_map: dict[tuple[str, str], list[tuple[str, datetime]]] = defaultdict(list)
     for k, feat in pair_features.items():
         for h in feat["hashes"]:
-            hash_to_pairs[h].append(k)
+            all_keys_map[("hash", h)].append((k, feat["date"]))
         for d in feat["added_deps"]:
-            dep_to_pairs[d].append(k)
+            all_keys_map[("dep", d)].append((k, feat["date"]))
         for c in feat["added_cmds"]:
-            cmd_to_pairs[c].append(k)
+            all_keys_map[("cmd", c)].append((k, feat["date"]))
         for hst in feat["hosts_or_ips"]:
-            host_to_pairs[hst].append(k)
+            all_keys_map[("host", hst)].append((k, feat["date"]))
 
-    for _name, idx in [
-        ("hashes", hash_to_pairs),
-        ("added_deps", dep_to_pairs),
-        ("added_cmds", cmd_to_pairs),
-        ("hosts_or_ips", host_to_pairs),
-    ]:
-        for _val, plist in idx.items():
-            if len(plist) > 1:
-                first = plist[0]
-                for o in plist[1:]:
-                    uf.union(first, o)
+    # Apply suppression and 30-day window linking
+    for (_ktype, _kval), plist in all_keys_map.items():
+        count = len(plist)
+        dates = [d for _, d in plist]
+        span = (max(dates) - min(dates)).days
+        # Ignore any key shared by more than 50 pairs spanning more than 60 days
+        if count > 50 and span > 60:
+            continue
+
+        # Link pairs within 30 days of each other
+        s_plist = sorted(plist, key=lambda x: x[1])
+        for i in range(len(s_plist)):
+            p1, d1 = s_plist[i]
+            for j in range(i + 1, len(s_plist)):
+                p2, d2 = s_plist[j]
+                if (d2 - d1).days <= 30:
+                    uf.union(p1, p2)
+                else:
+                    break
 
     campaign_members: dict[str, list[str]] = defaultdict(list)
     for k in all_keys:
@@ -283,18 +342,14 @@ def evaluate_version_on_campaigns(
     results_path: Path,
     campaigns_dict: dict[str, Any],
     pair_to_campaign: dict[str, str],
-    key_to_split: dict[tuple[str, str, str], str],
 ) -> dict[str, Any]:
     rows = [json.loads(line) for line in open(results_path, encoding="utf-8")]
 
-    # Normalize split on each row using key_to_split
     camp_rows: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for r in rows:
-        pair_tuple = (r["package"], r["old"], r["new"])
         pair_key = f"{r['package']}@{r['old']}@{r['new']}"
-        r_split = key_to_split.get(pair_tuple, r.get("split", "DEV"))
-        r["eval_split"] = r_split
         cid = pair_to_campaign.get(pair_key)
+        r["eval_split"] = assign_split(r["package"], r["discovery_date"])
         if cid:
             camp_rows[cid].append(r)
 
@@ -324,7 +379,16 @@ def evaluate_version_on_campaigns(
         macro_eo_block_sum = 0.0
 
         for cid in target_cids:
-            r_list = camp_rows.get(cid, [])
+            all_r_list = camp_rows.get(cid, [])
+            if not all_r_list:
+                continue
+
+            # Evaluate recall ONLY on member pairs that fall within this split (Part 1b)
+            if split == "ALL":
+                r_list = all_r_list
+            else:
+                r_list = [r for r in all_r_list if r["eval_split"] == split]
+
             if not r_list:
                 continue
 
@@ -376,21 +440,21 @@ if __name__ == "__main__":
         json.dump(campaigns_dict, f, indent=2)
     print(f"Total campaigns: {len(campaigns_dict)}")
 
-    key_to_split = get_split_mapping()
+    sizes = sorted([c["size"] for c in campaigns_dict.values()], reverse=True)
+    print(f"Top 10 campaign sizes: {sizes[:10]}")
 
     split_counts: dict[str, int] = defaultdict(int)
     for c in campaigns_dict.values():
-        for s in c["splits"]:
-            split_counts[s] += 1
-    print("Campaign counts per split (with multi-split overlap):")
+        split_counts[c["primary_split"]] += 1
+    print("Disjoint campaign counts per split (assigned by earliest discovery date):")
     for s in ["DEV", "VAL", "TEST-A", "TEST-B"]:
         print(f"  {s}: {split_counts[s]} campaigns")
 
     # Evaluate v1.0 vs v1.1
-    print("\n--- CAMPAIGN-LEVEL RECALL: v1.0 ---")
-    v10_stats = evaluate_version_on_campaigns(EVAL_RESULTS_V4, campaigns_dict, pair_to_campaign, key_to_split)
+    print("\n--- CAMPAIGN-LEVEL RECALL: v1.0 (eval_results_v5) ---")
+    v10_stats = evaluate_version_on_campaigns(EVAL_RESULTS_V5, campaigns_dict, pair_to_campaign)
     print(json.dumps(v10_stats, indent=2))
 
-    print("\n--- CAMPAIGN-LEVEL RECALL: v1.1 ---")
-    v11_stats = evaluate_version_on_campaigns(EVAL_RESULTS_V6, campaigns_dict, pair_to_campaign, key_to_split)
+    print("\n--- CAMPAIGN-LEVEL RECALL: v1.1 (eval_results_v6) ---")
+    v11_stats = evaluate_version_on_campaigns(EVAL_RESULTS_V6, campaigns_dict, pair_to_campaign)
     print(json.dumps(v11_stats, indent=2))

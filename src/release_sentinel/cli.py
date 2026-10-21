@@ -192,6 +192,21 @@ def diff(
         Path | None,
         typer.Option("--cache-dir", help="Cache directory (default: ~/.cache/release_sentinel)."),
     ] = None,
+    experimental_hollow: Annotated[
+        bool,
+        typer.Option(
+            "--experimental-hollow",
+            help="Enable experimental hollow+lookalike release warnings.",
+        ),
+    ] = False,
+    samples_root: Annotated[
+        Path | None,
+        typer.Option(
+            "--samples-root",
+            help="Path to malware samples directory (env: RS_SAMPLES_ROOT).",
+            envvar="RS_SAMPLES_ROOT",
+        ),
+    ] = None,
 ) -> None:
     """Compare two versions of an npm package and return a security gate decision."""
     # --- Resolve as_of ---
@@ -243,6 +258,8 @@ def diff(
             max_files=max_files,
             max_size=max_size,
             quiet=quiet,
+            experimental_hollow=experimental_hollow,
+            samples_root=samples_root,
         )
     except RegistryError as exc:
         console.print(f"[red]Registry error: {exc}[/red]")
@@ -273,6 +290,8 @@ def _run_analysis(
     max_files: int = 5000,
     max_size: int = 200,
     quiet: bool = False,
+    experimental_hollow: bool = False,
+    samples_root: Path | None = None,
 ) -> Report:
     """Download, extract, compare, and decide."""
     with NpmRegistryClient(cache_dir=cache_dir) as client:
@@ -306,10 +325,16 @@ def _run_analysis(
             # --- Diff ---
             if not quiet:
                 console.print("[dim]Comparing releases…[/dim]")
-            evidence = compare_releases(old_result, new_result)
+            evidence = compare_releases(
+                old_result, new_result, experimental_hollow=experimental_hollow
+            )
 
         # --- Decide ---
-        decision, limitations = decide(evidence, policy_path=policy_path)
+        decision, limitations = decide(
+            evidence,
+            policy_path=policy_path,
+            experimental_hollow=experimental_hollow,
+        )
 
         return Report(
             old_release=old_ref,

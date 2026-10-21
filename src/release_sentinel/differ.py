@@ -60,6 +60,7 @@ _CI_WORKFLOW_FILE_RE = re.compile(
 def compare_releases(
     old: ExtractionResult | ReleaseContents,
     new: ExtractionResult | ReleaseContents,
+    experimental_hollow: bool = False,
 ) -> list[Evidence]:
     """Compare two extracted releases and return evidence items.
 
@@ -128,7 +129,8 @@ def compare_releases(
         evidence.extend(_diff_install_scripts(old_pkg, new_pkg))
         evidence.extend(_diff_dependencies(old_pkg, new_pkg))
         evidence.extend(_diff_bin_entries(old_pkg, new_pkg))
-        evidence.extend(_check_hollow_and_lookalike(old, new, old_pkg, new_pkg))
+        if experimental_hollow:
+            evidence.extend(_check_hollow_and_lookalike(old, new, old_pkg, new_pkg))
 
     evidence.extend(_diff_files(old, new, install_targets))
     evidence.extend(_diff_sizes(old, new))
@@ -177,6 +179,7 @@ def analyze_release(
     samples_root: Path | None = None,
     dest_dir: Path | None = None,
     dep_stats: dict[str, int] | None = None,
+    experimental_hollow: bool = False,
 ) -> list[Evidence]:
     """Analyze a release either against a baseline (diff mode) or standalone (full-scan mode).
 
@@ -216,7 +219,9 @@ def analyze_release(
     }
 
     if baseline is not None:
-        evidence = compare_releases(baseline, new)
+        pol_hollow = policy.experimental_hollow if policy is not None else False
+        use_exp_hollow = experimental_hollow or pol_hollow
+        evidence = compare_releases(baseline, new, experimental_hollow=use_exp_hollow)
 
         # Check added dependencies if registry_client and as_of are provided
         if registry_client is not None and as_of is not None:
@@ -603,19 +608,9 @@ _METADATA_BASENAME_RE = re.compile(
     re.I,
 )
 
-_LOOKALIKE_PREFIXES = (
-    "easy-",
-    "simple-",
-    "plain-",
-    "official-",
-    "open-",
-    "free-",
-    "fast-",
-    "node-",
-    "lib-",
-    "js-",
-)
-_LOOKALIKE_SUFFIXES = ("-js", "-lib", "-node", "-ts", "-api", ".js", "_js")
+_LOOKALIKE_PREFIXES = ("node-",)
+_LOOKALIKE_SUFFIXES = ("-cli", "-core", "-node", "-js", "-ts")
+_HOMOGLYPH_MAP = {"0": "o", "1": "l", "vv": "w", "rn": "m"}
 
 _TOP_PACKAGES_CACHE: set[str] | None = None
 
@@ -652,7 +647,9 @@ def _levenshtein(s1: str, s2: str) -> int:
 
 
 def is_lookalike_dependency(
-    name: str, top_set: set[str] | None = None
+    name: str,
+    top_set: set[str] | None = None,
+    pkg_name: str = "",
 ) -> tuple[bool, str | None, str | None]:
     """Check if dependency name is a lookalike/typosquat of a popular package."""
     top_packages = top_set if top_set is not None else _get_top_packages()
@@ -660,9 +657,24 @@ def is_lookalike_dependency(
     if name_clean in top_packages:
         return False, None, None
 
+    # Exemption: package depending on itself or related sub-packages in same scope
+    if pkg_name:
+        p_clean = pkg_name.lower().strip()
+        if name_clean == p_clean:
+            return False, None, None
+        if name_clean.startswith("@") and p_clean.startswith("@"):
+            if name_clean.split("/")[0] == p_clean.split("/")[0]:
+                return False, None, None
+
+    # Exemption: standard @types/ definitions for legitimate packages
+    if name_clean.startswith("@types/"):
+        base = name_clean[len("@types/") :]
+        if base in top_packages:
+            return False, None, None
+
     norm = re.sub(r"[-_.]", "", name_clean)
 
-    # Candidate variants with prefixes/suffixes stripped
+    # General npm convention affixes (e.g. "node-", "-cli", "-core", "-js", "-ts")
     candidates = {name_clean}
     for pfx in _LOOKALIKE_PREFIXES:
         if name_clean.startswith(pfx):
@@ -676,14 +688,17 @@ def is_lookalike_dependency(
                 candidates.add(name_clean[len(pfx) : -len(sfx)])
 
     for cand in candidates:
-        cand_norm = re.sub(r"[-_.]", "", cand)
-        for pop in top_packages:
-            pop_clean = pop.lower()
-            pop_norm = re.sub(r"[-_.]", "", pop_clean)
+        if cand != name_clean and cand in top_packages:
+            return True, cand, f"npm_convention_affix_of_{cand}"
 
-            if cand == pop_clean or cand_norm == pop_norm:
-                return True, pop, f"affix_variant_of_{pop}"
+    # Homoglyphs
+    homo = name_clean
+    for k, v in _HOMOGLYPH_MAP.items():
+        homo = homo.replace(k, v)
+    if homo != name_clean and homo in top_packages:
+        return True, homo, f"homoglyph_of_{homo}"
 
+    # Single edit distance only (levenshtein <= 1)
     for pop in top_packages:
         pop_clean = pop.lower()
         pop_norm = re.sub(r"[-_.]", "", pop_clean)
@@ -691,12 +706,10 @@ def is_lookalike_dependency(
         if norm == pop_norm and len(norm) >= 4:
             return True, pop, f"separator_variant_of_{pop}"
 
-        if abs(len(name_clean) - len(pop_clean)) <= 2:
+        if abs(len(name_clean) - len(pop_clean)) <= 1:
             dist = _levenshtein(name_clean, pop_clean)
-            if dist == 1 and len(pop_clean) >= 5:
+            if dist == 1 and len(pop_clean) >= 4:
                 return True, pop, f"edit_distance_1_of_{pop}"
-            if dist == 2 and len(pop_clean) >= 7:
-                return True, pop, f"edit_distance_2_of_{pop}"
 
     return False, None, None
 
@@ -716,15 +729,19 @@ def _check_hollow_and_lookalike(
     if not added_direct:
         return evidence
 
+    pkg_name = str(new_pkg.get("name") or "")
+
     # Check for lookalike dependency name
     top_packages = _get_top_packages()
     for dep_name in sorted(added_direct):
-        matched, target_pkg, reason = is_lookalike_dependency(dep_name, top_packages)
+        matched, target_pkg, reason = is_lookalike_dependency(
+            dep_name, top_packages, pkg_name=pkg_name
+        )
         if matched:
             evidence.append(
                 Evidence(
                     id="lookalike_dependency_name",
-                    severity=Severity.HIGH,
+                    severity=Severity.MEDIUM,
                     file="package.json",
                     explanation=(
                         f"Added direct runtime dependency {dep_name!r} is a lookalike / variant of "
@@ -750,7 +767,7 @@ def _check_hollow_and_lookalike(
         evidence.append(
             Evidence(
                 id="hollow_dependency_injection",
-                severity=Severity.LOW,
+                severity=Severity.MEDIUM,
                 file="package.json",
                 explanation=(
                     "Release is hollow: zero non-metadata files were added or modified, but "

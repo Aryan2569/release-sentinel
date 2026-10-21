@@ -53,20 +53,23 @@ Release Sentinel only issues a high-confidence **BLOCK** when dangerous behavior
 
 ## 4. The Late-2026 "Hollow Release" Mystery
 
-In late 2026, security researchers noticed that attackers changed their tactics. They stopped putting malicious JavaScript code into their updates!
+In late 2026, attackers changed their tactics. They stopped putting malicious JavaScript code into their updates!
 
-Instead, an attacker would publish a package where every single original code file was 100% identical to the clean version. But in the package's configuration file (`package.json`), they quietly added a new dependency called something like `easy-day-js`.
+Instead, an attacker would publish a package where every single original code file was 100% identical to the clean version. But in the package's configuration file (`package.json`), they quietly added a new dependency with a lookalike name.
 
 The payload wasn't in the package itself—it was hiding one level deeper inside that innocent-sounding dependency. Because the main package had no modified code files, older scanners saw a completely clean update and allowed it through.
 
 We call this a **Hollow Release**.
 
-### How Version 1.2 Catches Hollow Attacks
-In Version 1.2, Release Sentinel introduced two smart checks that work together:
-1. **`hollow_dependency_injection`**: Did an update modify *zero* code files, but suddenly add a direct dependency? (Why would a package add a new dependency if it didn't write any code to use it?)
-2. **`lookalike_dependency_name`**: Does the added dependency name look like a knockoff or typosquat of a famous, popular package? (For example, `easy-day-js` is a knockoff of the famous `dayjs` date library; `plain-crypto-js` is a knockoff of `crypto-js`).
+### Version 1.2.1: Honest, Experimental Hollow Protection (`--experimental-hollow`)
+In Version 1.2.1, Release Sentinel provides specialized behavioral checks to inspect hollow releases:
+1. **`hollow_dependency_injection`**: Did an update modify *zero* code files, but suddenly add a direct runtime dependency? (Legitimate packages rarely add new runtime dependencies without writing any code that uses them.)
+2. **`lookalike_dependency_name`**: Does the added dependency name use npm convention affixes (like `node-` or `-cli`), character swaps/homoglyphs (like `cha1k`), or typosquats of famous packages?
 
-When both signals occur together—a hollow release injecting a lookalike dependency—Release Sentinel slams the door shut with an immediate **BLOCK**.
+**Scientific Honesty & Guardrails**:
+- During testing, we caught ourselves: an earlier experimental prototype included specific sample strings (like `"easy-"`). In Version 1.2.1, we strictly purged all sample-derived strings, relying only on general algorithmic rules.
+- Furthermore, because zero packages in our 800-package benign benchmark were hollow releases that added dependencies, an automated BLOCK rule could not be proven safe against false alarms.
+- Therefore, in **Version 1.2.1**, the default configuration matches Version 1.1's thoroughly validated policy. Hollow release detection is provided behind an **`--experimental-hollow`** flag that flags these updates for **human review (WARN)** rather than automated blocking.
 
 ---
 

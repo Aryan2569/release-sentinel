@@ -1,15 +1,1073 @@
 {
   "camp_0001": {
-    "leader": "02-echo@0.0.6@0.0.7",
+    "leader": "@solana/web3.js@1.95.5@1.95.7",
     "earliest_date": "2024-12-03",
     "primary_split": "DEV",
     "splits": [
-      "DEV",
-      "TEST-A",
-      "TEST-B",
-      "VAL"
+      "DEV"
     ],
-    "size": 1211,
+    "size": 1,
+    "members": [
+      "@solana/web3.js@1.95.5@1.95.7"
+    ],
+    "campaign_id": "camp_0001"
+  },
+  "camp_0002": {
+    "leader": "vant@2.13.2@2.13.3",
+    "earliest_date": "2024-12-20",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 5,
+    "members": [
+      "vant@2.13.2@2.13.3",
+      "vant@2.13.2@2.13.4",
+      "vant@2.13.2@2.13.5",
+      "vant@3.6.12@3.6.13",
+      "vant@3.6.12@3.6.14"
+    ],
+    "campaign_id": "camp_0002"
+  },
+  "camp_0003": {
+    "leader": "@rspack/cli@1.1.6@1.1.7",
+    "earliest_date": "2024-12-20",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 3,
+    "members": [
+      "@rspack/cli@1.1.6@1.1.7",
+      "@rspack/core@1.1.6@1.1.7",
+      "vant@4.9.11@4.9.14"
+    ],
+    "campaign_id": "camp_0003"
+  },
+  "camp_0004": {
+    "leader": "vant@4.9.11@4.9.12",
+    "earliest_date": "2024-12-20",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "vant@4.9.11@4.9.12"
+    ],
+    "campaign_id": "camp_0004"
+  },
+  "camp_0005": {
+    "leader": "vant@4.9.11@4.9.13",
+    "earliest_date": "2024-12-20",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "vant@4.9.11@4.9.13"
+    ],
+    "campaign_id": "camp_0005"
+  },
+  "camp_0006": {
+    "leader": "@rxap/ngx-bootstrap@19.0.2@19.0.3",
+    "earliest_date": "2025-03-20",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@rxap/ngx-bootstrap@19.0.2@19.0.3"
+    ],
+    "campaign_id": "camp_0006"
+  },
+  "camp_0007": {
+    "leader": "xrpl@2.14.1@2.14.2",
+    "earliest_date": "2025-04-21",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 5,
+    "members": [
+      "xrpl@2.14.1@2.14.2",
+      "xrpl@4.2.0@4.2.1",
+      "xrpl@4.2.0@4.2.2",
+      "xrpl@4.2.0@4.2.3",
+      "xrpl@4.2.0@4.2.4"
+    ],
+    "campaign_id": "camp_0007"
+  },
+  "camp_0008": {
+    "leader": "@react-native-aria/focus@0.2.9@0.2.10",
+    "earliest_date": "2025-06-06",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/focus@0.2.9@0.2.10"
+    ],
+    "campaign_id": "camp_0008"
+  },
+  "camp_0009": {
+    "leader": "@gluestack-ui/utils@0.1.15@0.1.16",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@gluestack-ui/utils@0.1.15@0.1.16"
+    ],
+    "campaign_id": "camp_0009"
+  },
+  "camp_0010": {
+    "leader": "@gluestack-ui/utils@0.1.15@0.1.17",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@gluestack-ui/utils@0.1.15@0.1.17"
+    ],
+    "campaign_id": "camp_0010"
+  },
+  "camp_0011": {
+    "leader": "@react-native-aria/button@0.2.10@0.2.11",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/button@0.2.10@0.2.11"
+    ],
+    "campaign_id": "camp_0011"
+  },
+  "camp_0012": {
+    "leader": "@react-native-aria/checkbox@0.2.10@0.2.11",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/checkbox@0.2.10@0.2.11"
+    ],
+    "campaign_id": "camp_0012"
+  },
+  "camp_0013": {
+    "leader": "@react-native-aria/combobox@0.2.7@0.2.8",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/combobox@0.2.7@0.2.8"
+    ],
+    "campaign_id": "camp_0013"
+  },
+  "camp_0014": {
+    "leader": "@react-native-aria/disclosure@0.2.8@0.2.9",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/disclosure@0.2.8@0.2.9"
+    ],
+    "campaign_id": "camp_0014"
+  },
+  "camp_0015": {
+    "leader": "@react-native-aria/interactions@0.2.16@0.2.17",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/interactions@0.2.16@0.2.17"
+    ],
+    "campaign_id": "camp_0015"
+  },
+  "camp_0016": {
+    "leader": "@react-native-aria/listbox@0.2.9@0.2.10",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/listbox@0.2.9@0.2.10"
+    ],
+    "campaign_id": "camp_0016"
+  },
+  "camp_0017": {
+    "leader": "@react-native-aria/menu@0.2.15@0.2.16",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/menu@0.2.15@0.2.16"
+    ],
+    "campaign_id": "camp_0017"
+  },
+  "camp_0018": {
+    "leader": "@react-native-aria/overlays@0.3.15@0.3.16",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/overlays@0.3.15@0.3.16"
+    ],
+    "campaign_id": "camp_0018"
+  },
+  "camp_0019": {
+    "leader": "@react-native-aria/radio@0.2.13@0.2.14",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/radio@0.2.13@0.2.14"
+    ],
+    "campaign_id": "camp_0019"
+  },
+  "camp_0020": {
+    "leader": "@react-native-aria/separator@0.2.6@0.2.7",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/separator@0.2.6@0.2.7"
+    ],
+    "campaign_id": "camp_0020"
+  },
+  "camp_0021": {
+    "leader": "@react-native-aria/slider@0.2.12@0.2.13",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/slider@0.2.12@0.2.13"
+    ],
+    "campaign_id": "camp_0021"
+  },
+  "camp_0022": {
+    "leader": "@react-native-aria/switch@0.2.4@0.2.5",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/switch@0.2.4@0.2.5"
+    ],
+    "campaign_id": "camp_0022"
+  },
+  "camp_0023": {
+    "leader": "@react-native-aria/tabs@0.2.13@0.2.14",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/tabs@0.2.13@0.2.14"
+    ],
+    "campaign_id": "camp_0023"
+  },
+  "camp_0024": {
+    "leader": "@react-native-aria/toggle@0.2.11@0.2.12",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/toggle@0.2.11@0.2.12"
+    ],
+    "campaign_id": "camp_0024"
+  },
+  "camp_0025": {
+    "leader": "@react-native-aria/utils@0.2.12@0.2.13",
+    "earliest_date": "2025-06-07",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@react-native-aria/utils@0.2.12@0.2.13"
+    ],
+    "campaign_id": "camp_0025"
+  },
+  "camp_0026": {
+    "leader": "@rxap/ngx-bootstrap@19.0.2@19.0.4",
+    "earliest_date": "2025-06-24",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@rxap/ngx-bootstrap@19.0.2@19.0.4"
+    ],
+    "campaign_id": "camp_0026"
+  },
+  "camp_0027": {
+    "leader": "got-fetch@5.1.10@5.1.11",
+    "earliest_date": "2025-07-17",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 9,
+    "members": [
+      "@pkgr/core@0.2.7@0.2.8",
+      "eslint-config-prettier@10.1.5@10.1.7",
+      "eslint-config-prettier@8.10.0@8.10.1",
+      "eslint-config-prettier@9.1.0@9.1.1",
+      "eslint-plugin-prettier@4.2.1@4.2.3",
+      "got-fetch@5.1.10@5.1.11",
+      "got-fetch@5.1.10@5.1.12",
+      "napi-postinstall@0.3.0@0.3.1",
+      "synckit@0.11.8@0.11.9"
+    ],
+    "campaign_id": "camp_0027"
+  },
+  "camp_0028": {
+    "leader": "is@3.3.0@3.3.1",
+    "earliest_date": "2025-07-19",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "is@3.3.0@3.3.1"
+    ],
+    "campaign_id": "camp_0028"
+  },
+  "camp_0029": {
+    "leader": "@toptal/picasso-charts@59.0.6@59.1.4",
+    "earliest_date": "2025-07-20",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 10,
+    "members": [
+      "@toptal/picasso-charts@59.0.6@59.1.4",
+      "@toptal/picasso-forms@73.2.14@73.3.2",
+      "@toptal/picasso-provider@5.0.2@5.1.1",
+      "@toptal/picasso-quote@2.0.11@2.1.7",
+      "@toptal/picasso-select@4.1.12@4.2.2",
+      "@toptal/picasso-shared@15.0.0@15.1.0",
+      "@toptal/picasso-tailwind@3.0.0@3.1.0",
+      "@toptal/picasso-typography@4.0.4@4.1.4",
+      "@toptal/picasso-utils@3.1.0@3.2.0",
+      "@xene/core@0.3.1@0.4.1"
+    ],
+    "campaign_id": "camp_0029"
+  },
+  "camp_0030": {
+    "leader": "@nx/devkit@21.4.1@21.5.0",
+    "earliest_date": "2025-08-26",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 7,
+    "members": [
+      "@nx/devkit@21.4.1@21.5.0",
+      "@nx/enterprise-cloud@3.1.1@3.2.0",
+      "@nx/eslint@21.4.1@21.5.0",
+      "@nx/js@21.4.1@21.5.0",
+      "@nx/key@3.1.1@3.2.0",
+      "@nx/node@21.4.1@21.5.0",
+      "@nx/workspace@21.4.1@21.5.0"
+    ],
+    "campaign_id": "camp_0030"
+  },
+  "camp_0031": {
+    "leader": "ansi-regex@6.2.0@6.2.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "ansi-regex@6.2.0@6.2.1"
+    ],
+    "campaign_id": "camp_0031"
+  },
+  "camp_0032": {
+    "leader": "ansi-styles@6.2.1@6.2.2",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "ansi-styles@6.2.1@6.2.2"
+    ],
+    "campaign_id": "camp_0032"
+  },
+  "camp_0033": {
+    "leader": "backslash@0.2.0@0.2.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "backslash@0.2.0@0.2.1"
+    ],
+    "campaign_id": "camp_0033"
+  },
+  "camp_0034": {
+    "leader": "chalk-template@1.1.0@1.1.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "chalk-template@1.1.0@1.1.1"
+    ],
+    "campaign_id": "camp_0034"
+  },
+  "camp_0035": {
+    "leader": "color-convert@3.1.0@3.1.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "color-convert@3.1.0@3.1.1"
+    ],
+    "campaign_id": "camp_0035"
+  },
+  "camp_0036": {
+    "leader": "color-name@2.0.0@2.0.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "color-name@2.0.0@2.0.1"
+    ],
+    "campaign_id": "camp_0036"
+  },
+  "camp_0037": {
+    "leader": "debug@4.4.1@4.4.2",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "debug@4.4.1@4.4.2"
+    ],
+    "campaign_id": "camp_0037"
+  },
+  "camp_0038": {
+    "leader": "error-ex@1.3.2@1.3.3",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "error-ex@1.3.2@1.3.3"
+    ],
+    "campaign_id": "camp_0038"
+  },
+  "camp_0039": {
+    "leader": "has-ansi@6.0.0@6.0.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "has-ansi@6.0.0@6.0.1"
+    ],
+    "campaign_id": "camp_0039"
+  },
+  "camp_0040": {
+    "leader": "is-arrayish@0.3.2@0.3.3",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "is-arrayish@0.3.2@0.3.3"
+    ],
+    "campaign_id": "camp_0040"
+  },
+  "camp_0041": {
+    "leader": "simple-swizzle@0.2.2@0.2.3",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "simple-swizzle@0.2.2@0.2.3"
+    ],
+    "campaign_id": "camp_0041"
+  },
+  "camp_0042": {
+    "leader": "slice-ansi@7.1.0@7.1.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "slice-ansi@7.1.0@7.1.1"
+    ],
+    "campaign_id": "camp_0042"
+  },
+  "camp_0043": {
+    "leader": "supports-hyperlinks@4.1.0@4.1.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "supports-hyperlinks@4.1.0@4.1.1"
+    ],
+    "campaign_id": "camp_0043"
+  },
+  "camp_0044": {
+    "leader": "wrap-ansi@9.0.0@9.0.1",
+    "earliest_date": "2025-09-08",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "wrap-ansi@9.0.0@9.0.1"
+    ],
+    "campaign_id": "camp_0044"
+  },
+  "camp_0045": {
+    "leader": "@coveops/abi@2.0.0@2.0.1",
+    "earliest_date": "2025-09-09",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@coveops/abi@2.0.0@2.0.1"
+    ],
+    "campaign_id": "camp_0045"
+  },
+  "camp_0046": {
+    "leader": "@duckdb/duckdb-wasm@1.29.0@1.29.2",
+    "earliest_date": "2025-09-09",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@duckdb/duckdb-wasm@1.29.0@1.29.2"
+    ],
+    "campaign_id": "camp_0046"
+  },
+  "camp_0047": {
+    "leader": "duckdb@1.3.2@1.3.3",
+    "earliest_date": "2025-09-09",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "duckdb@1.3.2@1.3.3"
+    ],
+    "campaign_id": "camp_0047"
+  },
+  "camp_0048": {
+    "leader": "@hestjs/core@0.2.0@0.2.1",
+    "earliest_date": "2025-09-14",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 351,
+    "members": [
+      "@ahmedhfarag/ngx-perfect-scrollbar@20.0.19@20.0.20",
+      "@ahmedhfarag/ngx-virtual-scroller@4.0.3@4.0.4",
+      "@art-ws/common@2.0.24@2.0.28",
+      "@art-ws/config-eslint@2.0.3@2.0.4",
+      "@art-ws/config-ts@2.0.6@2.0.7",
+      "@art-ws/config-ts@2.0.6@2.0.8",
+      "@art-ws/db-context@2.0.20@2.0.24",
+      "@art-ws/di-node@2.0.12@2.0.13",
+      "@art-ws/di@2.0.27@2.0.28",
+      "@art-ws/di@2.0.31@2.0.32",
+      "@art-ws/eslint@1.0.4@1.0.5",
+      "@art-ws/eslint@1.0.4@1.0.6",
+      "@art-ws/fastify-http-server@2.0.23@2.0.24",
+      "@art-ws/fastify-http-server@2.0.23@2.0.27",
+      "@art-ws/http-server@2.0.20@2.0.21",
+      "@art-ws/http-server@2.0.20@2.0.25",
+      "@art-ws/openapi@0.1.8@0.1.12",
+      "@art-ws/openapi@0.1.8@0.1.9",
+      "@art-ws/package-base@1.0.4@1.0.5",
+      "@art-ws/prettier@1.0.4@1.0.5",
+      "@art-ws/slf@2.0.14@2.0.15",
+      "@art-ws/slf@2.0.21@2.0.22",
+      "@art-ws/ssl-info@1.0.8@1.0.10",
+      "@art-ws/ssl-info@1.0.8@1.0.9",
+      "@art-ws/web-app@1.0.2@1.0.3",
+      "@crowdstrike/commitlint@8.1.0@8.1.1",
+      "@crowdstrike/commitlint@8.1.0@8.1.2",
+      "@crowdstrike/falcon-shoelace@0.4.0@0.4.1",
+      "@crowdstrike/falcon-shoelace@0.4.0@0.4.2",
+      "@crowdstrike/foundry-js@0.19.0@0.19.1",
+      "@crowdstrike/foundry-js@0.19.0@0.19.2",
+      "@crowdstrike/glide-core@0.34.1@0.34.2",
+      "@crowdstrike/glide-core@0.34.1@0.34.3",
+      "@crowdstrike/tailwind-toucan-base@5.0.0@5.0.1",
+      "@crowdstrike/tailwind-toucan-base@5.0.0@5.0.2",
+      "@ctrl/deluge@7.2.0@7.2.1",
+      "@ctrl/deluge@7.2.0@7.2.2",
+      "@ctrl/golang-template@1.4.1@1.4.2",
+      "@ctrl/golang-template@1.4.1@1.4.3",
+      "@ctrl/magnet-link@4.0.2@4.0.3",
+      "@ctrl/magnet-link@4.0.2@4.0.4",
+      "@ctrl/ngx-codemirror@7.0.0@7.0.1",
+      "@ctrl/ngx-codemirror@7.0.0@7.0.2",
+      "@ctrl/ngx-csv@6.0.0@6.0.1",
+      "@ctrl/ngx-csv@6.0.0@6.0.2",
+      "@ctrl/ngx-rightclick@4.0.0@4.0.1",
+      "@ctrl/ngx-rightclick@4.0.0@4.0.2",
+      "@ctrl/qbittorrent@9.7.0@9.7.1",
+      "@ctrl/qbittorrent@9.7.0@9.7.2",
+      "@ctrl/react-adsense@2.0.0@2.0.1",
+      "@ctrl/react-adsense@2.0.0@2.0.2",
+      "@ctrl/shared-torrent@6.3.0@6.3.1",
+      "@ctrl/shared-torrent@6.3.0@6.3.2",
+      "@ctrl/tinycolor@4.1.0@4.1.1",
+      "@ctrl/tinycolor@4.1.0@4.1.2",
+      "@ctrl/torrent-file@4.1.0@4.1.1",
+      "@ctrl/torrent-file@4.1.0@4.1.2",
+      "@ctrl/transmission@7.3.0@7.3.1",
+      "@ctrl/ts-base32@4.0.0@4.0.1",
+      "@ctrl/ts-base32@4.0.0@4.0.2",
+      "@hestjs/core@0.2.0@0.2.1",
+      "@hestjs/cqrs@0.1.5@0.1.6",
+      "@hestjs/demo@0.1.1@0.1.2",
+      "@hestjs/eslint-config@0.1.1@0.1.2",
+      "@hestjs/logger@0.1.5@0.1.6",
+      "@hestjs/scalar@0.1.6@0.1.7",
+      "@hestjs/validation@0.1.5@0.1.6",
+      "@nativescript-community/arraybuffers@1.1.5@1.1.6",
+      "@nativescript-community/arraybuffers@1.1.5@1.1.7",
+      "@nativescript-community/gesturehandler@2.0.34@2.0.35",
+      "@nativescript-community/perms@3.0.4@3.0.5",
+      "@nativescript-community/perms@3.0.4@3.0.6",
+      "@nativescript-community/perms@3.0.4@3.0.9",
+      "@nativescript-community/sentry@4.6.42@4.6.43",
+      "@nativescript-community/sqlite@3.5.1@3.5.4",
+      "@nativescript-community/sqlite@3.5.1@3.5.5",
+      "@nativescript-community/text@1.6.8@1.6.10",
+      "@nativescript-community/text@1.6.8@1.6.13",
+      "@nativescript-community/text@1.6.8@1.6.9",
+      "@nativescript-community/ui-collectionview@6.0.5@6.0.6",
+      "@nativescript-community/ui-document-picker@1.1.26@1.1.28",
+      "@nativescript-community/ui-drawer@0.1.29@0.1.30",
+      "@nativescript-community/ui-image@4.5.5@4.5.6",
+      "@nativescript-community/ui-label@1.3.34@1.3.35",
+      "@nativescript-community/ui-label@1.3.34@1.3.36",
+      "@nativescript-community/ui-material-bottom-navigation@7.2.71@7.2.73",
+      "@nativescript-community/ui-material-bottomsheet@7.2.71@7.2.72",
+      "@nativescript-community/ui-material-core-tabs@7.2.71@7.2.73",
+      "@nativescript-community/ui-material-core-tabs@7.2.71@7.2.75",
+      "@nativescript-community/ui-material-core-tabs@7.2.71@7.2.76",
+      "@nativescript-community/ui-material-core@7.2.71@7.2.73",
+      "@nativescript-community/ui-material-core@7.2.71@7.2.76",
+      "@nativescript-community/ui-material-tabs@7.2.71@7.2.73",
+      "@nativescript-community/ui-pager@14.1.34@14.1.36",
+      "@nativescript-community/ui-pager@14.1.34@14.1.38",
+      "@nativescript-community/ui-pulltorefresh@2.5.3@2.5.5",
+      "@nexe/config-manager@0.1.0@0.1.1",
+      "@nexe/eslint-config@0.1.0@0.1.1",
+      "@nexe/logger@0.1.2@0.1.3",
+      "@nstudio/angular@20.0.3@20.0.4",
+      "@nstudio/angular@20.0.3@20.0.5",
+      "@nstudio/focus@20.0.3@20.0.5",
+      "@nstudio/focus@20.0.3@20.0.6",
+      "@nstudio/nativescript-checkbox@2.0.5@2.0.6",
+      "@nstudio/nativescript-checkbox@2.0.5@2.0.7",
+      "@nstudio/nativescript-checkbox@2.0.5@2.0.9",
+      "@nstudio/nativescript-loading-indicator@5.0.0@5.0.1",
+      "@nstudio/nativescript-loading-indicator@5.0.0@5.0.2",
+      "@nstudio/nativescript-loading-indicator@5.0.0@5.0.4",
+      "@nstudio/ui-collectionview@5.1.10@5.1.11",
+      "@nstudio/ui-collectionview@5.1.10@5.1.12",
+      "@nstudio/ui-collectionview@5.1.10@5.1.14",
+      "@nstudio/web-angular@20.0.3@20.0.4",
+      "@nstudio/web@20.0.3@20.0.4",
+      "@nstudio/xplat-utils@20.0.3@20.0.5",
+      "@nstudio/xplat-utils@20.0.3@20.0.6",
+      "@nstudio/xplat@20.0.3@20.0.5",
+      "@nstudio/xplat@20.0.3@20.0.7",
+      "@operato/board@9.0.34@9.0.35",
+      "@operato/board@9.0.34@9.0.36",
+      "@operato/board@9.0.34@9.0.37",
+      "@operato/board@9.0.34@9.0.39",
+      "@operato/board@9.0.34@9.0.40",
+      "@operato/board@9.0.34@9.0.41",
+      "@operato/board@9.0.34@9.0.42",
+      "@operato/board@9.0.34@9.0.43",
+      "@operato/board@9.0.34@9.0.45",
+      "@operato/board@9.0.34@9.0.46",
+      "@operato/board@9.0.34@9.0.48",
+      "@operato/board@9.0.34@9.0.51",
+      "@operato/data-grist@9.0.28@9.0.29",
+      "@operato/data-grist@9.0.34@9.0.35",
+      "@operato/data-grist@9.0.34@9.0.36",
+      "@operato/data-grist@9.0.34@9.0.37",
+      "@operato/graphql@9.0.21@9.0.22",
+      "@operato/graphql@9.0.34@9.0.35",
+      "@operato/graphql@9.0.34@9.0.36",
+      "@operato/graphql@9.0.34@9.0.37",
+      "@operato/graphql@9.0.34@9.0.39",
+      "@operato/graphql@9.0.34@9.0.40",
+      "@operato/graphql@9.0.34@9.0.41",
+      "@operato/graphql@9.0.34@9.0.42",
+      "@operato/graphql@9.0.34@9.0.43",
+      "@operato/graphql@9.0.34@9.0.44",
+      "@operato/graphql@9.0.34@9.0.45",
+      "@operato/graphql@9.0.34@9.0.48",
+      "@operato/graphql@9.0.34@9.0.51",
+      "@operato/headroom@9.0.1@9.0.2",
+      "@operato/headroom@9.0.34@9.0.35",
+      "@operato/headroom@9.0.34@9.0.36",
+      "@operato/headroom@9.0.34@9.0.37",
+      "@operato/help@9.0.34@9.0.35",
+      "@operato/help@9.0.34@9.0.36",
+      "@operato/help@9.0.34@9.0.37",
+      "@operato/help@9.0.34@9.0.39",
+      "@operato/help@9.0.34@9.0.40",
+      "@operato/help@9.0.34@9.0.41",
+      "@operato/help@9.0.34@9.0.42",
+      "@operato/help@9.0.34@9.0.43",
+      "@operato/help@9.0.34@9.0.45",
+      "@operato/help@9.0.34@9.0.48",
+      "@operato/help@9.0.34@9.0.51",
+      "@operato/i18n@9.0.34@9.0.35",
+      "@operato/i18n@9.0.34@9.0.36",
+      "@operato/input@9.0.26@9.0.27",
+      "@operato/input@9.0.34@9.0.35",
+      "@operato/input@9.0.34@9.0.36",
+      "@operato/input@9.0.34@9.0.37",
+      "@operato/input@9.0.34@9.0.39",
+      "@operato/input@9.0.34@9.0.40",
+      "@operato/input@9.0.34@9.0.41",
+      "@operato/input@9.0.34@9.0.42",
+      "@operato/input@9.0.34@9.0.43",
+      "@operato/input@9.0.34@9.0.45",
+      "@operato/input@9.0.34@9.0.46",
+      "@operato/input@9.0.34@9.0.47",
+      "@operato/input@9.0.34@9.0.48",
+      "@operato/layout@9.0.34@9.0.35",
+      "@operato/layout@9.0.34@9.0.36",
+      "@operato/layout@9.0.34@9.0.37",
+      "@operato/popup@9.0.21@9.0.22",
+      "@operato/popup@9.0.34@9.0.35",
+      "@operato/popup@9.0.34@9.0.36",
+      "@operato/popup@9.0.34@9.0.37",
+      "@operato/popup@9.0.34@9.0.39",
+      "@operato/popup@9.0.34@9.0.40",
+      "@operato/popup@9.0.34@9.0.41",
+      "@operato/popup@9.0.34@9.0.42",
+      "@operato/popup@9.0.34@9.0.43",
+      "@operato/popup@9.0.34@9.0.44",
+      "@operato/popup@9.0.34@9.0.45",
+      "@operato/popup@9.0.34@9.0.48",
+      "@operato/popup@9.0.34@9.0.51",
+      "@operato/pull-to-refresh@9.0.34@9.0.35",
+      "@operato/pull-to-refresh@9.0.34@9.0.36",
+      "@operato/pull-to-refresh@9.0.34@9.0.37",
+      "@operato/pull-to-refresh@9.0.34@9.0.38",
+      "@operato/pull-to-refresh@9.0.34@9.0.39",
+      "@operato/pull-to-refresh@9.0.34@9.0.40",
+      "@operato/pull-to-refresh@9.0.34@9.0.41",
+      "@operato/pull-to-refresh@9.0.34@9.0.43",
+      "@operato/pull-to-refresh@9.0.34@9.0.44",
+      "@operato/pull-to-refresh@9.0.34@9.0.47",
+      "@operato/shell@9.0.21@9.0.22",
+      "@operato/shell@9.0.34@9.0.35",
+      "@operato/shell@9.0.34@9.0.36",
+      "@operato/shell@9.0.34@9.0.37",
+      "@operato/shell@9.0.34@9.0.39",
+      "@operato/styles@9.0.1@9.0.2",
+      "@operato/styles@9.0.34@9.0.35",
+      "@operato/styles@9.0.34@9.0.36",
+      "@operato/styles@9.0.34@9.0.37",
+      "@operato/utils@9.0.21@9.0.22",
+      "@operato/utils@9.0.34@9.0.35",
+      "@operato/utils@9.0.34@9.0.36",
+      "@operato/utils@9.0.34@9.0.37",
+      "@operato/utils@9.0.34@9.0.39",
+      "@operato/utils@9.0.34@9.0.40",
+      "@operato/utils@9.0.34@9.0.41",
+      "@operato/utils@9.0.34@9.0.42",
+      "@operato/utils@9.0.34@9.0.43",
+      "@operato/utils@9.0.34@9.0.45",
+      "@operato/utils@9.0.34@9.0.48",
+      "@operato/utils@9.0.34@9.0.50",
+      "@operato/utils@9.0.34@9.0.51",
+      "@teselagen/bio-parsers@0.4.28@0.4.29",
+      "@teselagen/bounce-loader@0.3.15@0.3.16",
+      "@teselagen/bounce-loader@0.3.15@0.3.17",
+      "@teselagen/file-utils@0.3.20@0.3.21",
+      "@teselagen/liquibase-tools@0.4.0@0.4.1",
+      "@teselagen/range-utils@0.3.13@0.3.14",
+      "@teselagen/react-list@0.8.18@0.8.19",
+      "@teselagen/sequence-utils@0.3.32@0.3.33",
+      "@things-factory/attachment-base@9.0.41@9.0.42",
+      "@things-factory/attachment-base@9.0.41@9.0.43",
+      "@things-factory/attachment-base@9.0.41@9.0.44",
+      "@things-factory/attachment-base@9.0.41@9.0.45",
+      "@things-factory/attachment-base@9.0.41@9.0.46",
+      "@things-factory/attachment-base@9.0.41@9.0.47",
+      "@things-factory/attachment-base@9.0.41@9.0.48",
+      "@things-factory/attachment-base@9.0.41@9.0.49",
+      "@things-factory/attachment-base@9.0.41@9.0.51",
+      "@things-factory/attachment-base@9.0.41@9.0.52",
+      "@things-factory/attachment-base@9.0.41@9.0.55",
+      "@things-factory/auth-base@9.0.41@9.0.42",
+      "@things-factory/auth-base@9.0.41@9.0.43",
+      "@things-factory/auth-base@9.0.41@9.0.44",
+      "@things-factory/auth-base@9.0.41@9.0.45",
+      "@things-factory/email-base@9.0.41@9.0.42",
+      "@things-factory/email-base@9.0.41@9.0.43",
+      "@things-factory/email-base@9.0.41@9.0.44",
+      "@things-factory/email-base@9.0.41@9.0.45",
+      "@things-factory/email-base@9.0.41@9.0.47",
+      "@things-factory/email-base@9.0.41@9.0.48",
+      "@things-factory/email-base@9.0.41@9.0.49",
+      "@things-factory/email-base@9.0.41@9.0.50",
+      "@things-factory/email-base@9.0.41@9.0.51",
+      "@things-factory/email-base@9.0.41@9.0.53",
+      "@things-factory/email-base@9.0.41@9.0.54",
+      "@things-factory/email-base@9.0.41@9.0.55",
+      "@things-factory/email-base@9.0.41@9.0.56",
+      "@things-factory/email-base@9.0.41@9.0.59",
+      "@things-factory/env@9.0.41@9.0.42",
+      "@things-factory/env@9.0.41@9.0.43",
+      "@things-factory/env@9.0.41@9.0.44",
+      "@things-factory/env@9.0.41@9.0.45",
+      "@things-factory/integration-base@9.0.41@9.0.42",
+      "@things-factory/integration-base@9.0.41@9.0.43",
+      "@things-factory/integration-base@9.0.41@9.0.44",
+      "@things-factory/integration-base@9.0.41@9.0.45",
+      "@things-factory/integration-marketplace@9.0.41@9.0.42",
+      "@things-factory/integration-marketplace@9.0.41@9.0.43",
+      "@things-factory/integration-marketplace@9.0.41@9.0.44",
+      "@things-factory/integration-marketplace@9.0.41@9.0.45",
+      "@things-factory/shell@9.0.41@9.0.42",
+      "@things-factory/shell@9.0.41@9.0.43",
+      "@things-factory/shell@9.0.41@9.0.44",
+      "@things-factory/shell@9.0.41@9.0.45",
+      "ace-colorpicker-rpk@0.0.13@0.0.14",
+      "browser-webdriver-downloader@3.0.7@3.0.8",
+      "capacitor-notificationhandler@0.0.1@0.0.2",
+      "capacitor-plugin-healthapp@0.0.1@0.0.2",
+      "capacitor-plugin-ihealth@1.1.7@1.1.8",
+      "capacitor-plugin-ihealth@1.1.7@1.1.9",
+      "capacitor-plugin-vonage@1.0.1@1.0.2",
+      "capacitorandroidpermissions@0.0.3@0.0.4",
+      "create-hest-app@0.1.8@0.1.9",
+      "db-evo@1.1.3@1.1.4",
+      "db-evo@1.1.3@1.1.5",
+      "ember-browser-services@5.0.1@5.0.2",
+      "ember-browser-services@5.0.1@5.0.3",
+      "ember-headless-form-yup@1.0.0@1.0.1",
+      "ember-headless-form@1.1.1@1.1.2",
+      "ember-headless-form@1.1.1@1.1.3",
+      "ember-headless-table@2.1.4@2.1.5",
+      "ember-headless-table@2.1.4@2.1.6",
+      "ember-url-hash-polyfill@1.0.11@1.0.12",
+      "ember-url-hash-polyfill@1.0.11@1.0.13",
+      "ember-velcro@2.2.0@2.2.1",
+      "ember-velcro@2.2.0@2.2.2",
+      "eslint-config-crowdstrike-node@4.0.2@4.0.3",
+      "eslint-config-crowdstrike-node@4.0.2@4.0.4",
+      "eslint-config-crowdstrike@11.0.1@11.0.2",
+      "eslint-config-crowdstrike@11.0.1@11.0.3",
+      "eslint-config-teselagen@6.1.6@6.1.7",
+      "globalize-rpk@1.7.3@1.7.4",
+      "graphql-sequelize-teselagen@5.3.7@5.3.8",
+      "json-rules-engine-simplified@0.2.0@0.2.3",
+      "koa2-swagger-ui@5.11.0@5.11.1",
+      "koa2-swagger-ui@5.11.0@5.11.2",
+      "monorepo-next@13.0.0@13.0.1",
+      "monorepo-next@13.0.0@13.0.2",
+      "ng-imports-checker@0.0.8@0.0.9",
+      "ng2-file-upload@8.0.0@8.0.2",
+      "ng2-file-upload@8.0.0@8.0.3",
+      "ngx-bootstrap@20.0.2@20.0.5",
+      "ngx-bootstrap@20.0.2@20.0.6",
+      "ngx-color@10.0.0@10.0.1",
+      "ngx-color@10.0.0@10.0.2",
+      "ngx-toastr@19.0.0@19.0.1",
+      "ngx-toastr@19.0.0@19.0.2",
+      "ngx-trend@8.0.0@8.0.1",
+      "ngx-ws@1.1.4@1.1.5",
+      "ngx-ws@1.1.4@1.1.6",
+      "oradm-to-gql@35.0.13@35.0.14",
+      "oradm-to-sqlz@1.1.1@1.1.4",
+      "ove-auto-annotate@0.0.8@0.0.10",
+      "ove-auto-annotate@0.0.8@0.0.9",
+      "pm2-gelf-json@1.0.3@1.0.4",
+      "pm2-gelf-json@1.0.3@1.0.5",
+      "react-complaint-image@0.0.31@0.0.34",
+      "react-jsonschema-form-conditionals@0.3.17@0.3.20",
+      "react-jsonschema-form-extras@1.0.0@1.0.3",
+      "react-jsonschema-rxnt-extras@0.4.5@0.4.8",
+      "remark-preset-lint-crowdstrike@4.0.0@4.0.1",
+      "remark-preset-lint-crowdstrike@4.0.0@4.0.2",
+      "swc-plugin-component-annotate@1.9.0@1.9.1",
+      "swc-plugin-component-annotate@1.9.0@1.9.2",
+      "tg-client-query-builder@2.14.3@2.14.4",
+      "tg-redbird@1.3.0@1.3.1",
+      "tg-seq-gen@1.0.8@1.0.10",
+      "tg-seq-gen@1.0.8@1.0.9",
+      "ts-gaussian@3.0.4@3.0.5",
+      "ts-gaussian@3.0.4@3.0.6",
+      "ts-imports@1.0.0@1.0.1",
+      "ts-imports@1.0.0@1.0.2",
+      "ve-bamreader@0.2.5@0.2.6",
+      "ve-editor@1.0.0@1.0.1",
+      "verror-extra@6.0.0@6.0.1",
+      "voip-callkit@1.0.1@1.0.2",
+      "yargs-help-output@5.0.2@5.0.3"
+    ],
+    "campaign_id": "camp_0048"
+  },
+  "camp_0049": {
+    "leader": "@thangved/callback-window@1.1.2@1.1.4",
+    "earliest_date": "2025-09-14",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 9,
+    "members": [
+      "@thangved/callback-window@1.1.2@1.1.4",
+      "@tnf-dev/api@1.0.7@1.0.8",
+      "@tnf-dev/core@1.0.7@1.0.8",
+      "@tnf-dev/js@1.0.7@1.0.8",
+      "@tnf-dev/mui@1.0.7@1.0.8",
+      "@tnf-dev/react@1.0.7@1.0.8",
+      "html-to-base64-image@1.0.1@1.0.2",
+      "oradm-to-sqlz@1.1.1@1.1.2",
+      "thangved-react-grid@1.0.2@1.0.3"
+    ],
+    "campaign_id": "camp_0049"
+  },
+  "camp_0050": {
+    "leader": "airchief@0.3.0@0.3.1",
+    "earliest_date": "2025-09-14",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 6,
+    "members": [
+      "airchief@0.3.0@0.3.1",
+      "airpilot@0.8.7@0.8.8",
+      "jumpgate@0.0.1@0.0.2",
+      "mcp-knowledge-base@0.0.1@0.0.2",
+      "mcp-knowledge-graph@1.2.0@1.2.1",
+      "tvi-cli@0.1.4@0.1.5"
+    ],
+    "campaign_id": "camp_0050"
+  },
+  "camp_0051": {
+    "leader": "json-rules-engine-simplified@0.2.0@0.2.1",
+    "earliest_date": "2025-09-14",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 3,
+    "members": [
+      "json-rules-engine-simplified@0.2.0@0.2.1",
+      "react-complaint-image@0.0.31@0.0.32",
+      "react-jsonschema-form-conditionals@0.3.17@0.3.18"
+    ],
+    "campaign_id": "camp_0051"
+  },
+  "camp_0052": {
+    "leader": "02-echo@0.0.6@0.0.7",
+    "earliest_date": "2025-11-24",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 407,
     "members": [
       "02-echo@0.0.6@0.0.7",
       "@accordproject/concerto-linter-default-ruleset@3.24.0@3.24.1",
@@ -32,9 +1090,6 @@
       "@actbase/react-native-naver-login@1.0.0@1.0.1",
       "@actbase/react-native-simple-video@1.0.12@1.0.13",
       "@actbase/react-native-tiktok@1.1.2@1.1.3",
-      "@ahmedhfarag/ngx-perfect-scrollbar@20.0.19@20.0.20",
-      "@ahmedhfarag/ngx-virtual-scroller@4.0.3@4.0.4",
-      "@aifabrix/miso-client@4.7.1@4.7.2",
       "@alexcolls/nuxt-socket.io@0.0.6@0.0.8",
       "@alexcolls/nuxt-ux@0.6.0@0.6.2",
       "@antstackio/eslint-config-antstack@0.0.2@0.0.3",
@@ -42,6 +1097,885 @@
       "@antstackio/graphql-body-parser@0.1.0@0.1.1",
       "@antstackio/json-to-graphql@1.0.2@1.0.3",
       "@antstackio/shelbysam@1.1.6@1.1.7",
+      "@aryanhussain/my-angular-lib@0.0.22@0.0.23",
+      "@asyncapi/avro-schema-parser@3.0.24@3.0.26",
+      "@asyncapi/bundler@0.6.4@0.6.6",
+      "@asyncapi/cli@4.1.1@4.1.3",
+      "@asyncapi/converter@1.6.2@1.6.4",
+      "@asyncapi/diff@0.5.0@0.5.1",
+      "@asyncapi/generator-components@0.3.1@0.3.3",
+      "@asyncapi/generator-helpers@0.2.0@0.2.2",
+      "@asyncapi/generator-react-sdk@1.1.3@1.1.4",
+      "@asyncapi/generator@2.8.4@2.8.6",
+      "@asyncapi/html-template@3.3.1@3.3.2",
+      "@asyncapi/java-spring-template@1.6.0@1.6.2",
+      "@asyncapi/java-template@0.3.4@0.3.5",
+      "@asyncapi/keeper@0.0.1@0.0.3",
+      "@asyncapi/markdown-template@1.6.7@1.6.8",
+      "@asyncapi/modelina@5.10.1@5.10.2",
+      "@asyncapi/modelina@5.10.1@5.10.3",
+      "@asyncapi/multi-parser@2.2.0@2.2.2",
+      "@asyncapi/nodejs-template@3.0.4@3.0.5",
+      "@asyncapi/nunjucks-filters@2.1.0@2.1.2",
+      "@asyncapi/openapi-schema-parser@3.0.24@3.0.26",
+      "@asyncapi/optimizer@1.0.4@1.0.6",
+      "@asyncapi/parser@3.4.0@3.4.1",
+      "@asyncapi/parser@3.4.0@3.4.2",
+      "@asyncapi/php-template@0.1.0@0.1.1",
+      "@asyncapi/problem@1.0.0@1.0.1",
+      "@asyncapi/protobuf-schema-parser@3.5.1@3.5.2",
+      "@asyncapi/protobuf-schema-parser@3.5.1@3.5.3",
+      "@asyncapi/python-paho-template@0.2.13@0.2.14",
+      "@asyncapi/react-component@2.6.5@2.6.7",
+      "@asyncapi/server-api@0.16.23@0.16.24",
+      "@asyncapi/specs@6.10.0@6.10.1",
+      "@asyncapi/specs@6.8.1@6.8.2",
+      "@asyncapi/specs@6.8.1@6.8.3",
+      "@asyncapi/studio@1.0.1@1.0.2",
+      "@asyncapi/studio@1.0.1@1.0.3",
+      "@browserbasehq/bb9@1.2.20@1.2.21",
+      "@browserbasehq/director-ai@1.0.2@1.0.3",
+      "@browserbasehq/mcp@2.1.0@2.1.1",
+      "@browserbasehq/sdk-functions@0.0.3@0.0.4",
+      "@browserbasehq/stagehand@3.0.3@3.0.4",
+      "@clausehq/flows-step-mqtt@0.1.13@0.1.14",
+      "@clausehq/flows-step-sendgridemail@0.1.13@0.1.14",
+      "@clausehq/flows-step-taskscreateurl@0.1.13@0.1.14",
+      "@dev-blinq/cucumber-js@1.0.130@1.0.131",
+      "@dev-blinq/cucumber_client@1.0.735@1.0.738",
+      "@ensdomains/address-encoder@1.1.4@1.1.5",
+      "@ensdomains/blacklist@1.0.0@1.0.1",
+      "@ensdomains/ccip-read-dns-gateway@0.1.0@0.1.1",
+      "@ensdomains/ccip-read-worker-viem@0.0.3@0.0.4",
+      "@ensdomains/curvearithmetics@1.0.0@1.0.1",
+      "@ensdomains/ensjs@4.0.2@4.0.3",
+      "@ensdomains/hardhat-chai-matchers-viem@0.1.14@0.1.15",
+      "@ensdomains/hardhat-toolbox-viem-extended@0.0.5@0.0.6",
+      "@ensdomains/react-ens-address@0.0.31@0.0.32",
+      "@ensdomains/renewal@0.0.12@0.0.13",
+      "@ensdomains/server-analytics@0.0.1@0.0.2",
+      "@ensdomains/subdomain-registrar@0.2.3@0.2.4",
+      "@ensdomains/test-utils@1.3.0@1.3.1",
+      "@ensdomains/thorin@0.6.50@0.6.51",
+      "@ensdomains/ui@3.4.5@3.4.6",
+      "@ensdomains/vite-plugin-i18next-loader@4.0.3@4.0.4",
+      "@ensdomains/web3modal@1.10.1@1.10.2",
+      "@everreal/validate-esmoduleinterop-imports@1.4.3@1.4.4",
+      "@everreal/validate-esmoduleinterop-imports@1.4.3@1.4.5",
+      "@faq-component/core@0.0.3@0.0.4",
+      "@faq-component/react@1.0.0@1.0.1",
+      "@hapheus/n8n-nodes-pgp@1.5.0@1.5.1",
+      "@ifelsedeveloper/protocol-contracts-svm-idl@0.1.1@0.1.2",
+      "@kvytech/cli@0.0.6@0.0.7",
+      "@kvytech/components@0.0.1@0.0.2",
+      "@kvytech/habbit-e2e-test@0.0.1@0.0.2",
+      "@kvytech/medusa-plugin-announcement@0.0.7@0.0.8",
+      "@kvytech/medusa-plugin-management@0.0.4@0.0.5",
+      "@kvytech/medusa-plugin-newsletter@0.0.4@0.0.5",
+      "@kvytech/medusa-plugin-product-reviews@0.0.8@0.0.9",
+      "@kvytech/medusa-plugin-promotion@0.0.1@0.0.2",
+      "@kvytech/web@0.0.1@0.0.2",
+      "@lessondesk/schoolbus@5.2.1@5.2.3",
+      "@markvivanco/app-version-checker@1.0.0@1.0.1",
+      "@markvivanco/app-version-checker@1.0.0@1.0.2",
+      "@mcp-use/cli@2.2.5@2.2.6",
+      "@mcp-use/cli@2.2.5@2.2.7",
+      "@mcp-use/inspector@0.6.1@0.6.2",
+      "@mcp-use/inspector@0.6.1@0.6.3",
+      "@mcp-use/mcp-use@1.0.0@1.0.1",
+      "@mcp-use/mcp-use@1.0.0@1.0.2",
+      "@orbitgtbelgium/mapbox-gl-draw-cut-polygon-mode@2.0.4@2.0.5",
+      "@orbitgtbelgium/mapbox-gl-draw-scale-rotate-mode@1.1.0@1.1.1",
+      "@orbitgtbelgium/orbit-components@1.2.8@1.2.9",
+      "@orbitgtbelgium/time-slider@1.0.186@1.0.187",
+      "@osmanekrem/bmad@1.0.5@1.0.6",
+      "@osmanekrem/error-handler@1.2.1@1.2.2",
+      "@posthog/agent@1.24.0@1.24.1",
+      "@posthog/core@1.5.5@1.5.6",
+      "@posthog/currency-normalization-plugin@0.0.7@0.0.8",
+      "@posthog/databricks-plugin@0.0.7@0.0.8",
+      "@posthog/drop-events-on-property-plugin@0.0.7@0.0.8",
+      "@posthog/filter-out-plugin@0.0.7@0.0.8",
+      "@posthog/first-time-event-tracker@0.0.7@0.0.8",
+      "@posthog/heartbeat-plugin@0.0.7@0.0.8",
+      "@posthog/hedgehog-mode@0.0.41@0.0.42",
+      "@posthog/maxmind-plugin@0.1.5@0.1.6",
+      "@posthog/nextjs@0.0.2@0.0.3",
+      "@posthog/pagerduty-plugin@0.0.7@0.0.8",
+      "@posthog/plugin-server@1.10.7@1.10.8",
+      "@posthog/postgres-plugin@0.0.7@0.0.8",
+      "@posthog/rrweb-player@0.0.30@0.0.31",
+      "@posthog/rrweb-record@0.0.30@0.0.31",
+      "@posthog/rrweb-replay@0.0.18@0.0.19",
+      "@posthog/rrweb@0.0.30@0.0.31",
+      "@posthog/taxonomy-plugin@0.0.7@0.0.8",
+      "@posthog/twitter-followers-plugin@0.0.7@0.0.8",
+      "@posthog/web-dev-server@1.0.4@1.0.5",
+      "@posthog/wizard@1.18.0@1.18.1",
+      "@postman/csv-parse@4.0.2@4.0.4",
+      "@postman/csv-parse@4.0.2@4.0.5",
+      "@postman/final-node-keytar@7.9.0@7.9.1",
+      "@postman/final-node-keytar@7.9.0@7.9.2",
+      "@postman/final-node-keytar@7.9.0@7.9.3",
+      "@postman/mcp-ui-client@5.5.0@5.5.1",
+      "@postman/mcp-ui-client@5.5.0@5.5.2",
+      "@postman/mcp-ui-client@5.5.0@5.5.3",
+      "@postman/node-keytar@7.9.3@7.9.4",
+      "@postman/node-keytar@7.9.3@7.9.5",
+      "@postman/node-keytar@7.9.3@7.9.6",
+      "@postman/pm-bin-linux-x64@1.24.2@1.24.3",
+      "@postman/pm-bin-linux-x64@1.24.2@1.24.4",
+      "@postman/pm-bin-linux-x64@1.24.2@1.24.5",
+      "@postman/pm-bin-macos-arm64@1.24.2@1.24.3",
+      "@postman/pm-bin-macos-arm64@1.24.2@1.24.4",
+      "@postman/pm-bin-macos-arm64@1.24.2@1.24.5",
+      "@postman/pm-bin-macos-x64@1.24.2@1.24.3",
+      "@postman/pm-bin-macos-x64@1.24.2@1.24.4",
+      "@postman/pm-bin-macos-x64@1.24.2@1.24.5",
+      "@postman/pm-bin-windows-x64@1.24.2@1.24.3",
+      "@postman/pm-bin-windows-x64@1.24.2@1.24.4",
+      "@postman/pm-bin-windows-x64@1.24.2@1.24.5",
+      "@postman/postman-collection-fork@4.3.2@4.3.3",
+      "@postman/postman-collection-fork@4.3.2@4.3.4",
+      "@postman/postman-collection-fork@4.3.2@4.3.5",
+      "@postman/postman-mcp-cli@1.0.2@1.0.3",
+      "@postman/postman-mcp-cli@1.0.2@1.0.4",
+      "@postman/postman-mcp-server@2.4.9@2.4.11",
+      "@postman/postman-mcp-server@2.4.9@2.4.12",
+      "@postman/pretty-ms@6.1.0@6.1.1",
+      "@postman/pretty-ms@6.1.0@6.1.2",
+      "@postman/pretty-ms@6.1.0@6.1.3",
+      "@postman/tunnel-agent@0.6.4@0.6.5",
+      "@postman/tunnel-agent@0.6.4@0.6.6",
+      "@postman/wdio-allure-reporter@0.0.6@0.0.7",
+      "@postman/wdio-allure-reporter@0.0.6@0.0.8",
+      "@postman/wdio-allure-reporter@0.0.6@0.0.9",
+      "@postman/wdio-junit-reporter@0.0.3@0.0.4",
+      "@postman/wdio-junit-reporter@0.0.3@0.0.5",
+      "@postman/wdio-junit-reporter@0.0.3@0.0.6",
+      "@pradhumngautam/common-app@1.0.1@1.0.2",
+      "@pruthvi21/use-debounce@1.0.2@1.0.3",
+      "@quick-start-soft/quick-document-translator@1.4.2511142125@1.4.2511142126",
+      "@quick-start-soft/quick-git-clean-markdown@1.4.2511142125@1.4.2511142126",
+      "@quick-start-soft/quick-markdown-compose@1.4.2506300028@1.4.2506300029",
+      "@quick-start-soft/quick-markdown-image@1.4.2511142125@1.4.2511142126",
+      "@quick-start-soft/quick-markdown-print@1.4.2511142125@1.4.2511142126",
+      "@quick-start-soft/quick-markdown-translator@1.4.2509202330@1.4.2509202331",
+      "@quick-start-soft/quick-markdown@1.4.2511142125@1.4.2511142126",
+      "@quick-start-soft/quick-remove-image-background@1.4.2511142125@1.4.2511142126",
+      "@quick-start-soft/quick-task-refine@1.4.2511142125@1.4.2511142126",
+      "@seezo/sdr-mcp-server@0.0.4@0.0.5",
+      "@seung-ju/next@0.0.1@0.0.2",
+      "@seung-ju/openapi-generator@0.0.3@0.0.4",
+      "@seung-ju/react-hooks@0.0.1@0.0.2",
+      "@seung-ju/react-native-action-sheet@0.2.0@0.2.1",
+      "@strapbuild/react-native-date-time-picker@2.0.3@2.0.4",
+      "@strapbuild/react-native-perspective-image-cropper-2@0.4.6@0.4.7",
+      "@strapbuild/react-native-perspective-image-cropper-poojan31@0.4.5@0.4.6",
+      "@strapbuild/react-native-perspective-image-cropper@0.4.14@0.4.15",
+      "@trpc-rate-limiter/cloudflare@0.1.3@0.1.4",
+      "@trpc-rate-limiter/hono@0.1.3@0.1.4",
+      "@vishadtyagi/full-year-calendar@0.1.10@0.1.11",
+      "@voiceflow/alexa-types@2.15.59@2.15.60",
+      "@voiceflow/alexa-types@2.15.59@2.15.61",
+      "@voiceflow/api-sdk@3.28.57@3.28.58",
+      "@voiceflow/api-sdk@3.28.57@3.28.59",
+      "@voiceflow/backend-utils@5.0.0@5.0.1",
+      "@voiceflow/backend-utils@5.0.0@5.0.2",
+      "@voiceflow/base-types@2.136.1@2.136.3",
+      "@voiceflow/chat-types@2.14.57@2.14.58",
+      "@voiceflow/chat-types@2.14.57@2.14.59",
+      "@voiceflow/common@8.9.0@8.9.1",
+      "@voiceflow/common@8.9.0@8.9.2",
+      "@voiceflow/dependency-cruiser-config@1.8.10@1.8.11",
+      "@voiceflow/dependency-cruiser-config@1.8.10@1.8.12",
+      "@voiceflow/dtos-interact@1.40.0@1.40.2",
+      "@voiceflow/encryption@0.3.1@0.3.2",
+      "@voiceflow/encryption@0.3.1@0.3.3",
+      "@voiceflow/eslint-plugin@1.6.0@1.6.2",
+      "@voiceflow/exception@1.10.0@1.10.1",
+      "@voiceflow/exception@1.10.0@1.10.2",
+      "@voiceflow/fetch@1.11.0@1.11.1",
+      "@voiceflow/fetch@1.11.0@1.11.2",
+      "@voiceflow/general-types@3.2.21@3.2.22",
+      "@voiceflow/general-types@3.2.21@3.2.23",
+      "@voiceflow/google-dfes-types@2.17.11@2.17.12",
+      "@voiceflow/google-dfes-types@2.17.11@2.17.13",
+      "@voiceflow/google-types@2.21.11@2.21.13",
+      "@voiceflow/logger@2.4.1@2.4.2",
+      "@voiceflow/logger@2.4.1@2.4.3",
+      "@voiceflow/natural-language-commander@0.5.1@0.5.3",
+      "@voiceflow/openai@3.2.1@3.2.3",
+      "@voiceflow/pino-pretty@4.4.0@4.4.2",
+      "@voiceflow/pino@6.11.2@6.11.3",
+      "@voiceflow/pino@6.11.2@6.11.4",
+      "@voiceflow/react-chat@1.65.2@1.65.4",
+      "@voiceflow/runtime-client-js@1.17.1@1.17.2",
+      "@voiceflow/runtime-client-js@1.17.1@1.17.3",
+      "@voiceflow/runtime@1.29.0@1.29.1",
+      "@voiceflow/runtime@1.29.0@1.29.2",
+      "@voiceflow/sdk-runtime@1.43.0@1.43.1",
+      "@voiceflow/sdk-runtime@1.43.0@1.43.2",
+      "@voiceflow/slate-serializer@1.7.2@1.7.4",
+      "@voiceflow/stitches-react@2.3.1@2.3.2",
+      "@voiceflow/test-common@2.1.0@2.1.1",
+      "@voiceflow/test-common@2.1.0@2.1.2",
+      "@voiceflow/tsconfig-paths@1.1.3@1.1.4",
+      "@voiceflow/tsconfig-paths@1.1.3@1.1.5",
+      "@voiceflow/vite-config@2.6.1@2.6.2",
+      "@voiceflow/vite-config@2.6.1@2.6.3",
+      "@voiceflow/voice-types@2.10.57@2.10.58",
+      "@voiceflow/voice-types@2.10.57@2.10.59",
+      "@voiceflow/voiceflow-types@3.32.44@3.32.46",
+      "@zapier/ai-actions-react@0.1.11@0.1.12",
+      "@zapier/ai-actions-react@0.1.11@0.1.13",
+      "@zapier/ai-actions@0.1.17@0.1.19",
+      "@zapier/babel-preset-zapier@6.4.0@6.4.2",
+      "@zapier/browserslist-config-zapier@1.0.2@1.0.4",
+      "@zapier/eslint-plugin-zapier@11.0.2@11.0.3",
+      "@zapier/eslint-plugin-zapier@11.0.2@11.0.4",
+      "@zapier/mcp-integration@3.0.0@3.0.1",
+      "@zapier/mcp-integration@3.0.0@3.0.2",
+      "@zapier/secret-scrubber@1.1.2@1.1.4",
+      "@zapier/spectral-api-ruleset@1.9.0@1.9.2",
+      "@zapier/stubtree@0.1.1@0.1.2",
+      "@zapier/stubtree@0.1.1@0.1.3",
+      "@zapier/zapier-sdk@0.15.4@0.15.5",
+      "@zapier/zapier-sdk@0.15.4@0.15.6",
+      "ai-crowl-shield@1.0.6@1.0.7",
+      "asyncapi-preview@1.0.0@1.0.1",
+      "automation_model@1.0.490@1.0.491",
+      "axios-builder@1.2.0@1.2.1",
+      "axios-timed@1.0.0@1.0.2",
+      "best_gpio_controller@1.0.9@1.0.10",
+      "bytecode-checker-cli@1.0.7@1.0.10",
+      "bytecode-checker-cli@1.0.7@1.0.9",
+      "calc-loan-interest@1.0.3@1.0.4",
+      "chrome-extension-downloads@0.0.2@0.0.4",
+      "claude-token-updater@1.0.2@1.0.3",
+      "coinmarketcap-api@3.1.1@3.1.2",
+      "coinmarketcap-api@3.1.1@3.1.3",
+      "colors-regex@2.0.0@2.0.1",
+      "command-irail@0.5.3@0.5.4",
+      "compare-obj@1.1.0@1.1.1",
+      "compare-obj@1.1.0@1.1.2",
+      "create-director-app@0.1.0@0.1.1",
+      "create-glee-app@0.2.1@0.2.3",
+      "create-hardhat3-app@1.1.0@1.1.2",
+      "create-hardhat3-app@1.1.0@1.1.3",
+      "create-mcp-use-app@0.5.2@0.5.3",
+      "create-mcp-use-app@0.5.2@0.5.4",
+      "designstudiouiux@1.0.0@1.0.1",
+      "discord-bot-server@0.1.1@0.1.2",
+      "docusaurus-plugin-vanilla-extract@1.0.2@1.0.3",
+      "dotnet-template@0.0.2@0.0.3",
+      "email-deliverability-tester@1.1.0@1.1.1",
+      "eslint-config-zeallat-base@1.0.3@1.0.4",
+      "evm-checkcode-cli@1.0.11@1.0.13",
+      "evm-checkcode-cli@1.0.11@1.0.14",
+      "exact-ticker@0.3.4@0.3.5",
+      "fat-fingered@1.0.0@1.0.2",
+      "feature-flip@1.0.0@1.0.2",
+      "fittxt@1.0.1@1.0.3",
+      "gate-evm-check-code2@2.0.2@2.0.4",
+      "gate-evm-check-code2@2.0.2@2.0.5",
+      "gate-evm-check-code2@2.0.2@2.0.6",
+      "gate-evm-tools-test@1.0.4@1.0.6",
+      "gate-evm-tools-test@1.0.4@1.0.7",
+      "generator-ng-itobuz@0.0.14@0.0.15",
+      "github-action-for-generator@2.1.26@2.1.27",
+      "gitsafe@1.0.4@1.0.5",
+      "go-template@0.1.7@0.1.9",
+      "hope-mapboxdraw@0.1.0@0.1.1",
+      "hopedraw@1.0.2@1.0.3",
+      "hover-design-prototype@0.0.4@0.0.5",
+      "ids-css@1.5.0@1.5.1",
+      "ids-enterprise-mcp-server@0.0.1@0.0.2",
+      "ids-enterprise-typings@20.1.5@20.1.6",
+      "iron-shield-miniapp@0.0.1@0.0.2",
+      "ito-button@8.0.2@8.0.3",
+      "itobuz-angular-button@8.0.10@8.0.11",
+      "itobuz-angular@0.0.0@0.0.1",
+      "jaetut-varit-test@1.0.1@1.0.2",
+      "jquery-bindings@1.1.1@1.1.2",
+      "jquery-bindings@1.1.1@1.1.3",
+      "jsonsurge@1.0.6@1.0.7",
+      "kill-port@2.0.1@2.0.3",
+      "korea-administrative-area-geo-json-util@1.0.6@1.0.7",
+      "kwami@1.5.8@1.5.10",
+      "lang-codes@1.0.0@1.0.2",
+      "manual-billing-system-miniapp-api@1.3.0@1.3.1",
+      "mcp-use@1.4.1@1.4.2",
+      "mcp-use@1.4.1@1.4.3",
+      "medusa-plugin-logs@0.0.16@0.0.17",
+      "medusa-plugin-momo@0.0.67@0.0.68",
+      "medusa-plugin-product-reviews-kvy@0.0.3@0.0.4",
+      "medusa-plugin-zalopay@0.0.39@0.0.40",
+      "mon-package-react-typescript@1.0.0@1.0.1",
+      "n8n-nodes-vercel-ai-sdk@0.1.6@0.1.7",
+      "n8n-nodes-viral-app@0.2.4@0.2.5",
+      "ngx-useful-swiper-prosenjit@9.0.1@9.0.2",
+      "ngx-wooapi@12.0.0@12.0.1",
+      "okta-react-router-6@5.0.0@5.0.1",
+      "orbit-boxicons@2.1.2@2.1.3",
+      "orbit-nebula-draw-tools@1.0.9@1.0.10",
+      "orbit-nebula-editor@1.0.1@1.0.2",
+      "orbit-soap@0.43.12@0.43.13",
+      "parcel-plugin-asset-copier@1.1.1@1.1.3",
+      "pdf-annotation@0.0.1@0.0.2",
+      "poper-react-sdk@0.1.1@0.1.2",
+      "posthog-docusaurus@2.0.5@2.0.6",
+      "posthog-js@1.297.2@1.297.3",
+      "posthog-node@4.18.0@4.18.1",
+      "posthog-node@5.11.2@5.11.3",
+      "posthog-node@5.13.2@5.13.3",
+      "posthog-react-native@4.11.0@4.11.1",
+      "posthog-react-native@4.12.4@4.12.5",
+      "prime-one-table@0.0.18@0.0.19",
+      "ra-data-firebase@1.0.6@1.0.8",
+      "react-element-prompt-inspector@0.1.17@0.1.18",
+      "react-jam-icons@1.0.0@1.0.2",
+      "react-keycloak-context@1.0.7@1.0.8",
+      "react-keycloak-context@1.0.7@1.0.9",
+      "react-library-setup@0.0.5@0.0.6",
+      "react-micromodal.js@1.0.0@1.0.2",
+      "react-native-email@2.1.0@2.1.1",
+      "react-native-get-pixel-dimensions@1.0.0@1.0.1",
+      "react-native-google-maps-directions@2.1.1@2.1.2",
+      "react-native-retriable-fetch@2.0.0@2.0.2",
+      "react-native-use-modal@1.0.2@1.0.3",
+      "react-native-view-finder@1.2.0@1.2.2",
+      "react-native-websocket@1.0.2@1.0.4",
+      "react-native-worklet-functions@3.3.2@3.3.3",
+      "rediff-viewer@0.0.6@0.0.7",
+      "rediff@1.0.4@1.0.5",
+      "redux-router-kit@1.2.1@1.2.3",
+      "shinhan-limit-scrap@1.0.2@1.0.3",
+      "skills-use@0.1.0@0.1.1",
+      "super-commit@1.0.0@1.0.1",
+      "tanstack-shadcn-table@1.1.4@1.1.5",
+      "tcsp-draw-test@1.0.4@1.0.5",
+      "tcsp-test-vd@2.4.3@2.4.4",
+      "tcsp@2.0.1@2.0.2",
+      "template-micro-service@1.0.1@1.0.3",
+      "test-hardhat-app@1.0.0@1.0.2",
+      "test-hardhat-app@1.0.0@1.0.3",
+      "test23112222-api@1.0.0@1.0.1",
+      "tiaan@1.0.1@1.0.2",
+      "undefsafe-typed@1.0.2@1.0.3",
+      "undefsafe-typed@1.0.2@1.0.4",
+      "url-encode-decode@1.0.0@1.0.1",
+      "web-scraper-mcp@1.1.3@1.1.4",
+      "zapier-async-storage@1.0.0@1.0.1",
+      "zapier-async-storage@1.0.0@1.0.2",
+      "zapier-platform-cli@18.0.1@18.0.2",
+      "zapier-platform-cli@18.0.1@18.0.3",
+      "zapier-platform-core@18.0.1@18.0.2",
+      "zapier-platform-core@18.0.1@18.0.3",
+      "zapier-platform-legacy-scripting-runner@4.0.1@4.0.3",
+      "zapier-platform-schema@18.0.1@18.0.3",
+      "zuper-sdk@1.0.56@1.0.57",
+      "zuper-stream@2.0.8@2.0.9"
+    ],
+    "campaign_id": "camp_0052"
+  },
+  "camp_0053": {
+    "leader": "@posthog/variance-plugin@0.0.7@0.0.8",
+    "earliest_date": "2025-11-24",
+    "primary_split": "DEV",
+    "splits": [
+      "DEV"
+    ],
+    "size": 1,
+    "members": [
+      "@posthog/variance-plugin@0.0.7@0.0.8"
+    ],
+    "campaign_id": "camp_0053"
+  },
+  "camp_0054": {
+    "leader": "cline@2.2.3@2.3.0",
+    "earliest_date": "2026-02-17",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 1,
+    "members": [
+      "cline@2.2.3@2.3.0"
+    ],
+    "campaign_id": "camp_0054"
+  },
+  "camp_0055": {
+    "leader": "@aifabrix/miso-client@4.7.1@4.7.2",
+    "earliest_date": "2026-03-07",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 1,
+    "members": [
+      "@aifabrix/miso-client@4.7.1@4.7.2"
+    ],
+    "campaign_id": "camp_0055"
+  },
+  "camp_0056": {
+    "leader": "react-native-country-select@0.3.9@0.3.91",
+    "earliest_date": "2026-03-16",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 1,
+    "members": [
+      "react-native-country-select@0.3.9@0.3.91"
+    ],
+    "campaign_id": "camp_0056"
+  },
+  "camp_0057": {
+    "leader": "@emilgroup/accounting-sdk@1.27.0@1.27.3",
+    "earliest_date": "2026-03-20",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 22,
+    "members": [
+      "@emilgroup/accounting-sdk@1.27.0@1.27.3",
+      "@emilgroup/customer-sdk@1.54.0@1.54.5",
+      "@emilgroup/discount-sdk-node@1.5.0@1.5.2",
+      "@emilgroup/discount-sdk@1.5.0@1.5.3",
+      "@emilgroup/document-uploader@0.0.9@0.0.12",
+      "@emilgroup/docxtemplater-util@1.1.1@1.1.4",
+      "@emilgroup/gdv-sdk-node@2.6.0@2.6.3",
+      "@emilgroup/numbergenerator-sdk-node@1.3.0@1.3.3",
+      "@emilgroup/partner-portal-sdk@1.1.0@1.1.3",
+      "@emilgroup/partner-sdk@1.19.0@1.19.3",
+      "@emilgroup/process-manager-sdk@1.4.0@1.4.2",
+      "@emilgroup/setting-sdk@0.2.0@0.2.3",
+      "@leafnoise/mirage@2.0.2@2.0.3",
+      "@opengov/ppf-backend-types@1.141.1@1.141.2",
+      "@teale.io/eslint-config@1.8.8@1.8.15",
+      "babel-plugin-react-pure-component@0.1.5@0.1.6",
+      "cit-playwright-tests@1.0.0@1.0.1",
+      "eslint-config-ppf@0.128.1@0.128.2",
+      "opengov-k6-core@1.0.1@1.0.2",
+      "react-autolink-text@2.0.0@2.0.1",
+      "react-leaflet-cluster-layer@0.0.3@0.0.4",
+      "react-leaflet-marker-layer@0.1.4@0.1.5"
+    ],
+    "campaign_id": "camp_0057"
+  },
+  "camp_0058": {
+    "leader": "@emilgroup/customer-sdk@1.54.0@1.54.3",
+    "earliest_date": "2026-03-20",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 17,
+    "members": [
+      "@emilgroup/customer-sdk@1.54.0@1.54.3",
+      "@emilgroup/customer-sdk@1.54.0@1.54.4",
+      "@emilgroup/discount-sdk@1.5.0@1.5.1",
+      "@emilgroup/document-sdk-node@1.43.0@1.43.5",
+      "@emilgroup/document-uploader@0.0.9@0.0.10",
+      "@emilgroup/docxtemplater-util@1.1.1@1.1.2",
+      "@emilgroup/gdv-sdk-node@2.6.0@2.6.1",
+      "@emilgroup/insurance-sdk@1.97.0@1.97.4",
+      "@emilgroup/insurance-sdk@1.97.0@1.97.5",
+      "@emilgroup/numbergenerator-sdk-node@1.3.0@1.3.2",
+      "@emilgroup/partner-portal-sdk@1.1.0@1.1.1",
+      "@emilgroup/partner-sdk@1.19.0@1.19.2",
+      "@emilgroup/setting-sdk-node@0.2.0@0.2.2",
+      "@emilgroup/setting-sdk@0.2.0@0.2.2",
+      "@teale.io/eslint-config@1.8.8@1.8.12",
+      "@teale.io/eslint-config@1.8.8@1.8.13",
+      "@teale.io/eslint-config@1.8.8@1.8.14"
+    ],
+    "campaign_id": "camp_0058"
+  },
+  "camp_0059": {
+    "leader": "@emilgroup/account-sdk@1.41.0@1.41.1",
+    "earliest_date": "2026-03-20",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 16,
+    "members": [
+      "@emilgroup/account-sdk-node@1.40.0@1.40.1",
+      "@emilgroup/account-sdk@1.41.0@1.41.1",
+      "@emilgroup/accounting-sdk-node@1.26.0@1.26.1",
+      "@emilgroup/api-documentation@1.19.0@1.19.1",
+      "@emilgroup/auth-sdk-node@1.21.0@1.21.1",
+      "@emilgroup/auth-sdk@1.25.0@1.25.1",
+      "@emilgroup/billing-sdk-node@1.57.0@1.57.1",
+      "@emilgroup/billing-sdk@1.56.0@1.56.1",
+      "@emilgroup/customer-sdk-node@1.55.0@1.55.1",
+      "@emilgroup/document-sdk-node@1.43.0@1.43.1",
+      "@emilgroup/document-sdk@1.45.0@1.45.1",
+      "@emilgroup/notification-sdk-node@1.4.0@1.4.1",
+      "@emilgroup/public-api-sdk-node@1.35.0@1.35.1",
+      "@emilgroup/public-api-sdk@1.33.0@1.33.1",
+      "@emilgroup/tenant-sdk-node@1.33.0@1.33.1",
+      "@emilgroup/tenant-sdk@1.34.0@1.34.1"
+    ],
+    "campaign_id": "camp_0059"
+  },
+  "camp_0060": {
+    "leader": "@emilgroup/auth-sdk@1.25.0@1.25.2",
+    "earliest_date": "2026-03-20",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 13,
+    "members": [
+      "@emilgroup/auth-sdk@1.25.0@1.25.2",
+      "@emilgroup/claim-sdk-node@1.39.0@1.39.2",
+      "@emilgroup/claim-sdk@1.41.0@1.41.2",
+      "@emilgroup/customer-sdk@1.54.0@1.54.2",
+      "@emilgroup/document-sdk@1.45.0@1.45.2",
+      "@emilgroup/gdv-sdk@2.6.0@2.6.2",
+      "@emilgroup/insurance-sdk-node@1.95.0@1.95.2",
+      "@emilgroup/partner-portal-sdk-node@1.1.0@1.1.2",
+      "@emilgroup/partner-sdk-node@1.19.0@1.19.2",
+      "@emilgroup/process-manager-sdk-node@1.13.0@1.13.2",
+      "@emilgroup/tenant-sdk@1.34.0@1.34.2",
+      "@emilgroup/translation-sdk-node@1.1.0@1.1.2",
+      "@teale.io/eslint-config@1.8.8@1.8.10"
+    ],
+    "campaign_id": "camp_0060"
+  },
+  "camp_0061": {
+    "leader": "axios@1.14.0@1.14.1",
+    "earliest_date": "2026-03-31",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 1,
+    "members": [
+      "axios@1.14.0@1.14.1"
+    ],
+    "campaign_id": "camp_0061"
+  },
+  "camp_0062": {
+    "leader": "@velora-dex/sdk@9.4.0@9.4.1",
+    "earliest_date": "2026-04-08",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 1,
+    "members": [
+      "@velora-dex/sdk@9.4.0@9.4.1"
+    ],
+    "campaign_id": "camp_0062"
+  },
+  "camp_0063": {
+    "leader": "@openwebconcept/design-tokens@1.0.0@1.0.1",
+    "earliest_date": "2026-04-21",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 16,
+    "members": [
+      "@automagik/genie@4.260421.32@4.260421.33",
+      "@automagik/genie@4.260421.32@4.260421.34",
+      "@automagik/genie@4.260421.32@4.260421.36",
+      "@automagik/genie@4.260421.32@4.260421.37",
+      "@automagik/genie@4.260421.32@4.260421.38",
+      "@automagik/genie@4.260421.32@4.260421.39",
+      "@openwebconcept/design-tokens@1.0.0@1.0.1",
+      "@openwebconcept/design-tokens@1.0.0@1.0.2",
+      "@openwebconcept/design-tokens@1.0.0@1.0.3",
+      "@openwebconcept/theme-owc@1.0.0@1.0.1",
+      "@openwebconcept/theme-owc@1.0.0@1.0.2",
+      "@openwebconcept/theme-owc@1.0.0@1.0.3",
+      "pgserve@1.1.10@1.1.11",
+      "pgserve@1.1.10@1.1.12",
+      "pgserve@1.1.10@1.1.13",
+      "pgserve@1.1.10@1.1.14"
+    ],
+    "campaign_id": "camp_0063"
+  },
+  "camp_0064": {
+    "leader": "@bitwarden/cli@2026.3.0@2026.4.0",
+    "earliest_date": "2026-04-23",
+    "primary_split": "VAL",
+    "splits": [
+      "VAL"
+    ],
+    "size": 1,
+    "members": [
+      "@bitwarden/cli@2026.3.0@2026.4.0"
+    ],
+    "campaign_id": "camp_0064"
+  },
+  "camp_0065": {
+    "leader": "@cap-js/db-service@2.10.0@2.10.1",
+    "earliest_date": "2026-04-29",
+    "primary_split": "VAL",
+    "splits": [
+      "TEST-A",
+      "VAL"
+    ],
+    "size": 103,
+    "members": [
+      "@beproduct/nestjs-auth@0.1.1@0.1.14",
+      "@beproduct/nestjs-auth@0.1.1@0.1.16",
+      "@beproduct/nestjs-auth@0.1.1@0.1.17",
+      "@beproduct/nestjs-auth@0.1.1@0.1.19",
+      "@beproduct/nestjs-auth@0.1.1@0.1.8",
+      "@cap-js/db-service@2.10.0@2.10.1",
+      "@cap-js/postgres@2.2.1@2.2.2",
+      "@cap-js/sqlite@2.2.1@2.2.2",
+      "@draftlab/auth@0.24.0@0.24.2",
+      "@draftlab/db@0.16.0@0.16.2",
+      "@mesadev/rest@0.28.2@0.28.3",
+      "@mesadev/saguaro@0.4.21@0.4.22",
+      "@mesadev/sdk@0.28.2@0.28.3",
+      "@mistralai/mistralai-azure@1.7.0@1.7.1",
+      "@mistralai/mistralai-azure@1.7.0@1.7.2",
+      "@mistralai/mistralai-azure@1.7.0@1.7.3",
+      "@mistralai/mistralai-gcp@1.7.0@1.7.1",
+      "@mistralai/mistralai-gcp@1.7.0@1.7.2",
+      "@mistralai/mistralai-gcp@1.7.0@1.7.3",
+      "@squawk/airport-data@0.7.3@0.7.4",
+      "@squawk/airports@0.6.1@0.6.3",
+      "@squawk/airspace-data@0.5.2@0.5.3",
+      "@squawk/airspace@0.8.0@0.8.2",
+      "@squawk/airway-data@0.5.3@0.5.4",
+      "@squawk/airways@0.4.1@0.4.2",
+      "@squawk/fix-data@0.6.3@0.6.4",
+      "@squawk/fixes@0.3.1@0.3.3",
+      "@squawk/flight-math@0.5.3@0.5.4",
+      "@squawk/flightplan@0.5.1@0.5.3",
+      "@squawk/geo@0.4.3@0.4.4",
+      "@squawk/icao-registry-data@0.8.3@0.8.5",
+      "@squawk/icao-registry@0.5.1@0.5.2",
+      "@squawk/mcp@0.9.0@0.9.1",
+      "@squawk/navaid-data@0.6.3@0.6.4",
+      "@squawk/navaids@0.4.1@0.4.2",
+      "@squawk/notams@0.3.5@0.3.6",
+      "@squawk/procedure-data@0.7.2@0.7.4",
+      "@squawk/procedures@0.5.1@0.5.2",
+      "@squawk/types@0.8.0@0.8.1",
+      "@squawk/units@0.4.2@0.4.4",
+      "@squawk/weather@0.5.5@0.5.6",
+      "@supersurkhet/cli@0.0.1@0.0.2",
+      "@supersurkhet/cli@0.0.1@0.0.4",
+      "@supersurkhet/cli@0.0.1@0.0.6",
+      "@supersurkhet/sdk@0.0.1@0.0.2",
+      "@supersurkhet/sdk@0.0.1@0.0.4",
+      "@supersurkhet/sdk@0.0.1@0.0.6",
+      "@tallyui/components@1.0.0@1.0.1",
+      "@tallyui/components@1.0.0@1.0.3",
+      "@tallyui/connector-medusa@1.0.0@1.0.1",
+      "@tallyui/connector-medusa@1.0.0@1.0.3",
+      "@tallyui/connector-shopify@1.0.0@1.0.1",
+      "@tallyui/connector-shopify@1.0.0@1.0.3",
+      "@tallyui/connector-vendure@1.0.0@1.0.1",
+      "@tallyui/connector-woocommerce@1.0.0@1.0.1",
+      "@tallyui/connector-woocommerce@1.0.0@1.0.3",
+      "@tallyui/core@0.2.0@0.2.1",
+      "@tallyui/database@1.0.0@1.0.1",
+      "@tallyui/database@1.0.0@1.0.3",
+      "@tallyui/pos@0.1.0@0.1.1",
+      "@tallyui/pos@0.1.0@0.1.3",
+      "@tallyui/storage-sqlite@0.2.0@0.2.1",
+      "@tallyui/storage-sqlite@0.2.0@0.2.2",
+      "@tallyui/storage-sqlite@0.2.0@0.2.3",
+      "@tallyui/theme@0.2.0@0.2.1",
+      "@taskflow-corp/cli@0.1.23@0.1.24",
+      "@taskflow-corp/cli@0.1.23@0.1.26",
+      "@taskflow-corp/cli@0.1.23@0.1.28",
+      "@tolka/cli@1.0.1@1.0.2",
+      "@tolka/cli@1.0.1@1.0.4",
+      "@uipath/access-policy-sdk@0.3.0@0.3.1",
+      "@uipath/agent-sdk@1.0.1@1.0.2",
+      "@uipath/agent-tool@1.0.0@1.0.1",
+      "@uipath/ap-chat@1.5.6@1.5.7",
+      "@uipath/apollo-core@5.9.1@5.9.2",
+      "@uipath/apollo-react@4.24.4@4.24.5",
+      "@uipath/apollo-wind@2.16.1@2.16.2",
+      "@uipath/case-tool@1.0.0@1.0.1",
+      "@uipath/data-fabric-tool@1.0.1@1.0.2",
+      "@uipath/flow-tool@1.0.1@1.0.2",
+      "@uipath/integrationservice-tool@1.0.1@1.0.2",
+      "@uipath/maestro-sdk@1.0.0@1.0.1",
+      "@uipath/maestro-tool@1.0.0@1.0.1",
+      "@uipath/packager-tool-workflowcompiler@0.0.15@0.0.16",
+      "@uipath/project-packager@1.1.15@1.1.16",
+      "@uipath/robot@1.3.3@1.3.4",
+      "@uipath/rpa-tool@0.9.4@0.9.5",
+      "@uipath/solution-tool@1.0.0@1.0.1",
+      "@uipath/solutionpackager-sdk@1.0.10@1.0.11",
+      "@uipath/vss@0.1.5@0.1.6",
+      "@uipath/widget.sdk@1.2.2@1.2.3",
+      "cmux-agent-mcp@0.1.2@0.1.3",
+      "cmux-agent-mcp@0.1.2@0.1.5",
+      "cmux-agent-mcp@0.1.2@0.1.7",
+      "cross-stitch@1.1.2@1.1.3",
+      "git-branch-selector@1.3.2@1.3.3",
+      "git-branch-selector@1.3.2@1.3.5",
+      "git-git-git@1.0.7@1.0.10",
+      "git-git-git@1.0.7@1.0.8",
+      "mbt@1.2.47@1.2.48",
+      "nextmove-mcp@0.1.2@0.1.3",
+      "nextmove-mcp@0.1.2@0.1.5",
+      "safe-action@0.8.2@0.8.4"
+    ],
+    "campaign_id": "camp_0065"
+  },
+  "camp_0066": {
+    "leader": "@tanstack/arktype-adapter@1.166.9@1.166.12",
+    "earliest_date": "2026-05-11",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 60,
+    "members": [
+      "@tanstack/arktype-adapter@1.166.9@1.166.12",
+      "@tanstack/eslint-plugin-router@1.161.6@1.161.12",
+      "@tanstack/eslint-plugin-router@1.161.6@1.161.9",
+      "@tanstack/eslint-plugin-start@0.0.1@0.0.4",
+      "@tanstack/eslint-plugin-start@0.0.1@0.0.7",
+      "@tanstack/history@1.161.6@1.161.9",
+      "@tanstack/nitro-v2-vite-plugin@1.154.9@1.154.12",
+      "@tanstack/react-router-devtools@1.166.13@1.166.16",
+      "@tanstack/react-router@1.169.2@1.169.5",
+      "@tanstack/react-router@1.169.2@1.169.8",
+      "@tanstack/react-start-client@1.166.48@1.166.51",
+      "@tanstack/react-start-client@1.166.48@1.166.54",
+      "@tanstack/react-start-rsc@0.0.44@0.0.47",
+      "@tanstack/react-start-rsc@0.0.44@0.0.50",
+      "@tanstack/react-start-server@1.166.52@1.166.55",
+      "@tanstack/react-start@1.167.65@1.167.68",
+      "@tanstack/react-start@1.167.65@1.167.71",
+      "@tanstack/router-cli@1.166.43@1.166.46",
+      "@tanstack/router-cli@1.166.43@1.166.49",
+      "@tanstack/router-core@1.169.2@1.169.5",
+      "@tanstack/router-core@1.169.2@1.169.8",
+      "@tanstack/router-devtools-core@1.167.3@1.167.6",
+      "@tanstack/router-devtools-core@1.167.3@1.167.9",
+      "@tanstack/router-devtools@1.166.13@1.166.16",
+      "@tanstack/router-generator@1.166.42@1.166.45",
+      "@tanstack/router-generator@1.166.42@1.166.48",
+      "@tanstack/router-plugin@1.167.35@1.167.38",
+      "@tanstack/router-plugin@1.167.35@1.167.41",
+      "@tanstack/router-ssr-query-core@1.168.0@1.168.3",
+      "@tanstack/router-ssr-query-core@1.168.0@1.168.6",
+      "@tanstack/router-utils@1.161.8@1.161.11",
+      "@tanstack/router-utils@1.161.8@1.161.14",
+      "@tanstack/router-vite-plugin@1.166.50@1.166.53",
+      "@tanstack/solid-router-devtools@1.166.13@1.166.16",
+      "@tanstack/solid-router-ssr-query@1.166.12@1.166.15",
+      "@tanstack/solid-router@1.169.2@1.169.5",
+      "@tanstack/solid-router@1.169.2@1.169.8",
+      "@tanstack/solid-start-client@1.166.47@1.166.50",
+      "@tanstack/solid-start-server@1.166.51@1.166.54",
+      "@tanstack/solid-start@1.167.62@1.167.65",
+      "@tanstack/solid-start@1.167.62@1.167.68",
+      "@tanstack/start-client-core@1.168.2@1.168.5",
+      "@tanstack/start-client-core@1.168.2@1.168.8",
+      "@tanstack/start-fn-stubs@1.161.6@1.161.9",
+      "@tanstack/start-plugin-core@1.169.20@1.169.23",
+      "@tanstack/start-plugin-core@1.169.20@1.169.26",
+      "@tanstack/start-server-core@1.167.30@1.167.33",
+      "@tanstack/start-server-core@1.167.30@1.167.36",
+      "@tanstack/start-static-server-functions@1.166.41@1.166.44",
+      "@tanstack/start-storage-context@1.166.35@1.166.38",
+      "@tanstack/virtual-file-routes@1.161.7@1.161.10",
+      "@tanstack/vue-router-devtools@1.166.13@1.166.16",
+      "@tanstack/vue-router-ssr-query@1.166.12@1.166.15",
+      "@tanstack/vue-router@1.169.2@1.169.5",
+      "@tanstack/vue-router@1.169.2@1.169.8",
+      "@tanstack/vue-start-client@1.166.43@1.166.46",
+      "@tanstack/vue-start-server@1.166.47@1.166.50",
+      "@tanstack/vue-start@1.167.58@1.167.61",
+      "@tanstack/vue-start@1.167.58@1.167.64",
+      "@tanstack/zod-adapter@1.166.9@1.166.12"
+    ],
+    "campaign_id": "camp_0066"
+  },
+  "camp_0067": {
+    "leader": "@opensearch-project/opensearch@3.5.1@3.5.3",
+    "earliest_date": "2026-05-12",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@opensearch-project/opensearch@3.5.1@3.5.3"
+    ],
+    "campaign_id": "camp_0067"
+  },
+  "camp_0068": {
+    "leader": "@opensearch-project/opensearch@3.6.0@3.6.2",
+    "earliest_date": "2026-05-12",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@opensearch-project/opensearch@3.6.0@3.6.2"
+    ],
+    "campaign_id": "camp_0068"
+  },
+  "camp_0069": {
+    "leader": "@opensearch-project/opensearch@3.6.0@3.7.0",
+    "earliest_date": "2026-05-12",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@opensearch-project/opensearch@3.6.0@3.7.0"
+    ],
+    "campaign_id": "camp_0069"
+  },
+  "camp_0070": {
+    "leader": "@opensearch-project/opensearch@3.6.0@3.8.0",
+    "earliest_date": "2026-05-12",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@opensearch-project/opensearch@3.6.0@3.8.0"
+    ],
+    "campaign_id": "camp_0070"
+  },
+  "camp_0071": {
+    "leader": "node-ipc@12.0.0@12.0.1",
+    "earliest_date": "2026-05-14",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "node-ipc@12.0.0@12.0.1"
+    ],
+    "campaign_id": "camp_0071"
+  },
+  "camp_0072": {
+    "leader": "@antv/algorithm@0.1.26@0.3.26",
+    "earliest_date": "2026-05-19",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 47,
+    "members": [
       "@antv/algorithm@0.1.26@0.3.26",
       "@antv/ava-react@3.3.2@3.5.2",
       "@antv/ava@3.4.1@3.6.1",
@@ -86,218 +2020,841 @@
       "@antv/x6-geometry@2.0.5@2.2.5",
       "@antv/x6-react-components@2.0.9@2.1.9",
       "@antv/x6-react-components@2.0.9@2.2.9",
-      "@art-ws/common@2.0.24@2.0.28",
-      "@art-ws/config-eslint@2.0.3@2.0.4",
-      "@art-ws/config-ts@2.0.6@2.0.7",
-      "@art-ws/config-ts@2.0.6@2.0.8",
-      "@art-ws/db-context@2.0.20@2.0.24",
-      "@art-ws/di-node@2.0.12@2.0.13",
-      "@art-ws/di@2.0.27@2.0.28",
-      "@art-ws/di@2.0.31@2.0.32",
-      "@art-ws/eslint@1.0.4@1.0.5",
-      "@art-ws/eslint@1.0.4@1.0.6",
-      "@art-ws/fastify-http-server@2.0.23@2.0.24",
-      "@art-ws/fastify-http-server@2.0.23@2.0.27",
-      "@art-ws/http-server@2.0.20@2.0.21",
-      "@art-ws/http-server@2.0.20@2.0.25",
-      "@art-ws/openapi@0.1.8@0.1.12",
-      "@art-ws/openapi@0.1.8@0.1.9",
-      "@art-ws/package-base@1.0.4@1.0.5",
-      "@art-ws/prettier@1.0.4@1.0.5",
-      "@art-ws/slf@2.0.14@2.0.15",
-      "@art-ws/slf@2.0.21@2.0.22",
-      "@art-ws/ssl-info@1.0.8@1.0.10",
-      "@art-ws/ssl-info@1.0.8@1.0.9",
-      "@art-ws/web-app@1.0.2@1.0.3",
-      "@aryanhussain/my-angular-lib@0.0.22@0.0.23",
-      "@asyncapi/avro-schema-parser@3.0.24@3.0.26",
-      "@asyncapi/bundler@0.6.4@0.6.6",
-      "@asyncapi/cli@4.1.1@4.1.3",
-      "@asyncapi/converter@1.6.2@1.6.4",
-      "@asyncapi/diff@0.5.0@0.5.1",
-      "@asyncapi/generator-components@0.3.1@0.3.3",
-      "@asyncapi/generator-helpers@0.2.0@0.2.2",
-      "@asyncapi/generator-react-sdk@1.1.3@1.1.4",
-      "@asyncapi/generator@2.8.4@2.8.6",
-      "@asyncapi/html-template@3.3.1@3.3.2",
-      "@asyncapi/java-spring-template@1.6.0@1.6.2",
-      "@asyncapi/java-template@0.3.4@0.3.5",
-      "@asyncapi/keeper@0.0.1@0.0.3",
-      "@asyncapi/markdown-template@1.6.7@1.6.8",
-      "@asyncapi/modelina@5.10.1@5.10.2",
-      "@asyncapi/modelina@5.10.1@5.10.3",
-      "@asyncapi/multi-parser@2.2.0@2.2.2",
-      "@asyncapi/nodejs-template@3.0.4@3.0.5",
-      "@asyncapi/nunjucks-filters@2.1.0@2.1.2",
-      "@asyncapi/openapi-schema-parser@3.0.24@3.0.26",
-      "@asyncapi/optimizer@1.0.4@1.0.6",
-      "@asyncapi/parser@3.4.0@3.4.1",
-      "@asyncapi/parser@3.4.0@3.4.2",
-      "@asyncapi/php-template@0.1.0@0.1.1",
-      "@asyncapi/problem@1.0.0@1.0.1",
-      "@asyncapi/protobuf-schema-parser@3.5.1@3.5.2",
-      "@asyncapi/protobuf-schema-parser@3.5.1@3.5.3",
-      "@asyncapi/python-paho-template@0.2.13@0.2.14",
-      "@asyncapi/react-component@2.6.5@2.6.7",
-      "@asyncapi/server-api@0.16.23@0.16.24",
-      "@asyncapi/specs@6.10.0@6.10.1",
-      "@asyncapi/specs@6.8.1@6.8.2",
-      "@asyncapi/specs@6.8.1@6.8.3",
-      "@asyncapi/studio@1.0.1@1.0.2",
-      "@asyncapi/studio@1.0.1@1.0.3",
-      "@beproduct/nestjs-auth@0.1.1@0.1.14",
-      "@beproduct/nestjs-auth@0.1.1@0.1.16",
-      "@beproduct/nestjs-auth@0.1.1@0.1.17",
-      "@beproduct/nestjs-auth@0.1.1@0.1.19",
-      "@beproduct/nestjs-auth@0.1.1@0.1.8",
-      "@bitwarden/cli@2026.3.0@2026.4.0",
-      "@browserbasehq/bb9@1.2.20@1.2.21",
-      "@browserbasehq/director-ai@1.0.2@1.0.3",
-      "@browserbasehq/mcp@2.1.0@2.1.1",
-      "@browserbasehq/sdk-functions@0.0.3@0.0.4",
-      "@browserbasehq/stagehand@3.0.3@3.0.4",
-      "@cap-js/db-service@2.10.0@2.10.1",
-      "@cap-js/postgres@2.2.1@2.2.2",
-      "@cap-js/sqlite@2.2.1@2.2.2",
-      "@clausehq/flows-step-mqtt@0.1.13@0.1.14",
-      "@clausehq/flows-step-sendgridemail@0.1.13@0.1.14",
-      "@clausehq/flows-step-taskscreateurl@0.1.13@0.1.14",
-      "@crowdstrike/commitlint@8.1.0@8.1.1",
-      "@crowdstrike/commitlint@8.1.0@8.1.2",
-      "@crowdstrike/falcon-shoelace@0.4.0@0.4.1",
-      "@crowdstrike/falcon-shoelace@0.4.0@0.4.2",
-      "@crowdstrike/foundry-js@0.19.0@0.19.1",
-      "@crowdstrike/foundry-js@0.19.0@0.19.2",
-      "@crowdstrike/glide-core@0.34.1@0.34.2",
-      "@crowdstrike/glide-core@0.34.1@0.34.3",
-      "@crowdstrike/tailwind-toucan-base@5.0.0@5.0.1",
-      "@crowdstrike/tailwind-toucan-base@5.0.0@5.0.2",
-      "@ctrl/deluge@7.2.0@7.2.1",
-      "@ctrl/deluge@7.2.0@7.2.2",
-      "@ctrl/golang-template@1.4.1@1.4.2",
-      "@ctrl/golang-template@1.4.1@1.4.3",
-      "@ctrl/magnet-link@4.0.2@4.0.3",
-      "@ctrl/magnet-link@4.0.2@4.0.4",
-      "@ctrl/ngx-codemirror@7.0.0@7.0.1",
-      "@ctrl/ngx-codemirror@7.0.0@7.0.2",
-      "@ctrl/ngx-csv@6.0.0@6.0.1",
-      "@ctrl/ngx-csv@6.0.0@6.0.2",
-      "@ctrl/ngx-rightclick@4.0.0@4.0.1",
-      "@ctrl/ngx-rightclick@4.0.0@4.0.2",
-      "@ctrl/qbittorrent@9.7.0@9.7.1",
-      "@ctrl/qbittorrent@9.7.0@9.7.2",
-      "@ctrl/react-adsense@2.0.0@2.0.1",
-      "@ctrl/react-adsense@2.0.0@2.0.2",
-      "@ctrl/shared-torrent@6.3.0@6.3.1",
-      "@ctrl/shared-torrent@6.3.0@6.3.2",
-      "@ctrl/tinycolor@4.1.0@4.1.1",
-      "@ctrl/tinycolor@4.1.0@4.1.2",
-      "@ctrl/torrent-file@4.1.0@4.1.1",
-      "@ctrl/torrent-file@4.1.0@4.1.2",
-      "@ctrl/transmission@7.3.0@7.3.1",
-      "@ctrl/ts-base32@4.0.0@4.0.1",
-      "@ctrl/ts-base32@4.0.0@4.0.2",
-      "@dev-blinq/cucumber-js@1.0.130@1.0.131",
-      "@dev-blinq/cucumber_client@1.0.735@1.0.738",
-      "@draftlab/auth@0.24.0@0.24.2",
-      "@draftlab/db@0.16.0@0.16.2",
-      "@emilgroup/account-sdk-node@1.40.0@1.40.1",
-      "@emilgroup/account-sdk@1.41.0@1.41.1",
-      "@emilgroup/accounting-sdk-node@1.26.0@1.26.1",
-      "@emilgroup/accounting-sdk@1.27.0@1.27.3",
-      "@emilgroup/api-documentation@1.19.0@1.19.1",
-      "@emilgroup/auth-sdk-node@1.21.0@1.21.1",
-      "@emilgroup/auth-sdk@1.25.0@1.25.1",
-      "@emilgroup/auth-sdk@1.25.0@1.25.2",
-      "@emilgroup/billing-sdk-node@1.57.0@1.57.1",
-      "@emilgroup/billing-sdk@1.56.0@1.56.1",
-      "@emilgroup/claim-sdk-node@1.39.0@1.39.2",
-      "@emilgroup/claim-sdk@1.41.0@1.41.2",
-      "@emilgroup/customer-sdk-node@1.55.0@1.55.1",
-      "@emilgroup/customer-sdk@1.54.0@1.54.2",
-      "@emilgroup/customer-sdk@1.54.0@1.54.3",
-      "@emilgroup/customer-sdk@1.54.0@1.54.4",
-      "@emilgroup/customer-sdk@1.54.0@1.54.5",
-      "@emilgroup/discount-sdk-node@1.5.0@1.5.2",
-      "@emilgroup/discount-sdk@1.5.0@1.5.1",
-      "@emilgroup/discount-sdk@1.5.0@1.5.3",
-      "@emilgroup/document-sdk-node@1.43.0@1.43.1",
-      "@emilgroup/document-sdk-node@1.43.0@1.43.5",
-      "@emilgroup/document-sdk@1.45.0@1.45.1",
-      "@emilgroup/document-sdk@1.45.0@1.45.2",
-      "@emilgroup/document-uploader@0.0.9@0.0.10",
-      "@emilgroup/document-uploader@0.0.9@0.0.12",
-      "@emilgroup/docxtemplater-util@1.1.1@1.1.2",
-      "@emilgroup/docxtemplater-util@1.1.1@1.1.4",
-      "@emilgroup/gdv-sdk-node@2.6.0@2.6.1",
-      "@emilgroup/gdv-sdk-node@2.6.0@2.6.3",
-      "@emilgroup/gdv-sdk@2.6.0@2.6.2",
-      "@emilgroup/insurance-sdk-node@1.95.0@1.95.2",
-      "@emilgroup/insurance-sdk@1.97.0@1.97.4",
-      "@emilgroup/insurance-sdk@1.97.0@1.97.5",
-      "@emilgroup/notification-sdk-node@1.4.0@1.4.1",
-      "@emilgroup/numbergenerator-sdk-node@1.3.0@1.3.2",
-      "@emilgroup/numbergenerator-sdk-node@1.3.0@1.3.3",
-      "@emilgroup/partner-portal-sdk-node@1.1.0@1.1.2",
-      "@emilgroup/partner-portal-sdk@1.1.0@1.1.1",
-      "@emilgroup/partner-portal-sdk@1.1.0@1.1.3",
-      "@emilgroup/partner-sdk-node@1.19.0@1.19.2",
-      "@emilgroup/partner-sdk@1.19.0@1.19.2",
-      "@emilgroup/partner-sdk@1.19.0@1.19.3",
-      "@emilgroup/process-manager-sdk-node@1.13.0@1.13.2",
-      "@emilgroup/process-manager-sdk@1.4.0@1.4.2",
-      "@emilgroup/public-api-sdk-node@1.35.0@1.35.1",
-      "@emilgroup/public-api-sdk@1.33.0@1.33.1",
-      "@emilgroup/setting-sdk-node@0.2.0@0.2.2",
-      "@emilgroup/setting-sdk@0.2.0@0.2.2",
-      "@emilgroup/setting-sdk@0.2.0@0.2.3",
-      "@emilgroup/tenant-sdk-node@1.33.0@1.33.1",
-      "@emilgroup/tenant-sdk@1.34.0@1.34.1",
-      "@emilgroup/tenant-sdk@1.34.0@1.34.2",
-      "@emilgroup/translation-sdk-node@1.1.0@1.1.2",
-      "@ensdomains/address-encoder@1.1.4@1.1.5",
-      "@ensdomains/blacklist@1.0.0@1.0.1",
-      "@ensdomains/ccip-read-dns-gateway@0.1.0@0.1.1",
-      "@ensdomains/ccip-read-worker-viem@0.0.3@0.0.4",
-      "@ensdomains/curvearithmetics@1.0.0@1.0.1",
-      "@ensdomains/ensjs@4.0.2@4.0.3",
-      "@ensdomains/hardhat-chai-matchers-viem@0.1.14@0.1.15",
-      "@ensdomains/hardhat-toolbox-viem-extended@0.0.5@0.0.6",
-      "@ensdomains/react-ens-address@0.0.31@0.0.32",
-      "@ensdomains/renewal@0.0.12@0.0.13",
-      "@ensdomains/server-analytics@0.0.1@0.0.2",
-      "@ensdomains/subdomain-registrar@0.2.3@0.2.4",
-      "@ensdomains/test-utils@1.3.0@1.3.1",
-      "@ensdomains/thorin@0.6.50@0.6.51",
-      "@ensdomains/ui@3.4.5@3.4.6",
-      "@ensdomains/vite-plugin-i18next-loader@4.0.3@4.0.4",
-      "@ensdomains/web3modal@1.10.1@1.10.2",
-      "@everreal/validate-esmoduleinterop-imports@1.4.3@1.4.4",
-      "@everreal/validate-esmoduleinterop-imports@1.4.3@1.4.5",
-      "@faq-component/core@0.0.3@0.0.4",
-      "@faq-component/react@1.0.0@1.0.1",
-      "@hapheus/n8n-nodes-pgp@1.5.0@1.5.1",
-      "@hestjs/core@0.2.0@0.2.1",
-      "@hestjs/cqrs@0.1.5@0.1.6",
-      "@hestjs/demo@0.1.1@0.1.2",
-      "@hestjs/eslint-config@0.1.1@0.1.2",
-      "@hestjs/logger@0.1.5@0.1.6",
-      "@hestjs/scalar@0.1.6@0.1.7",
-      "@hestjs/validation@0.1.5@0.1.6",
-      "@ifelsedeveloper/protocol-contracts-svm-idl@0.1.1@0.1.2",
-      "@kvytech/cli@0.0.6@0.0.7",
-      "@kvytech/components@0.0.1@0.0.2",
-      "@kvytech/habbit-e2e-test@0.0.1@0.0.2",
-      "@kvytech/medusa-plugin-announcement@0.0.7@0.0.8",
-      "@kvytech/medusa-plugin-management@0.0.4@0.0.5",
-      "@kvytech/medusa-plugin-newsletter@0.0.4@0.0.5",
-      "@kvytech/medusa-plugin-product-reviews@0.0.8@0.0.9",
-      "@kvytech/medusa-plugin-promotion@0.0.1@0.0.2",
-      "@kvytech/web@0.0.1@0.0.2",
-      "@leafnoise/mirage@2.0.2@2.0.3",
-      "@lessondesk/schoolbus@5.2.1@5.2.3",
-      "@markvivanco/app-version-checker@1.0.0@1.0.1",
-      "@markvivanco/app-version-checker@1.0.0@1.0.2",
+      "@openclaw-cn/cli@1.3.1@1.4.1",
+      "@openclaw-cn/feishu@0.1.11@0.2.11",
+      "@openclaw-cn/libsignal@2.0.1@2.1.1"
+    ],
+    "campaign_id": "camp_0072"
+  },
+  "camp_0073": {
+    "leader": "echarts-for-react@3.0.6@3.0.7",
+    "earliest_date": "2026-05-19",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "echarts-for-react@3.0.6@3.0.7"
+    ],
+    "campaign_id": "camp_0073"
+  },
+  "camp_0074": {
+    "leader": "jest-canvas-mock@2.5.2@2.5.3",
+    "earliest_date": "2026-05-19",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "jest-canvas-mock@2.5.2@2.5.3"
+    ],
+    "campaign_id": "camp_0074"
+  },
+  "camp_0075": {
+    "leader": "jest-date-mock@1.0.10@1.0.11",
+    "earliest_date": "2026-05-19",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "jest-date-mock@1.0.10@1.0.11"
+    ],
+    "campaign_id": "camp_0075"
+  },
+  "camp_0076": {
+    "leader": "size-sensor@1.0.3@1.0.4",
+    "earliest_date": "2026-05-19",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "size-sensor@1.0.3@1.0.4"
+    ],
+    "campaign_id": "camp_0076"
+  },
+  "camp_0077": {
+    "leader": "@redhat-cloud-services/chrome@2.3.0@2.3.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/chrome@2.3.0@2.3.1"
+    ],
+    "campaign_id": "camp_0077"
+  },
+  "camp_0078": {
+    "leader": "@redhat-cloud-services/config-manager-client@5.0.3@5.0.4",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/config-manager-client@5.0.3@5.0.4"
+    ],
+    "campaign_id": "camp_0078"
+  },
+  "camp_0079": {
+    "leader": "@redhat-cloud-services/entitlements-client@4.0.10@4.0.11",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/entitlements-client@4.0.10@4.0.11"
+    ],
+    "campaign_id": "camp_0079"
+  },
+  "camp_0080": {
+    "leader": "@redhat-cloud-services/eslint-config-redhat-cloud-services@3.2.0@3.2.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/eslint-config-redhat-cloud-services@3.2.0@3.2.1"
+    ],
+    "campaign_id": "camp_0080"
+  },
+  "camp_0081": {
+    "leader": "@redhat-cloud-services/frontend-components-config-utilities@4.11.1@4.11.2",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-config-utilities@4.11.1@4.11.2"
+    ],
+    "campaign_id": "camp_0081"
+  },
+  "camp_0082": {
+    "leader": "@redhat-cloud-services/frontend-components-config@6.11.2@6.11.3",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-config@6.11.2@6.11.3"
+    ],
+    "campaign_id": "camp_0082"
+  },
+  "camp_0083": {
+    "leader": "@redhat-cloud-services/frontend-components-remediations@4.9.1@4.9.2",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-remediations@4.9.1@4.9.2"
+    ],
+    "campaign_id": "camp_0083"
+  },
+  "camp_0084": {
+    "leader": "@redhat-cloud-services/frontend-components-testing@1.2.0@1.2.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/frontend-components-testing@1.2.0@1.2.1"
+    ],
+    "campaign_id": "camp_0084"
+  },
+  "camp_0085": {
+    "leader": "@redhat-cloud-services/hcc-feo-mcp@0.3.0@0.3.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/hcc-feo-mcp@0.3.0@0.3.1"
+    ],
+    "campaign_id": "camp_0085"
+  },
+  "camp_0086": {
+    "leader": "@redhat-cloud-services/hcc-kessel-mcp@0.3.0@0.3.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/hcc-kessel-mcp@0.3.0@0.3.1"
+    ],
+    "campaign_id": "camp_0086"
+  },
+  "camp_0087": {
+    "leader": "@redhat-cloud-services/hcc-pf-mcp@0.6.0@0.6.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/hcc-pf-mcp@0.6.0@0.6.1"
+    ],
+    "campaign_id": "camp_0087"
+  },
+  "camp_0088": {
+    "leader": "@redhat-cloud-services/integrations-client@6.0.3@6.0.4",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/integrations-client@6.0.3@6.0.4"
+    ],
+    "campaign_id": "camp_0088"
+  },
+  "camp_0089": {
+    "leader": "@redhat-cloud-services/javascript-clients-shared@2.0.7@2.0.8",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/javascript-clients-shared@2.0.7@2.0.8"
+    ],
+    "campaign_id": "camp_0089"
+  },
+  "camp_0090": {
+    "leader": "@redhat-cloud-services/quickstarts-client@4.0.10@4.0.11",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/quickstarts-client@4.0.10@4.0.11"
+    ],
+    "campaign_id": "camp_0090"
+  },
+  "camp_0091": {
+    "leader": "@redhat-cloud-services/tsc-transform-imports@1.2.1@1.2.2",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/tsc-transform-imports@1.2.1@1.2.2"
+    ],
+    "campaign_id": "camp_0091"
+  },
+  "camp_0092": {
+    "leader": "@redhat-cloud-services/types@3.6.0@3.6.1",
+    "earliest_date": "2026-06-01",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@redhat-cloud-services/types@3.6.0@3.6.1"
+    ],
+    "campaign_id": "camp_0092"
+  },
+  "camp_0093": {
+    "leader": "@vapi-ai/server-sdk@0.11.0@0.11.2",
+    "earliest_date": "2026-06-03",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@vapi-ai/server-sdk@0.11.0@0.11.2"
+    ],
+    "campaign_id": "camp_0093"
+  },
+  "camp_0094": {
+    "leader": "@vapi-ai/server-sdk@1.2.0@1.2.1",
+    "earliest_date": "2026-06-03",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@vapi-ai/server-sdk@1.2.0@1.2.1"
+    ],
+    "campaign_id": "camp_0094"
+  },
+  "camp_0095": {
+    "leader": "@vapi-ai/server-sdk@1.2.0@1.2.2",
+    "earliest_date": "2026-06-03",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "@vapi-ai/server-sdk@1.2.0@1.2.2"
+    ],
+    "campaign_id": "camp_0095"
+  },
+  "camp_0096": {
+    "leader": "autotel-devtools@3.0.1@3.0.2",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-devtools@3.0.1@3.0.2"
+    ],
+    "campaign_id": "camp_0096"
+  },
+  "camp_0097": {
+    "leader": "autotel-eventcatalog@3.0.0@3.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-eventcatalog@3.0.0@3.0.1"
+    ],
+    "campaign_id": "camp_0097"
+  },
+  "camp_0098": {
+    "leader": "autotel-mcp-instrumentation@32.0.0@32.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-mcp-instrumentation@32.0.0@32.0.1"
+    ],
+    "campaign_id": "camp_0098"
+  },
+  "camp_0099": {
+    "leader": "autotel-mcp@20.0.0@20.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-mcp@20.0.0@20.0.1"
+    ],
+    "campaign_id": "camp_0099"
+  },
+  "camp_0100": {
+    "leader": "autotel-mcp@4.0.0@4.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-mcp@4.0.0@4.0.1"
+    ],
+    "campaign_id": "camp_0100"
+  },
+  "camp_0101": {
+    "leader": "autotel-mongoose@6.0.0@6.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-mongoose@6.0.0@6.0.1"
+    ],
+    "campaign_id": "camp_0101"
+  },
+  "camp_0102": {
+    "leader": "autotel-pact@1.0.2@1.0.3",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-pact@1.0.2@1.0.3"
+    ],
+    "campaign_id": "camp_0102"
+  },
+  "camp_0103": {
+    "leader": "autotel-subscribers@17.0.0@17.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-subscribers@17.0.0@17.0.1"
+    ],
+    "campaign_id": "camp_0103"
+  },
+  "camp_0104": {
+    "leader": "autotel-subscribers@31.1.3@31.1.4",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-subscribers@31.1.3@31.1.4"
+    ],
+    "campaign_id": "camp_0104"
+  },
+  "camp_0105": {
+    "leader": "autotel-subscribers@4.1.0@4.1.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-subscribers@4.1.0@4.1.1"
+    ],
+    "campaign_id": "camp_0105"
+  },
+  "camp_0106": {
+    "leader": "autotel-terminal@22.0.1@22.0.2",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-terminal@22.0.1@22.0.2"
+    ],
+    "campaign_id": "camp_0106"
+  },
+  "camp_0107": {
+    "leader": "autotel-terminal@23.0.2@23.0.3",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-terminal@23.0.2@23.0.3"
+    ],
+    "campaign_id": "camp_0107"
+  },
+  "camp_0108": {
+    "leader": "autotel-terminal@8.0.0@8.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel-terminal@8.0.0@8.0.1"
+    ],
+    "campaign_id": "camp_0108"
+  },
+  "camp_0109": {
+    "leader": "autotel@2.26.3@2.26.4",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "autotel@2.26.3@2.26.4"
+    ],
+    "campaign_id": "camp_0109"
+  },
+  "camp_0110": {
+    "leader": "awaitly-analyze@1.1.0@1.1.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-analyze@1.1.0@1.1.1"
+    ],
+    "campaign_id": "camp_0110"
+  },
+  "camp_0111": {
+    "leader": "awaitly-analyze@8.0.0@8.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-analyze@8.0.0@8.0.1"
+    ],
+    "campaign_id": "camp_0111"
+  },
+  "camp_0112": {
+    "leader": "awaitly-libsql@1.0.0@1.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-libsql@1.0.0@1.0.1"
+    ],
+    "campaign_id": "camp_0112"
+  },
+  "camp_0113": {
+    "leader": "awaitly-libsql@12.0.0@12.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-libsql@12.0.0@12.0.1"
+    ],
+    "campaign_id": "camp_0113"
+  },
+  "camp_0114": {
+    "leader": "awaitly-libsql@22.0.0@22.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-libsql@22.0.0@22.0.1"
+    ],
+    "campaign_id": "camp_0114"
+  },
+  "camp_0115": {
+    "leader": "awaitly-mongo@0.1.0@0.1.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-mongo@0.1.0@0.1.1"
+    ],
+    "campaign_id": "camp_0115"
+  },
+  "camp_0116": {
+    "leader": "awaitly-mongo@12.0.0@12.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-mongo@12.0.0@12.0.1"
+    ],
+    "campaign_id": "camp_0116"
+  },
+  "camp_0117": {
+    "leader": "awaitly-mongo@23.0.0@23.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-mongo@23.0.0@23.0.1"
+    ],
+    "campaign_id": "camp_0117"
+  },
+  "camp_0118": {
+    "leader": "awaitly-postgres@1.0.0@1.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-postgres@1.0.0@1.0.1"
+    ],
+    "campaign_id": "camp_0118"
+  },
+  "camp_0119": {
+    "leader": "awaitly-postgres@13.0.0@13.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-postgres@13.0.0@13.0.1"
+    ],
+    "campaign_id": "camp_0119"
+  },
+  "camp_0120": {
+    "leader": "awaitly-postgres@23.0.0@23.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-postgres@23.0.0@23.0.1"
+    ],
+    "campaign_id": "camp_0120"
+  },
+  "camp_0121": {
+    "leader": "awaitly-visualizer@13.0.0@13.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-visualizer@13.0.0@13.0.1"
+    ],
+    "campaign_id": "camp_0121"
+  },
+  "camp_0122": {
+    "leader": "awaitly-visualizer@2.0.1@2.0.2",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-visualizer@2.0.1@2.0.2"
+    ],
+    "campaign_id": "camp_0122"
+  },
+  "camp_0123": {
+    "leader": "awaitly-visualizer@22.0.1@22.0.2",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly-visualizer@22.0.1@22.0.2"
+    ],
+    "campaign_id": "camp_0123"
+  },
+  "camp_0124": {
+    "leader": "awaitly@1.33.2@1.33.3",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "awaitly@1.33.2@1.33.3"
+    ],
+    "campaign_id": "camp_0124"
+  },
+  "camp_0125": {
+    "leader": "effect-analyzer@0.3.0@0.3.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "effect-analyzer@0.3.0@0.3.1"
+    ],
+    "campaign_id": "camp_0125"
+  },
+  "camp_0126": {
+    "leader": "eslint-plugin-awaitly@1.0.0@1.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "eslint-plugin-awaitly@1.0.0@1.0.1"
+    ],
+    "campaign_id": "camp_0126"
+  },
+  "camp_0127": {
+    "leader": "eslint-plugin-executable-stories-jest@2.1.7@2.1.8",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "eslint-plugin-executable-stories-jest@2.1.7@2.1.8"
+    ],
+    "campaign_id": "camp_0127"
+  },
+  "camp_0128": {
+    "leader": "eslint-plugin-executable-stories-playwright@2.1.7@2.1.8",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "eslint-plugin-executable-stories-playwright@2.1.7@2.1.8"
+    ],
+    "campaign_id": "camp_0128"
+  },
+  "camp_0129": {
+    "leader": "eslint-plugin-executable-stories-vitest@2.1.7@2.1.8",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "eslint-plugin-executable-stories-vitest@2.1.7@2.1.8"
+    ],
+    "campaign_id": "camp_0129"
+  },
+  "camp_0130": {
+    "leader": "executable-stories-cypress@6.1.0@6.1.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "executable-stories-cypress@6.1.0@6.1.1"
+    ],
+    "campaign_id": "camp_0130"
+  },
+  "camp_0131": {
+    "leader": "executable-stories-jest@6.1.0@6.1.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "executable-stories-jest@6.1.0@6.1.1"
+    ],
+    "campaign_id": "camp_0131"
+  },
+  "camp_0132": {
+    "leader": "executable-stories-playwright@7.0.2@7.0.3",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "executable-stories-playwright@7.0.2@7.0.3"
+    ],
+    "campaign_id": "camp_0132"
+  },
+  "camp_0133": {
+    "leader": "executable-stories-vitest@7.0.2@7.0.3",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "executable-stories-vitest@7.0.2@7.0.3"
+    ],
+    "campaign_id": "camp_0133"
+  },
+  "camp_0134": {
+    "leader": "node-env-resolver-aws@12.0.0@12.0.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "node-env-resolver-aws@12.0.0@12.0.1"
+    ],
+    "campaign_id": "camp_0134"
+  },
+  "camp_0135": {
+    "leader": "node-env-resolver@6.5.0@6.5.1",
+    "earliest_date": "2026-06-04",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A"
+    ],
+    "size": 1,
+    "members": [
+      "node-env-resolver@6.5.0@6.5.1"
+    ],
+    "campaign_id": "camp_0135"
+  },
+  "camp_0136": {
+    "leader": "@mastra/acp@0.2.1@0.2.2",
+    "earliest_date": "2026-06-17",
+    "primary_split": "TEST-A",
+    "splits": [
+      "TEST-A",
+      "TEST-B"
+    ],
+    "size": 118,
+    "members": [
       "@mastra/acp@0.2.1@0.2.2",
       "@mastra/agent-browser@0.3.1@0.3.2",
       "@mastra/agentcore@0.2.1@0.2.2",
@@ -414,1912 +2971,25 @@
       "@mastra/voice-sarvam@1.0.1@1.0.2",
       "@mastra/voice-speechify@0.12.1@0.12.2",
       "@mastra/voice-xai-realtime@0.1.1@0.1.2",
-      "@mcp-use/cli@2.2.5@2.2.6",
-      "@mcp-use/cli@2.2.5@2.2.7",
-      "@mcp-use/inspector@0.6.1@0.6.2",
-      "@mcp-use/inspector@0.6.1@0.6.3",
-      "@mcp-use/mcp-use@1.0.0@1.0.1",
-      "@mcp-use/mcp-use@1.0.0@1.0.2",
-      "@mesadev/rest@0.28.2@0.28.3",
-      "@mesadev/saguaro@0.4.21@0.4.22",
-      "@mesadev/sdk@0.28.2@0.28.3",
-      "@mistralai/mistralai-azure@1.7.0@1.7.1",
-      "@mistralai/mistralai-azure@1.7.0@1.7.2",
-      "@mistralai/mistralai-azure@1.7.0@1.7.3",
-      "@mistralai/mistralai-gcp@1.7.0@1.7.1",
-      "@mistralai/mistralai-gcp@1.7.0@1.7.2",
-      "@mistralai/mistralai-gcp@1.7.0@1.7.3",
-      "@nativescript-community/arraybuffers@1.1.5@1.1.6",
-      "@nativescript-community/arraybuffers@1.1.5@1.1.7",
-      "@nativescript-community/gesturehandler@2.0.34@2.0.35",
-      "@nativescript-community/perms@3.0.4@3.0.5",
-      "@nativescript-community/perms@3.0.4@3.0.6",
-      "@nativescript-community/perms@3.0.4@3.0.9",
-      "@nativescript-community/sentry@4.6.42@4.6.43",
-      "@nativescript-community/sqlite@3.5.1@3.5.4",
-      "@nativescript-community/sqlite@3.5.1@3.5.5",
-      "@nativescript-community/text@1.6.8@1.6.10",
-      "@nativescript-community/text@1.6.8@1.6.13",
-      "@nativescript-community/text@1.6.8@1.6.9",
-      "@nativescript-community/ui-collectionview@6.0.5@6.0.6",
-      "@nativescript-community/ui-document-picker@1.1.26@1.1.28",
-      "@nativescript-community/ui-drawer@0.1.29@0.1.30",
-      "@nativescript-community/ui-image@4.5.5@4.5.6",
-      "@nativescript-community/ui-label@1.3.34@1.3.35",
-      "@nativescript-community/ui-label@1.3.34@1.3.36",
-      "@nativescript-community/ui-material-bottom-navigation@7.2.71@7.2.73",
-      "@nativescript-community/ui-material-bottomsheet@7.2.71@7.2.72",
-      "@nativescript-community/ui-material-core-tabs@7.2.71@7.2.73",
-      "@nativescript-community/ui-material-core-tabs@7.2.71@7.2.75",
-      "@nativescript-community/ui-material-core-tabs@7.2.71@7.2.76",
-      "@nativescript-community/ui-material-core@7.2.71@7.2.73",
-      "@nativescript-community/ui-material-core@7.2.71@7.2.76",
-      "@nativescript-community/ui-material-tabs@7.2.71@7.2.73",
-      "@nativescript-community/ui-pager@14.1.34@14.1.36",
-      "@nativescript-community/ui-pager@14.1.34@14.1.38",
-      "@nativescript-community/ui-pulltorefresh@2.5.3@2.5.5",
-      "@nexe/config-manager@0.1.0@0.1.1",
-      "@nexe/eslint-config@0.1.0@0.1.1",
-      "@nexe/logger@0.1.2@0.1.3",
-      "@nstudio/angular@20.0.3@20.0.4",
-      "@nstudio/angular@20.0.3@20.0.5",
-      "@nstudio/focus@20.0.3@20.0.5",
-      "@nstudio/focus@20.0.3@20.0.6",
-      "@nstudio/nativescript-checkbox@2.0.5@2.0.6",
-      "@nstudio/nativescript-checkbox@2.0.5@2.0.7",
-      "@nstudio/nativescript-checkbox@2.0.5@2.0.9",
-      "@nstudio/nativescript-loading-indicator@5.0.0@5.0.1",
-      "@nstudio/nativescript-loading-indicator@5.0.0@5.0.2",
-      "@nstudio/nativescript-loading-indicator@5.0.0@5.0.4",
-      "@nstudio/ui-collectionview@5.1.10@5.1.11",
-      "@nstudio/ui-collectionview@5.1.10@5.1.12",
-      "@nstudio/ui-collectionview@5.1.10@5.1.14",
-      "@nstudio/web-angular@20.0.3@20.0.4",
-      "@nstudio/web@20.0.3@20.0.4",
-      "@nstudio/xplat-utils@20.0.3@20.0.5",
-      "@nstudio/xplat-utils@20.0.3@20.0.6",
-      "@nstudio/xplat@20.0.3@20.0.5",
-      "@nstudio/xplat@20.0.3@20.0.7",
-      "@nx/devkit@21.4.1@21.5.0",
-      "@nx/enterprise-cloud@3.1.1@3.2.0",
-      "@nx/eslint@21.4.1@21.5.0",
-      "@nx/js@21.4.1@21.5.0",
-      "@nx/key@3.1.1@3.2.0",
-      "@nx/node@21.4.1@21.5.0",
-      "@nx/workspace@21.4.1@21.5.0",
-      "@openclaw-cn/cli@1.3.1@1.4.1",
-      "@openclaw-cn/feishu@0.1.11@0.2.11",
-      "@openclaw-cn/libsignal@2.0.1@2.1.1",
-      "@opengov/ppf-backend-types@1.141.1@1.141.2",
-      "@operato/board@9.0.34@9.0.35",
-      "@operato/board@9.0.34@9.0.36",
-      "@operato/board@9.0.34@9.0.37",
-      "@operato/board@9.0.34@9.0.39",
-      "@operato/board@9.0.34@9.0.40",
-      "@operato/board@9.0.34@9.0.41",
-      "@operato/board@9.0.34@9.0.42",
-      "@operato/board@9.0.34@9.0.43",
-      "@operato/board@9.0.34@9.0.45",
-      "@operato/board@9.0.34@9.0.46",
-      "@operato/board@9.0.34@9.0.48",
-      "@operato/board@9.0.34@9.0.51",
-      "@operato/data-grist@9.0.28@9.0.29",
-      "@operato/data-grist@9.0.34@9.0.35",
-      "@operato/data-grist@9.0.34@9.0.36",
-      "@operato/data-grist@9.0.34@9.0.37",
-      "@operato/graphql@9.0.21@9.0.22",
-      "@operato/graphql@9.0.34@9.0.35",
-      "@operato/graphql@9.0.34@9.0.36",
-      "@operato/graphql@9.0.34@9.0.37",
-      "@operato/graphql@9.0.34@9.0.39",
-      "@operato/graphql@9.0.34@9.0.40",
-      "@operato/graphql@9.0.34@9.0.41",
-      "@operato/graphql@9.0.34@9.0.42",
-      "@operato/graphql@9.0.34@9.0.43",
-      "@operato/graphql@9.0.34@9.0.44",
-      "@operato/graphql@9.0.34@9.0.45",
-      "@operato/graphql@9.0.34@9.0.48",
-      "@operato/graphql@9.0.34@9.0.51",
-      "@operato/headroom@9.0.1@9.0.2",
-      "@operato/headroom@9.0.34@9.0.35",
-      "@operato/headroom@9.0.34@9.0.36",
-      "@operato/headroom@9.0.34@9.0.37",
-      "@operato/help@9.0.34@9.0.35",
-      "@operato/help@9.0.34@9.0.36",
-      "@operato/help@9.0.34@9.0.37",
-      "@operato/help@9.0.34@9.0.39",
-      "@operato/help@9.0.34@9.0.40",
-      "@operato/help@9.0.34@9.0.41",
-      "@operato/help@9.0.34@9.0.42",
-      "@operato/help@9.0.34@9.0.43",
-      "@operato/help@9.0.34@9.0.45",
-      "@operato/help@9.0.34@9.0.48",
-      "@operato/help@9.0.34@9.0.51",
-      "@operato/i18n@9.0.34@9.0.35",
-      "@operato/i18n@9.0.34@9.0.36",
-      "@operato/input@9.0.26@9.0.27",
-      "@operato/input@9.0.34@9.0.35",
-      "@operato/input@9.0.34@9.0.36",
-      "@operato/input@9.0.34@9.0.37",
-      "@operato/input@9.0.34@9.0.39",
-      "@operato/input@9.0.34@9.0.40",
-      "@operato/input@9.0.34@9.0.41",
-      "@operato/input@9.0.34@9.0.42",
-      "@operato/input@9.0.34@9.0.43",
-      "@operato/input@9.0.34@9.0.45",
-      "@operato/input@9.0.34@9.0.46",
-      "@operato/input@9.0.34@9.0.47",
-      "@operato/input@9.0.34@9.0.48",
-      "@operato/layout@9.0.34@9.0.35",
-      "@operato/layout@9.0.34@9.0.36",
-      "@operato/layout@9.0.34@9.0.37",
-      "@operato/popup@9.0.21@9.0.22",
-      "@operato/popup@9.0.34@9.0.35",
-      "@operato/popup@9.0.34@9.0.36",
-      "@operato/popup@9.0.34@9.0.37",
-      "@operato/popup@9.0.34@9.0.39",
-      "@operato/popup@9.0.34@9.0.40",
-      "@operato/popup@9.0.34@9.0.41",
-      "@operato/popup@9.0.34@9.0.42",
-      "@operato/popup@9.0.34@9.0.43",
-      "@operato/popup@9.0.34@9.0.44",
-      "@operato/popup@9.0.34@9.0.45",
-      "@operato/popup@9.0.34@9.0.48",
-      "@operato/popup@9.0.34@9.0.51",
-      "@operato/pull-to-refresh@9.0.34@9.0.35",
-      "@operato/pull-to-refresh@9.0.34@9.0.36",
-      "@operato/pull-to-refresh@9.0.34@9.0.37",
-      "@operato/pull-to-refresh@9.0.34@9.0.38",
-      "@operato/pull-to-refresh@9.0.34@9.0.39",
-      "@operato/pull-to-refresh@9.0.34@9.0.40",
-      "@operato/pull-to-refresh@9.0.34@9.0.41",
-      "@operato/pull-to-refresh@9.0.34@9.0.43",
-      "@operato/pull-to-refresh@9.0.34@9.0.44",
-      "@operato/pull-to-refresh@9.0.34@9.0.47",
-      "@operato/shell@9.0.21@9.0.22",
-      "@operato/shell@9.0.34@9.0.35",
-      "@operato/shell@9.0.34@9.0.36",
-      "@operato/shell@9.0.34@9.0.37",
-      "@operato/shell@9.0.34@9.0.39",
-      "@operato/styles@9.0.1@9.0.2",
-      "@operato/styles@9.0.34@9.0.35",
-      "@operato/styles@9.0.34@9.0.36",
-      "@operato/styles@9.0.34@9.0.37",
-      "@operato/utils@9.0.21@9.0.22",
-      "@operato/utils@9.0.34@9.0.35",
-      "@operato/utils@9.0.34@9.0.36",
-      "@operato/utils@9.0.34@9.0.37",
-      "@operato/utils@9.0.34@9.0.39",
-      "@operato/utils@9.0.34@9.0.40",
-      "@operato/utils@9.0.34@9.0.41",
-      "@operato/utils@9.0.34@9.0.42",
-      "@operato/utils@9.0.34@9.0.43",
-      "@operato/utils@9.0.34@9.0.45",
-      "@operato/utils@9.0.34@9.0.48",
-      "@operato/utils@9.0.34@9.0.50",
-      "@operato/utils@9.0.34@9.0.51",
-      "@orbitgtbelgium/mapbox-gl-draw-cut-polygon-mode@2.0.4@2.0.5",
-      "@orbitgtbelgium/mapbox-gl-draw-scale-rotate-mode@1.1.0@1.1.1",
-      "@orbitgtbelgium/orbit-components@1.2.8@1.2.9",
-      "@orbitgtbelgium/time-slider@1.0.186@1.0.187",
-      "@osmanekrem/bmad@1.0.5@1.0.6",
-      "@osmanekrem/error-handler@1.2.1@1.2.2",
-      "@posthog/agent@1.24.0@1.24.1",
-      "@posthog/core@1.5.5@1.5.6",
-      "@posthog/currency-normalization-plugin@0.0.7@0.0.8",
-      "@posthog/databricks-plugin@0.0.7@0.0.8",
-      "@posthog/drop-events-on-property-plugin@0.0.7@0.0.8",
-      "@posthog/filter-out-plugin@0.0.7@0.0.8",
-      "@posthog/first-time-event-tracker@0.0.7@0.0.8",
-      "@posthog/heartbeat-plugin@0.0.7@0.0.8",
-      "@posthog/hedgehog-mode@0.0.41@0.0.42",
-      "@posthog/maxmind-plugin@0.1.5@0.1.6",
-      "@posthog/nextjs@0.0.2@0.0.3",
-      "@posthog/pagerduty-plugin@0.0.7@0.0.8",
-      "@posthog/plugin-server@1.10.7@1.10.8",
-      "@posthog/postgres-plugin@0.0.7@0.0.8",
-      "@posthog/rrweb-player@0.0.30@0.0.31",
-      "@posthog/rrweb-record@0.0.30@0.0.31",
-      "@posthog/rrweb-replay@0.0.18@0.0.19",
-      "@posthog/rrweb@0.0.30@0.0.31",
-      "@posthog/taxonomy-plugin@0.0.7@0.0.8",
-      "@posthog/twitter-followers-plugin@0.0.7@0.0.8",
-      "@posthog/web-dev-server@1.0.4@1.0.5",
-      "@posthog/wizard@1.18.0@1.18.1",
-      "@postman/csv-parse@4.0.2@4.0.4",
-      "@postman/csv-parse@4.0.2@4.0.5",
-      "@postman/final-node-keytar@7.9.0@7.9.1",
-      "@postman/final-node-keytar@7.9.0@7.9.2",
-      "@postman/final-node-keytar@7.9.0@7.9.3",
-      "@postman/mcp-ui-client@5.5.0@5.5.1",
-      "@postman/mcp-ui-client@5.5.0@5.5.2",
-      "@postman/mcp-ui-client@5.5.0@5.5.3",
-      "@postman/node-keytar@7.9.3@7.9.4",
-      "@postman/node-keytar@7.9.3@7.9.5",
-      "@postman/node-keytar@7.9.3@7.9.6",
-      "@postman/pm-bin-linux-x64@1.24.2@1.24.3",
-      "@postman/pm-bin-linux-x64@1.24.2@1.24.4",
-      "@postman/pm-bin-linux-x64@1.24.2@1.24.5",
-      "@postman/pm-bin-macos-arm64@1.24.2@1.24.3",
-      "@postman/pm-bin-macos-arm64@1.24.2@1.24.4",
-      "@postman/pm-bin-macos-arm64@1.24.2@1.24.5",
-      "@postman/pm-bin-macos-x64@1.24.2@1.24.3",
-      "@postman/pm-bin-macos-x64@1.24.2@1.24.4",
-      "@postman/pm-bin-macos-x64@1.24.2@1.24.5",
-      "@postman/pm-bin-windows-x64@1.24.2@1.24.3",
-      "@postman/pm-bin-windows-x64@1.24.2@1.24.4",
-      "@postman/pm-bin-windows-x64@1.24.2@1.24.5",
-      "@postman/postman-collection-fork@4.3.2@4.3.3",
-      "@postman/postman-collection-fork@4.3.2@4.3.4",
-      "@postman/postman-collection-fork@4.3.2@4.3.5",
-      "@postman/postman-mcp-cli@1.0.2@1.0.3",
-      "@postman/postman-mcp-cli@1.0.2@1.0.4",
-      "@postman/postman-mcp-server@2.4.9@2.4.11",
-      "@postman/postman-mcp-server@2.4.9@2.4.12",
-      "@postman/pretty-ms@6.1.0@6.1.1",
-      "@postman/pretty-ms@6.1.0@6.1.2",
-      "@postman/pretty-ms@6.1.0@6.1.3",
-      "@postman/tunnel-agent@0.6.4@0.6.5",
-      "@postman/tunnel-agent@0.6.4@0.6.6",
-      "@postman/wdio-allure-reporter@0.0.6@0.0.7",
-      "@postman/wdio-allure-reporter@0.0.6@0.0.8",
-      "@postman/wdio-allure-reporter@0.0.6@0.0.9",
-      "@postman/wdio-junit-reporter@0.0.3@0.0.4",
-      "@postman/wdio-junit-reporter@0.0.3@0.0.5",
-      "@postman/wdio-junit-reporter@0.0.3@0.0.6",
-      "@pradhumngautam/common-app@1.0.1@1.0.2",
-      "@pruthvi21/use-debounce@1.0.2@1.0.3",
-      "@quick-start-soft/quick-document-translator@1.4.2511142125@1.4.2511142126",
-      "@quick-start-soft/quick-git-clean-markdown@1.4.2511142125@1.4.2511142126",
-      "@quick-start-soft/quick-markdown-compose@1.4.2506300028@1.4.2506300029",
-      "@quick-start-soft/quick-markdown-image@1.4.2511142125@1.4.2511142126",
-      "@quick-start-soft/quick-markdown-print@1.4.2511142125@1.4.2511142126",
-      "@quick-start-soft/quick-markdown-translator@1.4.2509202330@1.4.2509202331",
-      "@quick-start-soft/quick-markdown@1.4.2511142125@1.4.2511142126",
-      "@quick-start-soft/quick-remove-image-background@1.4.2511142125@1.4.2511142126",
-      "@quick-start-soft/quick-task-refine@1.4.2511142125@1.4.2511142126",
-      "@redhat-cloud-services/chrome@2.3.0@2.3.1",
-      "@redhat-cloud-services/config-manager-client@5.0.3@5.0.4",
-      "@redhat-cloud-services/entitlements-client@4.0.10@4.0.11",
-      "@redhat-cloud-services/eslint-config-redhat-cloud-services@3.2.0@3.2.1",
-      "@redhat-cloud-services/frontend-components-config-utilities@4.11.1@4.11.2",
-      "@redhat-cloud-services/frontend-components-config@6.11.2@6.11.3",
-      "@redhat-cloud-services/frontend-components-remediations@4.9.1@4.9.2",
-      "@redhat-cloud-services/frontend-components-testing@1.2.0@1.2.1",
-      "@redhat-cloud-services/hcc-feo-mcp@0.3.0@0.3.1",
-      "@redhat-cloud-services/hcc-kessel-mcp@0.3.0@0.3.1",
-      "@redhat-cloud-services/hcc-pf-mcp@0.6.0@0.6.1",
-      "@redhat-cloud-services/integrations-client@6.0.3@6.0.4",
-      "@redhat-cloud-services/javascript-clients-shared@2.0.7@2.0.8",
-      "@redhat-cloud-services/quickstarts-client@4.0.10@4.0.11",
-      "@redhat-cloud-services/tsc-transform-imports@1.2.1@1.2.2",
-      "@redhat-cloud-services/types@3.6.0@3.6.1",
-      "@rspack/cli@1.1.6@1.1.7",
-      "@rspack/core@1.1.6@1.1.7",
-      "@rxap/ngx-bootstrap@19.0.2@19.0.3",
-      "@rxap/ngx-bootstrap@19.0.2@19.0.4",
-      "@seezo/sdr-mcp-server@0.0.4@0.0.5",
-      "@seung-ju/next@0.0.1@0.0.2",
-      "@seung-ju/openapi-generator@0.0.3@0.0.4",
-      "@seung-ju/react-hooks@0.0.1@0.0.2",
-      "@seung-ju/react-native-action-sheet@0.2.0@0.2.1",
-      "@solana/web3.js@1.95.5@1.95.7",
-      "@squawk/airport-data@0.7.3@0.7.4",
-      "@squawk/airports@0.6.1@0.6.3",
-      "@squawk/airspace-data@0.5.2@0.5.3",
-      "@squawk/airspace@0.8.0@0.8.2",
-      "@squawk/airway-data@0.5.3@0.5.4",
-      "@squawk/airways@0.4.1@0.4.2",
-      "@squawk/fix-data@0.6.3@0.6.4",
-      "@squawk/fixes@0.3.1@0.3.3",
-      "@squawk/flight-math@0.5.3@0.5.4",
-      "@squawk/flightplan@0.5.1@0.5.3",
-      "@squawk/geo@0.4.3@0.4.4",
-      "@squawk/icao-registry-data@0.8.3@0.8.5",
-      "@squawk/icao-registry@0.5.1@0.5.2",
-      "@squawk/mcp@0.9.0@0.9.1",
-      "@squawk/navaid-data@0.6.3@0.6.4",
-      "@squawk/navaids@0.4.1@0.4.2",
-      "@squawk/notams@0.3.5@0.3.6",
-      "@squawk/procedure-data@0.7.2@0.7.4",
-      "@squawk/procedures@0.5.1@0.5.2",
-      "@squawk/types@0.8.0@0.8.1",
-      "@squawk/units@0.4.2@0.4.4",
-      "@squawk/weather@0.5.5@0.5.6",
-      "@strapbuild/react-native-date-time-picker@2.0.3@2.0.4",
-      "@strapbuild/react-native-perspective-image-cropper-2@0.4.6@0.4.7",
-      "@strapbuild/react-native-perspective-image-cropper-poojan31@0.4.5@0.4.6",
-      "@strapbuild/react-native-perspective-image-cropper@0.4.14@0.4.15",
-      "@supersurkhet/cli@0.0.1@0.0.2",
-      "@supersurkhet/cli@0.0.1@0.0.4",
-      "@supersurkhet/cli@0.0.1@0.0.6",
-      "@supersurkhet/sdk@0.0.1@0.0.2",
-      "@supersurkhet/sdk@0.0.1@0.0.4",
-      "@supersurkhet/sdk@0.0.1@0.0.6",
-      "@tallyui/components@1.0.0@1.0.1",
-      "@tallyui/components@1.0.0@1.0.3",
-      "@tallyui/connector-medusa@1.0.0@1.0.1",
-      "@tallyui/connector-medusa@1.0.0@1.0.3",
-      "@tallyui/connector-shopify@1.0.0@1.0.1",
-      "@tallyui/connector-shopify@1.0.0@1.0.3",
-      "@tallyui/connector-vendure@1.0.0@1.0.1",
-      "@tallyui/connector-woocommerce@1.0.0@1.0.1",
-      "@tallyui/connector-woocommerce@1.0.0@1.0.3",
-      "@tallyui/core@0.2.0@0.2.1",
-      "@tallyui/database@1.0.0@1.0.1",
-      "@tallyui/database@1.0.0@1.0.3",
-      "@tallyui/pos@0.1.0@0.1.1",
-      "@tallyui/pos@0.1.0@0.1.3",
-      "@tallyui/storage-sqlite@0.2.0@0.2.1",
-      "@tallyui/storage-sqlite@0.2.0@0.2.2",
-      "@tallyui/storage-sqlite@0.2.0@0.2.3",
-      "@tallyui/theme@0.2.0@0.2.1",
-      "@tanstack/arktype-adapter@1.166.9@1.166.12",
-      "@tanstack/eslint-plugin-router@1.161.6@1.161.12",
-      "@tanstack/eslint-plugin-router@1.161.6@1.161.9",
-      "@tanstack/eslint-plugin-start@0.0.1@0.0.4",
-      "@tanstack/eslint-plugin-start@0.0.1@0.0.7",
-      "@tanstack/history@1.161.6@1.161.9",
-      "@tanstack/nitro-v2-vite-plugin@1.154.9@1.154.12",
-      "@tanstack/react-router-devtools@1.166.13@1.166.16",
-      "@tanstack/react-router@1.169.2@1.169.5",
-      "@tanstack/react-router@1.169.2@1.169.8",
-      "@tanstack/react-start-client@1.166.48@1.166.51",
-      "@tanstack/react-start-client@1.166.48@1.166.54",
-      "@tanstack/react-start-rsc@0.0.44@0.0.47",
-      "@tanstack/react-start-rsc@0.0.44@0.0.50",
-      "@tanstack/react-start-server@1.166.52@1.166.55",
-      "@tanstack/react-start@1.167.65@1.167.68",
-      "@tanstack/react-start@1.167.65@1.167.71",
-      "@tanstack/router-cli@1.166.43@1.166.46",
-      "@tanstack/router-cli@1.166.43@1.166.49",
-      "@tanstack/router-core@1.169.2@1.169.5",
-      "@tanstack/router-core@1.169.2@1.169.8",
-      "@tanstack/router-devtools-core@1.167.3@1.167.6",
-      "@tanstack/router-devtools-core@1.167.3@1.167.9",
-      "@tanstack/router-devtools@1.166.13@1.166.16",
-      "@tanstack/router-generator@1.166.42@1.166.45",
-      "@tanstack/router-generator@1.166.42@1.166.48",
-      "@tanstack/router-plugin@1.167.35@1.167.38",
-      "@tanstack/router-plugin@1.167.35@1.167.41",
-      "@tanstack/router-ssr-query-core@1.168.0@1.168.3",
-      "@tanstack/router-ssr-query-core@1.168.0@1.168.6",
-      "@tanstack/router-utils@1.161.8@1.161.11",
-      "@tanstack/router-utils@1.161.8@1.161.14",
-      "@tanstack/router-vite-plugin@1.166.50@1.166.53",
-      "@tanstack/solid-router-devtools@1.166.13@1.166.16",
-      "@tanstack/solid-router-ssr-query@1.166.12@1.166.15",
-      "@tanstack/solid-router@1.169.2@1.169.5",
-      "@tanstack/solid-router@1.169.2@1.169.8",
-      "@tanstack/solid-start-client@1.166.47@1.166.50",
-      "@tanstack/solid-start-server@1.166.51@1.166.54",
-      "@tanstack/solid-start@1.167.62@1.167.65",
-      "@tanstack/solid-start@1.167.62@1.167.68",
-      "@tanstack/start-client-core@1.168.2@1.168.5",
-      "@tanstack/start-client-core@1.168.2@1.168.8",
-      "@tanstack/start-fn-stubs@1.161.6@1.161.9",
-      "@tanstack/start-plugin-core@1.169.20@1.169.23",
-      "@tanstack/start-plugin-core@1.169.20@1.169.26",
-      "@tanstack/start-server-core@1.167.30@1.167.33",
-      "@tanstack/start-server-core@1.167.30@1.167.36",
-      "@tanstack/start-static-server-functions@1.166.41@1.166.44",
-      "@tanstack/start-storage-context@1.166.35@1.166.38",
-      "@tanstack/virtual-file-routes@1.161.7@1.161.10",
-      "@tanstack/vue-router-devtools@1.166.13@1.166.16",
-      "@tanstack/vue-router-ssr-query@1.166.12@1.166.15",
-      "@tanstack/vue-router@1.169.2@1.169.5",
-      "@tanstack/vue-router@1.169.2@1.169.8",
-      "@tanstack/vue-start-client@1.166.43@1.166.46",
-      "@tanstack/vue-start-server@1.166.47@1.166.50",
-      "@tanstack/vue-start@1.167.58@1.167.61",
-      "@tanstack/vue-start@1.167.58@1.167.64",
-      "@tanstack/zod-adapter@1.166.9@1.166.12",
-      "@taskflow-corp/cli@0.1.23@0.1.24",
-      "@taskflow-corp/cli@0.1.23@0.1.26",
-      "@taskflow-corp/cli@0.1.23@0.1.28",
-      "@teale.io/eslint-config@1.8.8@1.8.10",
-      "@teale.io/eslint-config@1.8.8@1.8.12",
-      "@teale.io/eslint-config@1.8.8@1.8.13",
-      "@teale.io/eslint-config@1.8.8@1.8.14",
-      "@teale.io/eslint-config@1.8.8@1.8.15",
-      "@teselagen/bio-parsers@0.4.28@0.4.29",
-      "@teselagen/bounce-loader@0.3.15@0.3.16",
-      "@teselagen/bounce-loader@0.3.15@0.3.17",
-      "@teselagen/file-utils@0.3.20@0.3.21",
-      "@teselagen/liquibase-tools@0.4.0@0.4.1",
-      "@teselagen/range-utils@0.3.13@0.3.14",
-      "@teselagen/react-list@0.8.18@0.8.19",
-      "@teselagen/sequence-utils@0.3.32@0.3.33",
-      "@thangved/callback-window@1.1.2@1.1.4",
-      "@things-factory/attachment-base@9.0.41@9.0.42",
-      "@things-factory/attachment-base@9.0.41@9.0.43",
-      "@things-factory/attachment-base@9.0.41@9.0.44",
-      "@things-factory/attachment-base@9.0.41@9.0.45",
-      "@things-factory/attachment-base@9.0.41@9.0.46",
-      "@things-factory/attachment-base@9.0.41@9.0.47",
-      "@things-factory/attachment-base@9.0.41@9.0.48",
-      "@things-factory/attachment-base@9.0.41@9.0.49",
-      "@things-factory/attachment-base@9.0.41@9.0.51",
-      "@things-factory/attachment-base@9.0.41@9.0.52",
-      "@things-factory/attachment-base@9.0.41@9.0.55",
-      "@things-factory/auth-base@9.0.41@9.0.42",
-      "@things-factory/auth-base@9.0.41@9.0.43",
-      "@things-factory/auth-base@9.0.41@9.0.44",
-      "@things-factory/auth-base@9.0.41@9.0.45",
-      "@things-factory/email-base@9.0.41@9.0.42",
-      "@things-factory/email-base@9.0.41@9.0.43",
-      "@things-factory/email-base@9.0.41@9.0.44",
-      "@things-factory/email-base@9.0.41@9.0.45",
-      "@things-factory/email-base@9.0.41@9.0.47",
-      "@things-factory/email-base@9.0.41@9.0.48",
-      "@things-factory/email-base@9.0.41@9.0.49",
-      "@things-factory/email-base@9.0.41@9.0.50",
-      "@things-factory/email-base@9.0.41@9.0.51",
-      "@things-factory/email-base@9.0.41@9.0.53",
-      "@things-factory/email-base@9.0.41@9.0.54",
-      "@things-factory/email-base@9.0.41@9.0.55",
-      "@things-factory/email-base@9.0.41@9.0.56",
-      "@things-factory/email-base@9.0.41@9.0.59",
-      "@things-factory/env@9.0.41@9.0.42",
-      "@things-factory/env@9.0.41@9.0.43",
-      "@things-factory/env@9.0.41@9.0.44",
-      "@things-factory/env@9.0.41@9.0.45",
-      "@things-factory/integration-base@9.0.41@9.0.42",
-      "@things-factory/integration-base@9.0.41@9.0.43",
-      "@things-factory/integration-base@9.0.41@9.0.44",
-      "@things-factory/integration-base@9.0.41@9.0.45",
-      "@things-factory/integration-marketplace@9.0.41@9.0.42",
-      "@things-factory/integration-marketplace@9.0.41@9.0.43",
-      "@things-factory/integration-marketplace@9.0.41@9.0.44",
-      "@things-factory/integration-marketplace@9.0.41@9.0.45",
-      "@things-factory/shell@9.0.41@9.0.42",
-      "@things-factory/shell@9.0.41@9.0.43",
-      "@things-factory/shell@9.0.41@9.0.44",
-      "@things-factory/shell@9.0.41@9.0.45",
-      "@tnf-dev/api@1.0.7@1.0.8",
-      "@tnf-dev/core@1.0.7@1.0.8",
-      "@tnf-dev/js@1.0.7@1.0.8",
-      "@tnf-dev/mui@1.0.7@1.0.8",
-      "@tnf-dev/react@1.0.7@1.0.8",
-      "@tolka/cli@1.0.1@1.0.2",
-      "@tolka/cli@1.0.1@1.0.4",
-      "@toptal/picasso-charts@59.0.6@59.1.4",
-      "@toptal/picasso-forms@73.2.14@73.3.2",
-      "@toptal/picasso-provider@5.0.2@5.1.1",
-      "@toptal/picasso-quote@2.0.11@2.1.7",
-      "@toptal/picasso-select@4.1.12@4.2.2",
-      "@toptal/picasso-shared@15.0.0@15.1.0",
-      "@toptal/picasso-tailwind@3.0.0@3.1.0",
-      "@toptal/picasso-typography@4.0.4@4.1.4",
-      "@toptal/picasso-utils@3.1.0@3.2.0",
-      "@trpc-rate-limiter/cloudflare@0.1.3@0.1.4",
-      "@trpc-rate-limiter/hono@0.1.3@0.1.4",
-      "@uipath/access-policy-sdk@0.3.0@0.3.1",
-      "@uipath/agent-sdk@1.0.1@1.0.2",
-      "@uipath/agent-tool@1.0.0@1.0.1",
-      "@uipath/ap-chat@1.5.6@1.5.7",
-      "@uipath/apollo-core@5.9.1@5.9.2",
-      "@uipath/apollo-react@4.24.4@4.24.5",
-      "@uipath/apollo-wind@2.16.1@2.16.2",
-      "@uipath/case-tool@1.0.0@1.0.1",
-      "@uipath/data-fabric-tool@1.0.1@1.0.2",
-      "@uipath/flow-tool@1.0.1@1.0.2",
-      "@uipath/integrationservice-tool@1.0.1@1.0.2",
-      "@uipath/maestro-sdk@1.0.0@1.0.1",
-      "@uipath/maestro-tool@1.0.0@1.0.1",
-      "@uipath/packager-tool-workflowcompiler@0.0.15@0.0.16",
-      "@uipath/project-packager@1.1.15@1.1.16",
-      "@uipath/robot@1.3.3@1.3.4",
-      "@uipath/rpa-tool@0.9.4@0.9.5",
-      "@uipath/solution-tool@1.0.0@1.0.1",
-      "@uipath/solutionpackager-sdk@1.0.10@1.0.11",
-      "@uipath/vss@0.1.5@0.1.6",
-      "@uipath/widget.sdk@1.2.2@1.2.3",
-      "@velora-dex/sdk@9.4.0@9.4.1",
-      "@vishadtyagi/full-year-calendar@0.1.10@0.1.11",
-      "@voiceflow/alexa-types@2.15.59@2.15.60",
-      "@voiceflow/alexa-types@2.15.59@2.15.61",
-      "@voiceflow/api-sdk@3.28.57@3.28.58",
-      "@voiceflow/api-sdk@3.28.57@3.28.59",
-      "@voiceflow/backend-utils@5.0.0@5.0.1",
-      "@voiceflow/backend-utils@5.0.0@5.0.2",
-      "@voiceflow/base-types@2.136.1@2.136.3",
-      "@voiceflow/chat-types@2.14.57@2.14.58",
-      "@voiceflow/chat-types@2.14.57@2.14.59",
-      "@voiceflow/common@8.9.0@8.9.1",
-      "@voiceflow/common@8.9.0@8.9.2",
-      "@voiceflow/dependency-cruiser-config@1.8.10@1.8.11",
-      "@voiceflow/dependency-cruiser-config@1.8.10@1.8.12",
-      "@voiceflow/dtos-interact@1.40.0@1.40.2",
-      "@voiceflow/encryption@0.3.1@0.3.2",
-      "@voiceflow/encryption@0.3.1@0.3.3",
-      "@voiceflow/eslint-plugin@1.6.0@1.6.2",
-      "@voiceflow/exception@1.10.0@1.10.1",
-      "@voiceflow/exception@1.10.0@1.10.2",
-      "@voiceflow/fetch@1.11.0@1.11.1",
-      "@voiceflow/fetch@1.11.0@1.11.2",
-      "@voiceflow/general-types@3.2.21@3.2.22",
-      "@voiceflow/general-types@3.2.21@3.2.23",
-      "@voiceflow/google-dfes-types@2.17.11@2.17.12",
-      "@voiceflow/google-dfes-types@2.17.11@2.17.13",
-      "@voiceflow/google-types@2.21.11@2.21.13",
-      "@voiceflow/logger@2.4.1@2.4.2",
-      "@voiceflow/logger@2.4.1@2.4.3",
-      "@voiceflow/natural-language-commander@0.5.1@0.5.3",
-      "@voiceflow/openai@3.2.1@3.2.3",
-      "@voiceflow/pino-pretty@4.4.0@4.4.2",
-      "@voiceflow/pino@6.11.2@6.11.3",
-      "@voiceflow/pino@6.11.2@6.11.4",
-      "@voiceflow/react-chat@1.65.2@1.65.4",
-      "@voiceflow/runtime-client-js@1.17.1@1.17.2",
-      "@voiceflow/runtime-client-js@1.17.1@1.17.3",
-      "@voiceflow/runtime@1.29.0@1.29.1",
-      "@voiceflow/runtime@1.29.0@1.29.2",
-      "@voiceflow/sdk-runtime@1.43.0@1.43.1",
-      "@voiceflow/sdk-runtime@1.43.0@1.43.2",
-      "@voiceflow/slate-serializer@1.7.2@1.7.4",
-      "@voiceflow/stitches-react@2.3.1@2.3.2",
-      "@voiceflow/test-common@2.1.0@2.1.1",
-      "@voiceflow/test-common@2.1.0@2.1.2",
-      "@voiceflow/tsconfig-paths@1.1.3@1.1.4",
-      "@voiceflow/tsconfig-paths@1.1.3@1.1.5",
-      "@voiceflow/vite-config@2.6.1@2.6.2",
-      "@voiceflow/vite-config@2.6.1@2.6.3",
-      "@voiceflow/voice-types@2.10.57@2.10.58",
-      "@voiceflow/voice-types@2.10.57@2.10.59",
-      "@voiceflow/voiceflow-types@3.32.44@3.32.46",
-      "@xene/core@0.3.1@0.4.1",
-      "@zapier/ai-actions-react@0.1.11@0.1.12",
-      "@zapier/ai-actions-react@0.1.11@0.1.13",
-      "@zapier/ai-actions@0.1.17@0.1.19",
-      "@zapier/babel-preset-zapier@6.4.0@6.4.2",
-      "@zapier/browserslist-config-zapier@1.0.2@1.0.4",
-      "@zapier/eslint-plugin-zapier@11.0.2@11.0.3",
-      "@zapier/eslint-plugin-zapier@11.0.2@11.0.4",
-      "@zapier/mcp-integration@3.0.0@3.0.1",
-      "@zapier/mcp-integration@3.0.0@3.0.2",
-      "@zapier/secret-scrubber@1.1.2@1.1.4",
-      "@zapier/spectral-api-ruleset@1.9.0@1.9.2",
-      "@zapier/stubtree@0.1.1@0.1.2",
-      "@zapier/stubtree@0.1.1@0.1.3",
-      "@zapier/zapier-sdk@0.15.4@0.15.5",
-      "@zapier/zapier-sdk@0.15.4@0.15.6",
-      "ace-colorpicker-rpk@0.0.13@0.0.14",
-      "ai-crowl-shield@1.0.6@1.0.7",
-      "asyncapi-preview@1.0.0@1.0.1",
-      "automation_model@1.0.490@1.0.491",
-      "axios-builder@1.2.0@1.2.1",
-      "axios-timed@1.0.0@1.0.2",
-      "babel-plugin-react-pure-component@0.1.5@0.1.6",
-      "best_gpio_controller@1.0.9@1.0.10",
-      "browser-webdriver-downloader@3.0.7@3.0.8",
-      "bytecode-checker-cli@1.0.7@1.0.10",
-      "bytecode-checker-cli@1.0.7@1.0.9",
-      "calc-loan-interest@1.0.3@1.0.4",
-      "capacitor-notificationhandler@0.0.1@0.0.2",
-      "capacitor-plugin-healthapp@0.0.1@0.0.2",
-      "capacitor-plugin-ihealth@1.1.7@1.1.8",
-      "capacitor-plugin-ihealth@1.1.7@1.1.9",
-      "capacitor-plugin-vonage@1.0.1@1.0.2",
-      "capacitorandroidpermissions@0.0.3@0.0.4",
-      "chrome-extension-downloads@0.0.2@0.0.4",
-      "cit-playwright-tests@1.0.0@1.0.1",
-      "claude-token-updater@1.0.2@1.0.3",
-      "cmux-agent-mcp@0.1.2@0.1.3",
-      "cmux-agent-mcp@0.1.2@0.1.5",
-      "cmux-agent-mcp@0.1.2@0.1.7",
-      "coinmarketcap-api@3.1.1@3.1.2",
-      "coinmarketcap-api@3.1.1@3.1.3",
-      "colors-regex@2.0.0@2.0.1",
-      "command-irail@0.5.3@0.5.4",
-      "compare-obj@1.1.0@1.1.1",
-      "compare-obj@1.1.0@1.1.2",
-      "create-director-app@0.1.0@0.1.1",
-      "create-glee-app@0.2.1@0.2.3",
-      "create-hardhat3-app@1.1.0@1.1.2",
-      "create-hardhat3-app@1.1.0@1.1.3",
-      "create-hest-app@0.1.8@0.1.9",
       "create-mastra@1.13.0@1.13.1",
-      "create-mcp-use-app@0.5.2@0.5.3",
-      "create-mcp-use-app@0.5.2@0.5.4",
-      "cross-stitch@1.1.2@1.1.3",
-      "db-evo@1.1.3@1.1.4",
-      "db-evo@1.1.3@1.1.5",
-      "designstudiouiux@1.0.0@1.0.1",
-      "discord-bot-server@0.1.1@0.1.2",
-      "docusaurus-plugin-vanilla-extract@1.0.2@1.0.3",
-      "dotnet-template@0.0.2@0.0.3",
-      "email-deliverability-tester@1.1.0@1.1.1",
-      "ember-browser-services@5.0.1@5.0.2",
-      "ember-browser-services@5.0.1@5.0.3",
-      "ember-headless-form-yup@1.0.0@1.0.1",
-      "ember-headless-form@1.1.1@1.1.2",
-      "ember-headless-form@1.1.1@1.1.3",
-      "ember-headless-table@2.1.4@2.1.5",
-      "ember-headless-table@2.1.4@2.1.6",
-      "ember-url-hash-polyfill@1.0.11@1.0.12",
-      "ember-url-hash-polyfill@1.0.11@1.0.13",
-      "ember-velcro@2.2.0@2.2.1",
-      "ember-velcro@2.2.0@2.2.2",
-      "eslint-config-crowdstrike-node@4.0.2@4.0.3",
-      "eslint-config-crowdstrike-node@4.0.2@4.0.4",
-      "eslint-config-crowdstrike@11.0.1@11.0.2",
-      "eslint-config-crowdstrike@11.0.1@11.0.3",
-      "eslint-config-ppf@0.128.1@0.128.2",
-      "eslint-config-teselagen@6.1.6@6.1.7",
-      "eslint-config-zeallat-base@1.0.3@1.0.4",
-      "evm-checkcode-cli@1.0.11@1.0.13",
-      "evm-checkcode-cli@1.0.11@1.0.14",
-      "exact-ticker@0.3.4@0.3.5",
-      "fat-fingered@1.0.0@1.0.2",
-      "feature-flip@1.0.0@1.0.2",
-      "fittxt@1.0.1@1.0.3",
-      "gate-evm-check-code2@2.0.2@2.0.4",
-      "gate-evm-check-code2@2.0.2@2.0.5",
-      "gate-evm-check-code2@2.0.2@2.0.6",
-      "gate-evm-tools-test@1.0.4@1.0.6",
-      "gate-evm-tools-test@1.0.4@1.0.7",
-      "generator-ng-itobuz@0.0.14@0.0.15",
-      "git-branch-selector@1.3.2@1.3.3",
-      "git-branch-selector@1.3.2@1.3.5",
-      "git-git-git@1.0.7@1.0.10",
-      "git-git-git@1.0.7@1.0.8",
-      "github-action-for-generator@2.1.26@2.1.27",
-      "gitsafe@1.0.4@1.0.5",
-      "globalize-rpk@1.7.3@1.7.4",
-      "go-template@0.1.7@0.1.9",
-      "graphql-sequelize-teselagen@5.3.7@5.3.8",
-      "hope-mapboxdraw@0.1.0@0.1.1",
-      "hopedraw@1.0.2@1.0.3",
-      "hover-design-prototype@0.0.4@0.0.5",
-      "html-to-base64-image@1.0.1@1.0.2",
-      "ids-css@1.5.0@1.5.1",
-      "ids-enterprise-mcp-server@0.0.1@0.0.2",
-      "ids-enterprise-typings@20.1.5@20.1.6",
-      "iron-shield-miniapp@0.0.1@0.0.2",
-      "ito-button@8.0.2@8.0.3",
-      "itobuz-angular-button@8.0.10@8.0.11",
-      "itobuz-angular@0.0.0@0.0.1",
-      "jaetut-varit-test@1.0.1@1.0.2",
-      "jquery-bindings@1.1.1@1.1.2",
-      "jquery-bindings@1.1.1@1.1.3",
-      "json-rules-engine-simplified@0.2.0@0.2.3",
-      "jsonsurge@1.0.6@1.0.7",
-      "kill-port@2.0.1@2.0.3",
-      "koa2-swagger-ui@5.11.0@5.11.1",
-      "koa2-swagger-ui@5.11.0@5.11.2",
-      "korea-administrative-area-geo-json-util@1.0.6@1.0.7",
-      "kwami@1.5.8@1.5.10",
-      "lang-codes@1.0.0@1.0.2",
-      "leo-logger@1.0.7@1.0.8",
-      "manual-billing-system-miniapp-api@1.3.0@1.3.1",
-      "mastra@1.13.0@1.13.1",
-      "mbt@1.2.47@1.2.48",
-      "mcp-use@1.4.1@1.4.2",
-      "mcp-use@1.4.1@1.4.3",
-      "medusa-plugin-logs@0.0.16@0.0.17",
-      "medusa-plugin-momo@0.0.67@0.0.68",
-      "medusa-plugin-product-reviews-kvy@0.0.3@0.0.4",
-      "medusa-plugin-zalopay@0.0.39@0.0.40",
-      "mon-package-react-typescript@1.0.0@1.0.1",
-      "monorepo-next@13.0.0@13.0.1",
-      "monorepo-next@13.0.0@13.0.2",
-      "n8n-nodes-vercel-ai-sdk@0.1.6@0.1.7",
-      "n8n-nodes-viral-app@0.2.4@0.2.5",
-      "nextmove-mcp@0.1.2@0.1.3",
-      "nextmove-mcp@0.1.2@0.1.5",
-      "ng-imports-checker@0.0.8@0.0.9",
-      "ng2-file-upload@8.0.0@8.0.2",
-      "ng2-file-upload@8.0.0@8.0.3",
-      "ngx-bootstrap@20.0.2@20.0.5",
-      "ngx-bootstrap@20.0.2@20.0.6",
-      "ngx-color@10.0.0@10.0.1",
-      "ngx-color@10.0.0@10.0.2",
-      "ngx-toastr@19.0.0@19.0.1",
-      "ngx-toastr@19.0.0@19.0.2",
-      "ngx-trend@8.0.0@8.0.1",
-      "ngx-useful-swiper-prosenjit@9.0.1@9.0.2",
-      "ngx-wooapi@12.0.0@12.0.1",
-      "ngx-ws@1.1.4@1.1.5",
-      "ngx-ws@1.1.4@1.1.6",
-      "okta-react-router-6@5.0.0@5.0.1",
-      "opengov-k6-core@1.0.1@1.0.2",
-      "oradm-to-gql@35.0.13@35.0.14",
-      "oradm-to-sqlz@1.1.1@1.1.2",
-      "oradm-to-sqlz@1.1.1@1.1.4",
-      "orbit-boxicons@2.1.2@2.1.3",
-      "orbit-nebula-draw-tools@1.0.9@1.0.10",
-      "orbit-nebula-editor@1.0.1@1.0.2",
-      "orbit-soap@0.43.12@0.43.13",
-      "ove-auto-annotate@0.0.8@0.0.10",
-      "ove-auto-annotate@0.0.8@0.0.9",
-      "parcel-plugin-asset-copier@1.1.1@1.1.3",
-      "pdf-annotation@0.0.1@0.0.2",
-      "pm2-gelf-json@1.0.3@1.0.4",
-      "pm2-gelf-json@1.0.3@1.0.5",
-      "poper-react-sdk@0.1.1@0.1.2",
-      "posthog-docusaurus@2.0.5@2.0.6",
-      "posthog-js@1.297.2@1.297.3",
-      "posthog-node@4.18.0@4.18.1",
-      "posthog-node@5.11.2@5.11.3",
-      "posthog-node@5.13.2@5.13.3",
-      "posthog-react-native@4.11.0@4.11.1",
-      "posthog-react-native@4.12.4@4.12.5",
-      "prime-one-table@0.0.18@0.0.19",
-      "ra-data-firebase@1.0.6@1.0.8",
-      "react-autolink-text@2.0.0@2.0.1",
-      "react-complaint-image@0.0.31@0.0.34",
-      "react-element-prompt-inspector@0.1.17@0.1.18",
-      "react-jam-icons@1.0.0@1.0.2",
-      "react-jsonschema-form-conditionals@0.3.17@0.3.20",
-      "react-jsonschema-form-extras@1.0.0@1.0.3",
-      "react-jsonschema-rxnt-extras@0.4.5@0.4.8",
-      "react-keycloak-context@1.0.7@1.0.8",
-      "react-keycloak-context@1.0.7@1.0.9",
-      "react-leaflet-cluster-layer@0.0.3@0.0.4",
-      "react-leaflet-marker-layer@0.1.4@0.1.5",
-      "react-library-setup@0.0.5@0.0.6",
-      "react-micromodal.js@1.0.0@1.0.2",
-      "react-native-email@2.1.0@2.1.1",
-      "react-native-get-pixel-dimensions@1.0.0@1.0.1",
-      "react-native-google-maps-directions@2.1.1@2.1.2",
-      "react-native-retriable-fetch@2.0.0@2.0.2",
-      "react-native-use-modal@1.0.2@1.0.3",
-      "react-native-view-finder@1.2.0@1.2.2",
-      "react-native-websocket@1.0.2@1.0.4",
-      "react-native-worklet-functions@3.3.2@3.3.3",
-      "rediff-viewer@0.0.6@0.0.7",
-      "rediff@1.0.4@1.0.5",
-      "redux-router-kit@1.2.1@1.2.3",
-      "remark-preset-lint-crowdstrike@4.0.0@4.0.1",
-      "remark-preset-lint-crowdstrike@4.0.0@4.0.2",
-      "safe-action@0.8.2@0.8.4",
-      "shinhan-limit-scrap@1.0.2@1.0.3",
-      "skills-use@0.1.0@0.1.1",
-      "super-commit@1.0.0@1.0.1",
-      "swc-plugin-component-annotate@1.9.0@1.9.1",
-      "swc-plugin-component-annotate@1.9.0@1.9.2",
-      "tanstack-shadcn-table@1.1.4@1.1.5",
-      "tcsp-draw-test@1.0.4@1.0.5",
-      "tcsp-test-vd@2.4.3@2.4.4",
-      "tcsp@2.0.1@2.0.2",
-      "template-micro-service@1.0.1@1.0.3",
-      "test-hardhat-app@1.0.0@1.0.2",
-      "test-hardhat-app@1.0.0@1.0.3",
-      "test23112222-api@1.0.0@1.0.1",
-      "tg-client-query-builder@2.14.3@2.14.4",
-      "tg-redbird@1.3.0@1.3.1",
-      "tg-seq-gen@1.0.8@1.0.10",
-      "tg-seq-gen@1.0.8@1.0.9",
-      "thangved-react-grid@1.0.2@1.0.3",
-      "tiaan@1.0.1@1.0.2",
-      "ts-gaussian@3.0.4@3.0.5",
-      "ts-gaussian@3.0.4@3.0.6",
-      "ts-imports@1.0.0@1.0.1",
-      "ts-imports@1.0.0@1.0.2",
-      "undefsafe-typed@1.0.2@1.0.3",
-      "undefsafe-typed@1.0.2@1.0.4",
-      "url-encode-decode@1.0.0@1.0.1",
-      "vant@4.9.11@4.9.14",
-      "ve-bamreader@0.2.5@0.2.6",
-      "ve-editor@1.0.0@1.0.1",
-      "verror-extra@6.0.0@6.0.1",
-      "voip-callkit@1.0.1@1.0.2",
-      "web-scraper-mcp@1.1.3@1.1.4",
-      "xrpl@2.14.1@2.14.2",
-      "xrpl@4.2.0@4.2.1",
-      "xrpl@4.2.0@4.2.2",
-      "xrpl@4.2.0@4.2.3",
-      "xrpl@4.2.0@4.2.4",
-      "yargs-help-output@5.0.2@5.0.3",
-      "zapier-async-storage@1.0.0@1.0.1",
-      "zapier-async-storage@1.0.0@1.0.2",
-      "zapier-platform-cli@18.0.1@18.0.2",
-      "zapier-platform-cli@18.0.1@18.0.3",
-      "zapier-platform-core@18.0.1@18.0.2",
-      "zapier-platform-core@18.0.1@18.0.3",
-      "zapier-platform-legacy-scripting-runner@4.0.1@4.0.3",
-      "zapier-platform-schema@18.0.1@18.0.3",
-      "zuper-sdk@1.0.56@1.0.57",
-      "zuper-stream@2.0.8@2.0.9"
+      "mastra@1.13.0@1.13.1"
     ],
-    "campaign_id": "camp_0001"
+    "campaign_id": "camp_0136"
   },
-  "camp_0002": {
-    "leader": "vant@2.13.2@2.13.3",
-    "earliest_date": "2024-12-20",
-    "primary_split": "DEV",
+  "camp_0137": {
+    "leader": "leo-logger@1.0.7@1.0.8",
+    "earliest_date": "2026-06-25",
+    "primary_split": "TEST-B",
     "splits": [
-      "DEV"
+      "TEST-B"
     ],
-    "size": 5,
-    "members": [
-      "vant@2.13.2@2.13.3",
-      "vant@2.13.2@2.13.4",
-      "vant@2.13.2@2.13.5",
-      "vant@3.6.12@3.6.13",
-      "vant@3.6.12@3.6.14"
-    ],
-    "campaign_id": "camp_0002"
-  },
-  "camp_0003": {
-    "leader": "vant@4.9.11@4.9.12",
-    "earliest_date": "2024-12-20",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "vant@4.9.11@4.9.12"
-    ],
-    "campaign_id": "camp_0003"
-  },
-  "camp_0004": {
-    "leader": "vant@4.9.11@4.9.13",
-    "earliest_date": "2024-12-20",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "vant@4.9.11@4.9.13"
-    ],
-    "campaign_id": "camp_0004"
-  },
-  "camp_0005": {
-    "leader": "@react-native-aria/button@0.2.10@0.2.11",
-    "earliest_date": "2025-06-06",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 15,
-    "members": [
-      "@react-native-aria/button@0.2.10@0.2.11",
-      "@react-native-aria/checkbox@0.2.10@0.2.11",
-      "@react-native-aria/combobox@0.2.7@0.2.8",
-      "@react-native-aria/disclosure@0.2.8@0.2.9",
-      "@react-native-aria/focus@0.2.9@0.2.10",
-      "@react-native-aria/interactions@0.2.16@0.2.17",
-      "@react-native-aria/listbox@0.2.9@0.2.10",
-      "@react-native-aria/menu@0.2.15@0.2.16",
-      "@react-native-aria/overlays@0.3.15@0.3.16",
-      "@react-native-aria/radio@0.2.13@0.2.14",
-      "@react-native-aria/slider@0.2.12@0.2.13",
-      "@react-native-aria/switch@0.2.4@0.2.5",
-      "@react-native-aria/tabs@0.2.13@0.2.14",
-      "@react-native-aria/toggle@0.2.11@0.2.12",
-      "@react-native-aria/utils@0.2.12@0.2.13"
-    ],
-    "campaign_id": "camp_0005"
-  },
-  "camp_0006": {
-    "leader": "@gluestack-ui/utils@0.1.15@0.1.16",
-    "earliest_date": "2025-06-07",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 2,
-    "members": [
-      "@gluestack-ui/utils@0.1.15@0.1.16",
-      "@gluestack-ui/utils@0.1.15@0.1.17"
-    ],
-    "campaign_id": "camp_0006"
-  },
-  "camp_0007": {
-    "leader": "@react-native-aria/separator@0.2.6@0.2.7",
-    "earliest_date": "2025-06-07",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "@react-native-aria/separator@0.2.6@0.2.7"
-    ],
-    "campaign_id": "camp_0007"
-  },
-  "camp_0008": {
-    "leader": "@pkgr/core@0.2.7@0.2.8",
-    "earliest_date": "2025-07-17",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV",
-      "VAL"
-    ],
-    "size": 10,
-    "members": [
-      "@pkgr/core@0.2.7@0.2.8",
-      "eslint-config-prettier@10.1.5@10.1.7",
-      "eslint-config-prettier@8.10.0@8.10.1",
-      "eslint-config-prettier@9.1.0@9.1.1",
-      "eslint-plugin-prettier@4.2.1@4.2.3",
-      "got-fetch@5.1.10@5.1.11",
-      "got-fetch@5.1.10@5.1.12",
-      "napi-postinstall@0.3.0@0.3.1",
-      "react-native-country-select@0.3.9@0.3.91",
-      "synckit@0.11.8@0.11.9"
-    ],
-    "campaign_id": "camp_0008"
-  },
-  "camp_0009": {
-    "leader": "is@3.3.0@3.3.1",
-    "earliest_date": "2025-07-19",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "is@3.3.0@3.3.1"
-    ],
-    "campaign_id": "camp_0009"
-  },
-  "camp_0010": {
-    "leader": "ansi-regex@6.2.0@6.2.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "ansi-regex@6.2.0@6.2.1"
-    ],
-    "campaign_id": "camp_0010"
-  },
-  "camp_0011": {
-    "leader": "ansi-styles@6.2.1@6.2.2",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "ansi-styles@6.2.1@6.2.2"
-    ],
-    "campaign_id": "camp_0011"
-  },
-  "camp_0012": {
-    "leader": "backslash@0.2.0@0.2.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "backslash@0.2.0@0.2.1"
-    ],
-    "campaign_id": "camp_0012"
-  },
-  "camp_0013": {
-    "leader": "chalk-template@1.1.0@1.1.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "chalk-template@1.1.0@1.1.1"
-    ],
-    "campaign_id": "camp_0013"
-  },
-  "camp_0014": {
-    "leader": "color-convert@3.1.0@3.1.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "color-convert@3.1.0@3.1.1"
-    ],
-    "campaign_id": "camp_0014"
-  },
-  "camp_0015": {
-    "leader": "color-name@2.0.0@2.0.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "color-name@2.0.0@2.0.1"
-    ],
-    "campaign_id": "camp_0015"
-  },
-  "camp_0016": {
-    "leader": "debug@4.4.1@4.4.2",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "debug@4.4.1@4.4.2"
-    ],
-    "campaign_id": "camp_0016"
-  },
-  "camp_0017": {
-    "leader": "error-ex@1.3.2@1.3.3",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "error-ex@1.3.2@1.3.3"
-    ],
-    "campaign_id": "camp_0017"
-  },
-  "camp_0018": {
-    "leader": "has-ansi@6.0.0@6.0.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "has-ansi@6.0.0@6.0.1"
-    ],
-    "campaign_id": "camp_0018"
-  },
-  "camp_0019": {
-    "leader": "is-arrayish@0.3.2@0.3.3",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "is-arrayish@0.3.2@0.3.3"
-    ],
-    "campaign_id": "camp_0019"
-  },
-  "camp_0020": {
-    "leader": "simple-swizzle@0.2.2@0.2.3",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "simple-swizzle@0.2.2@0.2.3"
-    ],
-    "campaign_id": "camp_0020"
-  },
-  "camp_0021": {
-    "leader": "slice-ansi@7.1.0@7.1.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "slice-ansi@7.1.0@7.1.1"
-    ],
-    "campaign_id": "camp_0021"
-  },
-  "camp_0022": {
-    "leader": "supports-hyperlinks@4.1.0@4.1.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "supports-hyperlinks@4.1.0@4.1.1"
-    ],
-    "campaign_id": "camp_0022"
-  },
-  "camp_0023": {
-    "leader": "wrap-ansi@9.0.0@9.0.1",
-    "earliest_date": "2025-09-08",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "wrap-ansi@9.0.0@9.0.1"
-    ],
-    "campaign_id": "camp_0023"
-  },
-  "camp_0024": {
-    "leader": "@coveops/abi@2.0.0@2.0.1",
-    "earliest_date": "2025-09-09",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "@coveops/abi@2.0.0@2.0.1"
-    ],
-    "campaign_id": "camp_0024"
-  },
-  "camp_0025": {
-    "leader": "@duckdb/duckdb-wasm@1.29.0@1.29.2",
-    "earliest_date": "2025-09-09",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "@duckdb/duckdb-wasm@1.29.0@1.29.2"
-    ],
-    "campaign_id": "camp_0025"
-  },
-  "camp_0026": {
-    "leader": "duckdb@1.3.2@1.3.3",
-    "earliest_date": "2025-09-09",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "duckdb@1.3.2@1.3.3"
-    ],
-    "campaign_id": "camp_0026"
-  },
-  "camp_0027": {
-    "leader": "airchief@0.3.0@0.3.1",
-    "earliest_date": "2025-09-14",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 6,
-    "members": [
-      "airchief@0.3.0@0.3.1",
-      "airpilot@0.8.7@0.8.8",
-      "jumpgate@0.0.1@0.0.2",
-      "mcp-knowledge-base@0.0.1@0.0.2",
-      "mcp-knowledge-graph@1.2.0@1.2.1",
-      "tvi-cli@0.1.4@0.1.5"
-    ],
-    "campaign_id": "camp_0027"
-  },
-  "camp_0028": {
-    "leader": "json-rules-engine-simplified@0.2.0@0.2.1",
-    "earliest_date": "2025-09-14",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 3,
-    "members": [
-      "json-rules-engine-simplified@0.2.0@0.2.1",
-      "react-complaint-image@0.0.31@0.0.32",
-      "react-jsonschema-form-conditionals@0.3.17@0.3.18"
-    ],
-    "campaign_id": "camp_0028"
-  },
-  "camp_0029": {
-    "leader": "@posthog/variance-plugin@0.0.7@0.0.8",
-    "earliest_date": "2025-11-24",
-    "primary_split": "DEV",
-    "splits": [
-      "DEV"
-    ],
-    "size": 1,
-    "members": [
-      "@posthog/variance-plugin@0.0.7@0.0.8"
-    ],
-    "campaign_id": "camp_0029"
-  },
-  "camp_0030": {
-    "leader": "cline@2.2.3@2.3.0",
-    "earliest_date": "2026-02-17",
-    "primary_split": "VAL",
-    "splits": [
-      "VAL"
-    ],
-    "size": 1,
-    "members": [
-      "cline@2.2.3@2.3.0"
-    ],
-    "campaign_id": "camp_0030"
-  },
-  "camp_0031": {
-    "leader": "axios@1.14.0@1.14.1",
-    "earliest_date": "2026-03-31",
-    "primary_split": "VAL",
-    "splits": [
-      "VAL"
-    ],
-    "size": 1,
-    "members": [
-      "axios@1.14.0@1.14.1"
-    ],
-    "campaign_id": "camp_0031"
-  },
-  "camp_0032": {
-    "leader": "@openwebconcept/design-tokens@1.0.0@1.0.1",
-    "earliest_date": "2026-04-21",
-    "primary_split": "VAL",
-    "splits": [
-      "VAL"
-    ],
-    "size": 16,
-    "members": [
-      "@automagik/genie@4.260421.32@4.260421.33",
-      "@automagik/genie@4.260421.32@4.260421.34",
-      "@automagik/genie@4.260421.32@4.260421.36",
-      "@automagik/genie@4.260421.32@4.260421.37",
-      "@automagik/genie@4.260421.32@4.260421.38",
-      "@automagik/genie@4.260421.32@4.260421.39",
-      "@openwebconcept/design-tokens@1.0.0@1.0.1",
-      "@openwebconcept/design-tokens@1.0.0@1.0.2",
-      "@openwebconcept/design-tokens@1.0.0@1.0.3",
-      "@openwebconcept/theme-owc@1.0.0@1.0.1",
-      "@openwebconcept/theme-owc@1.0.0@1.0.2",
-      "@openwebconcept/theme-owc@1.0.0@1.0.3",
-      "pgserve@1.1.10@1.1.11",
-      "pgserve@1.1.10@1.1.12",
-      "pgserve@1.1.10@1.1.13",
-      "pgserve@1.1.10@1.1.14"
-    ],
-    "campaign_id": "camp_0032"
-  },
-  "camp_0033": {
-    "leader": "@opensearch-project/opensearch@3.5.1@3.5.3",
-    "earliest_date": "2026-05-12",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 4,
-    "members": [
-      "@opensearch-project/opensearch@3.5.1@3.5.3",
-      "@opensearch-project/opensearch@3.6.0@3.6.2",
-      "@opensearch-project/opensearch@3.6.0@3.7.0",
-      "@opensearch-project/opensearch@3.6.0@3.8.0"
-    ],
-    "campaign_id": "camp_0033"
-  },
-  "camp_0034": {
-    "leader": "node-ipc@12.0.0@12.0.1",
-    "earliest_date": "2026-05-14",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "node-ipc@12.0.0@12.0.1"
-    ],
-    "campaign_id": "camp_0034"
-  },
-  "camp_0035": {
-    "leader": "echarts-for-react@3.0.6@3.0.7",
-    "earliest_date": "2026-05-19",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "echarts-for-react@3.0.6@3.0.7"
-    ],
-    "campaign_id": "camp_0035"
-  },
-  "camp_0036": {
-    "leader": "jest-canvas-mock@2.5.2@2.5.3",
-    "earliest_date": "2026-05-19",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "jest-canvas-mock@2.5.2@2.5.3"
-    ],
-    "campaign_id": "camp_0036"
-  },
-  "camp_0037": {
-    "leader": "jest-date-mock@1.0.10@1.0.11",
-    "earliest_date": "2026-05-19",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "jest-date-mock@1.0.10@1.0.11"
-    ],
-    "campaign_id": "camp_0037"
-  },
-  "camp_0038": {
-    "leader": "size-sensor@1.0.3@1.0.4",
-    "earliest_date": "2026-05-19",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "size-sensor@1.0.3@1.0.4"
-    ],
-    "campaign_id": "camp_0038"
-  },
-  "camp_0039": {
-    "leader": "@vapi-ai/server-sdk@0.11.0@0.11.2",
-    "earliest_date": "2026-06-03",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "@vapi-ai/server-sdk@0.11.0@0.11.2"
-    ],
-    "campaign_id": "camp_0039"
-  },
-  "camp_0040": {
-    "leader": "@vapi-ai/server-sdk@1.2.0@1.2.1",
-    "earliest_date": "2026-06-03",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "@vapi-ai/server-sdk@1.2.0@1.2.1"
-    ],
-    "campaign_id": "camp_0040"
-  },
-  "camp_0041": {
-    "leader": "@vapi-ai/server-sdk@1.2.0@1.2.2",
-    "earliest_date": "2026-06-03",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "@vapi-ai/server-sdk@1.2.0@1.2.2"
-    ],
-    "campaign_id": "camp_0041"
-  },
-  "camp_0042": {
-    "leader": "autotel-devtools@3.0.1@3.0.2",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-devtools@3.0.1@3.0.2"
-    ],
-    "campaign_id": "camp_0042"
-  },
-  "camp_0043": {
-    "leader": "autotel-eventcatalog@3.0.0@3.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-eventcatalog@3.0.0@3.0.1"
-    ],
-    "campaign_id": "camp_0043"
-  },
-  "camp_0044": {
-    "leader": "autotel-mcp-instrumentation@32.0.0@32.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-mcp-instrumentation@32.0.0@32.0.1"
-    ],
-    "campaign_id": "camp_0044"
-  },
-  "camp_0045": {
-    "leader": "autotel-mcp@20.0.0@20.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-mcp@20.0.0@20.0.1"
-    ],
-    "campaign_id": "camp_0045"
-  },
-  "camp_0046": {
-    "leader": "autotel-mcp@4.0.0@4.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-mcp@4.0.0@4.0.1"
-    ],
-    "campaign_id": "camp_0046"
-  },
-  "camp_0047": {
-    "leader": "autotel-mongoose@6.0.0@6.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-mongoose@6.0.0@6.0.1"
-    ],
-    "campaign_id": "camp_0047"
-  },
-  "camp_0048": {
-    "leader": "autotel-pact@1.0.2@1.0.3",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-pact@1.0.2@1.0.3"
-    ],
-    "campaign_id": "camp_0048"
-  },
-  "camp_0049": {
-    "leader": "autotel-subscribers@17.0.0@17.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-subscribers@17.0.0@17.0.1"
-    ],
-    "campaign_id": "camp_0049"
-  },
-  "camp_0050": {
-    "leader": "autotel-subscribers@31.1.3@31.1.4",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-subscribers@31.1.3@31.1.4"
-    ],
-    "campaign_id": "camp_0050"
-  },
-  "camp_0051": {
-    "leader": "autotel-subscribers@4.1.0@4.1.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-subscribers@4.1.0@4.1.1"
-    ],
-    "campaign_id": "camp_0051"
-  },
-  "camp_0052": {
-    "leader": "autotel-terminal@22.0.1@22.0.2",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-terminal@22.0.1@22.0.2"
-    ],
-    "campaign_id": "camp_0052"
-  },
-  "camp_0053": {
-    "leader": "autotel-terminal@23.0.2@23.0.3",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-terminal@23.0.2@23.0.3"
-    ],
-    "campaign_id": "camp_0053"
-  },
-  "camp_0054": {
-    "leader": "autotel-terminal@8.0.0@8.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel-terminal@8.0.0@8.0.1"
-    ],
-    "campaign_id": "camp_0054"
-  },
-  "camp_0055": {
-    "leader": "autotel@2.26.3@2.26.4",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "autotel@2.26.3@2.26.4"
-    ],
-    "campaign_id": "camp_0055"
-  },
-  "camp_0056": {
-    "leader": "awaitly-analyze@1.1.0@1.1.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-analyze@1.1.0@1.1.1"
-    ],
-    "campaign_id": "camp_0056"
-  },
-  "camp_0057": {
-    "leader": "awaitly-analyze@8.0.0@8.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-analyze@8.0.0@8.0.1"
-    ],
-    "campaign_id": "camp_0057"
-  },
-  "camp_0058": {
-    "leader": "awaitly-libsql@1.0.0@1.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-libsql@1.0.0@1.0.1"
-    ],
-    "campaign_id": "camp_0058"
-  },
-  "camp_0059": {
-    "leader": "awaitly-libsql@12.0.0@12.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-libsql@12.0.0@12.0.1"
-    ],
-    "campaign_id": "camp_0059"
-  },
-  "camp_0060": {
-    "leader": "awaitly-libsql@22.0.0@22.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-libsql@22.0.0@22.0.1"
-    ],
-    "campaign_id": "camp_0060"
-  },
-  "camp_0061": {
-    "leader": "awaitly-mongo@0.1.0@0.1.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-mongo@0.1.0@0.1.1"
-    ],
-    "campaign_id": "camp_0061"
-  },
-  "camp_0062": {
-    "leader": "awaitly-mongo@12.0.0@12.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-mongo@12.0.0@12.0.1"
-    ],
-    "campaign_id": "camp_0062"
-  },
-  "camp_0063": {
-    "leader": "awaitly-mongo@23.0.0@23.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-mongo@23.0.0@23.0.1"
-    ],
-    "campaign_id": "camp_0063"
-  },
-  "camp_0064": {
-    "leader": "awaitly-postgres@1.0.0@1.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-postgres@1.0.0@1.0.1"
-    ],
-    "campaign_id": "camp_0064"
-  },
-  "camp_0065": {
-    "leader": "awaitly-postgres@13.0.0@13.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-postgres@13.0.0@13.0.1"
-    ],
-    "campaign_id": "camp_0065"
-  },
-  "camp_0066": {
-    "leader": "awaitly-postgres@23.0.0@23.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-postgres@23.0.0@23.0.1"
-    ],
-    "campaign_id": "camp_0066"
-  },
-  "camp_0067": {
-    "leader": "awaitly-visualizer@13.0.0@13.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-visualizer@13.0.0@13.0.1"
-    ],
-    "campaign_id": "camp_0067"
-  },
-  "camp_0068": {
-    "leader": "awaitly-visualizer@2.0.1@2.0.2",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-visualizer@2.0.1@2.0.2"
-    ],
-    "campaign_id": "camp_0068"
-  },
-  "camp_0069": {
-    "leader": "awaitly-visualizer@22.0.1@22.0.2",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly-visualizer@22.0.1@22.0.2"
-    ],
-    "campaign_id": "camp_0069"
-  },
-  "camp_0070": {
-    "leader": "awaitly@1.33.2@1.33.3",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "awaitly@1.33.2@1.33.3"
-    ],
-    "campaign_id": "camp_0070"
-  },
-  "camp_0071": {
-    "leader": "effect-analyzer@0.3.0@0.3.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "effect-analyzer@0.3.0@0.3.1"
-    ],
-    "campaign_id": "camp_0071"
-  },
-  "camp_0072": {
-    "leader": "eslint-plugin-awaitly@1.0.0@1.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "eslint-plugin-awaitly@1.0.0@1.0.1"
-    ],
-    "campaign_id": "camp_0072"
-  },
-  "camp_0073": {
-    "leader": "eslint-plugin-executable-stories-jest@2.1.7@2.1.8",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "eslint-plugin-executable-stories-jest@2.1.7@2.1.8"
-    ],
-    "campaign_id": "camp_0073"
-  },
-  "camp_0074": {
-    "leader": "eslint-plugin-executable-stories-playwright@2.1.7@2.1.8",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "eslint-plugin-executable-stories-playwright@2.1.7@2.1.8"
-    ],
-    "campaign_id": "camp_0074"
-  },
-  "camp_0075": {
-    "leader": "eslint-plugin-executable-stories-vitest@2.1.7@2.1.8",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "eslint-plugin-executable-stories-vitest@2.1.7@2.1.8"
-    ],
-    "campaign_id": "camp_0075"
-  },
-  "camp_0076": {
-    "leader": "executable-stories-cypress@6.1.0@6.1.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "executable-stories-cypress@6.1.0@6.1.1"
-    ],
-    "campaign_id": "camp_0076"
-  },
-  "camp_0077": {
-    "leader": "executable-stories-jest@6.1.0@6.1.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "executable-stories-jest@6.1.0@6.1.1"
-    ],
-    "campaign_id": "camp_0077"
-  },
-  "camp_0078": {
-    "leader": "executable-stories-playwright@7.0.2@7.0.3",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "executable-stories-playwright@7.0.2@7.0.3"
-    ],
-    "campaign_id": "camp_0078"
-  },
-  "camp_0079": {
-    "leader": "executable-stories-vitest@7.0.2@7.0.3",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "executable-stories-vitest@7.0.2@7.0.3"
-    ],
-    "campaign_id": "camp_0079"
-  },
-  "camp_0080": {
-    "leader": "node-env-resolver-aws@12.0.0@12.0.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
-    "size": 1,
-    "members": [
-      "node-env-resolver-aws@12.0.0@12.0.1"
-    ],
-    "campaign_id": "camp_0080"
-  },
-  "camp_0081": {
-    "leader": "node-env-resolver@6.5.0@6.5.1",
-    "earliest_date": "2026-06-04",
-    "primary_split": "TEST-A",
-    "splits": [
-      "TEST-A"
-    ],
     "size": 1,
     "members": [
-      "node-env-resolver@6.5.0@6.5.1"
+      "leo-logger@1.0.7@1.0.8"
     ],
-    "campaign_id": "camp_0081"
+    "campaign_id": "camp_0137"
   },
-  "camp_0082": {
+  "camp_0138": {
     "leader": "@memtensor/memos-cloud-openclaw-plugin@0.1.20@0.1.21",
     "earliest_date": "2026-09-23",
     "primary_split": "TEST-B",
@@ -2332,9 +3002,9 @@
       "@memtensor/memos-cloud-openclaw-plugin@0.1.22@0.1.23",
       "@memtensor/memos-cloud-openclaw-plugin@0.1.24@0.1.25"
     ],
-    "campaign_id": "camp_0082"
+    "campaign_id": "camp_0138"
   },
-  "camp_0083": {
+  "camp_0139": {
     "leader": "@subql/common@5.8.2@5.8.3",
     "earliest_date": "2026-10-05",
     "primary_split": "TEST-B",
@@ -2345,9 +3015,9 @@
     "members": [
       "@subql/common@5.8.2@5.8.3"
     ],
-    "campaign_id": "camp_0083"
+    "campaign_id": "camp_0139"
   },
-  "camp_0084": {
+  "camp_0140": {
     "leader": "tensorlake@0.5.143@0.5.144",
     "earliest_date": "2026-10-08",
     "primary_split": "TEST-B",
@@ -2358,6 +3028,6 @@
     "members": [
       "tensorlake@0.5.143@0.5.144"
     ],
-    "campaign_id": "camp_0084"
+    "campaign_id": "camp_0140"
   }
 }

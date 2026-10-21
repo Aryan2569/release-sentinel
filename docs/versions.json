@@ -1,0 +1,46 @@
+{
+  "v1.0": {
+    "git_tag": "v1.0",
+    "commit_sha": "5c0e791c623bfa4aaa2044745e6a5ae1d6849397",
+    "malicious_results_jsonl": "data/eval_results_v5.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v5.csv",
+      "validation_smoke": "data/smoke_validation_v5.csv",
+      "matched_negatives": "data/matched_negatives_results_v5.jsonl"
+    },
+    "detector_code_sha256": "a5a3b71dd925609c2598d829dfdce372eb67b84ea2c7ddfe9da044197d15b23a"
+  },
+  "v1.1": {
+    "git_tag": "v1.1",
+    "commit_sha": "822e22317720999a9a28bb416e9823fb98665849",
+    "malicious_results_jsonl": "data/eval_results_v6.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v6.csv",
+      "validation_smoke": "data/smoke_validation_v6.csv",
+      "matched_negatives": "data/matched_negatives_results_v6.jsonl"
+    },
+    "detector_code_sha256": "69c100a902bba2cddeda4e74b09298f82a4601b63374d1d9688a4bcc9447be1f"
+  },
+  "v1.2": {
+    "git_tag": "v1.2",
+    "commit_sha": "28d0af2d1a37d6eef2726225e9f21e8ac496c432",
+    "malicious_results_jsonl": "data/eval_results_v7.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v7.csv",
+      "validation_smoke": "data/smoke_validation_v7.csv",
+      "matched_negatives": "data/matched_negatives_results_v7.jsonl"
+    },
+    "detector_code_sha256": "1aa7f772c5b3be5bc143b64497ad512e6075183c97be3ace659d580f83777cfa"
+  },
+  "v1.2.1": {
+    "git_tag": "v1.2.1",
+    "commit_sha": "HEAD",
+    "malicious_results_jsonl": "data/eval_results_v8.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v8.csv",
+      "validation_smoke": "data/smoke_validation_v8.csv",
+      "matched_negatives": "data/matched_negatives_results_v8.jsonl"
+    },
+    "detector_code_sha256": "18e056f477ca90fbbfde02ada2971b8662c58659c30e000817f335fd47e17f25"
+  }
+}

@@ -48,6 +48,7 @@ class Policy:
     full_scan_single_signal_cap: Decision = Decision.WARN
     full_scan_block_requires: list[BlockRequires] = field(default_factory=list)
     full_scan_severity_overrides: dict[str, Severity] = field(default_factory=dict)
+    experimental_hollow: bool = False
 
 
 # Limitations that are always true regardless of policy
@@ -67,7 +68,7 @@ _STATIC_LIMITATIONS: list[str] = [
 # ---------------------------------------------------------------------------
 
 
-def load_policy(policy_path: Path | None = None) -> Policy:
+def load_policy(policy_path: Path | None = None, experimental_hollow: bool = False) -> Policy:
     """Load and return a :class:`Policy`.
 
     Starts from the bundled default, then overlays the user-supplied file.
@@ -76,6 +77,8 @@ def load_policy(policy_path: Path | None = None) -> Policy:
     ----------
     policy_path:
         Path to a user TOML policy file.  If ``None``, only the default is used.
+    experimental_hollow:
+        If True, enables the experimental block rule for hollow+lookalike releases.
     """
     # Load the bundled default
     default_path = _default_policy_path()
@@ -86,7 +89,9 @@ def load_policy(policy_path: Path | None = None) -> Policy:
         user_raw = _load_toml(policy_path)
         raw = _deep_merge(raw, user_raw)
 
-    return _parse_policy(raw)
+    policy = _parse_policy(raw)
+    policy.experimental_hollow = experimental_hollow
+    return policy
 
 
 def _default_policy_path() -> Path:

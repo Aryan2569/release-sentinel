@@ -21,6 +21,7 @@ def decide(
     policy: Policy | None = None,
     policy_path: Path | None = None,
     is_full_scan: bool = False,
+    experimental_hollow: bool = False,
 ) -> tuple[Decision, list[str]]:
     """Map *evidence* to a gate decision and a list of limitations.
 
@@ -35,6 +36,8 @@ def decide(
         Path to a TOML policy file.  If both are ``None``, the bundled default is used.
     is_full_scan:
         Whether the analysis was run in full-scan (no-baseline) mode.
+    experimental_hollow:
+        Whether to enable experimental hollow+lookalike release blocking.
 
     Returns
     -------
@@ -43,5 +46,5 @@ def decide(
         caveats that apply to this analysis regardless of the decision.
     """
     if policy is None:
-        policy = load_policy(policy_path)
+        policy = load_policy(policy_path, experimental_hollow=experimental_hollow)
     return _policy_decide(evidence, policy, is_full_scan=is_full_scan)

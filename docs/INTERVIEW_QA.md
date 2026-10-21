@@ -148,32 +148,32 @@ The rule evaluates whether an added dependency is a disguised variant of a high-
 
 ---
 
-### Q15: Why is `hollow_dependency_injection` + `lookalike_dependency_name` required to reach BLOCK together?
+### Q15: Why was the hollow+lookalike composite BLOCK rule removed in v1.2.1 in favor of an experimental WARN flag (`--experimental-hollow`)?
 **Answer**:
-Defense in depth requires corroboration:
-- **`hollow_dependency_injection` Alone**: Legitimate packages occasionally bump a metadata version and add a utility library without touching code immediately (e.g. `ora@7.0.1` adding `string-width`). Emitting BLOCK on hollow releases alone would cause false blocks.
-- **`lookalike_dependency_name` Alone**: Legitimate packages may have names that coincidentally resemble popular packages (e.g. `cypress` resembles `express` at edit distance 2; `preact` resembles `react`).
-- **Corroborated Pair**: A hollow release that simultaneously injects a lookalike dependency is an unmistakable attacker signature. Under the policy, neither signal alone blocks, but together they immediately trigger **BLOCK**. On our 800 benign packages, this combination caused **0 false BLOCKs**.
+Rigorous audit revealed two critical issues:
+1. **Sample Contamination**: The prototype lookalike affix list included `"easy-"`, which was mined directly from observing the TEST-B sample `easy-day-js`. Purging sample-specific affixes is required to maintain guardrails against overfitting.
+2. **Unconstrained Benign False-Alarm Rate**: Across our 800-package benign benchmark, exactly **0 packages** were hollow releases that added dependencies ($n = 0$). Because no benign package in the benchmark tested this pattern, the empirical false-positive rate of an automated BLOCK rule is statistically unconstrained (95% upper bound is undefined / 100%).
+In accordance with Rule 2 (benign gate) and Rule 5 (honest reporting), **v1.2.1** removed the composite BLOCK rule and downgraded both signals to `Severity.MEDIUM` (WARN only). Both signals are placed behind `--experimental-hollow`, ensuring that default behavior strictly matches v1.1's thoroughly validated, zero-false-block baseline.
 
 ---
 
-### Q16: How does Union-Find campaign clustering differ from file-hash clustering?
+### Q16: How does Union-Find campaign clustering work, and how was the 1,211-pair mega-blob resolved in Stage 5f?
 **Answer**:
-File-hash clustering groups pairs only if they share an identical new-or-changed file SHA-256 hash. If an attacker varies a random variable name or comment in each release, file-hash clustering fragments the attack into dozens of separate singletons.
-**Union-Find Campaign Grouping** links two pairs if they share *any* of 4 detector-independent linkages:
-1. Identical new/changed non-metadata file hash ($\ge 200$ bytes).
-2. Identical added direct runtime dependency (excluding benign dependencies).
-3. Identical added lifecycle command string.
-4. Identical added hardcoded public IP or attacker C2 domain.
-This collapsed the 275 fragmented clusters into **84 coherent real-world campaigns** (DEV: 29, VAL: 3, TEST-A: 49, TEST-B: 3).
+Campaign clustering links pairs sharing detector-independent attack infrastructure (identical non-metadata payload SHA-256 hash $\ge 200$ bytes, added direct runtime dependency, or added lifecycle command).
+In early iterations, a 1,211-pair mega-blob appeared. Review in Stage 5f identified the true technical root causes:
+1. **Scoped Package Baseline Cache Bug**: `build_campaigns.py` looked for baselines under `CACHE_DIR/<pkg>/...`. For scoped packages like `@scope/pkg`, the forward slash caused file lookups to fail for 1,017 of 1,349 pairs (75.4%). When the baseline failed to load, every dependency and script appeared "newly added", creating bogus dependency links across years.
+2. **Hub Suppression & 30-Day Window**: Common keys shared by $>50$ pairs spanning $>60$ days (e.g. `node index.js`) were suppressed as hubs, and links were constrained to pairs discovered within a 30-day temporal window.
+Fixing baseline loading via `_safe_filename(pkg)` eliminated all 1,017 missing baselines (0 missing). The blob resolved into **140 coherent campaigns** (DEV: 53, VAL: 12, TEST-A: 71, TEST-B: 4).
+The top two campaigns are historically justified: `camp_0001` (407 pairs) links packages compromised on 2025-11-24 sharing the identical 4.9 KB `setup_bun.js` payload hash; `camp_0002` (351 pairs) links the mid-September 2025 `node bundle.js` campaign across 2025-09-14 to 2025-09-16.
 
 ---
 
-### Q17: Why did early Union-Find implementations collapse packages into a mega-campaign, and how was it investigated?
+### Q17: How is campaign recall evaluated across splits without cross-split leakage?
 **Answer**:
-In `camp_0001` (1,211 pairs), chaining occurred because the benign dependency exclusion list only drew from the 800 benign smoke pairs, missing standard open-source libraries (`jsonwebtoken`, `jose`, `openai`, `zustand`, `async-mutex`, `@azure/storage-blob`).
-Generic lifecycle commands (`node index.js`, `rm /s /q`) and popular packages acted as hubs in Union-Find, bridging disparate clusters into a single mega-component.
-By assigning each campaign strictly by its earliest discovery date, every campaign belongs to exactly one split (DEV: 29, VAL: 3, TEST-A: 49, TEST-B: 3), preventing multi-counting while accurately recording real-world attacker overlap.
+In Stage 5e/5f, campaign assignment and evaluation were strictly decoupled:
+1. **Campaign Assignment**: Each campaign is assigned to exactly one split (`primary_split`) based on the earliest discovery date among its member pairs.
+2. **Within-Split Evaluation**: When evaluating campaign-level recall for a split, recall is evaluated **strictly on member pairs that fall within that split**. Member pairs belonging to earlier or later splits are excluded from that split's score.
+This ensures 100% disjointness of pairs and campaigns across splits and prevents future attack variants from inflating past split scores.
 
 ---
 
@@ -200,5 +200,18 @@ The only scientifically honest way to evaluate a post-hoc detector is **prospect
 1. Today's Datadog dataset snapshot was frozen at commit `8a74a4c8ee0e1a2927f0419e0710968702ded609` (cutoff: `2026-10-16`).
 2. When new real attacks are added to the repository in the future, `scripts/prospective_eval.py` extracts only samples with `discovery_date > 2026-10-16`.
 3. Each prospective attack is paired with a contemporaneous benign release from the same week.
-4. Frozen v1.2 code is executed without any modifications.
+4. Frozen detector code is executed without any modifications.
 This prospective protocol guarantees zero leakage, zero observer bias, and tests true generalization against future adversaries.
+
+---
+
+### Q21: What was the cause of the DEV evidence-only regression observed in v1.2?
+**Answer**:
+Versus v1.1, DEV evidence-only $\ge$WARN recall dropped from 844 to 837 pairs, and `inspection_incomplete` increased from 4 to 13 on DEV.
+The root cause was a **timeout ceiling regression**:
+The addition of string distance and regex lookalike checks against 2,000 package names added per-pair CPU latency. For 8 packages that were already near the 60.0s per-pair scan ceiling in v1.1 (34s–58s):
+- `@postman/pm-bin-linux-x64` (versions 1.24.3, 1.24.4, 1.24.5)
+- `@postman/pm-bin-macos-x64` (versions 1.24.3, 1.24.4, 1.24.5)
+- `@strapbuild/react-native-perspective-image-cropper` (0.4.15)
+- `@uipath/apollo-core` (5.9.2) [TEST-A]
+The extra processing pushed total scan duration past 60.0s. Release Sentinel executed its fail-closed mechanism, stopping analysis and returning `inspection_incomplete` (WARN). Because fail-closed WARNs do not count toward evidence-only recall, evidence-only recall dropped by exactly 7 pairs in DEV.

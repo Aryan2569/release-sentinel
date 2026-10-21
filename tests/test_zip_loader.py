@@ -15,7 +15,7 @@ import os
 import tarfile
 from datetime import UTC, datetime
 from pathlib import Path
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -323,6 +323,65 @@ class TestEvalPairAnalysis:
         assert "install_script_added" in ev_ids
         assert "process_exec" in ev_ids
         assert len(result.payload_hashes) == 1
+
+    def test_analyze_eval_pair_without_client_resolves_dependencies(self, tmp_path: Path) -> None:
+        """Calling analyze_eval_pair without a client creates an owned client that remains open."""
+        old_tarball_bytes = make_synthetic_tarball({
+            "package/package.json": (
+                b'{"name": "eval-dep-pkg", "version": "1.0.0", "dependencies": {}}'
+            ),
+            "package/index.js": b"module.exports = 1;",
+        })
+        tarball_file = tmp_path / "eval-dep-pkg-1.0.0.tgz"
+        tarball_file.write_bytes(old_tarball_bytes)
+
+        dep_tarball_bytes = make_synthetic_tarball({
+            "package/package.json": (
+                b'{"name": "added-dep", "version": "1.0.0", "scripts": {"postinstall": "exit 1"}}'
+            ),
+            "package/index.js": b"module.exports = 2;",
+        })
+        dep_tarball_file = tmp_path / "added-dep-1.0.0.tgz"
+        dep_tarball_file.write_bytes(dep_tarball_bytes)
+
+        new_zip_bytes = make_synthetic_encrypted_zip({
+            "package/package.json": json.dumps({
+                "name": "eval-dep-pkg",
+                "version": "1.0.1",
+                "dependencies": {"added-dep": "^1.0.0"},
+            }).encode("utf-8"),
+            "package/index.js": b"module.exports = 1;",
+        })
+        zip_file = tmp_path / "2025-11-24-eval-dep-pkg-v1.0.1.zip"
+        zip_file.write_bytes(new_zip_bytes)
+
+        with patch("release_sentinel.eval.NpmRegistryClient") as mock_cls:
+            mock_client = MagicMock()
+            mock_cls.return_value = mock_client
+            mock_client.download_tarball.side_effect = [tarball_file, dep_tarball_file]
+            mock_client.get_metadata.return_value = {
+                "versions": {
+                    "1.0.0": {
+                        "version": "1.0.0",
+                        "dist": {"tarball": "http://example.com/added-dep-1.0.0.tgz"},
+                    }
+                },
+                "time": {"1.0.0": "2025-01-01T00:00:00.000Z"},
+            }
+
+            result = analyze_eval_pair(
+                package="eval-dep-pkg",
+                old_version="1.0.0",
+                zip_path=zip_file,
+                discovery_date="2025-11-24",
+                registry_client=None,  # Owned client created inside
+            )
+
+            # Check that owned client was closed in finally
+            mock_client.close.assert_called_once()
+            assert result.dependencies_added_count == 1
+            assert result.dependencies_resolved_live == 1
+            assert result.baseline_error is None
 
 
 class TestComputePayloadHashes:

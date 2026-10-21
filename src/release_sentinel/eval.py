@@ -1,4 +1,4 @@
-"""End-to-end evaluation pair analysis for Release Sentinel (Stage 3a).
+"""End-to-end evaluation pair analysis for Release Sentinel (Stage 3a / 5f).
 
 Rule 7 compliance:
 - Malicious samples stay in their encrypted ZIPs at rest.
@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import logging
+import os
 import re
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -27,7 +28,9 @@ from release_sentinel.zip_loader import load_zip_release
 logger = logging.getLogger(__name__)
 
 _DEFAULT_CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-_DEFAULT_SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+_DEFAULT_SAMPLES_ROOT = (
+    Path(os.environ["RS_SAMPLES_ROOT"]) if "RS_SAMPLES_ROOT" in os.environ else None
+)
 
 
 @dataclass
@@ -47,6 +50,7 @@ class EvalPairResult:
     dependencies_resolved_live: int = 0
     dependencies_resolved_replayed: int = 0
     dependencies_unresolvable: int = 0
+    baseline_error: str | None = None
 
 
 def parse_discovery_date_as_of(discovery_date: str | datetime) -> datetime:
@@ -114,8 +118,9 @@ def analyze_eval_pair(
     """
     as_of = parse_discovery_date_as_of(discovery_date)
     zip_path = Path(zip_path)
-    if samples_root is None and _DEFAULT_SAMPLES_ROOT.exists():
-        samples_root = _DEFAULT_SAMPLES_ROOT
+    if samples_root is None and _DEFAULT_SAMPLES_ROOT is not None:
+        if _DEFAULT_SAMPLES_ROOT.exists():
+            samples_root = _DEFAULT_SAMPLES_ROOT
 
     # 1. Load new compromised release from encrypted ZIP in memory
     logger.debug("Loading compromised release from %s into memory...", zip_path)
@@ -137,82 +142,86 @@ def analyze_eval_pair(
         registry_client = NpmRegistryClient(cache_dir=_DEFAULT_CACHE_DIR)
         owned_client = True
 
-    old_release: ReleaseContents | None = None
     try:
-        dest_temp = _DEFAULT_CACHE_DIR / "tarballs" / "eval_tmp"
-        tarball_path = registry_client.download_tarball(
-            name=package,
-            version=old_version,
+        baseline_error: str | None = None
+        old_release: ReleaseContents | None = None
+        try:
+            dest_temp = _DEFAULT_CACHE_DIR / "tarballs" / "eval_tmp"
+            tarball_path = registry_client.download_tarball(
+                name=package,
+                version=old_version,
+                as_of=as_of,
+                dest_dir=dest_temp,
+            )
+            logger.debug("Loading baseline release %s@%s into memory...", package, old_version)
+            old_release = extract_release_in_memory(tarball_path, config=config)
+        except Exception as exc:
+            baseline_error = f"{type(exc).__name__}: {exc}"
+            logger.warning(
+                "Baseline fetch/extraction failed for %s@%s (%s); falling back to full-scan mode",
+                package,
+                old_version,
+                exc,
+            )
+            old_release = None
+
+        # 3. Analyze release (diff mode if baseline exists, full-scan mode if not)
+        dep_stats: dict[str, int] = {"live": 0, "replayed": 0, "unresolvable": 0, "skipped": 0}
+        evidence = analyze_release(
+            new=new_release,
+            baseline=old_release,
+            policy=policy,
+            config=config,
             as_of=as_of,
-            dest_dir=dest_temp,
+            registry_client=registry_client,
+            samples_root=samples_root,
+            dep_stats=dep_stats,
         )
-        logger.debug("Loading baseline release %s@%s into memory...", package, old_version)
-        old_release = extract_release_in_memory(tarball_path, config=config)
-    except Exception as exc:
-        logger.warning(
-            "Baseline fetch/extraction failed for %s@%s (%s); falling back to full-scan mode",
-            package,
-            old_version,
-            exc,
+
+        # 4. Policy decision
+        decision, limitations = decide(
+            evidence,
+            policy=policy,
+            is_full_scan=(old_release is None),
         )
-        old_release = None
+
+        # 5. Payload hashes for campaign clustering
+        payload_hashes = compute_payload_hashes(old_release, new_release)
+
+        # 6. Dependency resolution statistics
+        deps_added_count = 0
+        if old_release is not None:
+            old_deps = set((old_release.package_json() or {}).get("dependencies", {}).keys())
+            new_deps = (new_release.package_json() or {}).get("dependencies", {})
+            deps_added_count = len([k for k in new_deps if k not in old_deps])
+
+        live_count = dep_stats.get("live", 0)
+        replayed_count = dep_stats.get("replayed", 0)
+        unres_count = dep_stats.get("unresolvable", 0)
+
+        return EvalPairResult(
+            package=package,
+            old_version=old_version,
+            new_version=inferred_new_ver,
+            discovery_date=(
+                discovery_date
+                if isinstance(discovery_date, str)
+                else discovery_date.strftime("%Y-%m-%d")
+            ),
+            decision=decision,
+            evidence=evidence,
+            limitations=limitations,
+            payload_hashes=payload_hashes,
+            is_full_scan=(old_release is None),
+            dependencies_added_count=deps_added_count,
+            dependencies_resolved_live=live_count,
+            dependencies_resolved_replayed=replayed_count,
+            dependencies_unresolvable=unres_count,
+            baseline_error=baseline_error,
+        )
     finally:
         if owned_client:
             registry_client.close()
-
-    # 3. Analyze release (diff mode if baseline exists, full-scan mode if not)
-    dep_stats: dict[str, int] = {"live": 0, "replayed": 0, "unresolvable": 0, "skipped": 0}
-    evidence = analyze_release(
-        new=new_release,
-        baseline=old_release,
-        policy=policy,
-        config=config,
-        as_of=as_of,
-        registry_client=registry_client,
-        samples_root=samples_root,
-        dep_stats=dep_stats,
-    )
-
-    # 4. Policy decision
-    decision, limitations = decide(
-        evidence,
-        policy=policy,
-        is_full_scan=(old_release is None),
-    )
-
-    # 5. Payload hashes for campaign clustering
-    payload_hashes = compute_payload_hashes(old_release, new_release)
-
-    # 6. Dependency resolution statistics
-    deps_added_count = 0
-    if old_release is not None:
-        old_deps = set((old_release.package_json() or {}).get("dependencies", {}).keys())
-        new_deps = (new_release.package_json() or {}).get("dependencies", {})
-        deps_added_count = len([k for k in new_deps if k not in old_deps])
-
-    live_count = dep_stats.get("live", 0)
-    replayed_count = dep_stats.get("replayed", 0)
-    unres_count = dep_stats.get("unresolvable", 0)
-
-    return EvalPairResult(
-        package=package,
-        old_version=old_version,
-        new_version=inferred_new_ver,
-        discovery_date=(
-            discovery_date
-            if isinstance(discovery_date, str)
-            else discovery_date.strftime("%Y-%m-%d")
-        ),
-        decision=decision,
-        evidence=evidence,
-        limitations=limitations,
-        payload_hashes=payload_hashes,
-        is_full_scan=(old_release is None),
-        dependencies_added_count=deps_added_count,
-        dependencies_resolved_live=live_count,
-        dependencies_resolved_replayed=replayed_count,
-        dependencies_unresolvable=unres_count,
-    )
 
 
 def compute_payload_hashes(
@@ -247,4 +256,3 @@ def compute_payload_hashes(
             hashes.add(hashlib.sha256(new_bytes).hexdigest())
 
     return sorted(hashes)
-

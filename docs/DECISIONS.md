@@ -407,3 +407,55 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
 - **Part 6: Detector-Independent Attack Style Evolution**:
   - Generated `docs/attack_style_over_time.md` and `docs/attack_style_over_time.png` showing the structural shift from script-based attacks in 2024-2025 to hollow typosquat releases in late 2026.
 
+---
+
+### D30 - Stage 5f Measurement Bug Fixes, Campaign Builder Correction, Explicit Splits, v1.2.1 Honest Experimental Hollow Flag, Eval Registry Client Lifecycle Fix, and Attack Style Reconciliation (Stage 5f)
+
+- **Part 0: Campaign Builder Fix (`scripts/build_campaigns.py`)**:
+  - *Baseline Loading Diagnostic*: In Stage 5e, scoped package names like `@scope/pkg` contained forward slashes, causing tarball lookups under `CACHE_DIR/<pkg>/<pkg>-<ver>.tgz` to fail for 1,017 of 1,349 pairs (75.4%). When the baseline failed to load, every dependency and lifecycle hook appeared "added", falsely creating the 1,211-pair mega-blob. Fixed by loading baselines via `_safe_filename(pkg)` matching `eval.py`: missing old `package.json` dropped from 1,017 to **0 out of 1,349 pairs**.
+  - *Hub Suppression & Strict Window*: Links on shared dependencies or lifecycle hooks require (i) truly new addition in both pairs (old `package.json` loaded), (ii) discovery dates within a 30-day window, (iii) suppression of generic keys shared by >50 pairs spanning >60 days (e.g. `node index.js`), and (iv) suppression of generic command strings unless containing a host/URL. Payload-hash links also enforce the 30-day window.
+  - *Resulting Clustering*: The 1,211-pair blob was cleanly resolved into **140 distinct campaigns** (DEV: 53, VAL: 12, TEST-A: 71, TEST-B: 4).
+    - Top 10 campaign sizes: `[407, 351, 118, 103, 60, 47, 22, 17, 16, 16]`.
+    - Largest campaign (`camp_0001`, 407 pairs) is justified: 405 packages compromised on 2025-11-24 sharing identical 4.9 KB `setup_bun.js` payload hash.
+    - Second largest (`camp_0002`, 351 pairs) is justified: mid-September 2025 campaign running `node bundle.js` across 2025-09-14 to 2025-09-16.
+- **Part 1: Explicit Splits & Isolated Campaign Evaluation**:
+  - Replaced heuristic cluster-rank partition with deterministic `assign_split(package, discovery_date)`:
+    - DEV: `discovery_date < "2026-01-01"` (857 pairs)
+    - VAL: `"2026-01-01" <= discovery_date <= "2026-04-30"` (94 pairs)
+    - TEST-A: `"2026-05-01" <= discovery_date < "2026-06-17"` or (`discovery_date == "2026-06-17"` and `package <= "@mastra/clickhouse"` or `package == "@mastra/openai"`) (299 pairs)
+    - TEST-B: remaining TEST pairs from 2026-06-17 through 2026-10-08 (99 pairs)
+  - Removed silent defaults: every evaluation pair must have an explicit split.
+  - Campaigns are assigned to the split of their earliest member (`c["primary_split"]`). Campaign-level recall is evaluated strictly on member pairs falling inside that split.
+- **Part 2: Version-to-Results Mapping (`docs/versions.json`)**:
+  - Mapped all four version tags (`v1.0`, `v1.1`, `v1.2`, `v1.2.1`) to their result files and detector code hashes.
+  - Corrected v1.0 baseline in `scripts/verify_metrics.py` to point to frozen `data/eval_results_v5.jsonl`:
+    - Confirmed v1.0 canonical BLOCK counts: ALL 1,054, DEV 807, VAL 90, TEST-A 154, TEST-B 3.
+- **Part 3: Explanation of v1.2 DEV Regression**:
+  - Verified exact root cause: String-distance and regex checks on 2,000 packages added execution latency pushing 8 packages near the resource threshold over the 60.0s per-pair timeout ceiling:
+    - `@postman/pm-bin-linux-x64` (1.24.3, 1.24.4, 1.24.5)
+    - `@postman/pm-bin-macos-x64` (1.24.3, 1.24.4, 1.24.5)
+    - `@strapbuild/react-native-perspective-image-cropper` (0.4.15)
+    - `@uipath/apollo-core` (5.9.2) [TEST-A]
+    All 8 timed out at 60.0s and fell back to fail-closed `inspection_incomplete` (WARN), dropping evidence-only $\ge$WARN by 7 in DEV (844 to 837).
+- **Part 4: v1.2.1 Honest Post-Hoc Implementation (`--experimental-hollow`)**:
+  - Removed sample-derived affixes (`easy-`, `simple-`, `plain-`, `official-`, `open-`, `free-`, `fast-`). Retained only standard npm naming conventions (`node-`, `-cli`, `-core`, `-node`, `-js`, `-ts`), homoglyphs (`_HOMOGLYPH_MAP`), and single edit distance $\le 1$ ($dist=1, len \ge 4$).
+  - Added same-scope, package-self, and `@types/` exemptions.
+  - Downgraded `hollow_dependency_injection` and `lookalike_dependency_name` to WARN only (`Severity.MEDIUM`).
+  - Removed composite BLOCK rule entirely: zero eligible benign pairs mean its true false-alarm rate is unconstrained.
+  - Placed both signals behind `--experimental-hollow` CLI flag. Default behavior equals v1.1 plus nothing else.
+  - Benign gate: 0 false BLOCKs across all 800 benign pairs.
+- **Part 5: Code & Evaluation Fixes**:
+  - `eval.py`: Wrapped registry client lifecycle in outer `try/finally` spanning baseline fetch, extraction, and `analyze_release` dependency resolution so owned clients are never prematurely closed. Added unit test `test_analyze_eval_pair_without_client_resolves_dependencies`.
+  - Added `baseline_error` field to `EvalPairResult`.
+  - Replaced hardcoded path with `RS_SAMPLES_ROOT` environment variable and `--samples-root` CLI option without default fallback.
+  - Enforced two-sided Clopper-Pearson 95% binomial confidence intervals across all metrics.
+- **Part 6: Attack-Style Table Reconciliation**:
+  - Reconciled definitions: "Adds direct runtime dependency" is defined strictly as adding keys to `dependencies` in `package.json`.
+  - With corrected splits and safe baseline loading:
+    - DEV: 10 / 857 pairs (1.17%)
+    - VAL: 1 / 94 pairs (1.06%)
+    - TEST-A: 51 / 299 pairs (17.06%)
+    - TEST-B: 94 / 99 pairs (94.95%)
+  - Regenerated `docs/attack_style_over_time.md` and `docs/attack_style_over_time.png`. Integrated into `scripts/verify_metrics.py`.
+
+
