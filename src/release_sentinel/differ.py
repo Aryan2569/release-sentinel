@@ -510,21 +510,50 @@ def _diff_dependencies(old_pkg: dict[str, Any], new_pkg: dict[str, Any]) -> list
 
         for pkg_name, new_ver in new_deps.items():
             if pkg_name not in old_deps:
-                evidence.append(
-                    Evidence(
-                        id="dependency_added",
-                        severity=Severity.LOW,
-                        file="package.json",
-                        explanation=(
-                            f"New {dep_key} added: {pkg_name!r} @ {new_ver!r}. "
-                            "This introduces a new transitive dependency tree."
-                        ),
-                        legitimate_use_note=(
-                            "New dependencies are common in feature releases. "
-                            "Check whether the added package is well-maintained."
-                        ),
+                if dep_key in ("dependencies", "optionalDependencies"):
+                    evidence.append(
+                        Evidence(
+                            id="dependency_added",
+                            severity=Severity.LOW,
+                            file="package.json",
+                            explanation=(
+                                f"New {dep_key} added: {pkg_name!r} @ {new_ver!r}. "
+                                "This introduces a new transitive dependency tree."
+                            ),
+                            legitimate_use_note=(
+                                "New dependencies are common in feature releases. "
+                                "Check whether the added package is well-maintained."
+                            ),
+                        )
                     )
-                )
+                elif dep_key == "devDependencies":
+                    evidence.append(
+                        Evidence(
+                            id="dev_dependency_added",
+                            severity=Severity.INFO,
+                            file="package.json",
+                            explanation=(
+                                f"New devDependency added: {pkg_name!r} @ {new_ver!r}."
+                            ),
+                            legitimate_use_note=(
+                                "New devDependencies are common in development updates."
+                            ),
+                        )
+                    )
+                elif dep_key == "peerDependencies":
+                    evidence.append(
+                        Evidence(
+                            id="peer_dependency_added",
+                            severity=Severity.INFO,
+                            file="package.json",
+                            explanation=(
+                                f"New peerDependency added: {pkg_name!r} @ {new_ver!r}."
+                            ),
+                            legitimate_use_note=(
+                                "Peer dependencies declare host environment requirements."
+                            ),
+                        )
+                    )
             elif old_deps[pkg_name] != new_ver:
                 evidence.append(
                     Evidence(

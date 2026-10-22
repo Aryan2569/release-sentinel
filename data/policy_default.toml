@@ -140,6 +140,8 @@ lookalike_dependency_name = "MEDIUM"
 
 install_script_changed = "MEDIUM"
 dependency_added = "LOW"
+dev_dependency_added = "INFO"
+peer_dependency_added = "INFO"
 dependency_removed = "INFO"
 dependency_version_changed = "INFO"
 unresolvable_dependency = "INFO"

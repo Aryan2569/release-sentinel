@@ -9,7 +9,7 @@ from __future__ import annotations
 from pathlib import Path
 
 from release_sentinel.differ import compare_releases
-from release_sentinel.extractor import extract_release
+from release_sentinel.extractor import ReleaseContents, extract_release
 from release_sentinel.models import Severity
 
 
@@ -91,6 +91,28 @@ class TestDependencies:
         evidence = compare_releases(old, new)
         ids = [e.id for e in evidence]
         assert "dependency_version_changed" in ids
+
+    def test_dev_and_peer_dependencies_emitted_as_info(self):
+        old_rel = ReleaseContents(files={"package.json": b'{"name": "p", "version": "1.0.0"}'})
+        new_rel = ReleaseContents(
+            files={
+                "package.json": (
+                    b'{"name": "p", "version": "1.0.1", '
+                    b'"devDependencies": {"typescript": "^5.0.0"}, '
+                    b'"peerDependencies": {"react": "^18.0.0"}, '
+                    b'"optionalDependencies": {"fsevents": "^2.3.0"}}'
+                )
+            }
+        )
+        evidence = compare_releases(old_rel, new_rel)
+        by_id = {e.id: e for e in evidence}
+        assert "dev_dependency_added" in by_id
+        assert by_id["dev_dependency_added"].severity == Severity.INFO
+        assert "peer_dependency_added" in by_id
+        assert by_id["peer_dependency_added"].severity == Severity.INFO
+        assert "dependency_added" in by_id
+        assert by_id["dependency_added"].severity == Severity.LOW
+        assert "fsevents" in by_id["dependency_added"].explanation
 
 
 class TestBinEntries:
