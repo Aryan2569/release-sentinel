@@ -365,11 +365,11 @@ def run_one_pair(
             input=payload,
             capture_output=True,
             text=True,
-            timeout=60.0,
+            timeout=300.0,
         )
     except subprocess.TimeoutExpired:
-        elapsed = 60.0
-        logger.warning("Pair %s@%s timed out after 60s", package, new_ver)
+        elapsed = 300.0
+        logger.warning("Pair %s@%s timed out after 300s wall-clock backstop", package, new_ver)
         return (
             {
                 "package": package,

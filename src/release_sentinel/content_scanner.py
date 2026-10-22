@@ -42,9 +42,11 @@ logger = logging.getLogger(__name__)
 # Configuration
 # ---------------------------------------------------------------------------
 
-# Per-file resource budgets (Stage 4b calibrated)
-PER_FILE_SIZE_BUDGET = 25 * 1024 * 1024  # 25 MB
-PER_FILE_TIME_BUDGET = 10.0  # 10.0 seconds
+# Per-file resource budgets (Stage 5g deterministic work budgets)
+PER_FILE_SIZE_BUDGET = 25 * 1024 * 1024  # 25 MB hard ceiling
+MAX_SCAN_BYTES_PER_FILE = 2 * 1024 * 1024  # 2 MB deterministic regex scan budget
+MAX_REGEX_OPS_PER_FILE = 50_000  # 50,000 operations per file
+PER_FILE_TIME_BUDGET = 300.0  # 300.0 seconds wall-clock backstop
 
 # Windowed scanning parameters for very long single lines
 _WINDOW_SIZE = 10_000
@@ -1068,6 +1070,14 @@ def _scan_release_capabilities(
 
     for rel_path, data in release.files.items():
         cat = classify(data, rel_path)
+        file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
+
+        # Fast-path native binaries and WASM: hash only, no regex
+        if cat == FileCategory.NATIVE_BINARY:
+            file_hash = hashlib.sha256(file_bytes).hexdigest()
+            caps.blob_hashes.add(file_hash)
+            continue
+
         if cat not in {
             FileCategory.SCRIPT,
             FileCategory.OTHER,
@@ -1076,7 +1086,6 @@ def _scan_release_capabilities(
         }:
             continue
 
-        file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
         file_hash = hashlib.sha256(file_bytes).hexdigest()
         caps.blob_hashes.add(file_hash)
 
@@ -1184,6 +1193,10 @@ def scan_new_content(
 
     for rel_path, data in new.files.items():
         cat = classify(data, rel_path)
+        # Fast-path native binaries and WASM: size and hash only, no regex
+        if cat == FileCategory.NATIVE_BINARY:
+            continue
+
         if cat not in {
             FileCategory.SCRIPT,
             FileCategory.OTHER,
@@ -1199,7 +1212,7 @@ def scan_new_content(
         is_install_target = rel_path in install_script_targets
         was_previously_minified = rel_path in old_caps.existing_minified_paths
 
-        # Check 1: Size budget exceedance
+        # Check 1: Size budget exceedance (hard limit: 25 MB)
         if file_size > PER_FILE_SIZE_BUDGET:
             ev_inc = _apply_budget_exceeded_cheap_checks(
                 rel_path=rel_path,
@@ -1214,12 +1227,31 @@ def scan_new_content(
 
         t_file_start = time.perf_counter()
 
-        raw_text = new.read_text(rel_path)
+        # Check 2: Deterministic scan budget for large files (> 2 MB)
+        exceeds_scan_budget = file_size > MAX_SCAN_BYTES_PER_FILE
+        if exceeds_scan_budget:
+            ev_inc = _apply_budget_exceeded_cheap_checks(
+                rel_path=rel_path,
+                file_bytes=file_bytes,
+                old=old,
+                old_caps=old_caps,
+                is_install_target=is_install_target,
+                reason=(
+                    f"size {file_size} exceeds deterministic regex budget "
+                    f"({MAX_SCAN_BYTES_PER_FILE} bytes)"
+                ),
+            )
+            evidence.extend(ev_inc)
+            scan_bytes = file_bytes[:MAX_SCAN_BYTES_PER_FILE]
+            raw_text = scan_bytes.decode("utf-8", errors="replace")
+        else:
+            raw_text = new.read_text(rel_path)
+
         if not raw_text:
             continue
         clean_text = strip_js_comments(raw_text) if _is_js_or_ts_file(rel_path) else raw_text
 
-        # Time check after comment stripping
+        # Wall-clock backstop check (e.g. 300s or monkeypatched for testing)
         if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
             ev_inc = _apply_budget_exceeded_cheap_checks(
                 rel_path=rel_path,
@@ -1319,8 +1351,24 @@ def scan_new_content(
         env_access_lines: set[str] = set()
 
         budget_timed_out = False
+        ops_count = 0
 
         for line_no, line in enumerate(inspect_lines, 1):
+            ops_count += 1
+            if ops_count > MAX_REGEX_OPS_PER_FILE:
+                if not exceeds_scan_budget:
+                    ev_inc = _apply_budget_exceeded_cheap_checks(
+                        rel_path=rel_path,
+                        file_bytes=file_bytes,
+                        old=old,
+                        old_caps=old_caps,
+                        is_install_target=is_install_target,
+                        reason=f"operation count exceeded {MAX_REGEX_OPS_PER_FILE} ops budget",
+                    )
+                    evidence.extend(ev_inc)
+                budget_timed_out = True
+                break
+
             if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
                 ev_inc = _apply_budget_exceeded_cheap_checks(
                     rel_path=rel_path,
@@ -1716,7 +1764,29 @@ def scan_full_release(
             continue
 
         t_file_start = time.perf_counter()
-        raw_text = release.read_text(rel_path)
+
+        # Check 2: Deterministic scan budget for large files (> 2 MB)
+        exceeds_scan_budget = file_size > MAX_SCAN_BYTES_PER_FILE
+        if exceeds_scan_budget:
+            evidence.append(
+                Evidence(
+                    id="inspection_incomplete",
+                    severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' size ({file_size} bytes) exceeds deterministic "
+                        f"regex budget ({MAX_SCAN_BYTES_PER_FILE} bytes); deep inspection bounded."
+                    ),
+                    legitimate_use_note=(
+                        "Extremely large files can exceed analysis resource budgets."
+                    ),
+                )
+            )
+            scan_bytes = file_bytes[:MAX_SCAN_BYTES_PER_FILE]
+            raw_text = scan_bytes.decode("utf-8", errors="replace")
+        else:
+            raw_text = release.read_text(rel_path)
+
         if not raw_text:
             continue
 
