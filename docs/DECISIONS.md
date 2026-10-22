@@ -458,4 +458,49 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
     - TEST-B: 94 / 99 pairs (94.95%)
   - Regenerated `docs/attack_style_over_time.md` and `docs/attack_style_over_time.png`. Integrated into `scripts/verify_metrics.py`.
 
+---
+
+## Stage 5g — Precision Hardening and Packaging Readiness (v1.3)
+
+- **Part 1 & 2: Lifecycle Command Audit and Narrowed Regex Patterns**:
+  - Audited 2,000 popular npm packages (1,992 install hooks across 294 packages) and 1,349 malicious eval pairs (1,102 install hooks).
+  - Identified `rm -rf` as the dominant source of benign false alarms (17 benign hooks matching `rm -rf dist` / `rm -rf lib`).
+  - Narrowed over-broad regex patterns:
+    - `fetch`: Narrowed from bare word `fetch` to URL or call syntax (`\bfetch\s*(?:\(|\s+https?://)`). Benign flags dropped from 2 to 0; 0 malicious detections lost.
+    - `rm -rf`: Narrowed to dangerous targets only (`/`, `~`, `$HOME`, `%USERPROFILE%`, `..`, bare `*`, absolute system paths). Benign flags dropped from 17 to 0; all 10 malicious wipers (`@toptal/picasso-*`, `@xene/core`) preserved.
+    - `sudo`: Narrowed to explicit command execution (`\bsudo\s+[a-zA-Z0-9_\-\./]`). Benign flags dropped from 2 to 0; 0 malicious detections lost.
+  - Overall benign lifecycle flags dropped from 21 to 4 (an 81% reduction). Sole malicious triggers across all alternatives were 0. Full report logged in `docs/lifecycle_audit.md`.
+- **Part 3: Dependency Added Signal Refinement**:
+  - `dependency_added` (LOW) is now emitted strictly for runtime `dependencies` and `optionalDependencies`.
+  - Additions to `devDependencies` and `peerDependencies` now emit informational findings (`dev_dependency_added`, `peer_dependency_added`).
+  - Benign prevalence across all 800 benign pairs dropped from 12.38% (99/800) to 3.00% (24/800) — a 76% reduction in benign dependency alert triggers.
+- **Part 4: Robust Install-Target Parsing**:
+  - Implemented `_parse_command_targets` and enhanced `_extract_install_script_targets` in `differ.py`.
+  - Added support for leading node flags (`--no-warnings`, `-r/--require <file>`), `sh/bash/zsh`, `python`, `./script.sh`, extensionless target resolution (`.js`, `.cjs`, `.mjs`), and script indirection up to depth 3 with cycle protection.
+  - Eliminates false "missing script target" findings when tokens are flags or extensions are omitted.
+- **Part 5: Deterministic Work Budgets and Fast-Path Native Binaries**:
+  - Replaced machine-dependent wall-clock limits with deterministic caps: `MAX_SCAN_BYTES_PER_FILE = 2 MB` and `MAX_REGEX_OPS_PER_FILE = 50,000`.
+  - Fast-pathed `FileCategory.NATIVE_BINARY` and `.wasm` (SHA-256 hash and size recorded without regex text scanning).
+  - Raised worker subprocess timeout to 300s wall-clock backstop.
+  - Profiled all 8 slow pairs (@postman/pm-bin-*, @strapbuild/react-native-perspective-image-cropper, @uipath/apollo-core): all evaluated cleanly to BLOCK in 26-52s, eliminating timeouts.
+- **Part 6: Packaging Readiness and Pure Date Split Cutoff**:
+  - Bundled package data (`top_npm_packages.json`, `policy_default.toml`) in `src/release_sentinel/data/` via `importlib.resources`; failing to load bundled files raises `RuntimeError`/`FileNotFoundError`.
+  - Live CLI mode defaults `as_of` to `datetime.now(tz=UTC)` and invokes `analyze_release` with `registry_client` and `as_of`, activating dependency-aware scanning in production.
+  - Added public `cache_dir` property to `NpmRegistryClient` and set dependency tarball cache to `cache_dir / "tarballs" / "deps"`.
+  - Anchored Azure Pipelines pattern in `_CI_WORKFLOW_FILE_RE` (`^\.?azure-pipelines(?:/|.*\.ya?ml$)`).
+  - Replaced arbitrary package-name partition on 2026-06-17 with pure date cutoff (`< 2026-06-17` for TEST-A, `>= 2026-06-17` for TEST-B).
+    - DEV: 857 pairs, 53 campaigns
+    - VAL: 94 pairs, 12 campaigns
+    - TEST-A: 274 pairs, 70 campaigns
+    - TEST-B: 124 pairs, 5 campaigns
+    - Total: 1,349 pairs, 140 campaigns.
+- **Part 7: Documented Known Limitations**:
+  - Added dedicated sections in `docs/EXPLAINER.md` and `docs/LIMITATIONS.md` covering changed native binaries/WASM/CI, non-registry dependency specs, `binding.gyp` auto-build, delisted dependency payloads, GuardDog sample bias, and `as_of` semantics.
+- **Part 8: Re-measured and Verified v1.3**:
+  - Malicious: ALL 1,349 pairs: 1,102 BLOCK (81.69%), 115 WARN (8.52%), 1,217 WARN+ (90.21%).
+  - Benign Gate: 0 false BLOCKs across all 800 benign pairs. Alert rate: 15.62 per 100.
+  - DEV/VAL/TEST-A campaign BLOCK recall: DEV 12/53 (22.64%), VAL 9/12 (75.00%), TEST-A 58/70 (82.86%). No drop versus v1.1.
+  - Explained v1.2.1 TEST-A WARN+ 64/71 vs 63/71 in v1.1: `eval_results_v8.jsonl` was evaluated with experimental hollow release detection active; under the old split boundary, 23 pairs of the Mastra campaign (`camp_0136`) on `2026-06-17` were assigned to TEST-A and triggered `hollow_dependency_injection` + `lookalike_dependency_name` -> `WARN`, raising lenient WARN+ from 63 to 64. Under the pure date cutoff, all 118 pairs of `camp_0136` belong to TEST-B, yielding exactly 63 / 70 (90.00%) on TEST-A in both v1.1 and v1.3.
+
+
 

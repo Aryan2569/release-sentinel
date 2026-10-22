@@ -215,3 +215,47 @@ The addition of string distance and regex lookalike checks against 2,000 package
 - `@strapbuild/react-native-perspective-image-cropper` (0.4.15)
 - `@uipath/apollo-core` (5.9.2) [TEST-A]
 The extra processing pushed total scan duration past 60.0s. Release Sentinel executed its fail-closed mechanism, stopping analysis and returning `inspection_incomplete` (WARN). Because fail-closed WARNs do not count toward evidence-only recall, evidence-only recall dropped by exactly 7 pairs in DEV.
+
+---
+
+### Q22: What precision hardening and packaging readiness changes were made in v1.3 (Stage 5g)?
+**Answer**:
+Release Sentinel v1.3 represents the frozen shipping version hardened for production deployment:
+1. **Narrowed Over-Broad Regex Patterns**:
+   - Audited 2,000 top npm packages across 1,992 install hooks.
+   - Narrowed bare word `fetch` to explicit URL/call syntax (`\bfetch\s*(?:\(|\s+https?://)`).
+   - Narrowed `rm -rf` to dangerous targets (`/`, `~`, `$HOME`, `%USERPROFILE%`, `..`, bare `*`, absolute system paths), eliminating all 17 benign false flags on build directories (`rm -rf dist`) while retaining 100% of malicious wipers.
+   - Narrowed `sudo` to explicit command execution.
+2. **Refined Dependency Signals**:
+   - `dependency_added` (LOW) is now emitted strictly for runtime and optional dependencies. `devDependencies` and `peerDependencies` additions became separate INFO findings (`dev_dependency_added`, `peer_dependency_added`), reducing benign alert prevalence by 76% (from 12.38% to 3.00%).
+3. **Robust Install-Target Parsing**:
+   - Parsed node command flags (e.g., `--no-warnings`, `-r/--require <file>`), alternative shells (`sh`, `bash`, `zsh`), `python`, `./script.sh`, extensionless scripts (`.js`, `.cjs`, `.mjs`), and script indirection up to depth 3 with cycle protection.
+4. **Packaging Readiness**:
+   - Bundled all static assets (`top_npm_packages.json`, `policy_default.toml`) inside the package (`src/release_sentinel/data/`) loaded via `importlib.resources`.
+   - Defaulted CLI live mode `as_of` to the current UTC timestamp and invoked `analyze_release` with the client, activating live dependency scanning.
+   - Anchored Azure Pipelines CI workflow detection.
+
+---
+
+### Q23: Why did wall-clock timeout limits cause machine-dependent evaluation results, and how was this solved in v1.3?
+**Answer**:
+In v1.1 and v1.2, evaluation enforced a strict 60.0-second wall-clock subprocess timeout. Under parallel evaluation (8 worker threads), CPU contention caused 8 binary-heavy releases (e.g. `@postman/pm-bin-*`, `@uipath/apollo-core`, containing 10–97 MB ELF/Mach-O binaries and 10 MB minified JavaScript files) to take 34–58 seconds on an idle system, but intermittently exceed 60.0 seconds when multiple workers competed for CPU cycles. When timed out, the scanner emitted `inspection_incomplete` (WARN), artificially deflating evidence-only BLOCK recall on slower machines.
+
+In v1.3, this was replaced with:
+1. **Fast-pathing Native Binaries and WASM**: Binary assets are categorized by magic bytes and recorded by hash and size without expensive regex text-scanning.
+2. **Deterministic Work Budgets**: Scans enforce strict byte budgets (`MAX_SCAN_BYTES_PER_FILE = 2 MB`) and regex operation caps (`MAX_REGEX_OPS_PER_FILE = 50,000`).
+3. **Wall-Clock Backstop**: The subprocess timeout was increased to 300.0 seconds merely as an emergency safety net. Profiling confirmed all 8 slow pairs now evaluate cleanly to BLOCK within 26–52 seconds across all environments.
+
+---
+
+### Q24: Why did v1.2.1 show TEST-A WARN+ recall of 64/71 compared to 63/71 in v1.1, and how does the pure date cutoff resolve this?
+**Answer**:
+Under the Stage 5e split definition, the single calendar day `2026-06-17` was split alphabetically: packages named $\le$ `@mastra/clickhouse` or equal to `@mastra/openai` were placed into TEST-A (23 pairs), while remaining packages went to TEST-B.
+In v1.1, those 23 hollow-release pairs triggered no alerts and were classified as `ALLOW`. The Mastra campaign (`camp_0136`) was therefore undetected in TEST-A, yielding 63/71 detected campaigns.
+In v1.2.1, the evaluation artifact (`eval_results_v8.jsonl`) recorded results with experimental hollow release detection active. Those 23 pairs triggered `hollow_dependency_injection` + `lookalike_dependency_name` $\to$ `WARN`, causing `camp_0136` to become detected at WARN+ in TEST-A and raising the count from 63 to 64.
+
+In v1.3 (Stage 5g Part 6e), this arbitrary within-day package name boundary was eliminated in favor of a **pure calendar date cutoff** (`< 2026-06-17` for TEST-A, $\ge$ `2026-06-17` for TEST-B). Under the pure date cutoff:
+- All 118 pairs of `camp_0136` belong cleanly to TEST-B.
+- TEST-A comprises 70 campaigns total (and 274 pairs).
+- In both v1.1 and v1.3, TEST-A lenient WARN+ is exactly **63 / 70 (90.00%)**, and lenient BLOCK is **58 / 70 (82.86%)**. Disjointness and reproducibility are completely restored.
+

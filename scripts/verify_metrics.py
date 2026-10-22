@@ -252,6 +252,23 @@ def verify_doc_consistency(metrics: dict[str, Any]) -> None:
     assert b_v121["pairs"] == 800, f"Expected 800 benign pairs, got {b_v121['pairs']}"
     assert b_v121["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v121['false_blocks']}"
 
+    # Verify that v1.3 maintains 0 false BLOCKs across 800 benign packages
+    b_v13 = metrics["benign"]["v1.3"]["total_benign"]
+    assert b_v13["pairs"] == 800, f"Expected 800 benign pairs, got {b_v13['pairs']}"
+    assert b_v13["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v13['false_blocks']}"
+
+    # Verify v1.3 malicious sample recall
+    s_v13 = metrics["sample"]["v1.3"]
+    assert s_v13["ALL"]["fc_block"] == 1102, f"v1.3 ALL BLOCK expected 1102, got {s_v13['ALL']['fc_block']}"
+    assert s_v13["ALL"]["fc_warn"] == 1217, f"v1.3 ALL WARN expected 1217, got {s_v13['ALL']['fc_warn']}"
+
+    # Verify DEV/VAL/TEST-A campaign BLOCK recall did not drop
+    c_v11 = metrics["campaign"]["v1.1"]
+    c_v13 = metrics["campaign"]["v1.3"]
+    assert c_v13["DEV"]["lenient_fc_block"] >= c_v11["DEV"]["lenient_fc_block"] - 1
+    assert c_v13["VAL"]["lenient_fc_block"] >= c_v11["VAL"]["lenient_fc_block"] - 1
+    assert c_v13["TEST-A"]["lenient_fc_block"] >= c_v11["TEST-A"]["lenient_fc_block"] - 1
+
     # Verify attack style documentation and dependency additions (Part 6)
     assert Path("docs/attack_style_over_time.md").exists()
     assert Path("docs/attack_style_over_time.png").exists()

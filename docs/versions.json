@@ -42,5 +42,16 @@
       "matched_negatives": "data/matched_negatives_results_v8.jsonl"
     },
     "detector_code_sha256": "18e056f477ca90fbbfde02ada2971b8662c58659c30e000817f335fd47e17f25"
+  },
+  "v1.3": {
+    "git_tag": "v1.3",
+    "commit_sha": "HEAD",
+    "malicious_results_jsonl": "data/eval_results_v9.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v9.csv",
+      "validation_smoke": "data/smoke_validation_v9.csv",
+      "matched_negatives": "data/matched_negatives_results_v9.jsonl"
+    },
+    "detector_code_sha256": "f746fe66126d41316dc1566c1ecb59ab908749baa6d4ad30aef05e5b2cc906ff"
   }
 }
