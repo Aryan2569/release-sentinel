@@ -124,7 +124,70 @@ def resolve_added_dependency(
                 dest_dir=dest_dir,
             )
             dep_release = extract_release_in_memory(tarball_path, config=config)
-            evidence = analyze_fn(dep_release, baseline=None, policy=policy, config=config)
+
+            # Find previous version of dependency published before as_of
+            time_map = {
+                k: v
+                for k, v in meta.get("time", {}).items()
+                if k not in ("created", "modified")
+            }
+            target_time = time_map.get(target_version, "")
+
+            earlier_versions = []
+            for v in versions_dict:
+                if v != target_version:
+                    t = time_map.get(v, "")
+                    if target_time and t and t < target_time:
+                        earlier_versions.append(v)
+                    elif not target_time and nodesemver.valid(v) and nodesemver.valid(target_version):
+                        if nodesemver.lt(v, target_version):
+                            earlier_versions.append(v)
+
+            baseline_dep_release = None
+            if earlier_versions:
+                if target_time:
+                    prev_version = max(earlier_versions, key=lambda v: time_map.get(v, ""))
+                else:
+                    prev_version = max(
+                        earlier_versions,
+                        key=lambda v: nodesemver.parse(v) if nodesemver.valid(v) else (0, 0, 0),
+                    )
+
+                try:
+                    prev_tarball = registry_client.download_tarball(
+                        name=name,
+                        version=prev_version,
+                        as_of=as_of,
+                        dest_dir=dest_dir,
+                    )
+                    baseline_dep_release = extract_release_in_memory(prev_tarball, config=config)
+                    logger.debug(
+                        "Analyzing added dependency %s in DIFF mode against %s",
+                        name,
+                        prev_version,
+                    )
+                except Exception as exc:
+                    logger.debug(
+                        "Failed to fetch baseline %s@%s for diff mode: %s; falling back to full-scan",
+                        name,
+                        prev_version,
+                        exc,
+                    )
+                    baseline_dep_release = None
+
+            # Analyze dependency: diff mode if baseline exists, full-scan if brand new
+            # Pass registry_client=None to keep depth-1
+            if analyze_fn is not None:
+                evidence = analyze_fn(
+                    new=dep_release,
+                    baseline=baseline_dep_release,
+                    policy=policy,
+                    config=config,
+                    as_of=as_of,
+                    registry_client=None,
+                )
+            else:
+                evidence = []
             labeled_evidence = _label_evidence(evidence, name, target_version, replayed=False)
             return target_version, labeled_evidence, "live"
 

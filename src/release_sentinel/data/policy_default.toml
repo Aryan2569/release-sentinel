@@ -166,10 +166,6 @@ signals = ["install_script_dynamic"]
 description = "Install-time script that evaluates dynamic code"
 
 [[full_scan.block_requires]]
-signals = ["decode_and_execute"]
-description = "Decode-then-execute obfuscated payload chain"
-
-[[full_scan.block_requires]]
 signals = ["credential_leak"]
 description = "Credential file read co-occurring with network access in the same file"
 

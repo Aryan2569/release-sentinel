@@ -44,9 +44,13 @@ logger = logging.getLogger(__name__)
 
 # Per-file resource budgets (Stage 5g deterministic work budgets)
 PER_FILE_SIZE_BUDGET = 25 * 1024 * 1024  # 25 MB hard ceiling
-MAX_SCAN_BYTES_PER_FILE = 2 * 1024 * 1024  # 2 MB deterministic regex scan budget
+MAX_SCAN_BYTES_PER_FILE = 25 * 1024 * 1024  # 25 MB scan budget
 MAX_REGEX_OPS_PER_FILE = 50_000  # 50,000 operations per file
 PER_FILE_TIME_BUDGET = 300.0  # 300.0 seconds wall-clock backstop
+
+# Chunked scanning parameters for large files (1 MB - 25 MB)
+CHUNK_SIZE = 1 * 1024 * 1024  # 1 MB chunk window
+CHUNK_OVERLAP = 64 * 1024  # 64 KB overlap
 
 # Windowed scanning parameters for very long single lines
 _WINDOW_SIZE = 10_000
@@ -624,6 +628,26 @@ def _search_windowed(pattern: re.Pattern[str], text: str) -> re.Match[str] | Non
     return None
 
 
+def _get_overlapping_text_chunks(
+    text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP
+) -> list[str]:
+    """Return overlapping text chunks of size `chunk_size` with `overlap` overlap.
+
+    If text length is <= chunk_size, returns [text].
+    """
+    n = len(text)
+    if n <= chunk_size:
+        return [text]
+    step = chunk_size - overlap
+    chunks: list[str] = []
+    for start in range(0, n, step):
+        end = min(start + chunk_size, n)
+        chunks.append(text[start:end])
+        if end >= n:
+            break
+    return chunks
+
+
 # ---------------------------------------------------------------------------
 # Specialized signal matchers: process_exec and credential_file_read
 # ---------------------------------------------------------------------------
@@ -1021,6 +1045,20 @@ def _apply_budget_exceeded_cheap_checks(
     sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
     ev_list.append(
         Evidence(
+            id="partial_scan",
+            severity=sev,
+            file=rel_path,
+            explanation=(
+                f"File '{rel_path}' size exceeds resource budget ({reason}); "
+                "deep content inspection was truncated. Decision fails closed to WARN."
+            ),
+            legitimate_use_note=(
+                "Extremely large files (>25 MB) exceed analysis resource budgets."
+            ),
+        )
+    )
+    ev_list.append(
+        Evidence(
             id="inspection_incomplete",
             severity=sev,
             file=rel_path,
@@ -1227,13 +1265,7 @@ def scan_new_content(
 
         t_file_start = time.perf_counter()
 
-        # Check 2: Deterministic scan budget for large files (> 2 MB)
-        exceeds_scan_budget = file_size > MAX_SCAN_BYTES_PER_FILE
-        if exceeds_scan_budget:
-            scan_bytes = file_bytes[:MAX_SCAN_BYTES_PER_FILE]
-            raw_text = scan_bytes.decode("utf-8", errors="replace")
-        else:
-            raw_text = new.read_text(rel_path)
+        raw_text = new.read_text(rel_path)
 
         if not raw_text:
             continue
@@ -1254,36 +1286,48 @@ def scan_new_content(
 
         seen_signals: set[str] = set()
 
-        # Specialized signals: process_exec and credential_file_read
-        for _, snippet, norm in find_process_exec_matches(clean_text):
-            if ("process_exec", norm) not in old_caps.normalized_keys:
-                if "process_exec" not in seen_signals:
-                    seen_signals.add("process_exec")
-                    sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
-                    evidence.append(
-                        Evidence(
-                            id="process_exec",
-                            severity=sev,
-                            file=rel_path,
-                            explanation=_PROCESS_EXEC_METADATA.explanation_template.format(match=snippet),
-                            legitimate_use_note=_PROCESS_EXEC_METADATA.legitimate_use_note,
-                        )
-                    )
+        # For files up to 25 MB, use chunked scanning if file exceeds 1 MB
+        chunks = (
+            _get_overlapping_text_chunks(clean_text)
+            if len(clean_text) > CHUNK_SIZE
+            else [clean_text]
+        )
 
-        for _, snippet, norm in find_credential_read_matches(clean_text):
-            if ("credential_file_read", norm) not in old_caps.normalized_keys:
-                if "credential_file_read" not in seen_signals:
-                    seen_signals.add("credential_file_read")
-                    sev = _escalate_if_install_target(Severity.HIGH, is_install_target)
-                    evidence.append(
-                        Evidence(
-                            id="credential_file_read",
-                            severity=sev,
-                            file=rel_path,
-                            explanation=_CREDENTIAL_READ_METADATA.explanation_template.format(match=snippet),
-                            legitimate_use_note=_CREDENTIAL_READ_METADATA.legitimate_use_note,
+        # Specialized signals: process_exec and credential_file_read
+        for chunk in chunks:
+            if "process_exec" in seen_signals and "credential_file_read" in seen_signals:
+                break
+            if "process_exec" not in seen_signals:
+                for _, snippet, norm in find_process_exec_matches(chunk):
+                    if ("process_exec", norm) not in old_caps.normalized_keys:
+                        seen_signals.add("process_exec")
+                        sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id="process_exec",
+                                severity=sev,
+                                file=rel_path,
+                                explanation=_PROCESS_EXEC_METADATA.explanation_template.format(match=snippet),
+                                legitimate_use_note=_PROCESS_EXEC_METADATA.legitimate_use_note,
+                            )
                         )
-                    )
+                        break
+
+            if "credential_file_read" not in seen_signals:
+                for _, snippet, norm in find_credential_read_matches(chunk):
+                    if ("credential_file_read", norm) not in old_caps.normalized_keys:
+                        seen_signals.add("credential_file_read")
+                        sev = _escalate_if_install_target(Severity.HIGH, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id="credential_file_read",
+                                severity=sev,
+                                file=rel_path,
+                                explanation=_CREDENTIAL_READ_METADATA.explanation_template.format(match=snippet),
+                                legitimate_use_note=_CREDENTIAL_READ_METADATA.legitimate_use_note,
+                            )
+                        )
+                        break
 
         # Never line-diff minified or bundled files!
         if is_min:
@@ -1341,177 +1385,270 @@ def scan_new_content(
         budget_timed_out = False
         ops_count = 0
 
-        for line_no, line in enumerate(inspect_lines, 1):
-            ops_count += 1
-            if ops_count > MAX_REGEX_OPS_PER_FILE:
-                budget_timed_out = True
-                break
+        if len(inspect_lines) > 20_000:
+            inspect_text = "\n".join(inspect_lines)
+            inspect_chunks = _get_overlapping_text_chunks(inspect_text)
+            for chunk in inspect_chunks:
+                if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
+                    ev_inc = _apply_budget_exceeded_cheap_checks(
+                        rel_path=rel_path,
+                        file_bytes=file_bytes,
+                        old=old,
+                        old_caps=old_caps,
+                        is_install_target=is_install_target,
+                        reason=f"processing time exceeded {PER_FILE_TIME_BUDGET}s budget",
+                    )
+                    evidence.extend(ev_inc)
+                    budget_timed_out = True
+                    break
 
-            if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
-                ev_inc = _apply_budget_exceeded_cheap_checks(
-                    rel_path=rel_path,
-                    file_bytes=file_bytes,
-                    old=old,
-                    old_caps=old_caps,
-                    is_install_target=is_install_target,
-                    reason=f"processing time exceeded {PER_FILE_TIME_BUDGET}s budget",
-                )
-                evidence.extend(ev_inc)
-                budget_timed_out = True
-                break
+                for m in re.finditer(r"process\.env\b[^\n]{0,80}", chunk):
+                    env_access_lines.add(m.group(0).strip()[:80])
 
-            stripped = line.strip()
-
-            # Track block comment state
-            if "/*" in line:
-                in_block_comment = True
-            if "*/" in line:
-                in_block_comment = False
-
-            is_license = line_no in license_header_lines
-
-            # Bulk env enumeration tracking
-            if "process.env" in line and re.search(r"process\.env\b", line):
-                env_access_lines.add(stripped[:80])
-
-            # Entropy and long-line blobs:
-            # Only when blob is new AND file is outside test/fixture/data/locale/source-map.
-            # Never treat minified files from old release as long-line blobs.
-            if not is_exempt and not was_previously_minified:
-                # String entropy
-                for tok in _extract_string_tokens(line):
-                    if (
-                        len(tok) >= _ENTROPY_MIN_LEN
-                        and _shannon_entropy(tok) >= _ENTROPY_THRESHOLD
-                    ):
-                        h = hashlib.sha256(tok.encode("utf-8")).hexdigest()
-                        if h not in old_caps.blob_hashes:
-                            if "high_entropy_string" not in seen_signals:
-                                seen_signals.add("high_entropy_string")
-                                sev = _escalate_if_install_target(
-                                    Severity.MEDIUM, is_install_target
-                                )
+                if len(seen_signals) < len(_SIGNALS):
+                    for signal in _SIGNALS:
+                        if signal.id in seen_signals:
+                            continue
+                        for m in signal.pattern.finditer(chunk):
+                            match_text = m.group(0)
+                            if signal.id == "hardcoded_url":
+                                host = _extract_host(match_text)
+                                if not host or host in old_caps.hosts:
+                                    continue
+                                seen_signals.add("hardcoded_url")
+                                sev = _escalate_if_install_target(signal.severity, is_install_target)
                                 evidence.append(
                                     Evidence(
-                                        id="high_entropy_string",
+                                        id="hardcoded_url",
                                         severity=sev,
                                         file=rel_path,
-                                        explanation=(
-                                            "File contains a new high-entropy string "
-                                            f"(Shannon entropy >= 4.5 bits/char): {tok[:60]!r}."
-                                        ),
-                                        legitimate_use_note=(
-                                            "Cryptographic constants, pre-computed lookup "
-                                            "tables, and compression codecs contain naturally "
-                                            "high-entropy strings."
-                                        ),
+                                        explanation=signal.explanation_template.format(match=match_text),
+                                        legitimate_use_note=signal.legitimate_use_note,
                                     )
                                 )
                                 break
-
-                # Long line blob (in non-minified files or newly added unclassified files)
-                if len(line) > _LONG_LINE_THRESHOLD:
-                    h = hashlib.sha256(line.encode("utf-8")).hexdigest()
-                    if h not in old_caps.blob_hashes:
-                        if "long_encoded_blob" not in seen_signals:
-                            seen_signals.add("long_encoded_blob")
-                            sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
-                            evidence.append(
-                                Evidence(
-                                    id="long_encoded_blob",
-                                    severity=sev,
-                                    file=rel_path,
-                                    explanation=(
-                                        f"File contains a new long line ({len(line)} chars). "
-                                        "Extremely long single lines are a common obfuscation "
-                                        "technique."
-                                    ),
-                                    legitimate_use_note=(
-                                        "Minified JavaScript, base64-encoded assets, and "
-                                        "auto-generated tables often produce long lines."
-                                    ),
+                            elif signal.id == "hardcoded_ip":
+                                ip = match_text.strip()
+                                if ip in old_caps.hosts:
+                                    continue
+                                seen_signals.add("hardcoded_ip")
+                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                evidence.append(
+                                    Evidence(
+                                        id="hardcoded_ip",
+                                        severity=sev,
+                                        file=rel_path,
+                                        explanation=signal.explanation_template.format(match=match_text),
+                                        legitimate_use_note=signal.legitimate_use_note,
+                                    )
                                 )
+                                break
+                            elif signal.id == "long_encoded_blob":
+                                if is_exempt:
+                                    continue
+                                h = hashlib.sha256(match_text.encode("utf-8")).hexdigest()
+                                if h in old_caps.blob_hashes:
+                                    continue
+                                seen_signals.add("long_encoded_blob")
+                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                evidence.append(
+                                    Evidence(
+                                        id="long_encoded_blob",
+                                        severity=sev,
+                                        file=rel_path,
+                                        explanation=signal.explanation_template.format(match=match_text),
+                                        legitimate_use_note=signal.legitimate_use_note,
+                                    )
+                                )
+                                break
+                            else:
+                                norm = _normalize_match(signal.id, match_text)
+                                if (signal.id, norm) in old_caps.normalized_keys:
+                                    continue
+                                seen_signals.add(signal.id)
+                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                evidence.append(
+                                    Evidence(
+                                        id=signal.id,
+                                        severity=sev,
+                                        file=rel_path,
+                                        explanation=signal.explanation_template.format(match=match_text),
+                                        legitimate_use_note=signal.legitimate_use_note,
+                                    )
+                                )
+                                break
+        else:
+            for line_no, line in enumerate(inspect_lines, 1):
+                ops_count += 1
+                if ops_count > MAX_REGEX_OPS_PER_FILE:
+                    budget_timed_out = True
+                    break
+
+                if time.perf_counter() - t_file_start > PER_FILE_TIME_BUDGET:
+                    ev_inc = _apply_budget_exceeded_cheap_checks(
+                        rel_path=rel_path,
+                        file_bytes=file_bytes,
+                        old=old,
+                        old_caps=old_caps,
+                        is_install_target=is_install_target,
+                        reason=f"processing time exceeded {PER_FILE_TIME_BUDGET}s budget",
+                    )
+                    evidence.extend(ev_inc)
+                    budget_timed_out = True
+                    break
+
+                stripped = line.strip()
+
+                # Track block comment state
+                if "/*" in line:
+                    in_block_comment = True
+                if "*/" in line:
+                    in_block_comment = False
+
+                is_license = line_no in license_header_lines
+
+                # Bulk env enumeration tracking
+                if "process.env" in line and re.search(r"process\.env\b", line):
+                    env_access_lines.add(stripped[:80])
+
+                # Entropy and long-line blobs:
+                # Only when blob is new AND file is outside test/fixture/data/locale/source-map.
+                # Never treat minified files from old release as long-line blobs.
+                if not is_exempt and not was_previously_minified:
+                    # String entropy
+                    for tok in _extract_string_tokens(line):
+                        if (
+                            len(tok) >= _ENTROPY_MIN_LEN
+                            and _shannon_entropy(tok) >= _ENTROPY_THRESHOLD
+                        ):
+                            h = hashlib.sha256(tok.encode("utf-8")).hexdigest()
+                            if h not in old_caps.blob_hashes:
+                                if "high_entropy_string" not in seen_signals:
+                                    seen_signals.add("high_entropy_string")
+                                    sev = _escalate_if_install_target(
+                                        Severity.MEDIUM, is_install_target
+                                    )
+                                    evidence.append(
+                                        Evidence(
+                                            id="high_entropy_string",
+                                            severity=sev,
+                                            file=rel_path,
+                                            explanation=(
+                                                "File contains a new high-entropy string "
+                                                f"(Shannon entropy >= 4.5 bits/char): {tok[:60]!r}."
+                                            ),
+                                            legitimate_use_note=(
+                                                "Cryptographic constants, pre-computed lookup "
+                                                "tables, and compression codecs contain naturally "
+                                                "high-entropy strings."
+                                            ),
+                                        )
+                                    )
+                                    break
+
+                    # Long line blob (in non-minified files or newly added unclassified files)
+                    if len(line) > _LONG_LINE_THRESHOLD:
+                        h = hashlib.sha256(line.encode("utf-8")).hexdigest()
+                        if h not in old_caps.blob_hashes:
+                            if "long_encoded_blob" not in seen_signals:
+                                seen_signals.add("long_encoded_blob")
+                                sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
+                                evidence.append(
+                                    Evidence(
+                                        id="long_encoded_blob",
+                                        severity=sev,
+                                        file=rel_path,
+                                        explanation=(
+                                            f"File contains a new long line ({len(line)} chars). "
+                                            "Extremely long single lines are a common obfuscation "
+                                            "technique."
+                                        ),
+                                        legitimate_use_note=(
+                                            "Minified JavaScript, base64-encoded assets, and "
+                                            "auto-generated tables often produce long lines."
+                                        ),
+                                    )
+                                )
+
+                # Signal inspection
+                for signal in _SIGNALS:
+                    if signal.id in seen_signals:
+                        continue
+
+                    m = _search_windowed(signal.pattern, line)
+                    if not m:
+                        continue
+                    match_text = m.group(0)
+
+                    if signal.id == "hardcoded_url":
+                        if _is_in_comment(line, m.start(), in_block_comment) or is_license:
+                            continue
+                        host = _extract_host(match_text)
+                        if not host or host in old_caps.hosts:
+                            continue
+                        seen_signals.add("hardcoded_url")
+                        sev = _escalate_if_install_target(signal.severity, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id="hardcoded_url",
+                                severity=sev,
+                                file=rel_path,
+                                explanation=signal.explanation_template.format(match=match_text),
+                                legitimate_use_note=signal.legitimate_use_note,
                             )
-
-            # Signal inspection
-            for signal in _SIGNALS:
-                if signal.id in seen_signals:
-                    continue
-
-                m = _search_windowed(signal.pattern, line)
-                if not m:
-                    continue
-                match_text = m.group(0)
-
-                if signal.id == "hardcoded_url":
-                    if _is_in_comment(line, m.start(), in_block_comment) or is_license:
-                        continue
-                    host = _extract_host(match_text)
-                    if not host or host in old_caps.hosts:
-                        continue
-                    seen_signals.add("hardcoded_url")
-                    sev = _escalate_if_install_target(signal.severity, is_install_target)
-                    evidence.append(
-                        Evidence(
-                            id="hardcoded_url",
-                            severity=sev,
-                            file=rel_path,
-                            explanation=signal.explanation_template.format(match=match_text),
-                            legitimate_use_note=signal.legitimate_use_note,
                         )
-                    )
 
-                elif signal.id == "hardcoded_ip":
-                    if _is_in_comment(line, m.start(), in_block_comment) or is_license:
-                        continue
-                    ip = match_text.strip()
-                    if ip in old_caps.hosts:
-                        continue
-                    seen_signals.add("hardcoded_ip")
-                    sev = _escalate_if_install_target(signal.severity, is_install_target)
-                    evidence.append(
-                        Evidence(
-                            id="hardcoded_ip",
-                            severity=sev,
-                            file=rel_path,
-                            explanation=signal.explanation_template.format(match=match_text),
-                            legitimate_use_note=signal.legitimate_use_note,
+                    elif signal.id == "hardcoded_ip":
+                        if _is_in_comment(line, m.start(), in_block_comment) or is_license:
+                            continue
+                        ip = match_text.strip()
+                        if ip in old_caps.hosts:
+                            continue
+                        seen_signals.add("hardcoded_ip")
+                        sev = _escalate_if_install_target(signal.severity, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id="hardcoded_ip",
+                                severity=sev,
+                                file=rel_path,
+                                explanation=signal.explanation_template.format(match=match_text),
+                                legitimate_use_note=signal.legitimate_use_note,
+                            )
                         )
-                    )
 
-                elif signal.id == "long_encoded_blob":
-                    if is_exempt:
-                        continue
-                    h = hashlib.sha256(match_text.encode("utf-8")).hexdigest()
-                    if h in old_caps.blob_hashes:
-                        continue
-                    seen_signals.add("long_encoded_blob")
-                    sev = _escalate_if_install_target(signal.severity, is_install_target)
-                    evidence.append(
-                        Evidence(
-                            id="long_encoded_blob",
-                            severity=sev,
-                            file=rel_path,
-                            explanation=signal.explanation_template.format(match=match_text),
-                            legitimate_use_note=signal.legitimate_use_note,
+                    elif signal.id == "long_encoded_blob":
+                        if is_exempt:
+                            continue
+                        h = hashlib.sha256(match_text.encode("utf-8")).hexdigest()
+                        if h in old_caps.blob_hashes:
+                            continue
+                        seen_signals.add("long_encoded_blob")
+                        sev = _escalate_if_install_target(signal.severity, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id="long_encoded_blob",
+                                severity=sev,
+                                file=rel_path,
+                                explanation=signal.explanation_template.format(match=match_text),
+                                legitimate_use_note=signal.legitimate_use_note,
+                            )
                         )
-                    )
 
-                else:
-                    norm = _normalize_match(signal.id, match_text)
-                    if (signal.id, norm) in old_caps.normalized_keys:
-                        continue
-                    seen_signals.add(signal.id)
-                    sev = _escalate_if_install_target(signal.severity, is_install_target)
-                    evidence.append(
-                        Evidence(
-                            id=signal.id,
-                            severity=sev,
-                            file=rel_path,
-                            explanation=signal.explanation_template.format(match=match_text),
-                            legitimate_use_note=signal.legitimate_use_note,
+                    else:
+                        norm = _normalize_match(signal.id, match_text)
+                        if (signal.id, norm) in old_caps.normalized_keys:
+                            continue
+                        seen_signals.add(signal.id)
+                        sev = _escalate_if_install_target(signal.severity, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id=signal.id,
+                                severity=sev,
+                                file=rel_path,
+                                explanation=signal.explanation_template.format(match=match_text),
+                                legitimate_use_note=signal.legitimate_use_note,
+                            )
                         )
-                    )
 
         if budget_timed_out:
             continue
@@ -1727,6 +1864,20 @@ def scan_full_release(
         if file_size > PER_FILE_SIZE_BUDGET:
             evidence.append(
                 Evidence(
+                    id="partial_scan",
+                    severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
+                    file=rel_path,
+                    explanation=(
+                        f"File '{rel_path}' size ({file_size} bytes) exceeds resource budget "
+                        f"({PER_FILE_SIZE_BUDGET} bytes); deep inspection skipped."
+                    ),
+                    legitimate_use_note=(
+                        "Extremely large files can exceed analysis resource budgets."
+                    ),
+                )
+            )
+            evidence.append(
+                Evidence(
                     id="inspection_incomplete",
                     severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
                     file=rel_path,
@@ -1743,13 +1894,7 @@ def scan_full_release(
 
         t_file_start = time.perf_counter()
 
-        # Check 2: Deterministic scan budget for large files (> 2 MB)
-        exceeds_scan_budget = file_size > MAX_SCAN_BYTES_PER_FILE
-        if exceeds_scan_budget:
-            scan_bytes = file_bytes[:MAX_SCAN_BYTES_PER_FILE]
-            raw_text = scan_bytes.decode("utf-8", errors="replace")
-        else:
-            raw_text = release.read_text(rel_path)
+        raw_text = release.read_text(rel_path)
 
         if not raw_text:
             continue
@@ -1773,104 +1918,132 @@ def scan_full_release(
             )
             continue
 
-        # Extract features from clean_text
-        proc_matches = list(find_process_exec_matches(clean_text))
-        cred_matches = list(find_credential_read_matches(clean_text))
+        # Extract features from clean_text (using chunked scanning for large files)
+        chunks = (
+            _get_overlapping_text_chunks(clean_text)
+            if len(clean_text) > CHUNK_SIZE
+            else [clean_text]
+        )
 
-        has_network_apis = bool(
-            re.search(
-                r"""(?x)
-                require\s*\(\s*['"](?:http|https|net|dgram)['"]\s*\)
-                | \bfetch\s*\(
-                | \.get\s*\(\s*['"](http|https)
-                | new\s+XMLHttpRequest
-                | require\s*\(\s*['"](?:axios|node-fetch|got|request|superagent)['"]\s*\)
-                """,
-                clean_text,
-            )
-        )
-        has_network_url = bool(
-            re.search(
-                r"""(?x)
-                https?://(?!
-                  (?:(?:www\.|registry\.)?npmjs\.(?:com|org))
-                  | (?:www\.)?github\.com
-                  | (?:www\.)?githubusercontent\.com
-                  | (?:www\.)?jsdelivr\.net
-                  | (?:www\.)?unpkg\.com
-                  | (?:www\.)?cdnjs\.cloudflare\.com
-                  | localhost
+        proc_matches = []
+        cred_matches = []
+        has_network_apis = False
+        has_network_url = False
+        has_network_ip = False
+        has_dynamic = False
+        has_direct_decode_exec = False
+        has_chain_decode_exec = False
+        env_matches: set[str] = set()
+        has_env_dump = False
+        has_shell_profile = False
+        has_ci_write = False
+
+        for chunk in chunks:
+            if not proc_matches:
+                proc_matches = list(find_process_exec_matches(chunk))
+            if not cred_matches:
+                cred_matches = list(find_credential_read_matches(chunk))
+            if not has_network_apis:
+                has_network_apis = bool(
+                    re.search(
+                        r"""(?x)
+                        require\s*\(\s*['"](?:http|https|net|dgram)['"]\s*\)
+                        | \bfetch\s*\(
+                        | \.get\s*\(\s*['"](http|https)
+                        | new\s+XMLHttpRequest
+                        | require\s*\(\s*['"](?:axios|node-fetch|got|request|superagent)['"]\s*\)
+                        """,
+                        chunk,
+                    )
                 )
-                [^\s"'`>]{20,}
-                """,
-                clean_text,
-            )
-        )
-        has_network_ip = bool(
-            re.search(
-                r"""(?x)
-                \b(?!
-                  127\.\d+\.\d+\.\d+
-                  | 0\.0\.0\.0
-                  | 10\.\d+\.\d+\.\d+
-                  | 192\.168\.\d+\.\d+
-                  | 172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+
+            if not has_network_url:
+                has_network_url = bool(
+                    re.search(
+                        r"""(?x)
+                        https?://(?!
+                          (?:(?:www\.|registry\.)?npmjs\.(?:com|org))
+                          | (?:www\.)?github\.com
+                          | (?:www\.)?githubusercontent\.com
+                          | (?:www\.)?jsdelivr\.net
+                          | (?:www\.)?unpkg\.com
+                          | (?:www\.)?cdnjs\.cloudflare\.com
+                          | localhost
+                        )
+                        [^\s"'`>]{20,}
+                        """,
+                        chunk,
+                    )
                 )
-                (?:\d{1,3}\.){3}\d{1,3}
-                \b
-                """,
-                clean_text,
-            )
-        )
+            if not has_network_ip:
+                has_network_ip = bool(
+                    re.search(
+                        r"""(?x)
+                        \b(?!
+                          127\.\d+\.\d+\.\d+
+                          | 0\.0\.0\.0
+                          | 10\.\d+\.\d+\.\d+
+                          | 192\.168\.\d+\.\d+
+                          | 172\.(?:1[6-9]|2\d|3[01])\.\d+\.\d+
+                        )
+                        (?:\d{1,3}\.){3}\d{1,3}
+                        \b
+                        """,
+                        chunk,
+                    )
+                )
+            if not has_dynamic:
+                has_dynamic = bool(
+                    re.search(
+                        r"""(?x)
+                        \beval\s*\(
+                        | new\s+Function\s*\(
+                        | vm\.runIn(?:New)?Context
+                        | vm\.Script\s*\(
+                        """,
+                        chunk,
+                    )
+                )
+            if not has_direct_decode_exec:
+                has_direct_decode_exec = bool(_search_windowed(_DIRECT_DECODE_EXEC_RE, chunk))
+            if not has_chain_decode_exec:
+                has_chain_decode_exec = bool(_search_windowed(_CHAIN_DECODE_EXEC_RE, chunk))
+            if len(env_matches) < 10:
+                env_matches.update(
+                    re.findall(r"process\.env(?:\.[a-zA-Z0-9_]+|\[['\"][a-zA-Z0-9_]+['\"]\])", chunk)
+                )
+            if not has_env_dump:
+                has_env_dump = bool(
+                    re.search(
+                        r"""(?x)
+                        Object\.(?:keys|values|entries)\s*\(\s*process\.env\s*\)
+                        | JSON\.stringify\s*\(\s*process\.env\s*\)
+                        | for\s*\([^)]*\bin\s+process\.env\b
+                        """,
+                        chunk,
+                    )
+                )
+            if not has_shell_profile:
+                has_shell_profile = bool(
+                    re.search(
+                        r"""(?x)
+                        ['"`.+]\.(?:bashrc|zshrc|profile|bash_profile|zprofile)['"`]
+                        """,
+                        chunk,
+                    )
+                )
+            if not has_ci_write:
+                has_ci_write = bool(
+                    re.search(
+                        r"""(?x)
+                        ['"`.+]\.(?:github[/\\]workflows|gitlab-ci|circleci)
+                        | ['"`.+]azure-pipelines
+                        """,
+                        chunk,
+                    )
+                )
+
         has_network = has_network_apis or has_network_url or has_network_ip
-
-        has_dynamic = bool(
-            re.search(
-                r"""(?x)
-                \beval\s*\(
-                | new\s+Function\s*\(
-                | vm\.runIn(?:New)?Context
-                | vm\.Script\s*\(
-                """,
-                clean_text,
-            )
-        )
-
-        has_direct_decode_exec = bool(_search_windowed(_DIRECT_DECODE_EXEC_RE, clean_text))
-        has_chain_decode_exec = bool(_search_windowed(_CHAIN_DECODE_EXEC_RE, clean_text))
-
-        env_matches = set(
-            re.findall(r"process\.env(?:\.[a-zA-Z0-9_]+|\[['\"][a-zA-Z0-9_]+['\"]\])", clean_text)
-        )
-        has_env_dump = bool(
-            re.search(
-                r"""(?x)
-                Object\.(?:keys|values|entries)\s*\(\s*process\.env\s*\)
-                | JSON\.stringify\s*\(\s*process\.env\s*\)
-                | for\s*\([^)]*\bin\s+process\.env\b
-                """,
-                clean_text,
-            )
-        )
         has_env_bulk = has_env_dump or len(env_matches) >= 10
-
-        has_shell_profile = bool(
-            re.search(
-                r"""(?x)
-                ['"`.+]\.(?:bashrc|zshrc|profile|bash_profile|zprofile)['"`]
-                """,
-                clean_text,
-            )
-        )
-        has_ci_write = bool(
-            re.search(
-                r"""(?x)
-                ['"`.+]\.(?:github[/\\]workflows|gitlab-ci|circleci)
-                | ['"`.+]azure-pipelines
-                """,
-                clean_text,
-            )
-        )
 
         # ------------------------------------------------------------------
         # Corroborated Standalone Patterns
@@ -2053,7 +2226,12 @@ def scan_full_release(
 
         # Pattern 7: Obfuscated code in non-minified source
         if not is_min and not is_exempt and _is_js_or_ts_file(rel_path):
-            is_obf, obf_reason = _detect_obfuscated_code(clean_text)
+            is_obf = False
+            obf_reason = ""
+            for chunk in chunks:
+                is_obf, obf_reason = _detect_obfuscated_code(chunk)
+                if is_obf:
+                    break
             if is_obf:
                 sev = Severity.CRITICAL if is_install_target else Severity.HIGH
                 evidence.append(

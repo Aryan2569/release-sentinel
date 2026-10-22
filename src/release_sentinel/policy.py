@@ -229,7 +229,7 @@ def decide(
 
     limitations = list(_STATIC_LIMITATIONS)
 
-    has_incomplete = any(ev.id == "inspection_incomplete" for ev in evidence)
+    has_incomplete = any(ev.id in ("inspection_incomplete", "partial_scan") for ev in evidence)
     if has_incomplete:
         for ev in evidence:
             if ev.id == "inspection_incomplete":
@@ -237,6 +237,12 @@ def decide(
                 limitations.append(
                     f"Inspection incomplete{file_desc}: deep analysis skipped due to resource "
                     "budget; decision fails closed."
+                )
+            elif ev.id == "partial_scan":
+                file_desc = f" ({ev.file})" if ev.file else ""
+                limitations.append(
+                    f"Partial scan{file_desc}: file size exceeds 25 MB ceiling; "
+                    "inspection bounded; decision fails closed to WARN."
                 )
 
     if not evidence:
