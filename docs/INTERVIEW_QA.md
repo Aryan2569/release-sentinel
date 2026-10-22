@@ -291,3 +291,53 @@ During post-release auditing of v1.3, two measurement regressions were detected:
    - Content scanning and AST/regex analysis: **0.37 – 4.33 seconds**.
    Static scanning executes in single-digit seconds even on 80 MB packages. The multi-second latency is an artifact of Python's standard library decrypting password-protected sample archives in pure software during benchmark runs, an overhead that does not exist in production npm `.tgz` operation.
 
+---
+
+### Q27: How does v1.4 eliminate false alarms on popular packages in dependency-aware scanning (diff mode vs full-scan mode)?
+**Answer**:
+In v1.3, any newly added dependency was inspected in full-scan mode as if it were a single-version, brand-new package. When legitimate popular packages (e.g. `esbuild`, `vite`, `next`, `mongodb`) were added as dependencies, their complex bundled assets legitimately contained dynamic evaluation, base64 data, and environment variable lookups. Full-scan mode produced 10 false BLOCKs (2.0%) across 500 popular packages and warned on 13 of 24 benign updates.
+
+In v1.4:
+1. **Diff Mode Resolution**: When a runtime dependency is added, Release Sentinel queries registry metadata as of `as_of`. If the package has an earlier published version before `as_of`, it is analyzed in **DIFF mode** against its own prior version under standard update policy.
+2. **Tightened Full-Scan Mode**: Only brand-new, single-version packages without prior releases use full-scan mode. For full-scan mode, the policy was tightened: a single heuristic (`decode_and_execute`, `env_harvesting`, or `obfuscated_code` alone) cannot BLOCK; BLOCK is reserved for corroborated execution chains (install-time download/execution or credential exfiltration).
+3. **Verification**: In diff mode, 0 of the 10 popular packages BLOCK (5 become ALLOW, 5 become WARN). Across 24 benign dependency-adding updates, 0 BLOCK (11 ALLOW, 13 WARN).
+
+---
+
+### Q28: How does v1.4 scan large files up to the 25 MB ceiling without payload blind spots or catastrophic regex backtracking?
+**Answer**:
+v1.3.1 bounded text scanning on large files to the first 2 MB prefix. If an attacker positioned a malicious payload after the 2 MB boundary (e.g. at 3 MB or 20 MB inside a 21 MB bundle), the prefix scan would miss it completely.
+
+In v1.4:
+1. **Linear-Time Chunked Scanning**: Files up to the 25 MB hard ceiling are scanned completely using overlapping windows (1 MB window size, 64 KB overlap). This guarantees that regex patterns spanning window boundaries are detected while preventing catastrophic backtracking or unbounded memory consumption.
+2. **Fail-Closed Boundary**: Only files strictly exceeding the 25 MB hard ceiling generate a `partial_scan` limitation (failing closed to WARN).
+3. **Performance**: In-memory chunked scanning on a 21 MB file completes in **0.362 seconds** (well within the 5.0-second limit). Tests with payloads placed after 3 MB and after 20 MB verify complete detection.
+
+---
+
+### Q29: How does lockfile diffing work across package-lock.json v1, v2, and v3, and why are yarn and pnpm unsupported?
+**Answer**:
+1. **Format Support**:
+   - `package-lock.json` v1: Recursively traverses nested `dependencies` trees.
+   - `package-lock.json` v2/v3: Parses flat `packages` dictionaries with `node_modules/` keys, ignoring the root application entry.
+2. **Integrity & Exact Tarballs**:
+   Uses the lockfile's declared `resolved` URL and Subresource Integrity (`integrity`) hash (e.g. `sha512-...`). The downloaded tarball is verified against the lockfile's declared hash before extraction. Any hash mismatch emits `integrity_mismatch` (HIGH severity / Decision.BLOCK) and fails closed.
+3. **Safety Budget**:
+   `sentinel check` enforces `--max-packages` (default 200). If more than 200 packages changed, the first 200 are scanned, skipped packages are recorded in limitations, and the gate fails closed to WARN.
+4. **Rejection of Yarn & pnpm**:
+   Yarn (`yarn.lock`) and pnpm (`pnpm-lock.yaml`) use custom line-oriented or YAML formats. Supplying them raises `UnsupportedLockfileError` with clear explanatory guidance.
+
+---
+
+### Q30: What are the CLI exit codes, and how does the GitHub Action prevent privilege escalation on fork pull requests?
+**Answer**:
+1. **CLI Exit Codes (`sentinel check`)**:
+   - `0`: Policy satisfied (verdict is clean/ALLOW, or policy threshold satisfied).
+   - `1`: Security gate failed per `--fail-on` (default: fails on BLOCK; configurable to `warn` or `never`).
+   - `2`: Usage error, invalid option, or internal failure (never exits 0 on internal failure).
+2. **GitHub Action Security Design**:
+   - **Trigger**: Strictly requires `pull_request`, NEVER `pull_request_target`. `pull_request_target` runs with base repository permissions and secret access, creating a dangerous privilege-escalation vector on fork PRs. `pull_request` executes in an unprivileged, read-only fork context.
+   - **Least Privilege**: Requests only `contents: read` and `pull-requests: write`.
+   - **Fork PR Resilience**: On fork PRs where tokens lack write permissions, the action skips PR commenting without failing the workflow, preserving the full markdown report in `$GITHUB_STEP_SUMMARY`.
+   - **Shell Safety**: All PR inputs (branch names, paths) are passed via environment variables rather than string interpolation, preventing shell injection. Third-party actions are pinned by immutable commit SHAs.
+

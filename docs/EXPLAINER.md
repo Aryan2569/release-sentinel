@@ -105,4 +105,10 @@ Release Sentinel is designed to be an accurate, low-false-alarm static gate. To 
    The 1,349 malicious eval pairs were largely sourced from the Datadog security research corpus (frequently identified via GuardDog heuristics). This introduces potential sample selection bias toward attacks exhibiting known static patterns (such as encoded blobs, network exfiltration, or install hooks).
 6. **Time-Travel Cutoff (`as_of`) Semantics**:
    In historical evaluations, `as_of` represents the public discovery/disclosure date of the compromise. In live production operation, `sentinel diff` defaults `as_of` to the current UTC timestamp, reflecting the state of the registry at the exact moment of inspection.
+7. **Yarn and pnpm Lockfiles Unsupported**:
+   Release Sentinel currently audits npm `package-lock.json` (versions 1, 2, and 3). Yarn and pnpm lockfiles are detected and rejected with clear error guidance.
+8. **200-Package Safety Budget Cap**:
+   To prevent runaway memory consumption or CI timeouts on massive multi-package upgrades, `sentinel check` caps inspection at 200 packages by default. Skipped packages fail closed to WARN.
+9. **Direct Dependency Depth Cap (Depth 1)**:
+   Added runtime dependency analysis inspects direct dependencies up to depth 1 (max 5 dependencies). It does not recursively analyze arbitrary nested transitive trees (depth 2+).
 

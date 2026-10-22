@@ -57,3 +57,27 @@ The 1,349 malicious eval pairs in the benchmark were curated from real-world npm
 - **Production CLI**: In live production usage, `sentinel diff` defaults `as_of` to the current system time (`datetime.now(tz=UTC)`).
 
 **Limitation**: If an operator runs `sentinel diff` without an `--as-of` override on a release whose upstream dependency was updated *after* the target release was published, the resolver will see registry metadata published up to the current moment. Operators verifying historical incidents must supply `--as-of <ISO_TIMESTAMP>`.
+
+---
+
+## 7. Yarn and pnpm Lockfiles Unsupported
+
+Release Sentinel currently parses and audits npm `package-lock.json` files across format versions 1, 2, and 3.
+
+**Limitation**: Alternative package manager lockfiles (`yarn.lock` for Yarn Classic/Berry, and `pnpm-lock.yaml`/`pnpm-lock.yml` for pnpm) use custom non-JSON YAML or bespoke line-oriented formats. Release Sentinel detects these files and raises an explicit `UnsupportedLockfileError`. Repositories relying solely on Yarn or pnpm cannot yet be audited directly with `sentinel check`.
+
+---
+
+## 8. 200-Package Safety Budget Cap
+
+In large mono-repositories or major framework upgrades, hundreds or thousands of packages can transition simultaneously in a single lockfile commit.
+
+**Limitation**: To prevent unbounded memory consumption, prolonged execution time, or potential denial-of-service from massive dependency graph updates, `sentinel check` enforces a default safety budget cap of `--max-packages 200`. If a lockfile diff changes more than 200 packages, Release Sentinel scans the first 200 packages, skips the remainder, records an explicit budget exceeded limitation, and fails closed to `WARN`. Teams managing large dependency updates can raise this threshold using `--max-packages <N>`.
+
+---
+
+## 9. Dependency Resolution Depth 1
+
+When a package update introduces new runtime dependencies, Release Sentinel resolves each added dependency and inspects it (in diff mode against its previous release if one exists, or in tightened full-scan mode if brand new).
+
+**Limitation**: This dependency-aware inspection operates strictly at **depth 1** (up to 5 direct added runtime dependencies). It does not recursively expand or analyze transitive sub-dependencies (depth 2+). If an attacker injects a malicious payload nested multiple levels down the dependency tree inside a clean, newly added direct dependency, that transitive payload is not analyzed.
