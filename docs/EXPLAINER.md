@@ -75,14 +75,15 @@ In Version 1.2.1, Release Sentinel provides specialized behavioral checks to ins
 
 ## 5. How Do We Know It Works?
 
-We tested Release Sentinel against two massive real-world benchmarks:
+We tested Release Sentinel against three massive real-world benchmarks:
 1. **1,349 Real Attack Samples**: Every single confirmed malicious npm package published between 2024 and late 2026 from the Datadog security research archive.
 2. **800 Legitimate, Clean Package Updates**: Real updates from the most popular and complex libraries in the world (like `react`, `webpack`, `typescript`, and `express`).
+3. **500 Actively Maintained Popular Packages (Full-Scan Mode)**: A full-scan validation corpus across the spectrum of sizes and architectures, confirming an 89.4% clean ALLOW rate and strict upper bounds on full-scan blocks.
 
 ### The Results:
-- **Zero False Blocks**: Across all 800 clean package updates, Release Sentinel issued **0 false BLOCKs (0.00%)**.
+- **Zero False Blocks on Updates**: Across all 800 clean package updates, Release Sentinel issued **0 false BLOCKs (0.00%)**.
 - **Over 81% High-Confidence Block Rate**: Out of 1,349 real attacks, Release Sentinel blocked over 81% with zero human intervention, and flagged over 90% for human review.
-- **Lightning Fast**: Inspecting a package takes less than **0.2 seconds** on average.
+- **Lightning Fast**: Inspecting a package takes less than **0.2 seconds** on average for static diffing and AST analysis.
 
 Release Sentinel proves that software defenses can be both iron-clad against real attackers and completely silent during daily, legitimate software development.
 

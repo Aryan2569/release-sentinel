@@ -1,0 +1,5805 @@
+[
+  {
+    "package": "@hapi/hapi",
+    "version": "21.4.11",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.17,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-parser-adapter-openapi-json-3-1",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.068,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-parser-adapter-arazzo-json-1",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.117,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@expo/log-box",
+    "version": "58.0.13",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.345,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-parser-adapter-arazzo-yaml-1",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.326,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-parser-adapter-openapi-yaml-3-1",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.586,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@astrojs/telemetry",
+    "version": "3.4.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.613,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mongoose",
+    "version": "9.11.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.367,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "query-string",
+    "version": "10.0.0",
+    "decision": "BLOCK",
+    "evidence": [
+      "decode_and_execute"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.011,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-ns-openapi-3-1",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.993,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sass",
+    "version": "1.106.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.996,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-ns-arazzo-1",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.958,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ascope-mcp",
+    "version": "0.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.964,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swagger-api/apidom-parser-adapter-yaml-1-2",
+    "version": "1.13.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 3.115,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prisma",
+    "version": "8.0.0-rc.24",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.535,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@framers/agentos-ext-news-search",
+    "version": "1.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.514,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nock",
+    "version": "15.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.466,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "puppeteer",
+    "version": "25.15.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.132,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@hort/nps",
+    "version": "2.1.0",
+    "decision": "WARN",
+    "evidence": [
+      "env_harvesting"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.191,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "turbo",
+    "version": "2.11.10",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 0.883,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jose",
+    "version": "6.2.13",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.657,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@vaultcompass/dep-guard",
+    "version": "0.16.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.67,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@storybook/addon-onboarding",
+    "version": "10.6.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.105,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "pm2",
+    "version": "7.1.0",
+    "decision": "WARN",
+    "evidence": [
+      "env_harvesting",
+      "obfuscated_code"
+    ],
+    "evidence_count": 6,
+    "limitations_count": 5,
+    "seconds": 3.287,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "repo-aeo-mcp",
+    "version": "1.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.908,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vite",
+    "version": "8.3.5",
+    "decision": "BLOCK",
+    "evidence": [
+      "decode_and_execute",
+      "env_harvesting"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 3.921,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@mrfentmen/vndb-mcp",
+    "version": "1.0.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.595,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@pipeworx/mcp-appfollow",
+    "version": "0.1.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.416,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "npms-mcp",
+    "version": "1.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.363,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ava",
+    "version": "8.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.551,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "execa",
+    "version": "10.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.166,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@ohos-ports/mongoose",
+    "version": "9.8.1-beta.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 4.122,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "astro",
+    "version": "7.4.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 7.618,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "objection",
+    "version": "4.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.05,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "rollup",
+    "version": "4.64.12",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 4.882,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@homebound/graphql-typescript-factories",
+    "version": "2.83.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.062,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "undici",
+    "version": "8.12.3",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 4.811,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@ljwei-stak/dsh-mv-cli",
+    "version": "0.12.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.986,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@mambalabsdev/mcp-website-traffic-rank-estimator",
+    "version": "1.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.176,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@hy-sde-org/dsh-tool-library-search",
+    "version": "0.2.1-alpha.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.247,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nuxt",
+    "version": "4.6.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.513,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "typebox",
+    "version": "1.4.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.903,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "joi",
+    "version": "18.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.334,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "argparse",
+    "version": "3.0.3",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.87,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "js-yaml",
+    "version": "5.5.0",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 2.224,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "safe-stable-stringify",
+    "version": "3.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.705,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-native-gesture-handler",
+    "version": "3.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 4.907,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "eslint",
+    "version": "10.13.0",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 4.955,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vitest",
+    "version": "5.0.5",
+    "decision": "BLOCK",
+    "evidence": [
+      "decode_and_execute",
+      "env_harvesting",
+      "obfuscated_code"
+    ],
+    "evidence_count": 5,
+    "limitations_count": 5,
+    "seconds": 2.491,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-native-svg",
+    "version": "15.16.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 3.372,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "qs",
+    "version": "6.16.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.884,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "igdb-kit",
+    "version": "0.8.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.372,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@sonarapp/mcp",
+    "version": "0.13.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.432,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react",
+    "version": "19.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.394,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dotenv",
+    "version": "18.0.8",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.022,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@angular/core",
+    "version": "22.2.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.472,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mqtt",
+    "version": "5.16.1",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.824,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-dom",
+    "version": "19.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 8.114,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cypress",
+    "version": "16.2.0",
+    "decision": "WARN",
+    "evidence": [
+      "env_harvesting",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 8.017,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tape",
+    "version": "5.10.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.342,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "webpack",
+    "version": "5.112.0",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present",
+      "obfuscated_code"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 15.658,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mysql2",
+    "version": "3.24.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.179,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "playwright",
+    "version": "1.64.1",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write",
+      "env_harvesting"
+    ],
+    "evidence_count": 5,
+    "limitations_count": 5,
+    "seconds": 9.104,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "got",
+    "version": "16.1.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.199,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "toml",
+    "version": "5.0.1",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.121,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fastify",
+    "version": "5.12.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.507,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vue",
+    "version": "3.5.44",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.906,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss",
+    "version": "8.5.30",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.24,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-merge-rules",
+    "version": "9.1.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.835,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-native-screens",
+    "version": "4.30.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 3.947,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swc/core",
+    "version": "1.16.18",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.082,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jsep",
+    "version": "1.6.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.134,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-ordered-values",
+    "version": "9.0.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.076,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "zod",
+    "version": "4.6.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.328,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "uuid",
+    "version": "14.0.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.028,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "express",
+    "version": "5.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.053,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cron-parser",
+    "version": "5.10.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.06,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "del",
+    "version": "9.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.016,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-discard-overridden",
+    "version": "9.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.012,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "koffi",
+    "version": "3.3.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.617,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-reduce-initial",
+    "version": "9.0.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.339,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "concurrently",
+    "version": "10.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.814,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "preact",
+    "version": "11.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.011,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "readable-stream",
+    "version": "4.8.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.99,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "chrono-node",
+    "version": "2.10.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 5.159,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prettier",
+    "version": "3.9.10",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 4.707,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "bezier-easing",
+    "version": "3.2.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.267,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@babel/core",
+    "version": "8.0.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.24,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@safedep/vet",
+    "version": "1.20.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.267,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "solid-js",
+    "version": "1.9.17",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.757,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nanoid",
+    "version": "6.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.238,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@csstools/postcss-is-pseudo-class",
+    "version": "6.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.02,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "inquirer",
+    "version": "14.2.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.036,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "pino",
+    "version": "10.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.404,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@mediapipe/tasks-vision",
+    "version": "1.1.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 19.802,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@alpay_altuntas/chaperone",
+    "version": "0.6.0",
+    "decision": "BLOCK",
+    "evidence": [
+      "decode_and_execute"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 0.831,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tar-stream",
+    "version": "3.2.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.434,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@csstools/postcss-trigonometric-functions",
+    "version": "5.0.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.284,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@csstools/postcss-progressive-custom-properties",
+    "version": "5.1.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.431,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "supertest",
+    "version": "7.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.815,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "svelte",
+    "version": "5.57.2",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 2.109,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "remix",
+    "version": "3.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.074,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tag-per-track-mcp",
+    "version": "1.6.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.457,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "chai",
+    "version": "6.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.07,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "stylelint",
+    "version": "17.16.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.841,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "pg",
+    "version": "8.23.1",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.125,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mocha",
+    "version": "12.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.282,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-history",
+    "version": "1.5.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.015,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "redis",
+    "version": "6.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.496,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@mrfentmen/spotify-mcp",
+    "version": "1.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.599,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fast-xml-parser",
+    "version": "5.11.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.088,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "amqplib",
+    "version": "2.2.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.483,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "chalk",
+    "version": "6.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.0,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@react-email/ui",
+    "version": "6.11.3",
+    "decision": "WARN",
+    "evidence": [
+      "env_harvesting",
+      "native_binary_present",
+      "obfuscated_code"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 33.412,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ansi-regex",
+    "version": "6.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.676,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@pipeworx/mcp-radio",
+    "version": "1.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.201,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ws",
+    "version": "8.22.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.121,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "import-fresh",
+    "version": "4.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.102,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tinker-agent-pet",
+    "version": "0.1.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.407,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mongodb",
+    "version": "7.7.0",
+    "decision": "BLOCK",
+    "evidence": [
+      "install_script_executes",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 4.039,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-transform",
+    "version": "1.12.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.226,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-view",
+    "version": "1.42.6",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.412,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "string-width",
+    "version": "8.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.184,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "engine.io",
+    "version": "6.6.11",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.077,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "socket.io",
+    "version": "4.8.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.349,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-dropcursor",
+    "version": "1.8.4",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.232,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "unicorn-magic",
+    "version": "0.4.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.177,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "housestyle-mcp",
+    "version": "1.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.049,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "socket.io-client",
+    "version": "4.8.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.642,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@hristo2612/aso-cli",
+    "version": "0.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.242,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fs-extra",
+    "version": "11.4.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.228,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "boxen",
+    "version": "9.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.035,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "superagent",
+    "version": "10.4.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.408,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tag-per-track-agentkit",
+    "version": "1.3.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.211,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@codemirror/state",
+    "version": "6.7.6",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.371,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@naverpay/pite",
+    "version": "2.4.0",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.193,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@kongyo2/npm-info-mcp-server",
+    "version": "1.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.22,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "wrap-ansi",
+    "version": "10.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.121,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-model",
+    "version": "1.25.12",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.54,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jest",
+    "version": "30.5.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.157,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "yargs",
+    "version": "18.2.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.293,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "get-east-asian-width",
+    "version": "1.7.0",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.087,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "make-fixture",
+    "version": "1.5.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.097,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "autoprefixer",
+    "version": "10.6.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.348,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "multer",
+    "version": "2.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.582,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "typeorm",
+    "version": "1.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 14.99,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ob1",
+    "version": "0.87.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.015,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@formatjs/intl-localematcher",
+    "version": "0.9.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.77,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "moment",
+    "version": "2.31.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.924,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "compression",
+    "version": "1.8.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.32,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "yaml",
+    "version": "2.9.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.368,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "adm-zip",
+    "version": "0.6.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.118,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "morgan",
+    "version": "1.12.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.513,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dsh-plugin-recommend",
+    "version": "1.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.05,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "time-to-seconds",
+    "version": "2.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.728,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@yao-pkg/pkg-fetch",
+    "version": "3.6.6",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.061,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "figlet",
+    "version": "1.12.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 13.585,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@keboola/codemirror-lang-sql",
+    "version": "0.7.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.602,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dsh-skill-store",
+    "version": "0.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.147,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jest-changed-files",
+    "version": "30.5.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.192,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@codemirror/search",
+    "version": "6.7.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.734,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "less",
+    "version": "4.9.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.529,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@pnpm/deps.graph-sequencer",
+    "version": "1101.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.177,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mcp-metacritic",
+    "version": "2.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.776,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fastq",
+    "version": "1.20.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.049,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "css-loader",
+    "version": "7.1.5",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.099,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-share-lite",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.106,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "regl-line2d",
+    "version": "3.1.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.028,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "picomatch",
+    "version": "4.0.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.124,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "restify",
+    "version": "12.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.193,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@lingxi-ai-cn/dsh-plugin-hub",
+    "version": "0.1.0-rc.8",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.015,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "papaparse",
+    "version": "5.7.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.101,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "axios",
+    "version": "1.20.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.666,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@cdklabs/cdk-construct-analyzer",
+    "version": "0.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.607,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "globby",
+    "version": "16.2.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.846,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "config",
+    "version": "5.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.971,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "github-explore",
+    "version": "3.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.888,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dayjs",
+    "version": "1.11.23",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.846,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tailwindcss-logical",
+    "version": "5.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.705,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "pyodide",
+    "version": "314.0.7",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 12.046,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@universal-mcp-toolkit/server-hackernews",
+    "version": "0.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.83,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "github-repo-stats",
+    "version": "1.0.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.735,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "esbuild",
+    "version": "0.28.2",
+    "decision": "BLOCK",
+    "evidence": [
+      "install_script_executes",
+      "install_script_network",
+      "install_script_present"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 0.777,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-commands",
+    "version": "1.7.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.941,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-native-worklets",
+    "version": "0.13.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 6,
+    "limitations_count": 5,
+    "seconds": 14.805,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ipaddr.js",
+    "version": "2.5.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.932,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@turf/boolean-within",
+    "version": "7.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.82,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nice-grpc",
+    "version": "2.1.17",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.273,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@turf/boolean-clockwise",
+    "version": "7.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.618,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@turf/distance-weight",
+    "version": "7.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.572,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@turf/dissolve",
+    "version": "7.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.651,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@turf/boolean-touches",
+    "version": "7.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.614,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "grunt",
+    "version": "1.6.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.755,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "npm-advisor-mcp",
+    "version": "0.1.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.957,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dotenv-expand",
+    "version": "1000.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.088,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "supports-color",
+    "version": "11.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.86,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ioredis",
+    "version": "6.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.594,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "minimatch",
+    "version": "10.2.6",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.674,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ansi-styles",
+    "version": "7.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.938,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "opentechalyzer",
+    "version": "0.4.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.288,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "thingies",
+    "version": "2.6.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.69,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "color-normalize",
+    "version": "2.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.472,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "color-rgba",
+    "version": "3.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.642,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@azure/abort-controller",
+    "version": "2.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.729,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@azure/logger",
+    "version": "1.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.157,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tailwindcss",
+    "version": "4.3.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.317,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tar",
+    "version": "7.5.22",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 3.426,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "helmet",
+    "version": "8.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.869,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "iso-639-1",
+    "version": "3.1.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.143,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sinon",
+    "version": "22.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 5.031,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@prisma/client",
+    "version": "7.10.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 56.717,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cookie",
+    "version": "2.0.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.865,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@pinelab/vendure-plugin-popularity-scores",
+    "version": "1.11.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.382,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sisteransi",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.027,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "typescript",
+    "version": "7.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.745,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "immutable",
+    "version": "5.1.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.205,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@sinclair/typebox",
+    "version": "0.34.52",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 4.228,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ora",
+    "version": "9.4.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.415,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "knex",
+    "version": "3.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.575,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "semver",
+    "version": "7.8.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.412,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@rakeshroushan/reposcout",
+    "version": "0.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.504,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "body-parser",
+    "version": "2.3.0",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.069,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "socket.io-adapter",
+    "version": "2.5.8",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.174,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@codemirror/lint",
+    "version": "6.9.7",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.104,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "useragentsdata",
+    "version": "1.1.44",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.099,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@isaacs/ttlcache",
+    "version": "2.1.5",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.058,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "commander",
+    "version": "15.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.141,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "human-names",
+    "version": "1.0.13",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.079,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mongo-query-compiler",
+    "version": "1.0.10",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.036,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@den.dance/google-trends-mcp",
+    "version": "1.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.027,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "koa",
+    "version": "3.2.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.061,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "movie-info",
+    "version": "3.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.044,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@carbon-cashmere/x402-mcp",
+    "version": "0.2.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.052,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@npmcli/installed-package-contents",
+    "version": "5.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.023,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@npmcli/fs",
+    "version": "6.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.035,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "archiver",
+    "version": "8.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.061,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "lit",
+    "version": "3.3.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.101,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "csv-parser",
+    "version": "3.2.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.039,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@protobufjs/codegen",
+    "version": "2.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.023,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "lit-html",
+    "version": "3.3.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.338,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ajv",
+    "version": "8.20.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.483,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "stylis",
+    "version": "4.4.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.287,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@haus-tech/product-popularity-plugin",
+    "version": "3.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.469,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@react-pdf/fns",
+    "version": "3.1.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.645,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@zxcvbn-ts/language-pl",
+    "version": "4.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.852,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "streaming-availability",
+    "version": "4.5.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.454,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "path-to-regexp",
+    "version": "8.4.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.324,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swc/cli",
+    "version": "0.8.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.166,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "validator",
+    "version": "13.15.35",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 4,
+    "limitations_count": 5,
+    "seconds": 0.882,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "uuidv7",
+    "version": "1.2.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.244,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "array-back",
+    "version": "6.2.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.055,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "needle",
+    "version": "3.5.0",
+    "decision": "BLOCK",
+    "evidence": [
+      "ci_write",
+      "decode_and_execute",
+      "obfuscated_code"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 0.18,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@sencha/ext-modern-theme-material",
+    "version": "8.0.0",
+    "decision": "BLOCK",
+    "evidence": [
+      "install_script_executes",
+      "install_script_network",
+      "install_script_present"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 0.775,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "lodash",
+    "version": "4.18.1",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.194,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-gapcursor",
+    "version": "1.4.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.445,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "strip-ansi",
+    "version": "7.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.049,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nyc",
+    "version": "18.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.04,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@vscode/web-custom-data",
+    "version": "0.6.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.086,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nodemon",
+    "version": "3.1.14",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.456,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "date-fns",
+    "version": "4.4.0",
+    "decision": "WARN",
+    "evidence": [
+      "inspection_failed"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 4.14,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "meow",
+    "version": "14.1.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.251,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sequelize",
+    "version": "6.37.8",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 2.021,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "rimraf",
+    "version": "6.1.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.613,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "glob",
+    "version": "13.0.6",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.546,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sqlite3",
+    "version": "6.0.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 2.7,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "onetime",
+    "version": "8.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.136,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@tinyhttp/content-disposition",
+    "version": "2.2.4",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.181,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "underscore",
+    "version": "1.13.8",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.023,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@actions/io",
+    "version": "3.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.23,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "parcel",
+    "version": "2.16.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.278,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cors",
+    "version": "2.8.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.098,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-browser-comments",
+    "version": "7.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.053,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cli-spinners",
+    "version": "3.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.048,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sort-object-keys",
+    "version": "2.1.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.037,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "serve-static",
+    "version": "2.2.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.031,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "winston",
+    "version": "3.19.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.109,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jsonwebtoken",
+    "version": "9.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.125,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@wandry/analytics-sdk",
+    "version": "1.16.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.216,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "urllib",
+    "version": "4.9.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.255,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "chokidar",
+    "version": "5.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.172,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "sort-any",
+    "version": "4.0.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.158,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "color-string",
+    "version": "2.1.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.055,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "node-html-markdown",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.069,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "markdownlint-cli2-formatter-default",
+    "version": "0.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.039,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "bcryptjs",
+    "version": "3.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.08,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-state",
+    "version": "1.4.4",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.125,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-inputrules",
+    "version": "1.5.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.117,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "index-to-position",
+    "version": "1.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.042,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "yup",
+    "version": "1.7.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.269,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "better-sqlite3",
+    "version": "13.0.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 8,
+    "limitations_count": 5,
+    "seconds": 18.428,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "find-up",
+    "version": "8.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.628,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "debug",
+    "version": "4.4.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.32,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ramda",
+    "version": "0.32.0",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present",
+      "obfuscated_code"
+    ],
+    "evidence_count": 3,
+    "limitations_count": 5,
+    "seconds": 1.167,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "simple-swizzle",
+    "version": "0.2.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.401,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "astro-mcp-server",
+    "version": "1.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.123,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "make-dir",
+    "version": "5.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.041,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "run-applescript",
+    "version": "7.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.081,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "loupe",
+    "version": "3.2.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.588,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@datanimbus/mongoose",
+    "version": "6.13.10",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.943,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fraction.js",
+    "version": "5.3.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.813,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "r6operators",
+    "version": "2.12.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.855,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fdir",
+    "version": "6.5.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.417,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "serve-favicon",
+    "version": "2.5.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.236,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@jridgewell/gen-mapping",
+    "version": "0.3.13",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.319,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "log-symbols",
+    "version": "7.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.576,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "gulp",
+    "version": "5.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.58,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "medusa-plugin-extended-products",
+    "version": "0.0.33",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present",
+      "obfuscated_code"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 0.863,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "gatsby",
+    "version": "5.16.1",
+    "decision": "WARN",
+    "evidence": [
+      "env_harvesting",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 4.209,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "shelljs",
+    "version": "0.10.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.483,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@applitools/docker-compose-mocha",
+    "version": "2.0.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.233,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-keymap",
+    "version": "1.2.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.073,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "long",
+    "version": "5.3.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.073,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "nconf",
+    "version": "0.13.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.077,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "parse-json",
+    "version": "8.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.072,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "bcrypt",
+    "version": "6.0.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write",
+      "install_script_present",
+      "native_binary_present"
+    ],
+    "evidence_count": 13,
+    "limitations_count": 5,
+    "seconds": 0.598,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "array-equal",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.047,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "pirates",
+    "version": "4.0.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.31,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "remark-rehype",
+    "version": "11.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.361,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "browser-sync-client",
+    "version": "3.0.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.374,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dog-names",
+    "version": "3.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.433,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "luxon",
+    "version": "3.7.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 2.981,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prosemirror-schema-list",
+    "version": "1.5.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.463,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "shortid",
+    "version": "2.2.17",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.093,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mediaspace",
+    "version": "1.4.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.429,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fifo-ttl-cache",
+    "version": "1.1.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.1,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cross-spawn",
+    "version": "7.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.025,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "point-in-polygon-hao",
+    "version": "1.2.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.051,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fast-glob",
+    "version": "3.3.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.103,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "discontinuous-range",
+    "version": "1.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.186,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "small-date",
+    "version": "2.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.168,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "tslib",
+    "version": "2.8.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.171,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cookie-signature",
+    "version": "1.2.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.048,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "picocolors",
+    "version": "1.1.1",
+    "decision": "WARN",
+    "evidence": [
+      "obfuscated_code"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.05,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cookie-parser",
+    "version": "1.4.7",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.02,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "costro",
+    "version": "2.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.063,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "npm-increaser-downloads",
+    "version": "1.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.076,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "standard",
+    "version": "17.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.076,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "loglevel",
+    "version": "1.9.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.046,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "micromatch",
+    "version": "4.0.8",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.04,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "url",
+    "version": "0.11.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.03,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cli-cursor",
+    "version": "5.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.026,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "i18n-iso-countries",
+    "version": "7.14.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.939,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "compare-versions",
+    "version": "6.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.159,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "async",
+    "version": "3.2.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.67,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "json-logic-js",
+    "version": "2.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.677,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "superstruct",
+    "version": "2.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.848,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "stream",
+    "version": "0.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.776,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "deep-eql",
+    "version": "5.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.412,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "rfdc",
+    "version": "1.4.1",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.541,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "rxjs",
+    "version": "7.8.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.11,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "to-rotated",
+    "version": "1.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.32,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fill-range",
+    "version": "7.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.263,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "style-loader",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.049,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "eastasianwidth",
+    "version": "0.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.116,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "figures",
+    "version": "6.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.037,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "eslint-config-airbnb-typescript",
+    "version": "18.0.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.038,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "dotenv-safe",
+    "version": "9.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.04,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "find-workspaces",
+    "version": "0.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.026,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "arch",
+    "version": "3.0.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.024,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@swc/counter",
+    "version": "0.1.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.018,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "has-tostringtag",
+    "version": "1.0.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.013,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@jimp/jpeg",
+    "version": "0.22.12",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.045,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/gapi.people",
+    "version": "1.0.13",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.017,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/twitter-text",
+    "version": "3.1.10",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.017,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/react-google-recaptcha",
+    "version": "2.1.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.019,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "union",
+    "version": "0.6.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 0.028,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "browserslist-to-esbuild",
+    "version": "2.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.028,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "strip-final-newline",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.777,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@csstools/normalize.css",
+    "version": "12.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.976,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/ungap__structured-clone",
+    "version": "1.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.032,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@codemirror/lang-wast",
+    "version": "6.0.2",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.371,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "change-case-all",
+    "version": "2.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.831,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/npmlog",
+    "version": "7.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.502,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "material-icons-list",
+    "version": "1.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.848,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "passport",
+    "version": "0.7.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.914,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/clean-css",
+    "version": "4.2.11",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.522,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/ssri",
+    "version": "7.1.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.501,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@types/keygrip",
+    "version": "1.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.017,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "lines-and-columns",
+    "version": "2.0.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.633,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "storybook-source-link",
+    "version": "4.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.808,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "define-properties",
+    "version": "1.2.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.14,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "crypto-js",
+    "version": "4.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.225,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "node-fetch",
+    "version": "3.3.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.004,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "titleize",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.281,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vscode-oniguruma",
+    "version": "2.0.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "native_binary_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 2.963,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "specificity",
+    "version": "1.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.998,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@storybook/core",
+    "version": "8.6.14",
+    "decision": "WARN",
+    "evidence": [
+      "env_harvesting",
+      "obfuscated_code"
+    ],
+    "evidence_count": 15,
+    "limitations_count": 5,
+    "seconds": 10.363,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fast-diff",
+    "version": "1.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.919,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@zaxiya/popularity-metric",
+    "version": "1.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.612,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mkdirp",
+    "version": "3.0.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.67,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "colorette",
+    "version": "2.0.20",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.091,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "xml2js",
+    "version": "0.6.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.677,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "d3-delaunay",
+    "version": "6.0.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.662,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "log4js",
+    "version": "6.9.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.683,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "pkg-fetch",
+    "version": "3.5.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.941,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "citeproc",
+    "version": "2.4.63",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.063,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vvalidation",
+    "version": "2.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.46,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "webpack-subresource-integrity",
+    "version": "5.2.0-rc.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.468,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@ee-tools/rxs",
+    "version": "0.1.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.083,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "streamroller",
+    "version": "3.1.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.225,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "minimist",
+    "version": "1.2.8",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.131,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cuid",
+    "version": "3.0.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 0.107,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "markdown-escape",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.06,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "util",
+    "version": "0.12.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.081,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "kleur",
+    "version": "4.1.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.067,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@iconify/types",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.103,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "json-stringify-pretty-compact",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.602,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "foreach",
+    "version": "2.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.791,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@deepr/runtime",
+    "version": "1.1.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.463,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "@riscarrott/storybook-source-link",
+    "version": "2.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.923,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "babel-preset-minify",
+    "version": "0.5.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.323,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vue-scrolling-table",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.739,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jmespath",
+    "version": "0.16.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.297,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "javalon",
+    "version": "1.0.36",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 4.134,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jsprim",
+    "version": "2.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.053,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "jshint",
+    "version": "2.13.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 5.706,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cli-table",
+    "version": "0.3.11",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.722,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "asn1",
+    "version": "0.2.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.641,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "angular",
+    "version": "1.8.3",
+    "decision": "BLOCK",
+    "evidence": [
+      "decode_and_execute"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 6.431,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "iso-3166-1",
+    "version": "2.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.683,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "common-tags",
+    "version": "1.8.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.357,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "internmap",
+    "version": "2.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.889,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "parse-numeric-range",
+    "version": "1.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.928,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "buffer-from",
+    "version": "1.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.232,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "has-flag",
+    "version": "5.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.088,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "os",
+    "version": "0.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.121,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "d3-random",
+    "version": "3.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.736,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "prettier-plugin-groq",
+    "version": "0.2.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.249,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fixedsys-css",
+    "version": "0.0.6",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.955,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "d3-ease",
+    "version": "3.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.053,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "d3-dsv",
+    "version": "3.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.077,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "json-stringify-nice",
+    "version": "1.1.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.076,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "array-union",
+    "version": "3.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.741,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "array-uniq",
+    "version": "3.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.516,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "shoulder",
+    "version": "2.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.824,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "popular-english-words",
+    "version": "1.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 6.418,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "events",
+    "version": "3.3.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.571,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "holderjs",
+    "version": "2.9.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.84,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "bunyan",
+    "version": "1.8.15",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.653,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "array-normalize",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.355,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "reduce-css-calc",
+    "version": "2.1.8",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.48,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "json-schema-traverse",
+    "version": "1.0.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 1.426,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ms",
+    "version": "2.1.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.807,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "graphql-normalizr",
+    "version": "2.10.3",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.304,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "compute-gcd",
+    "version": "1.2.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.994,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "compute-lcm",
+    "version": "1.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.095,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "xhr",
+    "version": "2.6.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.177,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "requirejs-config-file",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.269,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "create-require",
+    "version": "1.1.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.262,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "copyfiles",
+    "version": "2.4.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.436,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "glslify-deps",
+    "version": "1.3.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.238,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "is-hotkey",
+    "version": "0.2.0",
+    "decision": "WARN",
+    "evidence": [
+      "ci_write",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 2.075,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "merge-options",
+    "version": "3.0.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.723,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fast-formula-parser",
+    "version": "1.0.19",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 3.547,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "xlsx",
+    "version": "0.18.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 17.061,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "typedarray-to-buffer",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.526,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "buffer",
+    "version": "6.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 2.245,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vue-property-decorator",
+    "version": "9.1.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.447,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-flexbugs-fixes",
+    "version": "5.0.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.377,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "file-saver",
+    "version": "2.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.933,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "icss-utils",
+    "version": "5.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.139,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "process-utils",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.032,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "get-browser-rtc",
+    "version": "1.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.873,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "eslint-plugin-es",
+    "version": "4.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.323,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "clipboard-copy",
+    "version": "4.0.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.012,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "base64-js",
+    "version": "1.5.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.996,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "gulp-sourcemaps",
+    "version": "3.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.972,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "suf-log",
+    "version": "2.5.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.898,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "temp",
+    "version": "0.9.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.954,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-native-iphone-x-helper",
+    "version": "1.3.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.132,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "promptly",
+    "version": "3.2.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.077,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "fromentries",
+    "version": "1.3.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.074,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "is-buffer",
+    "version": "2.0.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.157,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "broccoli-output-wrapper",
+    "version": "3.2.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.449,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "circular-dependency-plugin",
+    "version": "5.2.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.17,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ieee754",
+    "version": "1.2.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.127,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "gensync",
+    "version": "1.0.0-beta.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.176,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-color",
+    "version": "2.19.3",
+    "decision": "WARN",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.593,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "file-loader",
+    "version": "6.2.0",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.238,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "timers-browserify",
+    "version": "2.0.12",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.03,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "run-series",
+    "version": "1.1.9",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 0.933,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "lru_map",
+    "version": "0.4.1",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.234,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "vuedraggable",
+    "version": "2.24.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.672,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "rollup-plugin-peer-deps-external",
+    "version": "2.2.4",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.303,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "cldrjs",
+    "version": "0.5.5",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.578,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "mdast-add-list-metadata",
+    "version": "1.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.494,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "base-64",
+    "version": "1.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.522,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "create-react-class",
+    "version": "15.7.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.165,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "postcss-modules-values",
+    "version": "4.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.244,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "keycharm",
+    "version": "0.4.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.296,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "ssim.js",
+    "version": "3.5.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.756,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "raw-loader",
+    "version": "4.0.2",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.488,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "url-loader",
+    "version": "4.1.1",
+    "decision": "ALLOW",
+    "evidence": [
+      "install_script_present"
+    ],
+    "evidence_count": 1,
+    "limitations_count": 5,
+    "seconds": 1.663,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "matchit",
+    "version": "1.1.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.194,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "react-use-form-state",
+    "version": "0.13.2",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.074,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "array-timsort",
+    "version": "1.0.3",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.124,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "yoga-layout-prebuilt",
+    "version": "1.10.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.543,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "yargs-unparser",
+    "version": "2.0.0",
+    "decision": "ALLOW",
+    "evidence": [],
+    "evidence_count": 0,
+    "limitations_count": 5,
+    "seconds": 1.357,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "next",
+    "version": "16.4.2",
+    "decision": "BLOCK",
+    "evidence": [
+      "decode_and_execute",
+      "env_harvesting",
+      "inspection_failed",
+      "obfuscated_code"
+    ],
+    "evidence_count": 65,
+    "limitations_count": 5,
+    "seconds": 107.263,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  },
+  {
+    "package": "onnxruntime-node",
+    "version": "1.30.0",
+    "decision": "WARN",
+    "evidence": [
+      "inspection_failed",
+      "install_script_present"
+    ],
+    "evidence_count": 2,
+    "limitations_count": 5,
+    "seconds": 74.896,
+    "has_dynamic_and_blob": false,
+    "status": "ok"
+  }
+]

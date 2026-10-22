@@ -1230,18 +1230,6 @@ def scan_new_content(
         # Check 2: Deterministic scan budget for large files (> 2 MB)
         exceeds_scan_budget = file_size > MAX_SCAN_BYTES_PER_FILE
         if exceeds_scan_budget:
-            ev_inc = _apply_budget_exceeded_cheap_checks(
-                rel_path=rel_path,
-                file_bytes=file_bytes,
-                old=old,
-                old_caps=old_caps,
-                is_install_target=is_install_target,
-                reason=(
-                    f"size {file_size} exceeds deterministic regex budget "
-                    f"({MAX_SCAN_BYTES_PER_FILE} bytes)"
-                ),
-            )
-            evidence.extend(ev_inc)
             scan_bytes = file_bytes[:MAX_SCAN_BYTES_PER_FILE]
             raw_text = scan_bytes.decode("utf-8", errors="replace")
         else:
@@ -1356,16 +1344,6 @@ def scan_new_content(
         for line_no, line in enumerate(inspect_lines, 1):
             ops_count += 1
             if ops_count > MAX_REGEX_OPS_PER_FILE:
-                if not exceeds_scan_budget:
-                    ev_inc = _apply_budget_exceeded_cheap_checks(
-                        rel_path=rel_path,
-                        file_bytes=file_bytes,
-                        old=old,
-                        old_caps=old_caps,
-                        is_install_target=is_install_target,
-                        reason=f"operation count exceeded {MAX_REGEX_OPS_PER_FILE} ops budget",
-                    )
-                    evidence.extend(ev_inc)
                 budget_timed_out = True
                 break
 
@@ -1768,20 +1746,6 @@ def scan_full_release(
         # Check 2: Deterministic scan budget for large files (> 2 MB)
         exceeds_scan_budget = file_size > MAX_SCAN_BYTES_PER_FILE
         if exceeds_scan_budget:
-            evidence.append(
-                Evidence(
-                    id="inspection_incomplete",
-                    severity=Severity.HIGH if is_install_target else Severity.MEDIUM,
-                    file=rel_path,
-                    explanation=(
-                        f"File '{rel_path}' size ({file_size} bytes) exceeds deterministic "
-                        f"regex budget ({MAX_SCAN_BYTES_PER_FILE} bytes); deep inspection bounded."
-                    ),
-                    legitimate_use_note=(
-                        "Extremely large files can exceed analysis resource budgets."
-                    ),
-                )
-            )
             scan_bytes = file_bytes[:MAX_SCAN_BYTES_PER_FILE]
             raw_text = scan_bytes.decode("utf-8", errors="replace")
         else:

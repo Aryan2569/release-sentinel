@@ -245,6 +245,7 @@ def run_worker(pair: dict[str, str]) -> None:
             discovery_date=discovery_date,
             new_version=new_ver,
             registry_client=client,
+            samples_root=SAMPLES_ROOT,
         )
         elapsed = round(time.perf_counter() - t0, 3)
         ev_types = sorted({e.id for e in eval_res.evidence})

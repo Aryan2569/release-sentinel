@@ -334,6 +334,73 @@
         "incomp": 124,
         "incomp_pct": 100.0
       }
+    },
+    "v1.3.1": {
+      "ALL": {
+        "pairs": 1349,
+        "fc_warn": 1218,
+        "fc_warn_pct": 90.29,
+        "fc_block": 1102,
+        "fc_block_pct": 81.69,
+        "eo_warn": 1213,
+        "eo_warn_pct": 89.92,
+        "eo_block": 1102,
+        "eo_block_pct": 81.69,
+        "incomp": 1349,
+        "incomp_pct": 100.0
+      },
+      "DEV": {
+        "pairs": 857,
+        "fc_warn": 848,
+        "fc_warn_pct": 98.95,
+        "fc_block": 811,
+        "fc_block_pct": 94.63,
+        "eo_warn": 848,
+        "eo_warn_pct": 98.95,
+        "eo_block": 811,
+        "eo_block_pct": 94.63,
+        "incomp": 857,
+        "incomp_pct": 100.0
+      },
+      "VAL": {
+        "pairs": 94,
+        "fc_warn": 94,
+        "fc_warn_pct": 100.0,
+        "fc_block": 91,
+        "fc_block_pct": 96.81,
+        "eo_warn": 94,
+        "eo_warn_pct": 100.0,
+        "eo_block": 91,
+        "eo_block_pct": 96.81,
+        "incomp": 94,
+        "incomp_pct": 100.0
+      },
+      "TEST-A": {
+        "pairs": 274,
+        "fc_warn": 263,
+        "fc_warn_pct": 95.99,
+        "fc_block": 197,
+        "fc_block_pct": 71.9,
+        "eo_warn": 262,
+        "eo_warn_pct": 95.62,
+        "eo_block": 197,
+        "eo_block_pct": 71.9,
+        "incomp": 274,
+        "incomp_pct": 100.0
+      },
+      "TEST-B": {
+        "pairs": 124,
+        "fc_warn": 13,
+        "fc_warn_pct": 10.48,
+        "fc_block": 3,
+        "fc_block_pct": 2.42,
+        "eo_warn": 9,
+        "eo_warn_pct": 7.26,
+        "eo_block": 3,
+        "eo_block_pct": 2.42,
+        "incomp": 124,
+        "incomp_pct": 100.0
+      }
     }
   },
   "campaign": {
@@ -921,6 +988,123 @@
         "macro_eo_warn_pct": 60.68,
         "macro_eo_block_pct": 40.17
       }
+    },
+    "v1.3.1": {
+      "ALL": {
+        "campaigns": 140,
+        "lenient_fc_warn": 127,
+        "lenient_fc_warn_pct": 90.71,
+        "lenient_fc_block": 82,
+        "lenient_fc_block_pct": 58.57,
+        "lenient_eo_warn": 127,
+        "lenient_eo_warn_pct": 90.71,
+        "lenient_eo_warn_ci": [
+          84.64,
+          94.96
+        ],
+        "lenient_eo_block": 82,
+        "lenient_eo_block_pct": 58.57,
+        "lenient_eo_block_ci": [
+          49.95,
+          66.83
+        ],
+        "macro_fc_warn_pct": 89.42,
+        "macro_fc_block_pct": 57.53,
+        "macro_eo_warn_pct": 89.38,
+        "macro_eo_block_pct": 57.53
+      },
+      "DEV": {
+        "campaigns": 53,
+        "lenient_fc_warn": 48,
+        "lenient_fc_warn_pct": 90.57,
+        "lenient_fc_block": 12,
+        "lenient_fc_block_pct": 22.64,
+        "lenient_eo_warn": 48,
+        "lenient_eo_warn_pct": 90.57,
+        "lenient_eo_warn_ci": [
+          79.34,
+          96.87
+        ],
+        "lenient_eo_block": 12,
+        "lenient_eo_block_pct": 22.64,
+        "lenient_eo_block_ci": [
+          12.28,
+          36.21
+        ],
+        "macro_fc_warn_pct": 89.06,
+        "macro_fc_block_pct": 22.01,
+        "macro_eo_warn_pct": 89.06,
+        "macro_eo_block_pct": 22.01
+      },
+      "VAL": {
+        "campaigns": 12,
+        "lenient_fc_warn": 12,
+        "lenient_fc_warn_pct": 100.0,
+        "lenient_fc_block": 9,
+        "lenient_fc_block_pct": 75.0,
+        "lenient_eo_warn": 12,
+        "lenient_eo_warn_pct": 100.0,
+        "lenient_eo_warn_ci": [
+          73.54,
+          100.0
+        ],
+        "lenient_eo_block": 9,
+        "lenient_eo_block_pct": 75.0,
+        "lenient_eo_block_ci": [
+          42.81,
+          94.51
+        ],
+        "macro_fc_warn_pct": 100.0,
+        "macro_fc_block_pct": 75.0,
+        "macro_eo_warn_pct": 100.0,
+        "macro_eo_block_pct": 75.0
+      },
+      "TEST-A": {
+        "campaigns": 70,
+        "lenient_fc_warn": 63,
+        "lenient_fc_warn_pct": 90.0,
+        "lenient_fc_block": 58,
+        "lenient_fc_block_pct": 82.86,
+        "lenient_eo_warn": 63,
+        "lenient_eo_warn_pct": 90.0,
+        "lenient_eo_warn_ci": [
+          80.48,
+          95.88
+        ],
+        "lenient_eo_block": 58,
+        "lenient_eo_block_pct": 82.86,
+        "lenient_eo_block_ci": [
+          71.97,
+          90.82
+        ],
+        "macro_fc_warn_pct": 89.88,
+        "macro_fc_block_pct": 82.67,
+        "macro_eo_warn_pct": 89.85,
+        "macro_eo_block_pct": 82.67
+      },
+      "TEST-B": {
+        "campaigns": 5,
+        "lenient_fc_warn": 4,
+        "lenient_fc_warn_pct": 80.0,
+        "lenient_fc_block": 3,
+        "lenient_fc_block_pct": 60.0,
+        "lenient_eo_warn": 4,
+        "lenient_eo_warn_pct": 80.0,
+        "lenient_eo_warn_ci": [
+          28.36,
+          99.49
+        ],
+        "lenient_eo_block": 3,
+        "lenient_eo_block_pct": 60.0,
+        "lenient_eo_block_ci": [
+          14.66,
+          94.73
+        ],
+        "macro_fc_warn_pct": 61.36,
+        "macro_fc_block_pct": 40.17,
+        "macro_eo_warn_pct": 60.68,
+        "macro_eo_block_pct": 40.17
+      }
     }
   },
   "benign": {
@@ -1058,6 +1242,33 @@
         "false_blocks": 0,
         "false_block_ci_upper_pct": 0.374
       }
+    },
+    "v1.3.1": {
+      "tuning_smoke": {
+        "pairs": 100,
+        "alerts": 11,
+        "alert_rate_per_100": 11.0,
+        "false_blocks": 0
+      },
+      "validation_smoke": {
+        "pairs": 100,
+        "alerts": 4,
+        "alert_rate_per_100": 4.0,
+        "false_blocks": 0
+      },
+      "matched_negatives": {
+        "pairs": 600,
+        "alerts": 98,
+        "alert_rate_per_100": 16.33,
+        "false_blocks": 0
+      },
+      "total_benign": {
+        "pairs": 800,
+        "alerts": 113,
+        "alert_rate_per_100": 14.12,
+        "false_blocks": 0,
+        "false_block_ci_upper_pct": 0.374
+      }
     }
   },
   "dependency_additions": {
@@ -1146,6 +1357,17 @@
         "matched_negatives": "data/matched_negatives_results_v9.jsonl"
       },
       "detector_code_sha256": "f746fe66126d41316dc1566c1ecb59ab908749baa6d4ad30aef05e5b2cc906ff"
+    },
+    "v1.3.1": {
+      "git_tag": "v1.3.1",
+      "commit_sha": "HEAD",
+      "malicious_results_jsonl": "data/eval_results_v10.jsonl",
+      "benign_results": {
+        "tuning_smoke": "data/smoke_results_v10.csv",
+        "validation_smoke": "data/smoke_validation_v10.csv",
+        "matched_negatives": "data/matched_negatives_results_v10.jsonl"
+      },
+      "detector_code_sha256": "f7893168de503bbd70f30adcc5e2af56803ce0056e0548db9ec5d55b1c9ee054"
     }
   }
 }

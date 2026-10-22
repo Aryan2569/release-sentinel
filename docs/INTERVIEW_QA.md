@@ -259,3 +259,35 @@ In v1.3 (Stage 5g Part 6e), this arbitrary within-day package name boundary was 
 - TEST-A comprises 70 campaigns total (and 274 pairs).
 - In both v1.1 and v1.3, TEST-A lenient WARN+ is exactly **63 / 70 (90.00%)**, and lenient BLOCK is **58 / 70 (82.86%)**. Disjointness and reproducibility are completely restored.
 
+---
+
+### Q25: What caused the two v1.3 regressions (VAL dropping 1 detection and benign alerts increasing), and how did v1.3.1 resolve them?
+**Answer**:
+During post-release auditing of v1.3, two measurement regressions were detected:
+1. **VAL Regression**:
+   - *Symptom*: VAL lost one WARN+ detection (94 $\to$ 93 pairs; 12/12 $\to$ 11/12 campaigns).
+   - *Root Cause*: In `scripts/run_eval.py`, child worker processes were invoked without `samples_root=SAMPLES_ROOT`. For the pair `axios@1.14.0@1.14.1` (Campaign `camp_0061`), the added dependency `plain-crypto-js` had been delisted from npm and resided exclusively in the local encrypted sample repository. Without `samples_root`, offline dependency replay was bypassed, yielding `unresolvable_dependency` (INFO) instead of resolving the install hook (`install_script_present`, HIGH).
+   - *Fix*: Passing `samples_root=SAMPLES_ROOT` to worker invocations restores `axios` to `WARN`, returning VAL to **94 / 94 pairs (100.0%)** and **12 / 12 campaigns (100.0%)**.
+2. **Benign Alert Increase**:
+   - *Symptom*: Benign tuning smoke alerts increased from 11 to 16 per 100, and matched negatives from 16.33% to 17.50%.
+   - *Root Cause*: In `src/release_sentinel/content_scanner.py`, files $> 2$ MB invoked `_apply_budget_exceeded_cheap_checks()`. That function unconditionally generated `inspection_incomplete` (MEDIUM) and evaluated Shannon entropy on raw slices, firing `high_entropy_string` (MEDIUM) on normal minified JS files. This falsely warned on all 5 tested versions of `typescript` (which contain a clean 9.2 MB JS bundle).
+   - *Fix*: Large files $> 2$ MB are now bounded to 2 MB of text scan without generating fail-closed budget findings. All `typescript` versions return to clean `ALLOW`. Tuning smoke alerts drop back to **11 / 100 (11.0%)**; matched negatives return to **16.33% (98/600)**; and total benign false BLOCKs remain at **0 (0.00%)** across all 800 pairs.
+
+---
+
+### Q26: Why is lenient campaign-level recall misleading without member-level reporting, and what accounts for the execution latency of "slow" evaluation pairs?
+**Answer**:
+1. **Lenient k-of-n vs. Member-Level Fractions**:
+   Under lenient campaign recall, an entire campaign is marked as "detected" if *at least one* of its member packages is detected.
+   For large campaigns, this can severely overstate real-world protection:
+   - For `camp_0136` (TEST-B, 118 members, Mastra hollow attacks): Lenient reporting claims **100% recall (1/1 WARN+, 1/1 BLOCK)**. However, member-level evaluation reveals that in v1.1 only **4 / 118 (3.39%)** were warned and **1 / 118 (0.85%)** was blocked.
+   - For `camp_0066` (TEST-A, 60 members, TanStack injection): Lenient reports 100% WARN+ and 0% BLOCK. Member-level evaluation reveals that **60 / 60 (100.0%)** are warned and **0 / 60 (0.0%)** are blocked because the injected file lacks install hooks or `eval()`.
+   Reporting both metrics side-by-side ensures operational honesty.
+2. **Latency of "Slow" Evaluation Pairs**:
+   Profiling the 8 slowest evaluation pairs (e.g. `@postman/pm-bin-*`, `@strapbuild/react-native-perspective-image-cropper`, taking 26–52s) revealed:
+   - Baseline cache read: $< 0.1$ seconds.
+   - Pure-Python ZIP decryption (`zipfile.ZipFile.read()` with `pwd=b'infected'` on 34–83 MB archives): **24.5 – 38.0 seconds** ($> 85\%$ of total time).
+   - In-memory archive structuring: 25.0 – 41.8 seconds.
+   - Content scanning and AST/regex analysis: **0.37 – 4.33 seconds**.
+   Static scanning executes in single-digit seconds even on 80 MB packages. The multi-second latency is an artifact of Python's standard library decrypting password-protected sample archives in pure software during benchmark runs, an overhead that does not exist in production npm `.tgz` operation.
+

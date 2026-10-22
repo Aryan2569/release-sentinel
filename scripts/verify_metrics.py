@@ -257,10 +257,24 @@ def verify_doc_consistency(metrics: dict[str, Any]) -> None:
     assert b_v13["pairs"] == 800, f"Expected 800 benign pairs, got {b_v13['pairs']}"
     assert b_v13["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v13['false_blocks']}"
 
+    # Verify that v1.3.1 maintains 0 false BLOCKs across 800 benign packages
+    b_v131 = metrics["benign"]["v1.3.1"]["total_benign"]
+    assert b_v131["pairs"] == 800, f"Expected 800 benign pairs, got {b_v131['pairs']}"
+    assert b_v131["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v131['false_blocks']}"
+
     # Verify v1.3 malicious sample recall
     s_v13 = metrics["sample"]["v1.3"]
     assert s_v13["ALL"]["fc_block"] == 1102, f"v1.3 ALL BLOCK expected 1102, got {s_v13['ALL']['fc_block']}"
     assert s_v13["ALL"]["fc_warn"] == 1217, f"v1.3 ALL WARN expected 1217, got {s_v13['ALL']['fc_warn']}"
+
+    # Verify v1.3.1 malicious sample recall restores VAL to 94/94
+    s_v131 = metrics["sample"]["v1.3.1"]
+    assert s_v131["VAL"]["fc_warn"] == 94, f"v1.3.1 VAL WARN expected 94, got {s_v131['VAL']['fc_warn']}"
+    assert s_v131["ALL"]["fc_warn"] == 1218, f"v1.3.1 ALL WARN expected 1218, got {s_v131['ALL']['fc_warn']}"
+
+    # Verify v1.3.1 VAL campaign recall restores to 12/12
+    c_v131 = metrics["campaign"]["v1.3.1"]
+    assert c_v131["VAL"]["lenient_fc_warn"] == 12, f"v1.3.1 VAL campaigns expected 12, got {c_v131['VAL']['lenient_fc_warn']}"
 
     # Verify DEV/VAL/TEST-A campaign BLOCK recall did not drop
     c_v11 = metrics["campaign"]["v1.1"]

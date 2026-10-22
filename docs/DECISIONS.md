@@ -502,5 +502,73 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   - DEV/VAL/TEST-A campaign BLOCK recall: DEV 12/53 (22.64%), VAL 9/12 (75.00%), TEST-A 58/70 (82.86%). No drop versus v1.1.
   - Explained v1.2.1 TEST-A WARN+ 64/71 vs 63/71 in v1.1: `eval_results_v8.jsonl` was evaluated with experimental hollow release detection active; under the old split boundary, 23 pairs of the Mastra campaign (`camp_0136`) on `2026-06-17` were assigned to TEST-A and triggered `hollow_dependency_injection` + `lookalike_dependency_name` -> `WARN`, raising lenient WARN+ from 63 to 64. Under the pure date cutoff, all 118 pairs of `camp_0136` belong to TEST-B, yielding exactly 63 / 70 (90.00%) on TEST-A in both v1.1 and v1.3.
 
+---
+
+### D32 - Stage 5h: v1.3 Regression Resolutions, Benign Full-Scan Validation, camp_0066 Attack Analysis, Phase Timing Breakdown, Metric Hygiene, and v1.3.1 Precision Release (Stage 5h)
+
+- **Part 1a: VAL Regression Diagnosis & Fix**:
+  - Identified regression pair: `axios@1.14.0@1.14.1` (Campaign `camp_0061`, VAL).
+  - *Root Cause*: In Stage 5g, worker subprocesses spawned in `scripts/run_eval.py` failed to pass `samples_root=SAMPLES_ROOT` to `analyze_eval_pair()`. Because `axios@1.14.1` added `plain-crypto-js` (which was delisted from the live npm registry and preserved in the local DataDog sample archive), offline replay resolution of the added dependency was skipped, emitting `unresolvable_dependency` (INFO) instead of resolving the install hook (`install_script_present`, HIGH).
+  - *Fix*: Added `samples_root=SAMPLES_ROOT` to worker invocations in `scripts/run_eval.py`.
+  - *Outcome*: `axios@1.14.0@1.14.1` correctly evaluates to `WARN` with `install_script_present`. VAL returns to **94 / 94 pairs (100.0%)** and **12 / 12 campaigns (100.0%)**.
+
+- **Part 1b: Benign Alert Increase Diagnosis & Fix**:
+  - *Root Cause*: In Stage 5g, files > 2 MB triggered `_apply_budget_exceeded_cheap_checks()` in `content_scanner.py`. That helper unconditionally generated `inspection_incomplete` (MEDIUM) and ran Shannon entropy on raw 64 KB slices, emitting `high_entropy_string` (MEDIUM) on normal minified JS files. In tuning smoke, this flagged all 5 tested versions of `typescript` (which contain a 9.2 MB clean JS bundle), inflating tuning smoke alerts from 11 to 16 per 100. In matched negatives, it flagged 7 packages with bundles > 2 MB, raising alerts from 16.33% to 17.50%.
+  - *Fix*: In `src/release_sentinel/content_scanner.py`, files > 2 MB now have their scan text bounded to `MAX_SCAN_BYTES_PER_FILE` (2 MB) and regex operations capped at 50,000 without calling `_apply_budget_exceeded_cheap_checks()` (which is reserved for hard ceilings of 25 MB or timeouts).
+  - *Outcome*: All 5 `typescript` versions return to clean `ALLOW`. Tuning smoke returns to **11 / 100 (11.0%)**; matched negatives return to **98 / 600 (16.33%)**; validation smoke remains **4 / 100 (4.0%)**. Overall benign alert rate drops from 15.62% to **14.12% (113/800)**, with **0 false BLOCKs (0.00%)** maintained across all 800 benign pairs.
+
+- **Part 2: Benign Full-Scan Validation**:
+  - Built an evaluation corpus of **500 popular, actively maintained packages** from `data/popular_packages_2000.json` (latest releases published between 2020 and 2026, spanning small utilities, CLI tools, large frameworks, and binary bindings).
+  - Scanned in **FULL-SCAN mode** (no baseline diffing) with the v1.3 full-scan policy in memory (Rule 1 & 2 compliant).
+  - *Results*:
+    - **ALLOW**: 447 / 500 (89.40%)
+    - **WARN**: 43 / 500 (8.60%)
+    - **BLOCK**: 10 / 500 (2.00%)
+    - *Exact 95% Clopper-Pearson Binomial Confidence Interval on BLOCK rate*: **[0.96%, 3.65%]**.
+    - All 10 BLOCKs are pre-existing full-scan install hooks (`mongodb`, `esbuild`, `@sencha/ext-modern-theme-material`) or bundled eval wrappers (`query-string`, `vite`, `vitest`, `needle`, `angular`, `next`, `@alpay_altuntas/chaperone`).
+  - *Part 2b: dynamic_code + long_encoded_blob Rule*:
+    - Exactly **0 benign packages** hit `dynamic_code + long_encoded_blob` in full-scan mode.
+    - Because no normal package was blocked by this rule, no demotion was required.
+  - *Part 2c: Runtime Dependency Additions*:
+    - Across all 800 benign benchmark pairs, exactly **24 pairs** add a runtime dependency (`dependency_added`).
+    - *Decisions*: 11 ALLOW (45.8%), 13 WARN (54.2%), **0 BLOCK (0.00%)**.
+    - All 13 warned pairs were flagged by co-occurring signals (e.g. CLI bin entry scripts with `process_exec`, bundled tokens, or high entropy strings), never by false dependency hook resolution.
+
+- **Part 3: Analysis of Campaign camp_0066 (TEST-A, 60 pairs)**:
+  - *Evidence Breakdown*: All 60 pairs are warned; 0 are blocked.
+    - `dependency_added`: 60/60
+    - `hardcoded_url`: 60/60
+    - `high_entropy_string`: 60/60
+    - `inspection_incomplete`: 60/60
+    - `long_encoded_blob`: 60/60
+    - `notable_new_file`: 60/60
+    - `large_size_jump`: 54/60
+    - `network_access`: 47/60
+  - *Why No BLOCK Rule Fires*: Maximum severity across all evidence items is `MEDIUM`. Under Release Sentinel's safety architecture, automated BLOCK requires at least one `HIGH`/`CRITICAL` signal or specific paired corroborations (e.g. install hook + network, dynamic code + network). In `camp_0066`, the attacker injected a 2.3 MB minified file (`router_init.js`) containing outbound network calls (`fetch()`) into runtime code without an install hook or `eval()`.
+  - *Candidate Behavior-Based Rule*: Corroborating a new notable/minified JS file (`notable_new_file`) with outbound network APIs (`network_access`) and an extreme package size jump (`large_size_jump` $\ge 10\times$).
+    - *Benign Prevalence*: In matched negatives and smoke sets, 12 benign updates add minified bundles with network helper functions (e.g. analytics, SDKs), meaning an automated BLOCK rule would cause false alarms on clean web libraries. In accordance with frozen policy rules, this was not added to the active detection policy.
+
+- **Part 4: Phase Timing Breakdown of Binary-Heavy "Slow" Pairs**:
+  - Profiled the 8 slowest evaluation pairs (`@postman/pm-bin-*`, `@strapbuild/react-native-perspective-image-cropper`, `@uipath/apollo-core`, `@uipath/ap-chat`) across 5 discrete phases:
+    1. Baseline cache read: 0.041 – 0.087s (< 0.1s).
+    2. Sample ZIP decryption (`zipfile.ZipFile.read()` pure-Python AES/ZipCrypto): **24.551 – 37.990s** (>85% of total elapsed time).
+    3. In-memory archive extraction (`load_zip_release`): 25.046 – 41.789s.
+    4. Content scanning (`analyze_release` static AST/regex/diffing): **0.371 – 4.334s**.
+    5. Dependency resolution: < 0.002s.
+  - *Conclusion*: Static inspection and policy evaluation take under 4.5 seconds even on 34–83 MB binary-heavy releases. The 26–52s execution latency is purely an evaluation harness artifact resulting from Python's standard library `zipfile` decrypting password-protected test fixtures in pure Python, which does not exist in production npm `.tgz` operation.
+
+- **Part 5: Metric Hygiene and Member-Level vs. Lenient Campaign Reporting**:
+  - *Member-Level vs. Lenient Reporting*:
+    - For `camp_0136` (TEST-B, 118 members): Lenient k-of-n reports `WARN+=YES (1/1)` and `BLOCK=YES (1/1)`. In reality, member-level detection in v1.1 is only **4 / 118 (3.39%) WARN+** and **1 / 118 (0.85%) BLOCK**; in v1.3.1 it is **8 / 118 (6.78%) FC WARN+** and **1 / 118 (0.85%) BLOCK**.
+    - For `camp_0066` (TEST-A, 60 members): Lenient reports `WARN+=YES (1/1)`, `BLOCK=NO (0/1)`. Member-level detection is **60 / 60 (100.0%) WARN+** and **0 / 60 (0.00%) BLOCK**.
+    - For `camp_0048` (DEV, 351 members): Member-level is **351 / 351 (100.0%) WARN+** and **351 / 351 (100.0%) BLOCK**.
+    - For `camp_0052` (DEV, 407 members): Member-level is **407 / 407 (100.0%) WARN+** and **407 / 407 (100.0%) BLOCK**.
+    - For `camp_0065` (VAL, 103 members): Member-level is **103 / 103 (100.0%) WARN+** and **103 / 103 (100.0%) BLOCK**.
+  - *Explanation of v1.1 ALL Lenient WARN+ Moving 125/140 to 127/140*:
+    - The difference between 125 and 127 is the distinction between **evidence-only** lenient recall (125/140, 89.29%) and **fail-closed** lenient recall (127/140, 90.71%).
+    - In v1.1, two single-member campaigns—`camp_0047` (`duckdb@1.3.2@1.3.3`) and `camp_0053` (`@posthog/variance-plugin@0.0.7@0.0.8`)—contain 33–71 MB releases where deep inspection hit soft resource caps and emitted fail-closed `inspection_incomplete` (WARN). Under evidence-only rules (ignoring resource cap warnings), neither emitted standalone malicious signals (ALLOW, 125/140); under fail-closed security gate rules, both failed closed to WARN (127/140).
+    - *Policy Recommendation*: Documentation must quote both numbers side-by-side: Evidence-Only (pure detector signal capability) and Fail-Closed (operational gate enforcement).
+
+
 
 
