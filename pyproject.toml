@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "release-sentinel"
-version = "0.1.0"
+dynamic = ["version"]
 description = "Time-aware security gate for npm dependency updates"
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -35,6 +35,9 @@ dev = [
     "pytest-cov>=5.0",
     "ruff>=0.4",
 ]
+
+[tool.hatch.version]
+path = "src/release_sentinel/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/release_sentinel"]
