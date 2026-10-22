@@ -373,9 +373,10 @@ def analyze_release(
 def _check_lifecycle_script_command(hook: str, cmd: str) -> list[Evidence]:
     """Inspect inline shell/lifecycle script commands for dangerous patterns."""
     evs: list[Evidence] = []
-    # 1. Network download tools
+    # 1. Network download tools (narrowed fetch to URL/function call to avoid
+    # false alarms on git fetch or fetch-assets)
     if re.search(
-        r"\b(?:curl|wget|fetch|certutil|bitsadmin)\b|Invoke-WebRequest|\biwr\b|powershell.*download",
+        r"\b(?:curl|wget|certutil|bitsadmin)\b|\bfetch\s*(?:\(|\s+https?://)|Invoke-WebRequest|\biwr\b|powershell.*download",
         cmd,
         re.I,
     ):
@@ -395,13 +396,16 @@ def _check_lifecycle_script_command(hook: str, cmd: str) -> list[Evidence]:
         )
 
     # 2. Piping to shells / interpreters or execution wrappers
+    # rm -rf is narrowed to dangerous targets (/, ~, $HOME, %USERPROFILE%, .., bare *, or absolute)
+    # sudo is narrowed to explicit command invocations
     if re.search(
         r"\|\s*(?:sh|bash|zsh|dash|powershell|pwsh|cmd(?:\.exe)?)\b"
         r"|\b(?:bash|sh|zsh|dash)\s+-c\b"
         r"|\bpowershell(?:\.exe)?\s+(?:-e|-enc|-encodedcommand)\b"
         r"|\bcmd(?:\.exe)?\s+/c\b"
-        r"|\bsudo\b"
-        r"|\bnode\s+(?:-e|--eval)\b|\bpython(?:\d)?\s+-c\b|rm\s+-rf\b",
+        r"|\bsudo\s+[a-zA-Z0-9_\-\./]"
+        r"|\bnode\s+(?:-e|--eval)\b|\bpython(?:\d)?\s+-c\b"
+        r"|rm\s+(?:-[a-zA-Z]*\s+)*(?:--no-preserve-root\b|-(?:rf|fr)\s+(?:--no-preserve-root\s+)?(?:/|~|\$HOME|\$\{HOME\}|%USERPROFILE%|%HOMEPATH%|\.\.|\*(?:\s|$|;)|[a-zA-Z]:[\\/]|/[a-zA-Z0-9_]))",
         cmd,
         re.I,
     ):
