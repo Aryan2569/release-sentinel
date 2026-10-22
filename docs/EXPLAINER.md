@@ -85,3 +85,23 @@ We tested Release Sentinel against two massive real-world benchmarks:
 - **Lightning Fast**: Inspecting a package takes less than **0.2 seconds** on average.
 
 Release Sentinel proves that software defenses can be both iron-clad against real attackers and completely silent during daily, legitimate software development.
+
+---
+
+## 6. Known Limitations and Honest Blind Spots
+
+Release Sentinel is designed to be an accurate, low-false-alarm static gate. To maintain zero false blocks on legitimate packages and lightning-fast scan times, several deliberate design trade-offs and known limitations exist:
+
+1. **Changed (not new) Native Binaries, WASM, and CI Workflows**:
+   Release Sentinel detects the *introduction* of new native binaries (`.node`, `.so`, `.dll`), WebAssembly (`.wasm`) files, and CI workflow configurations (`.github/workflows`, `.gitlab-ci.yml`, Azure Pipelines). However, if a package *already* contained native binaries or CI workflows in its baseline release, silent modifications to existing binaries or workflow files in diff mode are not scanned for payload changes.
+2. **Non-Registry Dependency Specifications**:
+   Dependencies specified via non-npm registry URLs (e.g., direct git repository URLs `git+https://...`, raw tarball URLs `https://...`, or local file paths `file:...`) are recorded in diff manifests but are not flagged or fetched by the automated dependency resolver.
+3. **`binding.gyp` Auto-Build and Transitive Dependency Lifecycle Scripts**:
+   C/C++ compilation via `binding.gyp` or `node-gyp` auto-build steps and lifecycle scripts in transitive dependencies are not executed or parsed for compilation-time exploits.
+4. **Delisted Dependency Payloads**:
+   When an attack splits its payload across an added dependency, Release Sentinel attempts time-bounded resolution against the npm registry (or an evaluation replay cache). If the malicious dependency was promptly delisted or unpublished from the registry and is unavailable at scan time, the payload inside the dependency cannot be inspected.
+5. **Evaluation Dataset Bias**:
+   The 1,349 malicious eval pairs were largely sourced from the Datadog security research corpus (frequently identified via GuardDog heuristics). This introduces potential sample selection bias toward attacks exhibiting known static patterns (such as encoded blobs, network exfiltration, or install hooks).
+6. **Time-Travel Cutoff (`as_of`) Semantics**:
+   In historical evaluations, `as_of` represents the public discovery/disclosure date of the compromise. In live production operation, `sentinel diff` defaults `as_of` to the current UTC timestamp, reflecting the state of the registry at the exact moment of inspection.
+
