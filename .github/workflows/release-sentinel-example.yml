@@ -1,0 +1,40 @@
+name: "Dependency Security Audit"
+
+on:
+  pull_request:
+    paths:
+      - "**/package-lock.json"
+
+# SECURITY RULES FOR USING THIS ACTION:
+# 1. ALWAYS use the 'pull_request' trigger, NEVER 'pull_request_target'.
+#    'pull_request_target' runs workflows in the context of the base repository branch with
+#    write tokens, creating a dangerous privilege-escalation vector for fork pull requests.
+#    'pull_request' runs in the isolated context of the PR with restricted tokens.
+# 2. Grant least-privilege permissions: only 'contents: read' and 'pull-requests: write'.
+# 3. Pin third-party actions by immutable commit SHA rather than mutable tags.
+# 4. Never interpolate untrusted PR data directly into shell strings; always pass via env vars.
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  audit-lockfile:
+    name: "Audit npm Lockfile Changes"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          # Fetch full history so base ref can be inspected via git show
+          fetch-depth: 0
+
+      - name: Run Release Sentinel
+        uses: ./ # When referencing externally: your-org/release-sentinel@<commit-sha>
+        with:
+          lockfile: "package-lock.json"
+          fail-on: "block" # Options: block (default), warn, never
+          comment: "true"
+          experimental-hollow: "true" # Post-hoc WARN-only heuristic for suspicious hollow updates
+          max-packages: "200"
+          github-token: "${{ secrets.GITHUB_TOKEN }}"
