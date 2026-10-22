@@ -160,8 +160,8 @@ class NpmRegistryClient:
         self,
         name: str,
         version: str,
-        as_of: datetime,
-        dest_dir: Path,
+        as_of: datetime | None = None,
+        dest_dir: Path | None = None,
     ) -> Path:
         """Download and verify the tarball for *name@version*.
 
@@ -194,6 +194,8 @@ class NpmRegistryClient:
         RegistryError
             On other network or I/O errors.
         """
+        if as_of is None:
+            as_of = datetime.now(UTC)
         # Ensure the version exists and is within the time window.
         meta = self.get_metadata(name, as_of)
         versions_map: dict[str, Any] = meta.get("versions", {})
@@ -216,6 +218,8 @@ class NpmRegistryClient:
         if cache_path.exists():
             logger.debug("Cache hit: %s", cache_path)
             _verify_file(cache_path, integrity, shasum)
+            if dest_dir is None:
+                return cache_path
             dest_dir = Path(dest_dir)
             dest_dir.mkdir(parents=True, exist_ok=True)
             dest_path = dest_dir / cache_path.name
@@ -240,6 +244,9 @@ class NpmRegistryClient:
 
         _verify_file(cache_path, integrity, shasum)
 
+        if dest_dir is None:
+            return cache_path
+
         dest_dir = Path(dest_dir)
         dest_dir.mkdir(parents=True, exist_ok=True)
         dest_path = dest_dir / cache_path.name
@@ -247,6 +254,35 @@ class NpmRegistryClient:
 
         shutil.copy2(cache_path, dest_path)
         return dest_path
+
+    def download_tarball_url(
+        self,
+        name: str,
+        version: str,
+        tarball_url: str,
+        integrity: str | None = None,
+        shasum: str | None = None,
+    ) -> Path:
+        """Download a tarball directly from a specified URL (e.g. from lockfile 'resolved')."""
+        safe_name = _safe_filename(name)
+        cache_path = self._cache_dir / safe_name / f"{safe_name}-{version}.tgz"
+        if cache_path.exists():
+            logger.debug("Cache hit for url %s: %s", tarball_url, cache_path)
+            _verify_file(cache_path, integrity or "", shasum or "")
+            return cache_path
+
+        cache_path.parent.mkdir(parents=True, exist_ok=True)
+        logger.info("Downloading %s@%s from URL %s", name, version, tarball_url)
+        try:
+            resp = self._http.get(tarball_url)
+            resp.raise_for_status()
+        except httpx.HTTPError as exc:
+            msg = f"HTTP error downloading tarball from {tarball_url}: {exc}"
+            raise RegistryError(msg) from exc
+
+        cache_path.write_bytes(resp.content)
+        _verify_file(cache_path, integrity or "", shasum or "")
+        return cache_path
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -333,6 +369,46 @@ def _ensure_utc(dt: datetime) -> datetime:
     if dt.tzinfo is None:
         return dt.replace(tzinfo=UTC)
     return dt.astimezone(UTC)
+
+
+def verify_integrity(target: Path | bytes, integrity: str) -> None:
+    """Verify bytes or file at *target* against the *integrity* SRI string.
+
+    Parameters
+    ----------
+    target:
+        File path or bytes to hash.
+    integrity:
+        Subresource Integrity string, e.g. ``"sha512-<base64>"``.
+
+    Raises
+    ------
+    IntegrityError
+        If the computed hash does not match, or if the algorithm is unsupported.
+    """
+    m = _INTEGRITY_RE.match(integrity.strip())
+    if not m:
+        raise IntegrityError(f"Unrecognised integrity format: {integrity!r}")
+
+    alg = m.group("alg")
+    expected_b64 = m.group("digest")
+
+    hasher = hashlib.new(alg)
+    if isinstance(target, bytes):
+        hasher.update(target)
+    else:
+        with target.open("rb") as fh:
+            for chunk in iter(lambda: fh.read(1 << 16), b""):
+                hasher.update(chunk)
+
+    actual_b64 = base64.b64encode(hasher.digest()).decode()
+    if actual_b64 != expected_b64:
+        target_name = target.name if isinstance(target, Path) else "in-memory data"
+        raise IntegrityError(
+            f"Integrity check failed for {target_name}: "
+            f"expected {expected_b64[:16]}..., got {actual_b64[:16]}..."
+        )
+    logger.debug("Integrity OK for %s (%s)", target, alg)
 
 
 def _verify_integrity(path: Path, integrity: str) -> None:
