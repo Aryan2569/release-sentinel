@@ -19,6 +19,7 @@ from __future__ import annotations
 import json
 import logging
 import re
+import shlex
 from collections import Counter
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
@@ -298,10 +299,34 @@ def analyze_release(
                 has_install_script = True
                 cmd = str(scripts[hook])
                 evidence.extend(_check_lifecycle_script_command(hook, cmd))
-                parts = cmd.strip().split()
-                if len(parts) >= 2 and parts[0] in {"node", "nodejs"}:
-                    target = re.sub(r"^\./", "", parts[1])
-                    if target not in new_rc.files:
+                # Validate that targets referenced by install scripts exist in package
+                hook_targets = _parse_command_targets(cmd, scripts)
+                for target in hook_targets:
+                    base_t = (
+                        target[:-3]
+                        if target.endswith(".js")
+                        else (
+                            target[:-4]
+                            if target.endswith((".cjs", ".mjs"))
+                            else target
+                        )
+                    )
+                    exists = any(
+                        cand in new_rc.files
+                        for cand in (
+                            target,
+                            base_t,
+                            f"{base_t}.js",
+                            f"{base_t}.cjs",
+                            f"{base_t}.mjs",
+                        )
+                    )
+                    if (
+                        not exists
+                        and not target.startswith("-")
+                        and target
+                        not in {"node", "nodejs", "npm", "yarn", "pnpm", "sh", "bash", "zsh"}
+                    ):
                         evidence.append(
                             Evidence(
                                 id="install_script_present",
@@ -314,6 +339,7 @@ def analyze_release(
                                 legitimate_use_note="Broken or incomplete package packaging.",
                             )
                         )
+                        break
 
         # Check for CI workflow configuration files in full-scan mode
         for f_path in new_rc.files:
@@ -840,6 +866,7 @@ def _diff_files(
     for rel_path in new_paths:
         data = new.read_bytes(rel_path)
         cat = classify(data, rel_path)
+        rel_norm = rel_path.replace("\\", "/").lower()
 
         if rel_path in targets:
             evidence.append(
@@ -857,9 +884,7 @@ def _diff_files(
                     ),
                 )
             )
-        # Check if the file itself is a CI workflow file
-        rel_norm = rel_path.replace("\\", "/").lower()
-        if _CI_WORKFLOW_FILE_RE.search(rel_norm):
+        elif _CI_WORKFLOW_FILE_RE.search(rel_norm):
             evidence.append(
                 Evidence(
                     id="ci_write",
@@ -1051,21 +1076,147 @@ def _normalise_bin(pkg: dict[str, Any]) -> dict[str, str]:
     return {}
 
 
+def _parse_command_targets(
+    cmd: str,
+    scripts: dict[str, Any],
+    depth: int = 0,
+    visited: set[str] | None = None,
+) -> set[str]:
+    """Extract file targets referenced by a shell command or package script.
+
+    Handles:
+    - Script indirection (npm run x, yarn x, pnpm run x) up to depth 3 with cycle protection.
+    - node / nodejs with leading flags (--no-warnings, -r/--require <file>, etc.).
+    - shell invocations (sh/bash/zsh/dash <file>).
+    - direct executable invocation (./script.sh).
+    - python invocations (python/python3/py <file>).
+    - extensionless targets (generates candidate .js, .cjs, .mjs paths).
+    """
+    if depth > 3 or not cmd:
+        return set()
+    if visited is None:
+        visited = set()
+
+    targets: set[str] = set()
+
+    # Split on command chaining delimiters (&&, ||, ;, |, &)
+    subcmds = re.split(r"(?:&&|\|\||;|\||&)", cmd)
+    for sub in subcmds:
+        sub = sub.strip()
+        if not sub:
+            continue
+        try:
+            tokens = shlex.split(sub)
+        except Exception:
+            tokens = sub.split()
+        if not tokens:
+            continue
+
+        cmd_name = tokens[0]
+
+        # Script indirection: npm run x, yarn x, pnpm run x
+        if cmd_name in {"npm", "pnpm", "yarn"}:
+            script_name = None
+            if len(tokens) >= 3 and tokens[1] in {"run", "run-script"}:
+                script_name = tokens[2]
+            elif len(tokens) >= 2 and tokens[1] not in {
+                "run",
+                "run-script",
+                "install",
+                "test",
+            }:
+                script_name = tokens[1]
+            if (
+                script_name
+                and script_name in scripts
+                and script_name not in visited
+                and isinstance(scripts[script_name], str)
+            ):
+                targets |= _parse_command_targets(
+                    scripts[script_name],
+                    scripts,
+                    depth + 1,
+                    visited | {script_name},
+                )
+            continue
+
+        # Direct executable ./script.sh
+        if cmd_name.startswith("./"):
+            t = re.sub(r"^\./", "", cmd_name)
+            if t:
+                targets.add(t)
+            continue
+
+        # Shell invocations: sh/bash/zsh/dash <file>
+        if cmd_name in {"sh", "bash", "zsh", "dash"}:
+            for tok in tokens[1:]:
+                if not tok.startswith("-"):
+                    t = re.sub(r"^\./", "", tok)
+                    if t:
+                        targets.add(t)
+                    break
+            continue
+
+        # Python invocations: python <file>
+        if re.match(r"^python[23]?$", cmd_name) or cmd_name == "py":
+            for tok in tokens[1:]:
+                if not tok.startswith("-"):
+                    t = re.sub(r"^\./", "", tok)
+                    if t:
+                        targets.add(t)
+                    break
+            continue
+
+        # Node invocations: node with leading flags
+        if cmd_name in {"node", "nodejs"}:
+            idx = 1
+            while idx < len(tokens):
+                tok = tokens[idx]
+                if tok in {"-r", "--require", "--loader", "--import"}:
+                    if idx + 1 < len(tokens):
+                        req_tok = tokens[idx + 1]
+                        if not req_tok.startswith("-"):
+                            t = re.sub(r"^\./", "", req_tok)
+                            if t:
+                                targets.add(t)
+                        idx += 2
+                        continue
+                elif tok.startswith(("-r=", "--require=", "--loader=", "--import=")):
+                    req_tok = tok.split("=", 1)[1]
+                    t = re.sub(r"^\./", "", req_tok)
+                    if t:
+                        targets.add(t)
+                elif tok.startswith("-"):
+                    pass
+                else:
+                    # First non-flag token is the target
+                    t = re.sub(r"^\./", "", tok)
+                    if t:
+                        targets.add(t)
+                    break
+                idx += 1
+
+    # Expand extensionless targets to candidate extensions (.js, .cjs, .mjs)
+    expanded: set[str] = set()
+    for t in targets:
+        expanded.add(t)
+        if "." not in Path(t).name:
+            expanded.add(f"{t}.js")
+            expanded.add(f"{t}.cjs")
+            expanded.add(f"{t}.mjs")
+
+    return expanded
+
+
 def _extract_install_script_targets(pkg: dict[str, Any]) -> set[str]:
     """Return the set of package-relative paths referenced by install scripts."""
     scripts: dict[str, str] = pkg.get("scripts", {}) or {}
+    if not isinstance(scripts, dict):
+        return set()
+
     targets: set[str] = set()
-
     for hook in _INSTALL_SCRIPTS:
-        cmd = scripts.get(hook, "")
-        if not cmd:
-            continue
-        # Extract the first file argument from simple "node file.js" commands
-        parts = cmd.strip().split()
-        if len(parts) >= 2 and parts[0] in {"node", "nodejs"}:
-            target = parts[1]
-            # Normalise: strip leading ./
-            target = re.sub(r"^\./", "", target)
-            targets.add(target)
-
+        cmd = scripts.get(hook)
+        if cmd and isinstance(cmd, str):
+            targets |= _parse_command_targets(cmd, scripts)
     return targets
