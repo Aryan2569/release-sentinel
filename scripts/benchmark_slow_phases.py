@@ -1,7 +1,6 @@
 import csv
 import json
 import time
-import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -66,20 +65,16 @@ for pkg, old_ver, new_ver in SLOW_PAIRS:
         tarball_path = None
         t_base = 0.0
 
-    # Phase 2: Sample ZIP decryption (measure pure Python decryption of encrypted members)
-    t0 = time.perf_counter()
-    with zipfile.ZipFile(zip_path, "r") as zf:
-        zf.setpassword(b"infected")
-        for info in zf.infolist():
-            if not info.is_dir():
-                _ = zf.read(info)
-    t_decrypt = time.perf_counter() - t0
-
-    # Phase 3: Extraction (in-memory parsing of baseline tarball and release construction)
+    # Phase 2 & 3: Sample ZIP decryption and baseline extraction
+    # Note: load_zip_release decrypts encrypted ZIP members in-memory; we measure this once
+    # without doing a redundant separate decryption pass to avoid double-counting.
     t0 = time.perf_counter()
     baseline_rc = extract_release_in_memory(tarball_path, config=cfg) if tarball_path else None
-    new_rc = load_zip_release(zip_path, password=b"infected", config=cfg)
     t_extract = time.perf_counter() - t0
+
+    t0 = time.perf_counter()
+    new_rc = load_zip_release(zip_path, password=b"infected", config=cfg)
+    t_decrypt = time.perf_counter() - t0
 
     # Phase 4: Content scanning
     dep_stats = {"live": 0, "replayed": 0, "unresolvable": 0, "skipped": 0}

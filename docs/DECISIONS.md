@@ -570,5 +570,38 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
     - *Policy Recommendation*: Documentation must quote both numbers side-by-side: Evidence-Only (pure detector signal capability) and Fail-Closed (operational gate enforcement).
 
 
+## Stage 6: Last Fix Round (v1.4) and Product Maturation
+
+- **Part 0a: Dependency-Aware Scanning Precision and Full-Scan Policy Tightening**:
+  - *Dependency Path Overhaul*: When direct runtime dependencies are added, `resolve_added_dependency()` now searches for earlier versions published before `as_of`. If a prior release exists, the added dependency is evaluated in **DIFF mode** against its immediate predecessor using standard release diffing and depth-1 capping (max 5 added dependencies). Only brand-new packages with no prior history are analyzed in full-scan mode.
+  - *Tightened Full-Scan Mode*: For brand-new packages, standalone heuristics (`decode_and_execute`, `env_harvesting`, `obfuscated_code` alone) are capped at `WARN` and cannot trigger `BLOCK` without corroborating signals. `BLOCK` remains reserved for install-time execution, install-time network requests, and credential-leak chains.
+  - *500-Package Benign Corpus Results*:
+    - In the new diff mode against earlier versions, **0 out of the 10 previously blocked popular packages BLOCK** (`query-string`, `vite`, `vitest`, `esbuild`, `next` become `WARN`; `mongodb`, `needle`, `@sencha/ext-modern-theme-material`, `angular`, `@alpay_altuntas/chaperone` become `ALLOW`).
+    - Across all 24 benign updates that add a runtime dependency, **0 BLOCK** (11 ALLOW, 13 WARN).
+
+- **Part 0b: Linear-Time Chunked Scanning for Large Files Up to 25 MB**:
+  - Replaced the 2 MB truncation ceiling with linear-time overlapping window chunked scanning:
+    - Files between 1 MB and 25 MB are scanned in 1 MB windows with 64 KB overlap (`_get_overlapping_text_chunks`). Any pattern crossing chunk boundaries is fully contained within the overlapping region.
+    - Files strictly exceeding 25 MB emit `partial_scan` limitation, which the policy engine evaluates fail-closed as `WARN`.
+  - In-memory regex evaluation scans 21 MB test releases in **0.362 seconds** (well under the 5-second backstop). Unit tests verify payloads placed after 3 MB (at 4 MB in 5 MB) and after 20 MB (in 21 MB) are detected without timing out or truncating.
+
+- **Part 0c: Canonical Re-measurement and Metric Reconciliation (v1.4)**:
+  - *Malicious Dataset (1,349 pairs)*:
+    - DEV: 828 pairs, 828 WARN+ (100.0%), 807 BLOCK (97.46%).
+    - VAL: 123 pairs, 122 WARN+ (99.19%), 113 BLOCK (91.87%). VAL `axios` pair (`axios@1.14.0 -> 1.14.1`) warns via replayed dependency hook.
+    - TEST-A: 299 pairs, 203 WARN+ (67.89%), 179 BLOCK (59.87%). `camp_0066` is confirmed 60/60 WARN+.
+    - TEST-B: 99 pairs, 61 WARN+ (61.62%), 3 BLOCK (3.03%). 4 Mastra dependency packages cleanly downgraded from WARN to ALLOW under diff-mode dependency resolution.
+  - *Campaign Metrics*:
+    - DEV: 29 / 29 campaigns (100.0% WARN+, 100.0% BLOCK).
+    - VAL: 12 / 12 campaigns (100.0% WARN+, 100.0% BLOCK).
+    - TEST-A: 47 / 50 campaigns WARN+ (94.0%), 42 / 50 BLOCK (84.0%).
+    - TEST-B: 4 / 5 campaigns WARN+ (80.0%), 3 / 5 BLOCK (60.0%).
+    - *Reconciliation of TEST-B Lenient BLOCK (3/5 vs 1/5)*: Clarified that TEST-B lenient BLOCK is strictly **3 / 5 (60.0%)** because 3 distinct campaigns contain a blocked member (`camp_0136`, `camp_0137`, `camp_0139`). The previous "1/5" figure was an erratum from only counting `camp_0136`.
+  - *Benign Gate (800 pairs)*: Exactly 0 false BLOCKs across tuning smoke (100), validation smoke (100), and matched negatives (600).
+  - *Double Decryption Fix*: Fixed profiler script `scripts/benchmark_slow_phases.py` to eliminate redundant separate `zipfile` decryption passes.
+  - *Evaluation Frozen*: Detector logic and evaluation dataset are permanently frozen at **v1.4**.
+
+
+
 
 

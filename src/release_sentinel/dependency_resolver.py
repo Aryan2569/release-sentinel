@@ -139,7 +139,11 @@ def resolve_added_dependency(
                     t = time_map.get(v, "")
                     if target_time and t and t < target_time:
                         earlier_versions.append(v)
-                    elif not target_time and nodesemver.valid(v) and nodesemver.valid(target_version):
+                    elif (
+                        not target_time
+                        and nodesemver.valid(v)
+                        and nodesemver.valid(target_version)
+                    ):
                         if nodesemver.lt(v, target_version):
                             earlier_versions.append(v)
 
@@ -168,7 +172,8 @@ def resolve_added_dependency(
                     )
                 except Exception as exc:
                     logger.debug(
-                        "Failed to fetch baseline %s@%s for diff mode: %s; falling back to full-scan",
+                        "Failed to fetch baseline %s@%s for diff mode: %s; "
+                        "falling back to full-scan",
                         name,
                         prev_version,
                         exc,

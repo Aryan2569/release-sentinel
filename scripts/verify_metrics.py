@@ -262,6 +262,20 @@ def verify_doc_consistency(metrics: dict[str, Any]) -> None:
     assert b_v131["pairs"] == 800, f"Expected 800 benign pairs, got {b_v131['pairs']}"
     assert b_v131["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v131['false_blocks']}"
 
+    # Verify that v1.4 maintains 0 false BLOCKs across 800 benign packages
+    b_v14 = metrics["benign"]["v1.4"]["total_benign"]
+    assert b_v14["pairs"] == 800, f"Expected 800 benign pairs, got {b_v14['pairs']}"
+    assert b_v14["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v14['false_blocks']}"
+
+    # Verify v1.4 TEST-B lenient BLOCK consistency (strictly 3 of 5 campaigns have a blocked pair; 4 of 5 warned)
+    c_v14 = metrics["campaign"]["v1.4"]
+    assert c_v14["TEST-B"]["lenient_fc_block"] == 3, (
+        f"Expected 3 TEST-B campaigns with block, got {c_v14['TEST-B']['lenient_fc_block']}"
+    )
+    assert c_v14["TEST-B"]["lenient_fc_warn"] == 4, (
+        f"Expected 4/5 TEST-B campaigns warned, got {c_v14['TEST-B']['lenient_fc_warn']}"
+    )
+
     # Verify v1.3 malicious sample recall
     s_v13 = metrics["sample"]["v1.3"]
     assert s_v13["ALL"]["fc_block"] == 1102, f"v1.3 ALL BLOCK expected 1102, got {s_v13['ALL']['fc_block']}"

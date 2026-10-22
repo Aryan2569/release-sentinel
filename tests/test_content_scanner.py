@@ -17,7 +17,7 @@ from release_sentinel.content_scanner import (
     find_credential_read_matches,
     scan_new_content,
 )
-from release_sentinel.extractor import ExtractionResult, FileEntry
+from release_sentinel.extractor import ExtractionResult, FileEntry, ReleaseContents
 from release_sentinel.policy import decide
 
 # ---------------------------------------------------------------------------
@@ -640,3 +640,63 @@ class TestTimeoutFixes:
         assert len(incomplete_ev) == 1
         assert "processing time exceeded" in incomplete_ev[0].explanation
 
+
+
+# ---------------------------------------------------------------------------
+# Stage 6 Part 0b: Large-file linear-time scanning up to 25 MB
+# ---------------------------------------------------------------------------
+
+
+class TestLargeFileScanning:
+    def test_payload_after_3mb_detected(self):
+        """A payload placed after 3 MB (e.g. at 4 MB in a 5 MB file) is detected."""
+        chunk_1mb = "const harmless_token = 12345;\n" * 35000  # ~1.05 MB
+        content = (chunk_1mb * 4) + "eval('evil_payload_after_3mb');\n" + chunk_1mb
+        assert len(content) > 5 * 1024 * 1024
+
+        old = ReleaseContents(files={"lib.js": b"const harmless_token = 12345;\n"})
+        new = ReleaseContents(files={"lib.js": content.encode("utf-8")})
+
+        t0 = time.perf_counter()
+        ev = scan_new_content(old, new, set())
+        elapsed = time.perf_counter() - t0
+
+        assert elapsed < 2.0, f"5 MB file scan took too long: {elapsed:.3f}s"
+        assert any(e.id == "dynamic_code" for e in ev)
+        assert not any(e.id == "partial_scan" for e in ev)
+
+    def test_payload_after_20mb_detected_under_5s(self):
+        """A payload placed after 20 MB (in a 21 MB file) is detected in < 5 seconds."""
+        chunk_1mb = "const harmless_token = 12345;\n" * 35000  # ~1.05 MB
+        content = (chunk_1mb * 20) + "eval('evil_payload_after_20mb');\n" + chunk_1mb
+        assert len(content) > 21 * 1024 * 1024
+
+        old = ReleaseContents(files={"lib.js": b"const harmless_token = 12345;\n"})
+        new = ReleaseContents(files={"lib.js": content.encode("utf-8")})
+
+        t0 = time.perf_counter()
+        ev = scan_new_content(old, new, set())
+        elapsed = time.perf_counter() - t0
+
+        assert elapsed < 5.0, f"21 MB file scan took too long: {elapsed:.3f}s (must be < 5s)"
+        assert any(e.id == "dynamic_code" for e in ev)
+        assert not any(e.id == "partial_scan" for e in ev)
+
+    def test_file_over_25mb_emits_partial_scan_fail_closed(self, monkeypatch):
+        """Files strictly above 25 MB emit partial_scan which policy treats as fail-closed."""
+        monkeypatch.setattr(
+            "release_sentinel.content_scanner.PER_FILE_SIZE_BUDGET", 1024 * 1024
+        )
+        content = "var x = 1;\n" * 150_000  # ~1.65 MB, exceeds 1 MB ceiling
+
+        old = ReleaseContents(files={"huge.js": b"var x = 1;\n"})
+        new = ReleaseContents(files={"huge.js": content.encode("utf-8")})
+
+        ev = scan_new_content(old, new, set())
+        partial_ev = [e for e in ev if e.id == "partial_scan"]
+        assert len(partial_ev) == 1
+        assert "exceeds resource budget" in partial_ev[0].explanation
+
+        decision, limitations = decide(ev)
+        assert decision.value == "WARN"
+        assert any("Partial scan" in lim for lim in limitations)

@@ -65,8 +65,8 @@ class TestFullScanMode:
         ev_ids = [e.id for e in evidence]
         assert "install_script_network" in ev_ids
 
-    def test_decode_and_execute_blocks(self):
-        """Decode-then-execute pattern triggers decode_and_execute -> BLOCK."""
+    def test_decode_and_execute_alone_warns_in_full_scan(self):
+        """Decode-then-execute alone triggers decode_and_execute -> WARN (tightened in v1.4)."""
         release = _make_release(
             files={
                 "index.js": (
@@ -78,7 +78,7 @@ class TestFullScanMode:
         )
         evidence = analyze_release(release, baseline=None)
         decision, _ = decide(evidence, is_full_scan=True)
-        assert decision == Decision.BLOCK
+        assert decision == Decision.WARN
         ev_ids = [e.id for e in evidence]
         assert "decode_and_execute" in ev_ids
 

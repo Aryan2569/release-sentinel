@@ -1416,7 +1416,9 @@ def scan_new_content(
                                 if not host or host in old_caps.hosts:
                                     continue
                                 seen_signals.add("hardcoded_url")
-                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                sev = _escalate_if_install_target(
+                                    signal.severity, is_install_target
+                                )
                                 evidence.append(
                                     Evidence(
                                         id="hardcoded_url",
@@ -1432,7 +1434,9 @@ def scan_new_content(
                                 if ip in old_caps.hosts:
                                     continue
                                 seen_signals.add("hardcoded_ip")
-                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                sev = _escalate_if_install_target(
+                                    signal.severity, is_install_target
+                                )
                                 evidence.append(
                                     Evidence(
                                         id="hardcoded_ip",
@@ -1450,7 +1454,9 @@ def scan_new_content(
                                 if h in old_caps.blob_hashes:
                                     continue
                                 seen_signals.add("long_encoded_blob")
-                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                sev = _escalate_if_install_target(
+                                    signal.severity, is_install_target
+                                )
                                 evidence.append(
                                     Evidence(
                                         id="long_encoded_blob",
@@ -1466,7 +1472,9 @@ def scan_new_content(
                                 if (signal.id, norm) in old_caps.normalized_keys:
                                     continue
                                 seen_signals.add(signal.id)
-                                sev = _escalate_if_install_target(signal.severity, is_install_target)
+                                sev = _escalate_if_install_target(
+                                    signal.severity, is_install_target
+                                )
                                 evidence.append(
                                     Evidence(
                                         id=signal.id,
@@ -1552,7 +1560,9 @@ def scan_new_content(
                         if h not in old_caps.blob_hashes:
                             if "long_encoded_blob" not in seen_signals:
                                 seen_signals.add("long_encoded_blob")
-                                sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
+                                sev = _escalate_if_install_target(
+                                    Severity.MEDIUM, is_install_target
+                                )
                                 evidence.append(
                                     Evidence(
                                         id="long_encoded_blob",
@@ -2009,7 +2019,10 @@ def scan_full_release(
                 has_chain_decode_exec = bool(_search_windowed(_CHAIN_DECODE_EXEC_RE, chunk))
             if len(env_matches) < 10:
                 env_matches.update(
-                    re.findall(r"process\.env(?:\.[a-zA-Z0-9_]+|\[['\"][a-zA-Z0-9_]+['\"]\])", chunk)
+                    re.findall(
+                        r"process\.env(?:\.[a-zA-Z0-9_]+|\[['\"][a-zA-Z0-9_]+['\"]\])",
+                        chunk,
+                    )
                 )
             if not has_env_dump:
                 has_env_dump = bool(

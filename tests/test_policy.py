@@ -44,6 +44,15 @@ class TestLoadPolicy:
         policy = load_policy()
         assert "install_script_changed" in policy.severity_overrides
 
+    def test_bundled_and_data_policy_are_identical(self):
+        bundled = Path("src/release_sentinel/data/policy_default.toml")
+        repo_data = Path("data/policy_default.toml")
+        if repo_data.exists():
+            assert bundled.read_bytes() == repo_data.read_bytes(), (
+                "data/policy_default.toml and bundled "
+                "src/release_sentinel/data/policy_default.toml must be byte-identical."
+            )
+
     def test_custom_toml_file(self, tmp_path: Path):
         toml_content = """
 [decision]
