@@ -469,6 +469,7 @@ def scan_lockfile_diff(
                             "severity": e.severity.name,
                             "file": e.file,
                             "explanation": e.explanation,
+                            "legitimate_use_note": e.legitimate_use_note,
                         }
                         for e in evidence
                     ],
@@ -492,6 +493,7 @@ def scan_lockfile_diff(
                             "severity": Severity.HIGH.name,
                             "file": None,
                             "explanation": f"Tarball integrity mismatch for {pkg_name}@{new_ver}: {exc}",  # noqa: E501
+                            "legitimate_use_note": "Registry CDN sync issue, corrupted download, or tampering.",  # noqa: E501,
                         }
                     ],
                     "limitations": [f"Tarball integrity check failed for {pkg_name}: {exc}"],
@@ -514,6 +516,7 @@ def scan_lockfile_diff(
                             "severity": Severity.MEDIUM.name,
                             "file": None,
                             "explanation": f"Failed to inspect {pkg_name}@{new_ver}: {exc}",
+                            "legitimate_use_note": "Corrupted archive, malformed package.json, or unsupported file.",  # noqa: E501,
                         }
                     ],
                     "limitations": [f"Inspection failed for {pkg_name}: {exc}"],

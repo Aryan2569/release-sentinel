@@ -21,6 +21,8 @@ Examples
 
 from __future__ import annotations
 
+import json
+import sys
 import tempfile
 from datetime import UTC, datetime
 from pathlib import Path
@@ -36,7 +38,17 @@ from release_sentinel import __version__
 from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, extract_release
-from release_sentinel.models import Decision, Evidence, Report, Severity
+from release_sentinel.lockfile import (
+    DEFAULT_MAX_PACKAGES,
+    LockfileDiffReport,
+    LockfileError,
+    LockfileParseError,
+    UnsupportedLockfileError,
+    read_lockfile_from_git,
+    read_lockfile_from_path,
+    scan_lockfile_diff,
+)
+from release_sentinel.models import Decision, Evidence, ReleaseRef, Report, Severity
 from release_sentinel.policy import load_policy
 from release_sentinel.registry import NpmRegistryClient, RegistryError
 
@@ -401,6 +413,16 @@ def _generate_one_line_summary(report: Report, evidence: list[Evidence]) -> str:
     )
 
 
+def _safe_print(text: str) -> None:
+    """Safely print text to stdout even on legacy Windows terminals with charmap encoding."""
+    try:
+        print(text)
+    except UnicodeEncodeError:
+        sys.stdout.buffer.write(text.encode("utf-8", errors="replace"))
+        sys.stdout.buffer.write(b"\n")
+        sys.stdout.buffer.flush()
+
+
 def _render_output(report: Report, fmt: str, min_sev: Severity) -> None:
     """Render the report according to selected format and minimum severity."""
     min_rank = _SEV_ORDER[min_sev]
@@ -408,10 +430,10 @@ def _render_output(report: Report, fmt: str, min_sev: Severity) -> None:
 
     if fmt == "json":
         report_display = report.model_copy(update={"evidence": filtered_evidence})
-        print(report_display.model_dump_json(indent=2))
+        _safe_print(report_display.model_dump_json(indent=2))
     elif fmt == "markdown":
         md = _render_markdown(report, filtered_evidence)
-        print(md)
+        _safe_print(md)
     else:
         _print_report_text(report, filtered_evidence)
 
@@ -538,6 +560,402 @@ def _parse_as_of(s: str) -> datetime:
     if dt.tzinfo is None:
         dt = dt.replace(tzinfo=UTC)
     return dt.astimezone(UTC)
+
+
+
+def format_lockfile_markdown(report: LockfileDiffReport) -> str:
+    """Format a LockfileDiffReport as a GitHub PR markdown comment."""
+    lines = [
+        "<!-- release-sentinel-pr-comment -->",
+        "## Release Sentinel Security Gate",
+        "",
+    ]
+    if report.decision == Decision.BLOCK:
+        icon = "🛑"
+        verdict = "**BLOCK**"
+    elif report.decision == Decision.WARN:
+        icon = "⚠️"
+        verdict = "**WARN**"
+    else:
+        icon = "✅"
+        verdict = "**ALLOW**"
+
+    flagged = [p for p in report.package_results if p["decision"] in ("BLOCK", "WARN")]
+    clean = [p for p in report.package_results if p["decision"] == "ALLOW"]
+
+    if report.has_budget_exceeded:
+        summary = f"{icon} {verdict} — Analysis exceeded safety budget; gate failed closed."
+    elif report.decision == Decision.BLOCK:
+        summary = (
+            f"{icon} {verdict} — {len(flagged)} package(s) blocked out of "
+            f"{report.total_packages_scanned} scanned."
+        )
+    elif report.decision == Decision.WARN:
+        summary = (
+            f"{icon} {verdict} — {len(flagged)} package(s) flagged with warnings out of "
+            f"{report.total_packages_scanned} scanned."
+        )
+    else:
+        summary = (
+            f"{icon} {verdict} — All {report.total_packages_scanned} changed package(s) "
+            f"passed security checks."
+        )
+
+    lines.append(f"**Verdict:** {summary}")
+    lines.append("")
+
+    if flagged:
+        lines.append("### Flagged Packages")
+        lines.append("")
+        lines.append(
+            "| Package | Version Change | Decision | Top Evidence | Why It Matters | Legitimate Explanation |"  # noqa: E501
+        )
+        lines.append("| :--- | :--- | :---: | :--- | :--- | :--- |")
+        for pkg in flagged:
+            p_name = f"`{pkg['package']}`"
+            old_v = pkg["old_version"] or "(new)"
+            new_v = pkg["new_version"] or "(none)"
+            v_change = f"`{old_v}` → `{new_v}`"
+            dec_str = "🛑 BLOCK" if pkg["decision"] == "BLOCK" else "⚠️ WARN"
+            top_ev = pkg["evidence"][0] if pkg["evidence"] else "inspection_failed"
+            details = pkg.get("evidence_details", [])
+            why = details[0]["explanation"] if details else "Suspicious behavior detected."
+            why = why.replace("|", "/").replace("\n", " ").strip()
+            legit = (
+                details[0].get("legitimate_use_note", "No legitimate explanation registered.")
+                if details
+                else "No legitimate explanation registered."
+            )
+            legit = legit.replace("|", "/").replace("\n", " ").strip()
+            lines.append(
+                f"| {p_name} | {v_change} | {dec_str} | `{top_ev}` | {why} | {legit} |"
+            )
+        lines.append("")
+
+    if clean:
+        lines.append("<details>")
+        lines.append(f"<summary><b>Inspected Packages (ALLOW) ({len(clean)})</b></summary>")
+        lines.append("")
+        lines.append("| Package | Version Change | Decision | Notes |")
+        lines.append("| :--- | :--- | :---: | :--- |")
+        for pkg in clean:
+            p_name = f"`{pkg['package']}`"
+            old_v = pkg["old_version"] or "(new)"
+            new_v = pkg["new_version"] or "(none)"
+            v_change = f"`{old_v}` → `{new_v}`"
+            notes = ", ".join(f"`{e}`" for e in pkg["evidence"]) if pkg["evidence"] else "Clean"
+            lines.append(f"| {p_name} | {v_change} | ✅ ALLOW | {notes} |")
+        lines.append("")
+        lines.append("</details>")
+        lines.append("")
+
+    lines.append("### Limitations & Scope")
+    lines.append("")
+    if report.limitations:
+        for lim in report.limitations:
+            lines.append(f"- {lim}")
+    else:
+        lines.append(
+            "- JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible."  # noqa: E501
+        )
+        lines.append("- Transitive dependencies not pinned in lockfile are not analyzed.")
+    lines.append("")
+    return "\n".join(lines)
+
+
+def print_lockfile_text(report: LockfileDiffReport, quiet: bool = False) -> None:
+    """Format and print LockfileDiffReport to terminal using rich."""
+    if quiet:
+        summary = f"{report.decision.name}: {report.total_packages_scanned} packages scanned"
+        if report.has_budget_exceeded:
+            summary += " (budget exceeded)"
+        console.print(summary)
+        return
+
+    table = Table(
+        title=f"Release Sentinel Lockfile Diff Report ({report.base_source} → {report.head_source})",  # noqa: E501
+        box=box.ROUNDED,
+    )
+    table.add_column("Package", style="bold")
+    table.add_column("Old Version")
+    table.add_column("New Version")
+    table.add_column("Decision")
+    table.add_column("Evidence")
+
+    for pkg in report.package_results:
+        dec = Decision[pkg["decision"]]
+        style = _DECISION_STYLE.get(dec, "white")
+        ev_str = ", ".join(pkg["evidence"]) if pkg["evidence"] else "—"
+        table.add_row(
+            pkg["package"],
+            pkg["old_version"] or "(new)",
+            pkg["new_version"] or "(none)",
+            f"[{style}]{dec.name}[/{style}]",
+            ev_str,
+        )
+
+    console.print(table)
+    if report.limitations:
+        console.print("[dim]Limitations:[/dim]")
+        for lim in report.limitations:
+            console.print(f"  [dim]- {lim}[/dim]")
+
+    verdict_style = _DECISION_STYLE.get(report.decision, "white")
+    console.print(
+        Panel(
+            f"Verdict: [{verdict_style}]{report.decision.name}[/{verdict_style}] "
+            f"({report.total_packages_scanned} packages analyzed)",
+            expand=False,
+        )
+    )
+
+
+@app.command()
+def check(
+    base: Annotated[
+        Path | None,
+        typer.Option("--base", help="Path to base (old) package-lock.json or repo dir."),
+    ] = None,
+    head: Annotated[
+        Path | None,
+        typer.Option(
+            "--head",
+            help="Path to head (new) package-lock.json or repo dir (default: current dir).",
+        ),
+    ] = None,
+    base_ref: Annotated[
+        str | None,
+        typer.Option(
+            "--base-ref",
+            help="Git ref to read base package-lock.json from (e.g. origin/main, HEAD~1).",
+        ),
+    ] = None,
+    format: Annotated[
+        str,
+        typer.Option("--format", "-f", help="Output format: text | json | markdown."),
+    ] = "text",
+    fail_on: Annotated[
+        str,
+        typer.Option("--fail-on", help="Gate failure condition: block | warn | never (default: block)."),  # noqa: E501
+    ] = "block",
+    policy: Annotated[
+        Path | None,
+        typer.Option("--policy", help="Path to custom policy TOML file."),
+    ] = None,
+    experimental_hollow: Annotated[
+        bool,
+        typer.Option("--experimental-hollow", help="Enable experimental hollow release detection."),
+    ] = False,
+    max_packages: Annotated[
+        int,
+        typer.Option("--max-packages", help="Maximum packages to scan before capping (default: 200)."),  # noqa: E501
+    ] = DEFAULT_MAX_PACKAGES,
+    as_of: Annotated[
+        str | None,
+        typer.Option("--as-of", help="Cut-off timestamp in ISO 8601 format (default: now)."),
+    ] = None,
+    quiet: Annotated[
+        bool,
+        typer.Option("--quiet", "-q", help="Suppress non-essential progress output."),
+    ] = False,
+    cache_dir: Annotated[
+        Path | None,
+        typer.Option("--cache-dir", help="Cache directory (default: ~/.cache/release_sentinel)."),
+    ] = None,
+) -> None:
+    """Audit dependency changes in an npm package-lock.json diff against security policy."""
+    fail_on_clean = fail_on.strip().lower()
+    if fail_on_clean not in ("block", "warn", "never"):
+        console.print(
+            f"[bold red]Error:[/] Invalid --fail-on option '{fail_on}'. Choose from: block, warn, never."  # noqa: E501
+        )
+        raise typer.Exit(code=2)
+
+    format_clean = format.strip().lower()
+    if format_clean not in ("text", "json", "markdown"):
+        console.print(
+            f"[bold red]Error:[/] Invalid --format option '{format}'. Choose from: text, json, markdown."  # noqa: E501
+        )
+        raise typer.Exit(code=2)
+
+    as_of_dt = _parse_as_of(as_of) if as_of else datetime.now(UTC)
+    effective_cache = cache_dir or _DEFAULT_CACHE_DIR
+    pol = load_policy(policy) if policy else load_policy()
+
+    try:
+        if base_ref:
+            base_content = read_lockfile_from_git(base_ref)
+            base_source = f"git:{base_ref}"
+        elif base:
+            base_content, base_source = read_lockfile_from_path(base)
+        else:
+            console.print(
+                "[bold red]Error:[/] Either --base <path> or --base-ref <ref> must be specified."
+            )
+            raise typer.Exit(code=2)
+
+        target_head = head or Path("package-lock.json")
+        head_content, head_source = read_lockfile_from_path(target_head)
+
+        with NpmRegistryClient(cache_dir=effective_cache) as client:
+            report = scan_lockfile_diff(
+                base_content=base_content,
+                head_content=head_content,
+                base_source=base_source,
+                head_source=head_source,
+                policy=pol,
+                max_packages=max_packages,
+                registry_client=client,
+                experimental_hollow=experimental_hollow,
+                as_of=as_of_dt,
+            )
+
+    except UnsupportedLockfileError as exc:
+        console.print(f"[bold red]Error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+    except LockfileParseError as exc:
+        console.print(f"[bold red]Error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+    except LockfileError as exc:
+        console.print(f"[bold red]Error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+    except FileNotFoundError as exc:
+        console.print(f"[bold red]Error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+    except Exception as exc:
+        console.print(f"[bold red]Internal error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
+
+    # Render output
+    if format_clean == "json":
+        import dataclasses
+        _safe_print(json.dumps(dataclasses.asdict(report), indent=2, default=str))
+    elif format_clean == "markdown":
+        md = format_lockfile_markdown(report)
+        _safe_print(md)
+    else:
+        print_lockfile_text(report, quiet=quiet)
+
+    # Exit code per fail_on
+    gate_failed = False
+    if fail_on_clean == "block":
+        gate_failed = (report.decision == Decision.BLOCK)
+    elif fail_on_clean == "warn":
+        gate_failed = (report.decision in (Decision.BLOCK, Decision.WARN))
+    elif fail_on_clean == "never":
+        gate_failed = False
+
+    if gate_failed:
+        raise typer.Exit(code=1)
+    raise typer.Exit(code=0)
+
+
+@app.command()
+def demo(
+    package: Annotated[str | None, typer.Argument(help="Package name (default: axios)")] = None,
+    old_version: Annotated[str | None, typer.Argument(help="Baseline version (default: 1.14.0)")] = None,  # noqa: E501
+    new_version: Annotated[str | None, typer.Argument(help="New version (default: 1.14.1)")] = None,  # noqa: E501
+    pair: Annotated[
+        tuple[str, str, str] | None,
+        typer.Option(
+            "--pair",
+            help="Package, old, new version triplet (e.g. --pair axios 1.14.0 1.14.1)",
+        ),
+    ] = None,
+    format: Annotated[
+        str,
+        typer.Option("--format", "-f", help="Output format: markdown | text | json"),
+    ] = "markdown",
+    samples_root: Annotated[
+        Path | None,
+        typer.Option("--samples-root", help="Datadog samples root (defaults to RS_SAMPLES_ROOT)"),
+    ] = None,
+    policy: Annotated[Path | None, typer.Option("--policy", help="Custom policy TOML")] = None,
+    cache_dir: Annotated[Path | None, typer.Option("--cache-dir", help="Cache directory")] = None,
+) -> None:
+    """Run an in-memory evaluation demo on an encrypted dataset sample (never executes code)."""
+    import os
+
+    from release_sentinel.extractor import extract_release_in_memory
+    from release_sentinel.zip_loader import load_zip_release
+
+    if pair:
+        if len(pair) != 3:
+            console.print(
+                "[bold red]Error:[/] --pair requires 3 arguments: <pkg> <old_version> <new_version>"  # noqa: E501
+            )
+            raise typer.Exit(code=2)
+        p_name, old_v, new_v = pair[0], pair[1], pair[2]
+    elif package and old_version and new_version:
+        p_name, old_v, new_v = package, old_version, new_version
+    else:
+        p_name, old_v, new_v = "axios", "1.14.0", "1.14.1"
+
+    eff_samples_root = samples_root or Path(
+        os.environ.get("RS_SAMPLES_ROOT", r"C:\rs-data\datadog")
+    )
+    if not eff_samples_root.exists():
+        console.print(f"[bold red]Error:[/] Samples root directory not found: {eff_samples_root}")
+        raise typer.Exit(code=2)
+
+    eff_cache = cache_dir or _DEFAULT_CACHE_DIR
+    pol = load_policy(policy) if policy else load_policy()
+
+    try:
+        # Locate encrypted sample zip under eff_samples_root
+        candidates = list(eff_samples_root.glob(f"**/{p_name}/**/{new_v}/*.zip"))
+        if not candidates:
+            unscoped = p_name.split("/")[-1]
+            candidates = list(eff_samples_root.glob(f"**/{unscoped}/**/{new_v}/*.zip"))
+        if not candidates:
+            candidates = list(eff_samples_root.glob(f"**/*{p_name}*{new_v}*.zip"))
+        if not candidates:
+            console.print(
+                f"[bold red]Error:[/] Encrypted sample not found for {p_name}@{new_v} in {eff_samples_root}"  # noqa: E501
+            )
+            raise typer.Exit(code=2)
+        zip_path = candidates[0]
+
+        # Load new release in-memory from encrypted sample (Rule 1, 2, 7)
+        rc_new = load_zip_release(zip_path, password=b"infected")
+
+        # Baseline: try from sample, else download from cache/registry
+        rc_old = None
+        with NpmRegistryClient(cache_dir=eff_cache) as client:
+            try:
+                old_tar = client.download_tarball(name=p_name, version=old_v)
+                rc_old = extract_release_in_memory(old_tar)
+            except Exception:
+                # Try finding old version in samples root
+                old_candidates = list(eff_samples_root.glob(f"**/{p_name}/**/{old_v}/*.zip"))
+                if old_candidates:
+                    rc_old = load_zip_release(old_candidates[0], password=b"infected")
+
+            cfg = ExtractionConfig()
+            evidence = analyze_release(
+                new=rc_new,
+                baseline=rc_old,
+                policy=pol,
+                config=cfg,
+                registry_client=client,
+                samples_root=eff_samples_root,
+                as_of=datetime.now(UTC),
+            )
+            decision, lims = decide(evidence, policy=pol, is_full_scan=rc_old is None)
+
+        rep = Report(
+            old_release=ReleaseRef(name=p_name, version=old_v, published_at=datetime.now(UTC)),
+            new_release=ReleaseRef(name=p_name, version=new_v, published_at=datetime.now(UTC)),
+            decision=decision,
+            evidence=evidence,
+            as_of=datetime.now(UTC),
+            generated_at=datetime.now(UTC),
+            limitations=lims,
+        )
+        _render_output(rep, format, Severity.LOW)
+    except Exception as exc:
+        console.print(f"[bold red]Demo error:[/] {exc}")
+        raise typer.Exit(code=2) from exc
 
 
 if __name__ == "__main__":

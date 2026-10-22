@@ -280,3 +280,100 @@ class TestCliExecution:
         kwargs = mock_analyze.call_args.kwargs
         assert kwargs["as_of"] == now_dt
         assert kwargs["registry_client"] == mock_client
+
+
+class TestCliCheck:
+    def test_check_missing_base_and_base_ref_exits_2(self):
+        result = runner.invoke(app, ["check"])
+        assert result.exit_code == 2
+        assert "Either --base" in result.output
+
+    def test_check_invalid_fail_on_exits_2(self):
+        result = runner.invoke(app, ["check", "--base", "package-lock.json", "--fail-on", "bad"])
+        assert result.exit_code == 2
+        assert "Invalid --fail-on" in result.output
+
+    def test_check_unsupported_yarn_lock_exits_2(self):
+        result = runner.invoke(app, ["check", "--base", "yarn.lock"])
+        assert result.exit_code == 2
+        assert "Yarn lockfile" in result.output
+
+    def test_check_markdown_output_format(self, tmp_path: Path):
+        base_f = tmp_path / "base.json"
+        head_f = tmp_path / "head.json"
+        base_f.write_text(json.dumps({"lockfileVersion": 3, "packages": {}}), encoding="utf-8")
+        head_f.write_text(json.dumps({"lockfileVersion": 3, "packages": {}}), encoding="utf-8")
+
+        result = runner.invoke(app, [
+            "check",
+            "--base", str(base_f),
+            "--head", str(head_f),
+            "--format", "markdown",
+        ])
+        assert result.exit_code == 0
+        assert "<!-- release-sentinel-pr-comment -->" in result.output
+        assert "Verdict:" in result.output
+        assert "ALLOW" in result.output
+
+    @patch("release_sentinel.cli.scan_lockfile_diff")
+    def test_check_fail_on_block_and_warn(self, mock_scan: patch, tmp_path: Path):
+        from release_sentinel.lockfile import LockfileDiffReport
+
+        base_f = tmp_path / "base.json"
+        head_f = tmp_path / "head.json"
+        base_f.write_text("{}", encoding="utf-8")
+        head_f.write_text("{}", encoding="utf-8")
+
+        # Decision = WARN
+        mock_scan.return_value = LockfileDiffReport(
+            base_source="base",
+            head_source="head",
+            total_packages_scanned=1,
+            decision=Decision.WARN,
+            package_results=[{
+                "package": "test-pkg",
+                "old_version": "1.0.0",
+                "new_version": "1.0.1",
+                "change_type": "upgraded",
+                "decision": "WARN",
+                "evidence": ["install_script_changed"],
+                "evidence_details": [{
+                    "id": "install_script_changed",
+                    "severity": "MEDIUM",
+                    "file": "package.json",
+                    "explanation": "Script changed",
+                    "legitimate_use_note": "Rebuilt assets",
+                }],
+                "limitations": [],
+                "status": "ok",
+            }],
+            limitations=[],
+        )
+
+        # --fail-on block with WARN -> passes (0)
+        res_block = runner.invoke(app, [
+            "check", "--base", str(base_f), "--head", str(head_f), "--fail-on", "block"
+        ])
+        assert res_block.exit_code == 0
+
+        # --fail-on warn with WARN -> fails gate (1)
+        res_warn = runner.invoke(app, [
+            "check", "--base", str(base_f), "--head", str(head_f), "--fail-on", "warn"
+        ])
+        assert res_warn.exit_code == 1
+
+        # --fail-on never with WARN -> passes (0)
+        res_never = runner.invoke(app, [
+            "check", "--base", str(base_f), "--head", str(head_f), "--fail-on", "never"
+        ])
+        assert res_never.exit_code == 0
+
+
+class TestCliDemo:
+    def test_demo_axios_screen_recording_support(self):
+        result = runner.invoke(app, ["demo", "--pair", "axios", "1.14.0", "1.14.1"])
+        assert result.exit_code == 0
+        assert "axios" in result.output
+        assert "1.14.0" in result.output
+        assert "1.14.1" in result.output
+        assert "plain-crypto-js" in result.output
