@@ -81,6 +81,11 @@ class NpmRegistryClient:
             follow_redirects=True,
         )
 
+    @property
+    def cache_dir(self) -> Path:
+        """Root directory for on-disk caching."""
+        return self._cache_dir
+
     def close(self) -> None:
         """Close the underlying HTTP client if we own it."""
         if self._owned_client:

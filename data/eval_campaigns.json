@@ -2848,9 +2848,8 @@
   "camp_0136": {
     "leader": "@mastra/acp@0.2.1@0.2.2",
     "earliest_date": "2026-06-17",
-    "primary_split": "TEST-A",
+    "primary_split": "TEST-B",
     "splits": [
-      "TEST-A",
       "TEST-B"
     ],
     "size": 118,

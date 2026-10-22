@@ -21,6 +21,7 @@ import logging
 import re
 import shlex
 from collections import Counter
+from importlib import resources
 from pathlib import Path
 from typing import TYPE_CHECKING, Any
 
@@ -54,7 +55,7 @@ _SIZE_RATIO_THRESHOLD = 2.0
 _FILE_COUNT_JUMP_THRESHOLD = 50
 
 _CI_WORKFLOW_FILE_RE = re.compile(
-    r"^\.github/workflows/|^\.gitlab-ci\.ya?ml$|^\.circleci/|azure-pipelines"
+    r"^\.github/workflows/|^\.gitlab-ci\.ya?ml$|^\.circleci/|^\.?azure-pipelines(?:/|.*\.ya?ml$)"
 )
 
 
@@ -245,7 +246,7 @@ def analyze_release(
             if added_deps:
                 from release_sentinel.dependency_resolver import resolve_added_dependency
 
-                target_dir = dest_dir or (registry_client._cache_dir / "tarballs" / "eval_tmp")
+                target_dir = dest_dir or (registry_client.cache_dir / "tarballs" / "deps")
                 for dep_name, dep_spec in added_deps[:5]:
                     _, dep_evidence, status = resolve_added_dependency(
                         name=dep_name,
@@ -677,14 +678,12 @@ _TOP_PACKAGES_CACHE: set[str] | None = None
 def _get_top_packages() -> set[str]:
     global _TOP_PACKAGES_CACHE
     if _TOP_PACKAGES_CACHE is None:
-        top_p = Path("data/top_npm_packages.json")
-        if top_p.exists():
-            try:
-                _TOP_PACKAGES_CACHE = set(json.loads(top_p.read_text(encoding="utf-8")))
-            except Exception:
-                _TOP_PACKAGES_CACHE = set()
-        else:
-            _TOP_PACKAGES_CACHE = set()
+        try:
+            ref = resources.files("release_sentinel.data").joinpath("top_npm_packages.json")
+            content = ref.read_text(encoding="utf-8")
+            _TOP_PACKAGES_CACHE = set(json.loads(content))
+        except Exception as exc:
+            raise RuntimeError(f"Failed to load bundled top_npm_packages.json: {exc}") from exc
     return _TOP_PACKAGES_CACHE
 
 

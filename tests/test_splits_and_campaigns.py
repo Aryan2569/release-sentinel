@@ -28,8 +28,8 @@ def test_pairs_disjointness() -> None:
 
     assert split_counts["DEV"] == 857
     assert split_counts["VAL"] == 94
-    assert split_counts["TEST-A"] == 299
-    assert split_counts["TEST-B"] == 99
+    assert split_counts["TEST-A"] == 274
+    assert split_counts["TEST-B"] == 124
     assert sum(split_counts.values()) == 1349
 
 
@@ -52,8 +52,8 @@ def test_campaigns_disjointness() -> None:
 
     assert split_counts["DEV"] == 53
     assert split_counts["VAL"] == 12
-    assert split_counts["TEST-A"] == 71
-    assert split_counts["TEST-B"] == 4
+    assert split_counts["TEST-A"] == 70
+    assert split_counts["TEST-B"] == 5
     assert sum(split_counts.values()) == 140
 
 

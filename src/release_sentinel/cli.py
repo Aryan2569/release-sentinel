@@ -33,10 +33,11 @@ from rich.panel import Panel
 from rich.table import Table
 
 from release_sentinel import __version__
-from release_sentinel.differ import compare_releases
+from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, extract_release
 from release_sentinel.models import Decision, Evidence, Report, Severity
+from release_sentinel.policy import load_policy
 from release_sentinel.registry import NpmRegistryClient, RegistryError
 
 app = typer.Typer(
@@ -322,17 +323,25 @@ def _run_analysis(
             old_result = extract_release(old_tgz, tmp_path / "old_extracted", config=ext_cfg)
             new_result = extract_release(new_tgz, tmp_path / "new_extracted", config=ext_cfg)
 
-            # --- Diff ---
+            # --- Diff & Analyze ---
             if not quiet:
                 console.print("[dim]Comparing releases…[/dim]")
-            evidence = compare_releases(
-                old_result, new_result, experimental_hollow=experimental_hollow
+            policy = load_policy(policy_path, experimental_hollow=experimental_hollow)
+            evidence = analyze_release(
+                new=new_result,
+                baseline=old_result,
+                policy=policy,
+                config=ext_cfg,
+                as_of=as_of,
+                registry_client=client,
+                samples_root=samples_root,
+                experimental_hollow=experimental_hollow,
             )
 
         # --- Decide ---
         decision, limitations = decide(
             evidence,
-            policy_path=policy_path,
+            policy=policy,
             experimental_hollow=experimental_hollow,
         )
 

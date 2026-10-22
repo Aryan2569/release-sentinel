@@ -83,6 +83,11 @@ class UnionFind:
 def assign_split(package: str, discovery_date: str) -> str:
     """Explicitly assign an eval pair to DEV, VAL, TEST-A, or TEST-B.
 
+    Pure date cutoffs:
+    - DEV: < 2026-01-01
+    - VAL: 2026-01-01 to 2026-04-30
+    - TEST-A: 2026-05-01 to 2026-06-16 (< 2026-06-17)
+    - TEST-B: >= 2026-06-17
     No silent fallbacks allowed.
     """
     if not discovery_date:
@@ -93,10 +98,6 @@ def assign_split(package: str, discovery_date: str) -> str:
         return "VAL"
     if discovery_date < "2026-06-17":
         return "TEST-A"
-    if discovery_date == "2026-06-17":
-        if package <= "@mastra/clickhouse" or package == "@mastra/openai":
-            return "TEST-A"
-        return "TEST-B"
     return "TEST-B"
 
 

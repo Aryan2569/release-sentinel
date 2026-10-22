@@ -237,3 +237,46 @@ class TestCliExecution:
         assert result.exit_code == 0
         mock_run.assert_called_once()
         assert mock_run.call_args.kwargs["policy_path"] == policy_file
+
+    @patch("release_sentinel.cli._run_analysis")
+    def test_cli_diff_default_as_of_is_current_time(self, mock_run: patch):
+        mock_run.return_value = _make_report([], Decision.ALLOW)
+        before = datetime.now(tz=UTC)
+        result = runner.invoke(app, ["diff", "pkg", "1.0.0", "1.0.1", "--quiet"])
+        after = datetime.now(tz=UTC)
+        assert result.exit_code == 0
+        mock_run.assert_called_once()
+        as_of_arg = mock_run.call_args.kwargs["as_of"]
+        assert isinstance(as_of_arg, datetime)
+        assert before <= as_of_arg <= after
+
+    @patch("release_sentinel.cli.analyze_release")
+    @patch("release_sentinel.cli.extract_release")
+    @patch("release_sentinel.cli.NpmRegistryClient")
+    def test_run_analysis_passes_as_of_and_client_to_analyze_release(
+        self, mock_client_cls: patch, mock_extract: patch, mock_analyze: patch, tmp_path: Path
+    ):
+        mock_client = mock_client_cls.return_value.__enter__.return_value
+        mock_client.get_release_ref.side_effect = lambda pkg, ver, as_of: ReleaseRef(
+            name=pkg, version=ver, published_at=datetime.now(tz=UTC)
+        )
+        mock_client.download_tarball.side_effect = lambda pkg, ver, as_of, dest: dest
+        mock_extract.side_effect = lambda tgz, dest, config: None
+        mock_analyze.return_value = []
+
+        now_dt = datetime.now(tz=UTC)
+        from release_sentinel.cli import _run_analysis
+
+        report = _run_analysis(
+            package="foo",
+            old_version="1.0.0",
+            new_version="1.0.1",
+            as_of=now_dt,
+            cache_dir=tmp_path / "cache",
+            quiet=True,
+        )
+        assert report.decision == Decision.ALLOW
+        mock_analyze.assert_called_once()
+        kwargs = mock_analyze.call_args.kwargs
+        assert kwargs["as_of"] == now_dt
+        assert kwargs["registry_client"] == mock_client

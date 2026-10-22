@@ -81,8 +81,7 @@ def load_policy(policy_path: Path | None = None, experimental_hollow: bool = Fal
         If True, enables the experimental block rule for hollow+lookalike releases.
     """
     # Load the bundled default
-    default_path = _default_policy_path()
-    raw = _load_toml(default_path)
+    raw = _load_default_toml()
 
     # Overlay user file
     if policy_path is not None:
@@ -94,21 +93,29 @@ def load_policy(policy_path: Path | None = None, experimental_hollow: bool = Fal
     return policy
 
 
+def _load_default_toml() -> dict:
+    """Load the bundled default policy TOML using importlib.resources."""
+    try:
+        ref = resources.files("release_sentinel.data").joinpath("policy_default.toml")
+        with ref.open("rb") as fh:
+            return tomllib.load(fh)
+    except Exception as exc:
+        raise FileNotFoundError(
+            "Cannot locate bundled release_sentinel.data/policy_default.toml. "
+            "Make sure the package is installed correctly."
+        ) from exc
+
+
 def _default_policy_path() -> Path:
     """Return the path to the bundled default policy TOML."""
-    # Try the data/ directory relative to the package root first
-    candidate = Path(__file__).parent.parent.parent / "data" / "policy_default.toml"
-    if candidate.exists():
-        return candidate
-    # Fallback: try importlib.resources (for installed distributions)
     try:
-        ref = resources.files("release_sentinel").joinpath("../../data/policy_default.toml")
+        ref = resources.files("release_sentinel.data").joinpath("policy_default.toml")
         return Path(str(ref))
-    except Exception:  # noqa: BLE001
+    except Exception as exc:
         raise FileNotFoundError(
-            "Cannot locate data/policy_default.toml. "
+            "Cannot locate bundled release_sentinel.data/policy_default.toml. "
             "Make sure the package is installed correctly."
-        ) from None
+        ) from exc
 
 
 def _load_toml(path: Path) -> dict:
