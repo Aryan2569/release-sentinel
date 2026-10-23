@@ -1,0 +1,278 @@
+=== ALL 10 BLOCK UPDATES ===
+
+BLOCK Update #1: Repo: bootstrap, Pair: 6c4271bd..d879672a, Date: 2026-10-10 12:42:03 +0200
+Subject: Bump the dependencies with 12 updates (#43019)
+Packages scanned: 94
+Blocks (2):
+  - Package: @vitest/browser@5.0.3
+    Evidence (34): ['dynamic_code', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'long_encoded_blob', 'high_entropy_string', 'high_entropy_string', 'long_encoded_blob', 'high_entropy_string']...
+      [HIGH] dynamic_code in dist/index.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [MEDIUM] notable_new_file in dist/client/__vitest_browser__/orchestrator-M9828UZ-.js: A new minified JavaScript file was added: 'dist/client/__vitest_browser__/orchestrator-M9828UZ-.js'.
+      [MEDIUM] notable_new_file in dist/client/__vitest_browser__/rrweb-snapshot-JG8daYmg.js: A new minified JavaScript file was added: 'dist/client/__vitest_browser__/rrweb-snapshot-JG8daYmg.js'.
+      [MEDIUM] notable_new_file in dist/locators-BaWxQJd7.js: A new minified JavaScript file was added: 'dist/locators-BaWxQJd7.js'.
+      [MEDIUM] notable_new_file in dist/vendor-types.d.ts: A new minified JavaScript file was added: 'dist/vendor-types.d.ts'.
+  - Package: vitest@5.0.3
+    Evidence (95): ['dynamic_code', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file']...
+      [HIGH] dynamic_code in dist/chunks/index.C4tKZ0yW.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [MEDIUM] notable_new_file in dist/chunks/acorn.C1kjbUFw.js: A new minified JavaScript file was added: 'dist/chunks/acorn.C1kjbUFw.js'.
+      [MEDIUM] notable_new_file in dist/chunks/cac.DfDGTQ9W.js: A new minified JavaScript file was added: 'dist/chunks/cac.DfDGTQ9W.js'.
+      [MEDIUM] notable_new_file in dist/chunks/config.d.BxjInJat.d.ts: A new minified JavaScript file was added: 'dist/chunks/config.d.BxjInJat.d.ts'.
+      [MEDIUM] notable_new_file in dist/chunks/index.C4tKZ0yW.js: A new minified JavaScript file was added: 'dist/chunks/index.C4tKZ0yW.js'.
+
+BLOCK Update #2: Repo: bootstrap, Pair: 5c8346da..564fc6d9, Date: 2026-10-14 21:28:27 +0200
+Subject: Chore(deps-dev): Bump the development-dependencies group across 1 directory with 6 updates (#43082)
+Packages scanned: 39
+Blocks (1):
+  - Package: js-yaml@3.15.2
+    Evidence (28): ['dynamic_code', 'dynamic_code', 'dynamic_code', 'obfuscated_code', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added']...
+      [HIGH] dynamic_code in lib/js-yaml/type/js/function.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [HIGH] dynamic_code in dist/js-yaml.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [HIGH] dynamic_code in dist/js-yaml.min.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [HIGH] obfuscated_code in lib/js-yaml/loader.js: File contains obfuscator-style code patterns (dense hex escapes: 25 occurrences): bulk hex identifiers, string array rot
+      [LOW] dependency_added in package.json: New dependencies added: 'esprima' @ '^4.0.0'. This introduces a new transitive dependency tree.
+
+BLOCK Update #3: Repo: bootstrap, Pair: 6f284eab..7f165eef, Date: 2026-10-22 20:48:19 +0200
+Subject: Chore(deps-dev): Bump the development-dependencies group with 10 updates (#43158)
+Packages scanned: 63
+Blocks (1):
+  - Package: bundlewatch@1.1.0
+    Evidence (40): ['env_enumeration', 'env_enumeration', 'bin_entry_changed', 'high_entropy_string', 'network_access', 'high_entropy_string', 'network_access', 'new_files_summary', 'dependency_version_changed', 'dependency_removed']...
+      [HIGH] env_enumeration in dist/index.cjs: File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [HIGH] env_enumeration in dist/src.js: File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [MEDIUM] bin_entry_changed in package.json: Binary 'bundlewatch' target changed: 'lib/bin/index.js' → './dist/cli.js'.
+      [MEDIUM] high_entropy_string in dist/index.cjs: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): '${filePath}: File removed (${formatBytes(ba
+      [MEDIUM] network_access in dist/index.cjs: New code performs or imports network-access APIs (fetch(). Unexpected outbound requests from a library can exfiltrate da
+
+BLOCK Update #4: Repo: mocha, Pair: 70db1c70..3382fdd2, Date: 2026-09-20 02:59:51 +0900
+Subject: test: add --import=tsx integration test (#6356)
+Packages scanned: 29
+Blocks (1):
+  - Package: @esbuild/aix-ppc64@0.28.2
+    Evidence (2): ['env_enumeration', 'hardcoded_url']...
+      [HIGH] env_enumeration in bin/esbuild: File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [LOW] hardcoded_url in bin/esbuild: New code contains a hardcoded URL: https://www.typescriptlang.org/tsconfig#esModuleInteropThis. Unexpected hard-coded UR
+
+BLOCK Update #5: Repo: socket.io, Pair: 6bb2e7f5..aaf2af36, Date: 2026-09-18 12:15:23 +0200
+Subject: test: upgrade WebdriverIO to v9
+Packages scanned: 148
+Blocks (5):
+  - Package: cacheable-request@10.2.14
+    Evidence (36): ['install_script_added', 'large_size_jump', 'dependency_added', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed']...
+      [HIGH] install_script_added in package.json: A new 'prepare' lifecycle script was added: 'npm run build'. Install-time scripts execute automatically during npm insta
+      [MEDIUM] large_size_jump in None: Package size grew from 16.4 KB to 67.5 KB (4.1× increase, threshold: 2.0×). Large unexplained size increases may indicat
+      [LOW] dependency_added in package.json: New dependencies added: '@types/http-cache-semantics' @ '^4.0.2'. This introduces a new transitive dependency tree.
+      [LOW] dependency_added in package.json: New dependencies added: 'mimic-response' @ '^4.0.0'. This introduces a new transitive dependency tree.
+      [LOW] new_files_summary in None: 8 new file(s) added: 4 script, 4 source_map. Review the full file list if any additions seem unexpected.
+  - Package: chardet@2.2.0
+    Evidence (14): ['install_script_added', 'notable_new_file', 'large_size_jump', 'long_encoded_blob', 'new_files_summary', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added']...
+      [HIGH] install_script_added in package.json: A new 'prepublish' lifecycle script was added: 'npm run build'. Install-time scripts execute automatically during npm in
+      [MEDIUM] notable_new_file in lib/match.d.ts: A new minified JavaScript file was added: 'lib/match.d.ts'.
+      [MEDIUM] large_size_jump in None: Package size grew from 73.1 KB to 174.8 KB (2.4× increase, threshold: 2.0×). Large unexplained size increases may indica
+      [MEDIUM] long_encoded_blob in lib/match.d.ts: File contains a new long line (561 chars). Extremely long single lines are a common obfuscation technique.
+      [LOW] new_files_summary in None: 35 new file(s) added: 23 script, 12 source_map. Review the full file list if any additions seem unexpected.
+  - Package: jest-util@30.5.1
+    Evidence (14): ['env_enumeration', 'long_encoded_blob', 'new_files_summary', 'hardcoded_url', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed', 'dependency_version_changed']...
+      [HIGH] env_enumeration in build/index.js: File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [MEDIUM] long_encoded_blob in build/index.js: File contains a new long line (614 chars). Extremely long single lines are a common obfuscation technique.
+      [LOW] new_files_summary in None: 1 new file(s) added: 1 script. Review the full file list if any additions seem unexpected.
+      [LOW] hardcoded_url in build/index.js: New code contains a hardcoded URL: https://jestjs.io/docs/configuration#testenvironmentoptions-object. Unexpected hard-c
+      [INFO] dependency_version_changed in package.json: dependencies['@jest/types'] changed: '^29.6.3' → '30.5.1'
+  - Package: webdriver@9.31.9
+    Evidence (22): ['env_enumeration', 'large_size_jump', 'high_entropy_string', 'network_access', 'high_entropy_string', 'network_access', 'network_access', 'network_access', 'network_access', 'dependency_added']...
+      [HIGH] env_enumeration in build/node.js: File accesses process.env in 8 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [MEDIUM] large_size_jump in None: Package size grew from 203.8 KB to 409.7 KB (2.0× increase, threshold: 2.0×). Large unexplained size increases may indic
+      [MEDIUM] high_entropy_string in build/index.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'Ensure to only use valid W3C WebDriver capa
+      [MEDIUM] network_access in build/index.js: New code performs or imports network-access APIs (fetch(). Unexpected outbound requests from a library can exfiltrate da
+      [MEDIUM] high_entropy_string in build/node.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): '{ functionDeclaration: <PreloadScript[${new
+  - Package: webdriverio@9.31.9
+    Evidence (52): ['dynamic_code', 'env_enumeration', 'dynamic_code', 'env_enumeration', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'large_size_jump']...
+      [HIGH] dynamic_code in build/index.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [HIGH] env_enumeration in build/index.js: File accesses process.env in 6 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [HIGH] dynamic_code in build/node.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [HIGH] env_enumeration in build/node.js: File accesses process.env in 6 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [MEDIUM] notable_new_file in build/commands/mobile/getContext.d.ts: A new minified JavaScript file was added: 'build/commands/mobile/getContext.d.ts'.
+
+BLOCK Update #6: Repo: superagent, Pair: 7cda38cd..5677b737, Date: 2026-01-04 02:40:07 +0100
+Subject: chore(deps): update xo package
+Packages scanned: 143
+Blocks (5):
+  - Package: enhanced-resolve@5.18.4
+    Evidence (36): ['install_script_added', 'large_size_jump', 'high_entropy_string', 'high_entropy_string', 'new_files_summary', 'dependency_version_changed', 'dependency_version_changed', 'dependency_removed', 'dev_dependency_added', 'dev_dependency_added']...
+      [HIGH] install_script_added in package.json: A new 'prepare' lifecycle script was added: 'husky install'. Install-time scripts execute automatically during npm insta
+      [MEDIUM] large_size_jump in None: Package size grew from 40.0 KB to 218.9 KB (5.5× increase, threshold: 2.0×). Large unexplained size increases may indica
+      [MEDIUM] high_entropy_string in lib/ExportsFieldPlugin.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'Invalid "exports" target "${path}" defined 
+      [MEDIUM] high_entropy_string in lib/ImportsFieldPlugin.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'Invalid "imports" target "${path}" defined 
+      [LOW] new_files_summary in None: 43 new file(s) added: 1 other, 42 script. Review the full file list if any additions seem unexpected.
+  - Package: eslint-plugin-unicorn@59.0.1
+    Evidence (71): ['obfuscated_code', 'network_access', 'high_entropy_string', 'high_entropy_string', 'high_entropy_string', 'high_entropy_string', 'high_entropy_string', 'high_entropy_string', 'high_entropy_string', 'high_entropy_string']...
+      [HIGH] obfuscated_code in rules/utils/lodash.js: File contains obfuscator-style code patterns (dense hex escapes: 98 occurrences): bulk hex identifiers, string array rot
+      [MEDIUM] network_access in rules/no-invalid-fetch-options.js: New code performs or imports network-access APIs (fetch(). Unexpected outbound requests from a library can exfiltrate da
+      [MEDIUM] high_entropy_string in rules/no-named-default.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'import ${nameText} ${sourceCode.text.slice(
+      [MEDIUM] high_entropy_string in rules/no-unnecessary-array-splice-count.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'Disallow using `.length` or `Infinity` as t
+      [MEDIUM] high_entropy_string in rules/shared/no-unnecessary-length-or-infinity-rule.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): "${object.type === 'Identifier' ? object.nam
+  - Package: prettier@3.7.4
+    Evidence (103): ['dynamic_code', 'bin_entry_changed', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file']...
+      [HIGH] dynamic_code in bin/prettier.cjs: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [MEDIUM] bin_entry_changed in package.json: Binary 'prettier' target changed: './bin-prettier.js' → './bin/prettier.cjs'.
+      [MEDIUM] notable_new_file in doc.mjs: A new minified JavaScript file was added: 'doc.mjs'.
+      [MEDIUM] notable_new_file in index.cjs: A new minified JavaScript file was added: 'index.cjs'.
+      [MEDIUM] notable_new_file in index.mjs: A new minified JavaScript file was added: 'index.mjs'.
+  - Package: tapable@2.3.0
+    Evidence (25): ['dynamic_code', 'large_size_jump', 'high_entropy_string', 'new_files_summary', 'hardcoded_url', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added', 'dev_dependency_added']...
+      [HIGH] dynamic_code in lib/HookCodeFactory.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [MEDIUM] large_size_jump in None: Package size grew from 14.6 KB to 47.3 KB (3.2× increase, threshold: 2.0×). Large unexplained size increases may indicat
+      [MEDIUM] high_entropy_string in lib/HookCodeFactory.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): "!_err${tapIndex} ? new Error('Tap function 
+      [LOW] new_files_summary in None: 18 new file(s) added: 1 other, 17 script. Review the full file list if any additions seem unexpected.
+      [LOW] hardcoded_url in package.json: New code contains a hardcoded URL: https://opencollective.com/webpack. Unexpected hard-coded URLs in library code may in
+  - Package: xo@1.2.3
+    Evidence (72): ['install_script_added', 'bin_entry_changed', 'high_entropy_string', 'dependency_added', 'dependency_added', 'dependency_added', 'dependency_added', 'dependency_added', 'dependency_added', 'dependency_added']...
+      [HIGH] install_script_added in package.json: A new 'prepare' lifecycle script was added: 'npm run build && husky'. Install-time scripts execute automatically during 
+      [MEDIUM] bin_entry_changed in package.json: Binary 'xo' target changed: './cli.js' → './dist/cli.js'.
+      [MEDIUM] high_entropy_string in dist/lib/xo-to-eslint.js: File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'The Prettier config \\`useTabs\\` is ${pret
+      [LOW] dependency_added in package.json: New dependencies added: '@eslint-community/eslint-plugin-eslint-comments' @ '^4.5.0'. This introduces a new transitive d
+      [LOW] dependency_added in package.json: New dependencies added: '@sindresorhus/tsconfig' @ '^7.0.0'. This introduces a new transitive dependency tree.
+
+BLOCK Update #7: Repo: superagent, Pair: 3ce73dd8..5cd37512, Date: 2026-01-06 00:55:00 -0600
+Subject: chore: fix deps
+Packages scanned: 19
+Blocks (1):
+  - Package: terser@4.8.1
+    Evidence (20): ['dynamic_code', 'long_encoded_blob', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dependency_removed', 'dependency_removed', 'dev_dependency_added', 'dependency_version_changed', 'dependency_version_changed']...
+      [HIGH] dynamic_code in dist/bundle.min.js: New code uses dynamic code evaluation (new Function(). This can execute arbitrary code constructed at runtime, commonly 
+      [MEDIUM] long_encoded_blob in dist/bundle.min.js: New code decodes a potentially obfuscated payload (Buffer.from(e,"base64"). Base64/hex decode at runtime is commonly use
+      [LOW] dependency_added in package.json: New dependencies added: 'source-map' @ '~0.6.1'. This introduces a new transitive dependency tree.
+      [LOW] new_files_summary in None: 4 new file(s) added: 3 script, 1 source_map. Review the full file list if any additions seem unexpected.
+      [INFO] dependency_version_changed in package.json: dependencies['source-map-support'] changed: '~0.5.20' → '~0.5.12'
+
+BLOCK Update #8: Repo: superagent, Pair: a55a6d64..426c2bf0, Date: 2026-01-06 01:06:26 -0600
+Subject: fix: fixed deps
+Packages scanned: 144
+Blocks (1):
+  - Package: xo@0.53.1
+    Evidence (178): ['env_enumeration', 'env_enumeration', 'dynamic_code', 'env_enumeration', 'obfuscated_code', 'bin_entry_changed', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'notable_new_file']...
+      [HIGH] env_enumeration in node_modules/semver/internal/debug.js: File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [HIGH] env_enumeration in node_modules/@typescript-eslint/typescript-estree/dist/parseSettings/inferSingleRun.js: File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [HIGH] dynamic_code in node_modules/@typescript-eslint/eslint-plugin/dist/rules/no-implied-eval.js: New code uses dynamic code evaluation (eval(). This can execute arbitrary code constructed at runtime, commonly used to 
+      [HIGH] env_enumeration in node_modules/debug/src/node.js: File accesses process.env in 5 distinct new lines. Bulk reading of environment variables is sometimes used to collect cr
+      [HIGH] obfuscated_code in node_modules/@typescript-eslint/typescript-estree/dist/jsx/xhtml-entities.js: File contains obfuscator-style code patterns (dense unicode escapes: 250 occurrences): bulk hex identifiers, string arra
+
+BLOCK Update #9: Repo: superagent, Pair: 426c2bf0..829893cc, Date: 2026-01-06 01:18:06 -0600
+Subject: fix: add back zuul, fix mocha, xo, rimraf versions
+Packages scanned: 200
+Blocks (1):
+  - Package: iconv-lite@0.2.11
+    Evidence (21): ['obfuscated_code', 'notable_new_file', 'notable_new_file', 'notable_new_file', 'long_encoded_blob', 'high_entropy_string', 'high_entropy_string', 'long_encoded_blob', 'long_encoded_blob', 'network_access']...
+      [HIGH] obfuscated_code in index.js: File contains obfuscator-style code patterns (dense hex escapes: 30 occurrences): bulk hex identifiers, string array rot
+      [MEDIUM] notable_new_file in .travis.yml: A new dotfile (hidden config) was added: '.travis.yml'.
+      [MEDIUM] notable_new_file in encodings/table/big5.js: A new minified JavaScript file was added: 'encodings/table/big5.js'.
+      [MEDIUM] notable_new_file in encodings/table/gbk.js: A new minified JavaScript file was added: 'encodings/table/gbk.js'.
+      [MEDIUM] long_encoded_blob in index.js: New code decodes a potentially obfuscated payload (\x0e\x0f\x10\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\
+
+BLOCK Update #10: Repo: superagent, Pair: 829893cc..b80038de, Date: 2026-01-06 01:22:04 -0600
+Subject: fix: fixed package lock
+Packages scanned: 1
+Blocks (1):
+  - Package: fsevents@1.2.13
+    Evidence (8): ['install_script_added', 'notable_new_file', 'process_exec', 'notable_new_file', 'dependency_added', 'dependency_added', 'new_files_summary', 'dependency_removed']...
+      [HIGH] install_script_added in package.json: A new 'install' lifecycle script was added: 'node install.js'. Install-time scripts execute automatically during npm ins
+      [HIGH] notable_new_file in install.js: A new file referenced by an install script was added: 'install.js'. Files executed during installation run automatically
+      [HIGH] process_exec in install.js: New code references process-execution APIs (spawn(). These can run arbitrary system commands if called with untrusted in
+      [MEDIUM] notable_new_file in .travis.yml: A new dotfile (hidden config) was added: '.travis.yml'.
+      [LOW] dependency_added in package.json: New dependencies added: 'bindings' @ '^1.5.0'. This introduces a new transitive dependency tree.
+
+=== ALL 19 WARN UPDATES ===
+
+WARN Update #1: Repo: bootstrap, Pair: c2b05e36..a13ff50e, Date: 2026-10-08 20:03:37 +0200
+Subject: Bump sharp from 0.35.4 to 0.35.5 (#42996)
+Packages scanned: 27
+Evidence IDs (100): ['native_binary_present', 'long_encoded_blob', 'high_entropy_string', 'notable_new_file', 'dependency_version_changed']
+
+WARN Update #2: Repo: bootstrap, Pair: 564fc6d9..b2ecd59e, Date: 2026-10-20 20:49:41 +0200
+Subject: Chore(deps-dev): Bump the development-dependencies group across 1 directory with 14 updates (#43124)
+Packages scanned: 38
+Evidence IDs (341): ['obfuscated_code', 'hardcoded_url', 'large_size_jump', 'long_encoded_blob', 'network_access', 'high_entropy_string', 'notable_new_file', 'hardcoded_ip', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #3: Repo: mocha, Pair: 5fbd1340..931baa53, Date: 2026-09-12 13:40:30 -0700
+Subject: chore(deps): update dependency @playwright/test to v1.63.0 (#6299)
+Packages scanned: 3
+Evidence IDs (42): ['hardcoded_url', 'long_encoded_blob', 'high_entropy_string', 'notable_new_file', 'new_files_summary', 'dependency_version_changed', 'dependency_removed']
+
+WARN Update #4: Repo: mocha, Pair: 931baa53..3cb22d1a, Date: 2026-09-12 15:20:39 -0700
+Subject: chore(deps): update dependency eslint to v10.10.0 (#6296)
+Packages scanned: 13
+Evidence IDs (118): ['large_size_jump', 'long_encoded_blob', 'high_entropy_string', 'notable_new_file', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #5: Repo: mocha, Pair: 3cb22d1a..a2416af2, Date: 2026-09-15 18:06:57 -0700
+Subject: chore(deps): update dependency knip to v6.35.0 (#6324)
+Packages scanned: 23
+Evidence IDs (29): ['new_files_summary', 'high_entropy_string', 'dependency_version_changed']
+
+WARN Update #6: Repo: mocha, Pair: 308f7e25..53f09cf7, Date: 2026-10-08 05:42:38 -0700
+Subject: chore(deps): update dependency knip to v6.39.0 (#6377)
+Packages scanned: 23
+Evidence IDs (35): ['new_files_summary', 'process_exec', 'dependency_version_changed', 'high_entropy_string']
+
+WARN Update #7: Repo: socket.io, Pair: 1dd729b1..4fc25d80, Date: 2025-10-16 12:03:32 +0200
+Subject: ci: add Node.js 24
+Packages scanned: 32
+Evidence IDs (30): ['new_files_summary', 'high_entropy_string', 'dependency_version_changed']
+
+WARN Update #8: Repo: socket.io, Pair: 4fc25d80..0c431243, Date: 2025-10-16 19:16:20 +0200
+Subject: refactor: use the ClusterAdapter class from socket.io-adapter package
+Packages scanned: 2
+Evidence IDs (15): ['large_size_jump', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added']
+
+WARN Update #9: Repo: socket.io, Pair: 0c431243..27fd420e, Date: 2025-10-16 19:31:30 +0200
+Subject: refactor: prepare migration to monorepo
+Packages scanned: 0
+Evidence IDs (1): ['replay_error']
+
+WARN Update #10: Repo: socket.io, Pair: 27fd420e..0ae76360, Date: 2025-10-16 19:32:50 +0200
+Subject: Merge remote-tracking branch 'socket.io-cluster-adapter/monorepo'
+Packages scanned: 0
+Evidence IDs (1): ['replay_error']
+
+WARN Update #11: Repo: socket.io, Pair: 0ae76360..1c3e4711, Date: 2025-11-06 17:57:56 +0100
+Subject: feat: add emitter based on Redis streams
+Packages scanned: 3
+Evidence IDs (14): ['inspection_failed', 'dependency_version_changed', 'dependency_removed']
+
+WARN Update #12: Repo: socket.io, Pair: 1c3e4711..b8379494, Date: 2025-12-22 10:46:30 +0100
+Subject: ci: use Node.js 24
+Packages scanned: 4
+Evidence IDs (15): ['inspection_failed', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #13: Repo: socket.io, Pair: 07cbe151..5257ef9a, Date: 2026-05-19 20:10:59 +0300
+Subject: chore(deps): upgrade to ws@8.20.1 (#5439)
+Packages scanned: 3
+Evidence IDs (58): ['long_encoded_blob', 'high_entropy_string', 'notable_new_file', 'new_files_summary', 'bin_entry_changed', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #14: Repo: socket.io, Pair: 8632d4c0..8bead0f4, Date: 2026-06-17 13:22:34 +0200
+Subject: chore: upgrade to TypeScript 6
+Packages scanned: 3
+Evidence IDs (47): ['long_encoded_blob', 'network_access', 'notable_new_file', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #15: Repo: socket.io, Pair: aaf2af36..e387ab11, Date: 2026-09-25 09:49:30 +0200
+Subject: chore: use @rollup/plugin-terser instead of rollup-plugin-terser
+Packages scanned: 4
+Evidence IDs (28): ['new_files_summary', 'dependency_version_changed', 'install_script_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #16: Repo: superagent, Pair: 5677b737..a9a48a3b, Date: 2026-01-04 02:45:44 +0100
+Subject: chore(deps): update tinify package
+Packages scanned: 16
+Evidence IDs (142): ['ci_write', 'long_encoded_blob', 'high_entropy_string', 'notable_new_file', 'dependency_added', 'new_files_summary', 'env_enumeration', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #17: Repo: superagent, Pair: a9a48a3b..3ce73dd8, Date: 2026-01-04 03:15:13 +0100
+Subject: chore(deps): update eslint-plugin-compat package
+Packages scanned: 5
+Evidence IDs (70): ['high_entropy_string', 'dependency_added', 'dev_dependency_added', 'new_files_summary', 'dependency_version_changed', 'dynamic_code', 'dependency_removed']
+
+WARN Update #18: Repo: superagent, Pair: 5cd37512..a55a6d64, Date: 2026-01-06 01:03:02 -0600
+Subject: fix: fixed deps
+Packages scanned: 6
+Evidence IDs (86): ['long_encoded_blob', 'high_entropy_string', 'notable_new_file', 'hardcoded_ip', 'dependency_added', 'new_files_summary', 'dependency_version_changed', 'dev_dependency_added', 'dependency_removed']
+
+WARN Update #19: Repo: superagent, Pair: 23f05cec..1705a2b0, Date: 2026-09-22 20:38:43 -0500
+Subject: fix(ci): restore matrix installs and stabilize HTTP2 pipe test
+Packages scanned: 1
+Evidence IDs (7): ['native_binary_present', 'large_size_jump', 'notable_new_file', 'new_files_summary', 'dev_dependency_added', 'dependency_removed']

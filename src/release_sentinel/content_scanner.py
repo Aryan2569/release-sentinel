@@ -1763,52 +1763,43 @@ def _extract_string_tokens(line: str) -> list[str]:
 _DIRECT_DECODE_EXEC_RE = re.compile(
     r"""(?x)
     (?:
-        \beval\s*\(
-        | new\s+Function\s*\(
-        | vm\.runIn(?:New)?Context\s*\(
-        | vm\.Script\s*\(
-        | (?:child_process(?:\.\w+)?|exec|execSync|spawn|spawnSync|fork)\s*\(
+        \beval
+        | new\s+Function
+        | vm\.(?:runIn(?:New)?Context|Script)
+        | (?:child_process|require\s*\(\s*['"]child_process['"]\s*\))\s*\.\s*
+          (?:exec|execSync|spawn|spawnSync|execFile|execFileSync|fork)
     )
-    \s*
+    \s*\(
+    \s*(?:[^;)]*,\s*)*
     (?:
-        Buffer\.from\s*\(
-        | atob\s*\(
-        | unescape\s*\(
-        | decodeURIComponent\s*\(
-        | ['"][0-9a-fA-F]{32,}['"]
+        Buffer\.from\s*\([^)]*(?:['"](?:base64|hex)['"][^)]*)?\)(?:\s*\.\s*toString\s*\([^)]*\))?
+        | atob\s*\([^)]+\)
+        | unescape\s*\([^)]+\)
+        | decodeURIComponent\s*\([^)]+\)
     )
     """,
 )
 
 _CHAIN_DECODE_EXEC_RE = re.compile(
     r"""(?x)
+    (?:const|let|var)\s+(?P<decoded_var>[a-zA-Z_$][a-zA-Z0-9_$]*)\s*=\s*
     (?:
-        Buffer\.from\s*\([^)]*['"](?:base64|hex)['"]
+        Buffer\.from\s*\([^)]*(?:['"](?:base64|hex)['"][^)]*)?\)(?:\s*\.\s*toString\s*\([^)]*\))?
         | atob\s*\([^)]+\)
         | unescape\s*\([^)]+\)
         | decodeURIComponent\s*\([^)]+\)
     )
-    [\s\S]{0,300}?
+    [\s\S]{0,120}?
     (?:
-        \beval\s*\(
-        | new\s+Function\s*\(
-        | vm\.runIn(?:New)?Context\s*\(
-        | (?:child_process(?:\.\w+)?|exec|execSync|spawn|spawnSync|fork)\s*\(
+        \beval
+        | new\s+Function
+        | vm\.(?:runIn(?:New)?Context|Script)
+        | (?:child_process|require\s*\(\s*['"]child_process['"]\s*\))\s*\.\s*
+          (?:exec|execSync|spawn|spawnSync|execFile|execFileSync|fork)
     )
-    |
-    (?:
-        \beval\s*\(
-        | new\s+Function\s*\(
-        | vm\.runIn(?:New)?Context\s*\(
-        | (?:child_process(?:\.\w+)?|exec|execSync|spawn|spawnSync|fork)\s*\(
-    )
-    [\s\S]{0,100}?
-    (?:
-        Buffer\.from\s*\(
-        | atob\s*\(
-        | unescape\s*\(
-        | decodeURIComponent\s*\(
-    )
+    \s*\(
+    \s*(?:[^;)]*,\s*)*
+    (?P=decoded_var)\b
     """,
 )
 

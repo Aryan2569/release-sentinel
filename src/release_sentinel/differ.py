@@ -39,13 +39,22 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 # Lifecycle script keys that run at install time
-_INSTALL_SCRIPTS = {
+_REGISTRY_INSTALL_SCRIPTS = {
+    "preinstall",
+    "install",
+    "postinstall",
+}
+
+_ALL_INSTALL_SCRIPTS = {
     "preinstall",
     "install",
     "postinstall",
     "prepare",
     "prepublish",
 }
+
+# Backward compatibility
+_INSTALL_SCRIPTS = _REGISTRY_INSTALL_SCRIPTS
 
 # Dependency manifest keys to compare
 _DEP_KEYS = ("dependencies", "devDependencies", "optionalDependencies", "peerDependencies")
@@ -63,6 +72,7 @@ def compare_releases(
     old: ExtractionResult | ReleaseContents,
     new: ExtractionResult | ReleaseContents,
     experimental_hollow: bool = False,
+    is_registry_package: bool = True,
 ) -> list[Evidence]:
     """Compare two extracted releases and return evidence items.
 
@@ -72,6 +82,12 @@ def compare_releases(
         Extraction result or in-memory ReleaseContents for the *from* release.
     new:
         Extraction result or in-memory ReleaseContents for the *to* release.
+    experimental_hollow:
+        Whether to evaluate experimental hollow package heuristics.
+    is_registry_package:
+        Whether this is a dependency installed from the public registry.
+        If True (default), npm only runs preinstall, install, postinstall.
+        If False (root project or git/file dependency), prepare and prepublish are included.
 
     Returns
     -------
@@ -123,12 +139,15 @@ def compare_releases(
         )
 
     # Determine install-script targets for content scanner escalation
+    active_install_scripts = (
+        _REGISTRY_INSTALL_SCRIPTS if is_registry_package else _ALL_INSTALL_SCRIPTS
+    )
     install_targets: set[str] = set()
     if new_pkg is not None:
-        install_targets = _extract_install_script_targets(new_pkg)
+        install_targets = _extract_install_script_targets(new_pkg, active_install_scripts)
 
     if old_pkg is not None and new_pkg is not None:
-        evidence.extend(_diff_install_scripts(old_pkg, new_pkg))
+        evidence.extend(_diff_install_scripts(old_pkg, new_pkg, active_install_scripts))
         evidence.extend(_diff_dependencies(old_pkg, new_pkg))
         evidence.extend(_diff_bin_entries(old_pkg, new_pkg))
         if experimental_hollow:
@@ -182,6 +201,7 @@ def analyze_release(
     dest_dir: Path | None = None,
     dep_stats: dict[str, int] | None = None,
     experimental_hollow: bool = False,
+    is_registry_package: bool = True,
 ) -> list[Evidence]:
     """Analyze a release either against a baseline (diff mode) or standalone (full-scan mode).
 
@@ -206,6 +226,12 @@ def analyze_release(
     dep_stats:
         Optional dictionary to record dependency resolution counts
         (live, replayed, unresolvable, skipped).
+    experimental_hollow:
+        Whether to evaluate experimental hollow package heuristics.
+    is_registry_package:
+        Whether this is a dependency installed from the public registry.
+        If True (default), npm only runs preinstall, install, postinstall.
+        If False (root project or git/file dependency), prepare and prepublish are included.
 
     Returns
     -------
@@ -220,10 +246,19 @@ def analyze_release(
         Severity.INFO: 4,
     }
 
+    active_install_scripts = (
+        _REGISTRY_INSTALL_SCRIPTS if is_registry_package else _ALL_INSTALL_SCRIPTS
+    )
+
     if baseline is not None:
         pol_hollow = policy.experimental_hollow if policy is not None else False
         use_exp_hollow = experimental_hollow or pol_hollow
-        evidence = compare_releases(baseline, new, experimental_hollow=use_exp_hollow)
+        evidence = compare_releases(
+            baseline,
+            new,
+            experimental_hollow=use_exp_hollow,
+            is_registry_package=is_registry_package,
+        )
 
         # Check added dependencies if registry_client and as_of are provided
         if registry_client is not None and as_of is not None:
@@ -239,9 +274,18 @@ def analyze_release(
             )
             old_pkg = old_rc.package_json() or {}
             new_pkg = new_rc.package_json() or {}
+
+            # Outside lockfile mode, treat peerDependencies and optionalDependencies as installed
             old_deps = set((old_pkg.get("dependencies") or {}).keys())
-            new_deps = new_pkg.get("dependencies") or {}
-            added_deps = [(k, str(v)) for k, v in new_deps.items() if k not in old_deps]
+            old_deps.update((old_pkg.get("optionalDependencies") or {}).keys())
+            old_deps.update((old_pkg.get("peerDependencies") or {}).keys())
+
+            new_deps_dict: dict[str, Any] = {}
+            new_deps_dict.update(new_pkg.get("dependencies") or {})
+            new_deps_dict.update(new_pkg.get("optionalDependencies") or {})
+            new_deps_dict.update(new_pkg.get("peerDependencies") or {})
+
+            added_deps = [(k, str(v)) for k, v in new_deps_dict.items() if k not in old_deps]
 
             if added_deps:
                 from release_sentinel.dependency_resolver import resolve_added_dependency
@@ -291,11 +335,11 @@ def analyze_release(
         )
         install_targets: set[str] = set()
     else:
-        install_targets = _extract_install_script_targets(new_pkg)
+        install_targets = _extract_install_script_targets(new_pkg, active_install_scripts)
         scripts: dict[str, str] = new_pkg.get("scripts", {}) or {}
         has_install_script = False
 
-        for hook in _INSTALL_SCRIPTS:
+        for hook in active_install_scripts:
             if hook in scripts:
                 has_install_script = True
                 cmd = str(scripts[hook])
@@ -476,13 +520,19 @@ def _check_lifecycle_script_command(hook: str, cmd: str) -> list[Evidence]:
     return evs
 
 
-def _diff_install_scripts(old_pkg: dict[str, Any], new_pkg: dict[str, Any]) -> list[Evidence]:
+def _diff_install_scripts(
+    old_pkg: dict[str, Any],
+    new_pkg: dict[str, Any],
+    install_scripts: set[str] | None = None,
+) -> list[Evidence]:
     """Detect added or changed install-time lifecycle scripts."""
+    if install_scripts is None:
+        install_scripts = _REGISTRY_INSTALL_SCRIPTS
     evidence: list[Evidence] = []
     old_scripts: dict[str, str] = old_pkg.get("scripts", {}) or {}
     new_scripts: dict[str, str] = new_pkg.get("scripts", {}) or {}
 
-    for key in _INSTALL_SCRIPTS:
+    for key in install_scripts:
         old_val = old_scripts.get(key)
         new_val = new_scripts.get(key)
 
@@ -1207,14 +1257,20 @@ def _parse_command_targets(
     return expanded
 
 
-def _extract_install_script_targets(pkg: dict[str, Any]) -> set[str]:
+def _extract_install_script_targets(
+    pkg: dict[str, Any],
+    install_scripts: set[str] | None = None,
+) -> set[str]:
     """Return the set of package-relative paths referenced by install scripts."""
     scripts: dict[str, str] = pkg.get("scripts", {}) or {}
     if not isinstance(scripts, dict):
         return set()
 
+    if install_scripts is None:
+        install_scripts = _REGISTRY_INSTALL_SCRIPTS
+
     targets: set[str] = set()
-    for hook in _INSTALL_SCRIPTS:
+    for hook in install_scripts:
         cmd = scripts.get(hook)
         if cmd and isinstance(cmd, str):
             targets |= _parse_command_targets(cmd, scripts)

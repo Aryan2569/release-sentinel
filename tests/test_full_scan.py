@@ -82,6 +82,65 @@ class TestFullScanMode:
         ev_ids = [e.id for e in evidence]
         assert "decode_and_execute" in ev_ids
 
+    def test_regex_exec_near_decode_uri_component_not_matched(self):
+        """RegExp.exec near decodeURIComponent (query-string style)
+        must not trigger decode_and_execute.
+        """
+        release = _make_release(
+            files={
+                "index.js": (
+                    "function parse(qs) {\n"
+                    "    const decoded = decodeURIComponent(qs);\n"
+                    "    const match = /foo=([^&]+)/.exec(decoded);\n"
+                    "    return match ? match[1] : null;\n"
+                    "}\n"
+                ),
+            }
+        )
+        evidence = analyze_release(release, baseline=None)
+        ev_ids = [e.id for e in evidence]
+        assert "decode_and_execute" not in ev_ids
+
+    def test_buffer_from_base64_near_exec_not_matched(self):
+        """Buffer.from(x, 'base64') near bare exec( (bundler style)
+        must not trigger decode_and_execute.
+        """
+        release = _make_release(
+            files={
+                "index.js": (
+                    "const buf = Buffer.from('hello', 'base64');\n"
+                    "function run(cmd) {\n"
+                    "    exec(cmd);\n"
+                    "}\n"
+                ),
+            }
+        )
+        evidence = analyze_release(release, baseline=None)
+        ev_ids = [e.id for e in evidence]
+        assert "decode_and_execute" not in ev_ids
+
+    def test_eval_atob_matched(self):
+        """eval(atob(...)) must trigger decode_and_execute."""
+        release = _make_release(
+            files={
+                "index.js": "eval(atob(payload));\n",
+            }
+        )
+        evidence = analyze_release(release, baseline=None)
+        ev_ids = [e.id for e in evidence]
+        assert "decode_and_execute" in ev_ids
+
+    def test_new_function_buffer_from_matched(self):
+        """new Function(Buffer.from(x, 'base64').toString()) must trigger decode_and_execute."""
+        release = _make_release(
+            files={
+                "index.js": "new Function(Buffer.from(x, 'base64').toString())();\n",
+            }
+        )
+        evidence = analyze_release(release, baseline=None)
+        ev_ids = [e.id for e in evidence]
+        assert "decode_and_execute" in ev_ids
+
     def test_credential_leak_blocks(self):
         """Credential file read plus network in same file triggers credential_leak -> BLOCK."""
         release = _make_release(

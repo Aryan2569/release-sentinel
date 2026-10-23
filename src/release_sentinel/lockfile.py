@@ -439,6 +439,20 @@ def scan_lockfile_diff(
                         )
                         rc_old = None
 
+                is_git = bool(
+                    change.resolved
+                    and (
+                        change.resolved.startswith("git+")
+                        or change.resolved.startswith("git://")
+                        or (
+                            "github.com" in change.resolved
+                            and not change.resolved.endswith(".tgz")
+                        )
+                    )
+                )
+                is_file = bool(change.resolved and change.resolved.startswith("file:"))
+                is_reg = not (is_git or is_file)
+
                 evidence = analyze_release(
                     new=rc_new,
                     baseline=rc_old,
@@ -446,6 +460,7 @@ def scan_lockfile_diff(
                     config=cfg,
                     registry_client=client,
                     experimental_hollow=experimental_hollow,
+                    is_registry_package=is_reg,
                 )
                 is_full = rc_old is None
                 decision, lims = decide(evidence, policy=policy, is_full_scan=is_full)

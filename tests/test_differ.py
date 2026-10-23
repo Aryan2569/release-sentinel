@@ -228,3 +228,33 @@ class TestMissingPackageJson:
         old, new = extract_pair(tmp_path, old_tgz, new_tgz)
         evidence = compare_releases(old, new)
         assert any(e.id == "inspection_failed" for e in evidence)
+
+
+class TestRegistryVsRootInstallScripts:
+    def test_prepare_and_prepublish_ignored_for_registry_package(self):
+        old_rel = ReleaseContents(files={"package.json": b'{"name": "p", "version": "1.0.0"}'})
+        new_rel = ReleaseContents(
+            files={
+                "package.json": (
+                    b'{"name": "p", "version": "1.0.1", "scripts": {'
+                    b'"prepare": "husky install", "prepublish": "npm run build"}}'
+                )
+            }
+        )
+        evidence = compare_releases(old_rel, new_rel, is_registry_package=True)
+        assert not any(e.id == "install_script_added" for e in evidence)
+
+    def test_prepare_and_prepublish_included_for_git_or_root_package(self):
+        old_rel = ReleaseContents(files={"package.json": b'{"name": "p", "version": "1.0.0"}'})
+        new_rel = ReleaseContents(
+            files={
+                "package.json": (
+                    b'{"name": "p", "version": "1.0.1", "scripts": {'
+                    b'"prepare": "husky install", "prepublish": "npm run build"}}'
+                )
+            }
+        )
+        evidence = compare_releases(old_rel, new_rel, is_registry_package=False)
+        added_scripts = [e for e in evidence if e.id == "install_script_added"]
+        assert len(added_scripts) == 2
+
