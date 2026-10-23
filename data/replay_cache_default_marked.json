@@ -1,0 +1,1714 @@
+{
+  "repo": "marked",
+  "profile": "default",
+  "results": [
+    {
+      "pair_key": "61a94421..9552b6bb",
+      "base_sha": "61a944216dc80fcf21ab5beb0ec45f318d9a8da5",
+      "head_sha": "9552b6bbca7f587f96b7249c5833358a17a18e2b",
+      "date": "2026-08-10 20:19:59 -0600",
+      "subject": "chore(deps-dev): bump semantic-release from 25.0.8 to 25.0.9 (#4049)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.145
+    },
+    {
+      "pair_key": "9552b6bb..a5cf277f",
+      "base_sha": "9552b6bbca7f587f96b7249c5833358a17a18e2b",
+      "head_sha": "a5cf277f0eb82a17dc767c63e2c1481fca23639e",
+      "date": "2026-08-17 20:57:06 -0600",
+      "subject": "chore(deps-dev): bump highlight.js from 11.11.1 to 11.12.0 (#4057)",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.072
+    },
+    {
+      "pair_key": "a5cf277f..a426c4dd",
+      "base_sha": "a5cf277f0eb82a17dc767c63e2c1481fca23639e",
+      "head_sha": "a426c4dd394b67249280a1f581bf10c64d184bf4",
+      "date": "2026-08-17 20:57:23 -0600",
+      "subject": "chore(deps-dev): bump esbuild from 0.28.1 to 0.28.2 (#4056)",
+      "packages_scanned": 27,
+      "decision": "WARN",
+      "evidence": [
+        "env_enumeration",
+        "hardcoded_url",
+        "high_entropy_string",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [
+        {
+          "package": "@esbuild/aix-ppc64",
+          "old_version": "0.28.1",
+          "version": "0.28.2",
+          "evidence": [
+            "env_enumeration",
+            "hardcoded_url"
+          ],
+          "details": [
+            {
+              "id": "env_enumeration",
+              "severity": "HIGH",
+              "file": "bin/esbuild",
+              "explanation": "File accesses process.env in 3 distinct new lines. Bulk reading of environment variables is sometimes used to collect credentials for exfiltration.",
+              "legitimate_use_note": "Configuration-heavy packages (build tools, frameworks) commonly read multiple env vars. Review whether any sensitive vars (tokens, passwords, private keys) are read."
+            },
+            {
+              "id": "hardcoded_url",
+              "severity": "LOW",
+              "file": "bin/esbuild",
+              "explanation": "New code contains a hardcoded URL: https://www.typescriptlang.org/tsconfig#esModuleInteropThis. Unexpected hard-coded URLs in library code may indicate a data-exfiltration or command-and-control endpoint.",
+              "legitimate_use_note": "Documentation links, API base URLs, and CDN references are common. URLs pointing to infrastructure not associated with the package deserve manual review."
+            }
+          ]
+        },
+        {
+          "package": "esbuild",
+          "old_version": "0.28.1",
+          "version": "0.28.2",
+          "evidence": [
+            "high_entropy_string",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed"
+          ],
+          "details": [
+            {
+              "id": "high_entropy_string",
+              "severity": "MEDIUM",
+              "file": "bin/esbuild",
+              "explanation": "File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'pnpapi-${pkg.replace(\"/\", \"-\")}-${\"0.28.2\"}-${path.basename('.",
+              "legitimate_use_note": "Cryptographic constants, pre-computed lookup tables, and compression codecs contain naturally high-entropy strings."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/aix-ppc64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/aix-ppc64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/android-arm'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/android-arm' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/android-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/android-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/android-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/android-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/darwin-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/darwin-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/darwin-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/darwin-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/freebsd-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/freebsd-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/freebsd-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/freebsd-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-arm'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-arm' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-ia32'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-ia32' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-loong64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-loong64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-mips64el'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-mips64el' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-ppc64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-ppc64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-riscv64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-riscv64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-s390x'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-s390x' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/linux-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/linux-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/netbsd-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/netbsd-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/netbsd-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/netbsd-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/openbsd-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/openbsd-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/openbsd-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/openbsd-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/openharmony-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/openharmony-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/sunos-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/sunos-x64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/win32-arm64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/win32-arm64' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/win32-ia32'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/win32-ia32' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "optionalDependencies['@esbuild/win32-x64'] changed: '0.28.1' \u2192 '0.28.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@esbuild/win32-x64' is not itself compromised."
+            }
+          ]
+        }
+      ],
+      "elapsed_sec": 10.1
+    },
+    {
+      "pair_key": "a426c4dd..58367a53",
+      "base_sha": "a426c4dd394b67249280a1f581bf10c64d184bf4",
+      "head_sha": "58367a53dbdb328f55d426e4437fa1cb84f77c19",
+      "date": "2026-08-17 21:00:38 -0600",
+      "subject": "chore(deps-dev): bump eslint from 10.8.0 to 10.8.1 (#4055)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_version_changed",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 1.526
+    },
+    {
+      "pair_key": "58367a53..8698d35b",
+      "base_sha": "58367a53dbdb328f55d426e4437fa1cb84f77c19",
+      "head_sha": "8698d35b84c17f86ea8a299a6183d47ccb3d2bd7",
+      "date": "2026-08-18 03:01:50 +0000",
+      "subject": "chore(release): 18.0.10 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.071
+    },
+    {
+      "pair_key": "8698d35b..c430a648",
+      "base_sha": "8698d35b84c17f86ea8a299a6183d47ccb3d2bd7",
+      "head_sha": "c430a648c326a3be57df8542c7fb961020bb1cdb",
+      "date": "2026-08-24 10:50:31 -0600",
+      "subject": "chore(deps-dev): bump eslint from 10.8.1 to 10.9.0 (#4069)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 1.531
+    },
+    {
+      "pair_key": "c430a648..53cb13f1",
+      "base_sha": "c430a648c326a3be57df8542c7fb961020bb1cdb",
+      "head_sha": "53cb13f13fc13d433269248c5caa255ffa1361ee",
+      "date": "2026-08-24 16:52:07 +0000",
+      "subject": "chore(release): 18.0.11 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.071
+    },
+    {
+      "pair_key": "53cb13f1..d17da7f1",
+      "base_sha": "53cb13f13fc13d433269248c5caa255ffa1361ee",
+      "head_sha": "d17da7f1044c370c2815e419d74dd1c02f8722b7",
+      "date": "2026-08-31 17:52:59 -0600",
+      "subject": "chore(deps-dev): bump eslint from 10.9.0 to 10.9.1 (#4079)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 1.543
+    },
+    {
+      "pair_key": "d17da7f1..63841d3b",
+      "base_sha": "d17da7f1044c370c2815e419d74dd1c02f8722b7",
+      "head_sha": "63841d3b0368e4b8df025ac3aca699141fa7bc56",
+      "date": "2026-08-31 17:53:35 -0600",
+      "subject": "chore(deps-dev): bump markdown-it from 15.0.0 to 15.0.1 (#4078)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_removed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.417
+    },
+    {
+      "pair_key": "63841d3b..c6119b3c",
+      "base_sha": "63841d3b0368e4b8df025ac3aca699141fa7bc56",
+      "head_sha": "c6119b3ce089dbbe158d92dd5de8269d718e70e4",
+      "date": "2026-09-02 19:08:11 -0600",
+      "subject": "chore(deps-dev): bump @humanfs/node from 0.16.6 to 0.16.8 (#4081)",
+      "packages_scanned": 4,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_added",
+        "dependency_removed",
+        "dependency_added",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_removed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.158
+    },
+    {
+      "pair_key": "c6119b3c..475ba3d4",
+      "base_sha": "c6119b3ce089dbbe158d92dd5de8269d718e70e4",
+      "head_sha": "475ba3d4e0e7947597ce0e7d15c170b63da0f083",
+      "date": "2026-09-07 14:36:58 -0600",
+      "subject": "chore(deps-dev): bump eslint from 10.9.1 to 10.10.0 (#4088)",
+      "packages_scanned": 14,
+      "decision": "WARN",
+      "evidence": [
+        "notable_new_file",
+        "long_encoded_blob",
+        "long_encoded_blob",
+        "new_files_summary",
+        "dependency_version_changed",
+        "dev_dependency_added",
+        "dependency_removed",
+        "notable_new_file",
+        "large_size_jump",
+        "long_encoded_blob",
+        "new_files_summary",
+        "dev_dependency_added",
+        "dependency_removed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "high_entropy_string",
+        "high_entropy_string",
+        "dev_dependency_added",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_removed",
+        "notable_new_file",
+        "notable_new_file",
+        "long_encoded_blob",
+        "long_encoded_blob",
+        "long_encoded_blob",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dev_dependency_added",
+        "dependency_removed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "large_size_jump",
+        "high_entropy_string",
+        "high_entropy_string",
+        "new_files_summary",
+        "dependency_version_changed",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_added",
+        "dependency_added",
+        "new_files_summary",
+        "dependency_version_changed",
+        "dependency_removed",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "large_size_jump",
+        "dependency_added",
+        "new_files_summary",
+        "dependency_removed",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dependency_version_changed",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dependency_version_changed",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dev_dependency_added",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_removed"
+      ],
+      "blocks": [],
+      "warns": [
+        {
+          "package": "@cacheable/memory",
+          "old_version": "2.0.9",
+          "version": "2.2.0",
+          "evidence": [
+            "notable_new_file",
+            "long_encoded_blob",
+            "long_encoded_blob",
+            "new_files_summary",
+            "dependency_version_changed",
+            "dev_dependency_added",
+            "dependency_removed"
+          ],
+          "details": [
+            {
+              "id": "notable_new_file",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.mts",
+              "explanation": "A new minified JavaScript file was added: 'dist/index.d.mts'.",
+              "legitimate_use_note": "Bundled packages routinely ship minified source for browser use. Review the file content if unexpected."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.cts",
+              "explanation": "File contains a new long line (522 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.mts",
+              "explanation": "File contains a new long line (522 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "new_files_summary",
+              "severity": "LOW",
+              "file": null,
+              "explanation": "1 new file(s) added: 1 script. Review the full file list if any additions seem unexpected.",
+              "legitimate_use_note": "New source files, tests, and configuration are expected in most releases."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "dependencies['@cacheable/utils'] changed: '^2.4.1' \u2192 '^2.5.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@cacheable/utils' is not itself compromised."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'tsdown' @ '^0.22.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'tsup' (was '^8.5.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            }
+          ]
+        },
+        {
+          "package": "@cacheable/utils",
+          "old_version": "2.4.1",
+          "version": "2.5.0",
+          "evidence": [
+            "notable_new_file",
+            "large_size_jump",
+            "long_encoded_blob",
+            "new_files_summary",
+            "dev_dependency_added",
+            "dependency_removed"
+          ],
+          "details": [
+            {
+              "id": "notable_new_file",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.mts",
+              "explanation": "A new minified JavaScript file was added: 'dist/index.d.mts'.",
+              "legitimate_use_note": "Bundled packages routinely ship minified source for browser use. Review the file content if unexpected."
+            },
+            {
+              "id": "large_size_jump",
+              "severity": "MEDIUM",
+              "file": null,
+              "explanation": "Package size grew from 76.1 KB to 203.5 KB (2.7\u00d7 increase, threshold: 2.0\u00d7). Large unexplained size increases may indicate bundled payloads.",
+              "legitimate_use_note": "Large size jumps can occur when a package bundles its dependencies, adds pre-built binaries, or includes new assets. Check whether the increase is explained by the changelog."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.mts",
+              "explanation": "File contains a new long line (1027 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "new_files_summary",
+              "severity": "LOW",
+              "file": null,
+              "explanation": "1 new file(s) added: 1 script. Review the full file list if any additions seem unexpected.",
+              "legitimate_use_note": "New source files, tests, and configuration are expected in most releases."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'tsdown' @ '^0.22.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'tsup' (was '^8.5.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            }
+          ]
+        },
+        {
+          "package": "@keyv/serialize",
+          "old_version": "1.1.0",
+          "version": "1.1.1",
+          "evidence": [
+            "high_entropy_string",
+            "high_entropy_string",
+            "dev_dependency_added",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_removed"
+          ],
+          "details": [
+            {
+              "id": "high_entropy_string",
+              "severity": "MEDIUM",
+              "file": "dist/index.cjs",
+              "explanation": "File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): '${_serialize(k, false)}:${_serialize(data[k], escapeColonStr'.",
+              "legitimate_use_note": "Cryptographic constants, pre-computed lookup tables, and compression codecs contain naturally high-entropy strings."
+            },
+            {
+              "id": "high_entropy_string",
+              "severity": "MEDIUM",
+              "file": "dist/index.js",
+              "explanation": "File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): '${_serialize(k, false)}:${_serialize(data[k], escapeColonStr'.",
+              "legitimate_use_note": "Cryptographic constants, pre-computed lookup tables, and compression codecs contain naturally high-entropy strings."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@biomejs/biome' @ '^2.2.3'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['tsd'] changed: '^0.32.0' \u2192 '^0.33.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'tsd' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['typescript'] changed: '^5.8.3' \u2192 '^5.9.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'typescript' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@keyv/test-suite'] changed: '^2.0.9' \u2192 '^2.1.1'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@keyv/test-suite' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['keyv'] changed: '^5.3.4' \u2192 '^5.5.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'keyv' is not itself compromised."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'xo' (was '^1.2.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            }
+          ]
+        },
+        {
+          "package": "cacheable",
+          "old_version": "2.3.5",
+          "version": "2.5.0",
+          "evidence": [
+            "notable_new_file",
+            "notable_new_file",
+            "long_encoded_blob",
+            "long_encoded_blob",
+            "long_encoded_blob",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dev_dependency_added",
+            "dependency_removed"
+          ],
+          "details": [
+            {
+              "id": "notable_new_file",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.mts",
+              "explanation": "A new minified JavaScript file was added: 'dist/index.d.mts'.",
+              "legitimate_use_note": "Bundled packages routinely ship minified source for browser use. Review the file content if unexpected."
+            },
+            {
+              "id": "notable_new_file",
+              "severity": "MEDIUM",
+              "file": "dist/index.mjs",
+              "explanation": "A new minified JavaScript file was added: 'dist/index.mjs'.",
+              "legitimate_use_note": "Bundled packages routinely ship minified source for browser use. Review the file content if unexpected."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.cts",
+              "explanation": "File contains a new long line (603 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/index.mjs",
+              "explanation": "File contains a new long line (525 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/index.d.mts",
+              "explanation": "File contains a new long line (603 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "dependencies['@cacheable/memory'] changed: '^2.0.8' \u2192 '^2.2.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@cacheable/memory' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "dependencies['@cacheable/utils'] changed: '^2.4.1' \u2192 '^2.5.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@cacheable/utils' is not itself compromised."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'tsdown' @ '^0.22.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'tsup' (was '^8.5.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            }
+          ]
+        },
+        {
+          "package": "file-entry-cache",
+          "old_version": "8.0.0",
+          "version": "11.1.5",
+          "evidence": [
+            "large_size_jump",
+            "high_entropy_string",
+            "high_entropy_string",
+            "new_files_summary",
+            "dependency_version_changed",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed"
+          ],
+          "details": [
+            {
+              "id": "large_size_jump",
+              "severity": "MEDIUM",
+              "file": null,
+              "explanation": "Package size grew from 15.6 KB to 87.2 KB (5.6\u00d7 increase, threshold: 2.0\u00d7). Large unexplained size increases may indicate bundled payloads.",
+              "legitimate_use_note": "Large size jumps can occur when a package bundles its dependencies, adds pre-built binaries, or includes new assets. Check whether the increase is explained by the changelog."
+            },
+            {
+              "id": "high_entropy_string",
+              "severity": "MEDIUM",
+              "file": "dist/index.cjs",
+              "explanation": "File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'Path traversal attempt blocked: \"${filePath}\" resolves outsi'.",
+              "legitimate_use_note": "Cryptographic constants, pre-computed lookup tables, and compression codecs contain naturally high-entropy strings."
+            },
+            {
+              "id": "high_entropy_string",
+              "severity": "MEDIUM",
+              "file": "dist/index.mjs",
+              "explanation": "File contains a new high-entropy string (Shannon entropy >= 4.5 bits/char): 'Path traversal attempt blocked: \"${filePath}\" resolves outsi'.",
+              "legitimate_use_note": "Cryptographic constants, pre-computed lookup tables, and compression codecs contain naturally high-entropy strings."
+            },
+            {
+              "id": "new_files_summary",
+              "severity": "LOW",
+              "file": null,
+              "explanation": "4 new file(s) added: 2 other, 2 script. Review the full file list if any additions seem unexpected.",
+              "legitimate_use_note": "New source files, tests, and configuration are expected in most releases."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "dependencies['flat-cache'] changed: '^4.0.0' \u2192 '^6.1.23'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'flat-cache' is not itself compromised."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'pino' @ '^10.3.1'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'tsdown' @ '^0.22.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'typescript' @ '^5.9.3'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'c8' (was '^8.0.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'chai' (was '^4.3.10').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'eslint' (was '^8.56.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'eslint-config-prettier' (was '^9.1.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'eslint-plugin-mocha' (was '^10.2.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'eslint-plugin-prettier' (was '^5.0.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'glob-expand' (was '^0.2.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'mocha' (was '^10.2.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'prettier' (was '^3.1.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'rimraf' (was '^5.0.5').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'write' (was '^2.0.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            }
+          ]
+        },
+        {
+          "package": "keyv",
+          "old_version": "4.5.4",
+          "version": "5.6.0",
+          "evidence": [
+            "large_size_jump",
+            "dependency_added",
+            "new_files_summary",
+            "dependency_removed",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dependency_version_changed",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dependency_version_changed",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dev_dependency_added",
+            "dependency_removed",
+            "dependency_removed",
+            "dependency_removed"
+          ],
+          "details": [
+            {
+              "id": "large_size_jump",
+              "severity": "MEDIUM",
+              "file": null,
+              "explanation": "Package size grew from 27.1 KB to 114.6 KB (4.2\u00d7 increase, threshold: 2.0\u00d7). Large unexplained size increases may indicate bundled payloads.",
+              "legitimate_use_note": "Large size jumps can occur when a package bundles its dependencies, adds pre-built binaries, or includes new assets. Check whether the increase is explained by the changelog."
+            },
+            {
+              "id": "dependency_added",
+              "severity": "LOW",
+              "file": "package.json",
+              "explanation": "New dependencies added: '@keyv/serialize' @ '^1.1.1'. This introduces a new transitive dependency tree.",
+              "legitimate_use_note": "New dependencies are common in feature releases. Check whether the added package is well-maintained."
+            },
+            {
+              "id": "new_files_summary",
+              "severity": "LOW",
+              "file": null,
+              "explanation": "5 new file(s) added: 2 other, 3 script. Review the full file list if any additions seem unexpected.",
+              "legitimate_use_note": "New source files, tests, and configuration are expected in most releases."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from dependencies: 'json-buffer' (was '3.0.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'lru.min' @ '^1.1.1'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'quick-lru' @ '^7.0.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@biomejs/biome' @ '^2.3.8'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@faker-js/faker' @ '^10.1.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@vitest/coverage-v8' @ '^4.0.14'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'rimraf' @ '^6.1.2'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['tsd'] changed: '^0.29.0' \u2192 '^0.33.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'tsd' is not itself compromised."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: 'vitest' @ '^4.0.14'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@keyv/compress-gzip' @ '^2.0.3'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@keyv/sqlite' @ '^4.0.6'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@keyv/test-suite'] changed: '*' \u2192 '^2.1.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@keyv/test-suite' is not itself compromised."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@keyv/mongo' @ '^3.1.0'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@keyv/compress-brotli' @ '^2.0.5'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@keyv/compress-lz4' @ '^1.0.1'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dev_dependency_added",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "New devDependency added: '@keyv/memcache' @ '^2.0.2'.",
+              "legitimate_use_note": "New devDependencies are common in development updates."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'eslint' (was '^8.51.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'eslint-plugin-promise' (was '^6.1.1').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            },
+            {
+              "id": "dependency_removed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "Dependency removed from devDependencies: 'pify' (was '^5.0.0').",
+              "legitimate_use_note": "Removing an unused dependency is good hygiene. No security concern unless replaced by inline code."
+            }
+          ]
+        }
+      ],
+      "elapsed_sec": 2.115
+    },
+    {
+      "pair_key": "475ba3d4..24bf47c7",
+      "base_sha": "475ba3d4e0e7947597ce0e7d15c170b63da0f083",
+      "head_sha": "24bf47c732434b6679f31f9b17ff6b1f6549e9f2",
+      "date": "2026-09-07 20:38:11 +0000",
+      "subject": "chore(release): 18.0.12 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.071
+    },
+    {
+      "pair_key": "24bf47c7..a43c0648",
+      "base_sha": "24bf47c732434b6679f31f9b17ff6b1f6549e9f2",
+      "head_sha": "a43c064837261b0e36f1c3a506dc37fe28c97493",
+      "date": "2026-09-09 21:00:30 -0600",
+      "subject": "chore(deps-dev): bump js-yaml from 3.14.2 to 3.15.2 (#4089)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.228
+    },
+    {
+      "pair_key": "a43c0648..634f8106",
+      "base_sha": "a43c064837261b0e36f1c3a506dc37fe28c97493",
+      "head_sha": "634f81064433ffd12a6f2c7e8a5ae1b89c3ef4f1",
+      "date": "2026-09-12 21:42:54 +0000",
+      "subject": "chore(release): 18.0.13 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.073
+    },
+    {
+      "pair_key": "634f8106..4eb2d97c",
+      "base_sha": "634f81064433ffd12a6f2c7e8a5ae1b89c3ef4f1",
+      "head_sha": "4eb2d97ca61e2f558aa0fb5860509f5399d74338",
+      "date": "2026-09-14 20:49:53 -0600",
+      "subject": "chore(deps-dev): bump markdown-it from 15.0.1 to 15.0.2 (#4096)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.401
+    },
+    {
+      "pair_key": "4eb2d97c..23c82ad0",
+      "base_sha": "4eb2d97ca61e2f558aa0fb5860509f5399d74338",
+      "head_sha": "23c82ad02bc8723d9a32c41dd23db155a472d37e",
+      "date": "2026-09-22 00:06:36 -0600",
+      "subject": "chore: update deps (#4108)",
+      "packages_scanned": 17,
+      "decision": "WARN",
+      "evidence": [
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dev_dependency_added",
+        "dependency_version_changed",
+        "dependency_removed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "long_encoded_blob",
+        "long_encoded_blob",
+        "long_encoded_blob",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "new_files_summary",
+        "dev_dependency_added",
+        "dependency_removed",
+        "dependency_removed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [
+        {
+          "package": "diff",
+          "old_version": "8.0.3",
+          "version": "9.0.0",
+          "evidence": [
+            "long_encoded_blob",
+            "long_encoded_blob",
+            "long_encoded_blob",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed",
+            "dependency_version_changed"
+          ],
+          "details": [
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/diff.js",
+              "explanation": "File contains a new long line (551 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "libcjs/patch/reverse.js",
+              "explanation": "File contains a new long line (547 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "libesm/patch/reverse.js",
+              "explanation": "File contains a new long line (547 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@arethetypeswrong/cli'] changed: '^0.17.4' \u2192 '^0.18.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@arethetypeswrong/cli' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@babel/core'] changed: '^7.26.9' \u2192 '^7.29.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@babel/core' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@babel/preset-env'] changed: '^7.26.9' \u2192 '^7.29.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@babel/preset-env' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@babel/register'] changed: '^7.25.9' \u2192 '^7.28.6'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@babel/register' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['@eslint/js'] changed: '^9.25.1' \u2192 '^10.0.1'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of '@eslint/js' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['babel-loader'] changed: '^10.0.0' \u2192 '^10.1.1'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'babel-loader' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['babel-plugin-istanbul'] changed: '^7.0.0' \u2192 '8.0.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'babel-plugin-istanbul' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['chai'] changed: '^5.2.0' \u2192 '^6.2.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'chai' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['cross-env'] changed: '^7.0.3' \u2192 '^10.1.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'cross-env' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['eslint'] changed: '^9.25.1' \u2192 '^10.2.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'eslint' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['globals'] changed: '^16.0.0' \u2192 '^17.5.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'globals' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['mocha'] changed: '^11.1.0' \u2192 '^11.7.5'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'mocha' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['nyc'] changed: '^17.1.0' \u2192 '^18.0.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'nyc' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['rollup'] changed: '^4.40.1' \u2192 '^4.60.1'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'rollup' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['tsd'] changed: '^0.32.0' \u2192 '^0.33.0'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'tsd' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['typescript'] changed: '^5.8.3' \u2192 '^6.0.2'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'typescript' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['typescript-eslint'] changed: '^8.31.0' \u2192 '^8.58.1'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'typescript-eslint' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['webpack'] changed: '^5.99.7' \u2192 '^5.106.1'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'webpack' is not itself compromised."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "devDependencies['webpack-dev-server'] changed: '^5.2.1' \u2192 '^5.2.3'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'webpack-dev-server' is not itself compromised."
+            }
+          ]
+        }
+      ],
+      "elapsed_sec": 6.94
+    },
+    {
+      "pair_key": "23c82ad0..ef0704c5",
+      "base_sha": "23c82ad02bc8723d9a32c41dd23db155a472d37e",
+      "head_sha": "ef0704c58459e927c805b92a5cc7d0c629e6fe43",
+      "date": "2026-09-22 06:07:51 +0000",
+      "subject": "chore(release): 18.0.14 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.074
+    },
+    {
+      "pair_key": "ef0704c5..c18a64fa",
+      "base_sha": "ef0704c58459e927c805b92a5cc7d0c629e6fe43",
+      "head_sha": "c18a64fa5e8c97cb92a8ea709a4542ea94b1c740",
+      "date": "2026-10-02 08:33:24 -0600",
+      "subject": "chore(deps): bump undici (#4122)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.543
+    },
+    {
+      "pair_key": "c18a64fa..e8093864",
+      "base_sha": "c18a64fa5e8c97cb92a8ea709a4542ea94b1c740",
+      "head_sha": "e809386482250c5c856d54e34b5930ee7a5faa4f",
+      "date": "2026-10-05 15:39:17 +0000",
+      "subject": "chore(release): 18.1.0 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.073
+    },
+    {
+      "pair_key": "e8093864..699a969f",
+      "base_sha": "e809386482250c5c856d54e34b5930ee7a5faa4f",
+      "head_sha": "699a969fe30855bce777364e9692df2279e8a65b",
+      "date": "2026-10-12 08:27:03 -0400",
+      "subject": "chore(deps-dev): bump handlebars from 4.7.9 to 4.7.10 (#4133)",
+      "packages_scanned": 1,
+      "decision": "WARN",
+      "evidence": [
+        "notable_new_file",
+        "notable_new_file",
+        "long_encoded_blob",
+        "long_encoded_blob",
+        "new_files_summary",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [
+        {
+          "package": "handlebars",
+          "old_version": "4.7.9",
+          "version": "4.7.10",
+          "evidence": [
+            "notable_new_file",
+            "notable_new_file",
+            "long_encoded_blob",
+            "long_encoded_blob",
+            "new_files_summary",
+            "dependency_version_changed"
+          ],
+          "details": [
+            {
+              "id": "notable_new_file",
+              "severity": "MEDIUM",
+              "file": "dist/amd/handlebars/compiler/node-types.js",
+              "explanation": "A new minified JavaScript file was added: 'dist/amd/handlebars/compiler/node-types.js'.",
+              "legitimate_use_note": "Bundled packages routinely ship minified source for browser use. Review the file content if unexpected."
+            },
+            {
+              "id": "notable_new_file",
+              "severity": "MEDIUM",
+              "file": "dist/cjs/handlebars/compiler/node-types.js",
+              "explanation": "A new minified JavaScript file was added: 'dist/cjs/handlebars/compiler/node-types.js'.",
+              "legitimate_use_note": "Bundled packages routinely ship minified source for browser use. Review the file content if unexpected."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/amd/handlebars/compiler/node-types.js",
+              "explanation": "File contains a new long line (1528 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "long_encoded_blob",
+              "severity": "MEDIUM",
+              "file": "dist/cjs/handlebars/compiler/node-types.js",
+              "explanation": "File contains a new long line (1528 chars). Extremely long single lines are a common obfuscation technique.",
+              "legitimate_use_note": "Minified JavaScript, base64-encoded assets, and auto-generated tables often produce long lines."
+            },
+            {
+              "id": "new_files_summary",
+              "severity": "LOW",
+              "file": null,
+              "explanation": "1 new file(s) added: 1 script. Review the full file list if any additions seem unexpected.",
+              "legitimate_use_note": "New source files, tests, and configuration are expected in most releases."
+            },
+            {
+              "id": "dependency_version_changed",
+              "severity": "INFO",
+              "file": "package.json",
+              "explanation": "dependencies['minimist'] changed: '^1.2.5' \u2192 '^1.2.8'",
+              "legitimate_use_note": "Version bumps are routine. Verify the new version of 'minimist' is not itself compromised."
+            }
+          ]
+        }
+      ],
+      "elapsed_sec": 1.265
+    },
+    {
+      "pair_key": "699a969f..cdbdc012",
+      "base_sha": "699a969fe30855bce777364e9692df2279e8a65b",
+      "head_sha": "cdbdc0122ab83b2b97560944bf009a22cfb78b05",
+      "date": "2026-10-12 12:28:42 +0000",
+      "subject": "chore(release): 18.1.1 [skip ci]",
+      "packages_scanned": 0,
+      "decision": "ALLOW",
+      "evidence": [],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.077
+    },
+    {
+      "pair_key": "cdbdc012..6dd5b3c8",
+      "base_sha": "cdbdc0122ab83b2b97560944bf009a22cfb78b05",
+      "head_sha": "6dd5b3c892d5dd06046b8a52c1cefb3335613fea",
+      "date": "2026-10-13 18:18:25 -0600",
+      "subject": "chore(deps-dev): bump eslint from 10.11.0 to 10.12.0 (#4140)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_version_changed",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 1.55
+    },
+    {
+      "pair_key": "6dd5b3c8..3b386eaf",
+      "base_sha": "6dd5b3c892d5dd06046b8a52c1cefb3335613fea",
+      "head_sha": "3b386eafcd4a2cd8bac93dc1757e5e1c11c8e391",
+      "date": "2026-10-19 19:31:54 -0600",
+      "subject": "chore(deps-dev): bump eslint from 10.12.0 to 10.13.0 (#4149)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 1.551
+    },
+    {
+      "pair_key": "3b386eaf..b137d897",
+      "base_sha": "3b386eafcd4a2cd8bac93dc1757e5e1c11c8e391",
+      "head_sha": "b137d897bc46c76ee3309b522511c6b28a796b3d",
+      "date": "2026-10-19 19:32:26 -0600",
+      "subject": "chore(deps-dev): bump markdown-it from 15.0.2 to 15.0.3 (#4148)",
+      "packages_scanned": 1,
+      "decision": "ALLOW",
+      "evidence": [
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed",
+        "dependency_version_changed"
+      ],
+      "blocks": [],
+      "warns": [],
+      "elapsed_sec": 0.402
+    }
+  ]
+}

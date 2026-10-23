@@ -1,0 +1,438 @@
+{
+  "strict": {
+    "profile": "strict",
+    "total_updates": 288,
+    "total_pkgs": 5965,
+    "allow": 162,
+    "warn": 104,
+    "block": 22,
+    "blocked_instances": 31,
+    "total_time_sec": 3966.39,
+    "repo_summaries": [
+      {
+        "repo": "superagent",
+        "updates": 24,
+        "packages_scanned": 683,
+        "allow": 10,
+        "allow_pct": 41.7,
+        "warn": 7,
+        "warn_pct": 29.2,
+        "block": 7,
+        "block_pct": 29.2,
+        "avg_time": 4.36
+      },
+      {
+        "repo": "socket.io",
+        "updates": 24,
+        "packages_scanned": 505,
+        "allow": 9,
+        "allow_pct": 37.5,
+        "warn": 13,
+        "warn_pct": 54.2,
+        "block": 2,
+        "block_pct": 8.3,
+        "avg_time": 3.83
+      },
+      {
+        "repo": "mocha",
+        "updates": 24,
+        "packages_scanned": 158,
+        "allow": 16,
+        "allow_pct": 66.7,
+        "warn": 7,
+        "warn_pct": 29.2,
+        "block": 1,
+        "block_pct": 4.2,
+        "avg_time": 1.54
+      },
+      {
+        "repo": "bootstrap",
+        "updates": 24,
+        "packages_scanned": 348,
+        "allow": 15,
+        "allow_pct": 62.5,
+        "warn": 6,
+        "warn_pct": 25.0,
+        "block": 3,
+        "block_pct": 12.5,
+        "avg_time": 4.28
+      },
+      {
+        "repo": "commander",
+        "updates": 24,
+        "packages_scanned": 421,
+        "allow": 10,
+        "allow_pct": 41.7,
+        "warn": 13,
+        "warn_pct": 54.2,
+        "block": 1,
+        "block_pct": 4.2,
+        "avg_time": 13.63
+      },
+      {
+        "repo": "helmet",
+        "updates": 24,
+        "packages_scanned": 522,
+        "allow": 10,
+        "allow_pct": 41.7,
+        "warn": 13,
+        "warn_pct": 54.2,
+        "block": 1,
+        "block_pct": 4.2,
+        "avg_time": 26.24
+      },
+      {
+        "repo": "winston",
+        "updates": 24,
+        "packages_scanned": 466,
+        "allow": 16,
+        "allow_pct": 66.7,
+        "warn": 8,
+        "warn_pct": 33.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 6.29
+      },
+      {
+        "repo": "marked",
+        "updates": 24,
+        "packages_scanned": 74,
+        "allow": 20,
+        "allow_pct": 83.3,
+        "warn": 3,
+        "warn_pct": 12.5,
+        "block": 1,
+        "block_pct": 4.2,
+        "avg_time": 2.49
+      },
+      {
+        "repo": "nodemon",
+        "updates": 24,
+        "packages_scanned": 1419,
+        "allow": 7,
+        "allow_pct": 29.2,
+        "warn": 14,
+        "warn_pct": 58.3,
+        "block": 3,
+        "block_pct": 12.5,
+        "avg_time": 18.84
+      },
+      {
+        "repo": "rimraf",
+        "updates": 24,
+        "packages_scanned": 666,
+        "allow": 16,
+        "allow_pct": 66.7,
+        "warn": 7,
+        "warn_pct": 29.2,
+        "block": 1,
+        "block_pct": 4.2,
+        "avg_time": 44.01
+      },
+      {
+        "repo": "glob",
+        "updates": 24,
+        "packages_scanned": 698,
+        "allow": 11,
+        "allow_pct": 45.8,
+        "warn": 11,
+        "warn_pct": 45.8,
+        "block": 2,
+        "block_pct": 8.3,
+        "avg_time": 53.03
+      },
+      {
+        "repo": "terser",
+        "updates": 24,
+        "packages_scanned": 5,
+        "allow": 22,
+        "allow_pct": 91.7,
+        "warn": 2,
+        "warn_pct": 8.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 0.13
+      }
+    ],
+    "top_evidence": [
+      [
+        "dependency_version_changed",
+        15927
+      ],
+      [
+        "dependency_removed",
+        4822
+      ],
+      [
+        "dev_dependency_added",
+        4149
+      ],
+      [
+        "high_entropy_string",
+        1396
+      ],
+      [
+        "new_files_summary",
+        1379
+      ],
+      [
+        "long_encoded_blob",
+        1242
+      ],
+      [
+        "notable_new_file",
+        1203
+      ],
+      [
+        "dependency_added",
+        911
+      ],
+      [
+        "hardcoded_url",
+        364
+      ],
+      [
+        "large_size_jump",
+        225
+      ],
+      [
+        "process_exec",
+        123
+      ],
+      [
+        "network_access",
+        61
+      ],
+      [
+        "env_enumeration",
+        55
+      ],
+      [
+        "large_file_count_jump",
+        52
+      ],
+      [
+        "ci_write",
+        52
+      ]
+    ]
+  },
+  "default": {
+    "profile": "default",
+    "total_updates": 288,
+    "total_pkgs": 5965,
+    "allow": 162,
+    "warn": 124,
+    "block": 2,
+    "blocked_instances": 3,
+    "total_time_sec": 854.56,
+    "repo_summaries": [
+      {
+        "repo": "superagent",
+        "updates": 24,
+        "packages_scanned": 683,
+        "allow": 10,
+        "allow_pct": 41.7,
+        "warn": 14,
+        "warn_pct": 58.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 4.28
+      },
+      {
+        "repo": "socket.io",
+        "updates": 24,
+        "packages_scanned": 505,
+        "allow": 9,
+        "allow_pct": 37.5,
+        "warn": 15,
+        "warn_pct": 62.5,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 3.73
+      },
+      {
+        "repo": "mocha",
+        "updates": 24,
+        "packages_scanned": 158,
+        "allow": 16,
+        "allow_pct": 66.7,
+        "warn": 8,
+        "warn_pct": 33.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 1.54
+      },
+      {
+        "repo": "bootstrap",
+        "updates": 24,
+        "packages_scanned": 348,
+        "allow": 15,
+        "allow_pct": 62.5,
+        "warn": 9,
+        "warn_pct": 37.5,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 4.27
+      },
+      {
+        "repo": "commander",
+        "updates": 24,
+        "packages_scanned": 421,
+        "allow": 10,
+        "allow_pct": 41.7,
+        "warn": 14,
+        "warn_pct": 58.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 8.49
+      },
+      {
+        "repo": "helmet",
+        "updates": 24,
+        "packages_scanned": 522,
+        "allow": 10,
+        "allow_pct": 41.7,
+        "warn": 14,
+        "warn_pct": 58.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 5.82
+      },
+      {
+        "repo": "winston",
+        "updates": 24,
+        "packages_scanned": 466,
+        "allow": 16,
+        "allow_pct": 66.7,
+        "warn": 8,
+        "warn_pct": 33.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 1.26
+      },
+      {
+        "repo": "marked",
+        "updates": 24,
+        "packages_scanned": 74,
+        "allow": 20,
+        "allow_pct": 83.3,
+        "warn": 4,
+        "warn_pct": 16.7,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 1.29
+      },
+      {
+        "repo": "nodemon",
+        "updates": 24,
+        "packages_scanned": 1419,
+        "allow": 7,
+        "allow_pct": 29.2,
+        "warn": 15,
+        "warn_pct": 62.5,
+        "block": 2,
+        "block_pct": 8.3,
+        "avg_time": 3.51
+      },
+      {
+        "repo": "rimraf",
+        "updates": 24,
+        "packages_scanned": 666,
+        "allow": 16,
+        "allow_pct": 66.7,
+        "warn": 8,
+        "warn_pct": 33.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 6.8
+      },
+      {
+        "repo": "glob",
+        "updates": 24,
+        "packages_scanned": 698,
+        "allow": 11,
+        "allow_pct": 45.8,
+        "warn": 13,
+        "warn_pct": 54.2,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 7.71
+      },
+      {
+        "repo": "terser",
+        "updates": 24,
+        "packages_scanned": 5,
+        "allow": 22,
+        "allow_pct": 91.7,
+        "warn": 2,
+        "warn_pct": 8.3,
+        "block": 0,
+        "block_pct": 0.0,
+        "avg_time": 0.1
+      }
+    ],
+    "top_evidence": [
+      [
+        "dependency_version_changed",
+        15927
+      ],
+      [
+        "dependency_removed",
+        4822
+      ],
+      [
+        "dev_dependency_added",
+        4149
+      ],
+      [
+        "high_entropy_string",
+        1396
+      ],
+      [
+        "new_files_summary",
+        1379
+      ],
+      [
+        "long_encoded_blob",
+        1242
+      ],
+      [
+        "notable_new_file",
+        1203
+      ],
+      [
+        "dependency_added",
+        911
+      ],
+      [
+        "hardcoded_url",
+        364
+      ],
+      [
+        "large_size_jump",
+        225
+      ],
+      [
+        "process_exec",
+        123
+      ],
+      [
+        "network_access",
+        61
+      ],
+      [
+        "env_enumeration",
+        55
+      ],
+      [
+        "large_file_count_jump",
+        52
+      ],
+      [
+        "ci_write",
+        52
+      ]
+    ]
+  }
+}
