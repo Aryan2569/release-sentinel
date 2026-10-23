@@ -13,7 +13,9 @@ from __future__ import annotations
 
 import json
 import logging
+import re
 import subprocess
+import urllib.parse
 from dataclasses import dataclass
 from datetime import UTC, datetime
 from pathlib import Path
@@ -24,11 +26,12 @@ import nodesemver
 from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, extract_release_in_memory
-from release_sentinel.models import Decision, Severity
+from release_sentinel.models import Decision, Evidence, Severity
 from release_sentinel.policy import Policy, load_policy
 from release_sentinel.registry import (
     IntegrityError,
     NpmRegistryClient,
+    redact_url_secrets,
     verify_integrity,
 )
 
@@ -52,6 +55,37 @@ class LockfileParseError(LockfileError):
 
 class LockfileBudgetExceededError(LockfileError):
     """Raised when changed packages exceed the safety budget."""
+
+
+_SAFE_PKG_NAME_RE = re.compile(r"^(?:@[a-zA-Z0-9_.-]+/)?[a-zA-Z0-9_.-]+$")
+_GIT_REF_PATTERN = re.compile(r"^[a-zA-Z0-9_./@^~][a-zA-Z0-9_\-./@^~{}*]*$")
+
+
+def validate_git_ref(ref: str) -> str:
+    """Validate a git ref to prevent argument injection or unsafe characters."""
+    ref_clean = ref.strip()
+    if not ref_clean:
+        raise LockfileError("Git ref cannot be empty")
+    if ref_clean.startswith("-"):
+        raise LockfileError(f"Git ref cannot start with dash '-': {ref!r}")
+    if not _GIT_REF_PATTERN.match(ref_clean):
+        raise LockfileError(f"Invalid or unsafe characters in git ref: {ref!r}")
+    return ref_clean
+
+
+def validate_package_name(name: str) -> str:
+    """Validate package name against path traversal and dangerous characters."""
+    if not name or not isinstance(name, str):
+        raise LockfileError(f"Invalid package name: {name!r}")
+    clean = name.strip()
+    if ".." in clean or "\\" in clean or "\x00" in clean:
+        msg = f"Path traversal or illegal characters detected in package name: {name!r}"
+        raise LockfileError(msg)
+    if clean.startswith(("/", ".")):
+        raise LockfileError(f"Package name cannot start with '/' or '.': {name!r}")
+    if not _SAFE_PKG_NAME_RE.match(clean):
+        raise LockfileError(f"Malformed package name: {name!r}")
+    return clean
 
 
 @dataclass(frozen=True)
@@ -135,10 +169,15 @@ def _walk_v1_dependencies(
         if version and isinstance(version, str):
             resolved = data.get("resolved")
             integrity = data.get("integrity")
+            try:
+                valid_name = validate_package_name(name)
+            except LockfileError as exc:
+                raise LockfileParseError(f"Invalid dependency name in lockfile: {exc}") from exc
+
             # Prefer top-level or first encountered
-            if name not in out:
-                out[name] = LockfilePackage(
-                    name=name,
+            if valid_name not in out:
+                out[valid_name] = LockfilePackage(
+                    name=valid_name,
                     version=version,
                     resolved=resolved if isinstance(resolved, str) else None,
                     integrity=integrity if isinstance(integrity, str) else None,
@@ -185,12 +224,17 @@ def parse_lockfile_content(
             if not version or not isinstance(version, str):
                 continue
 
+            try:
+                valid_name = validate_package_name(name)
+            except LockfileError as exc:
+                raise LockfileParseError(f"Invalid package name in lockfile: {exc}") from exc
+
             resolved = pkg_info.get("resolved")
             integrity = pkg_info.get("integrity")
 
-            if name not in packages:
-                packages[name] = LockfilePackage(
-                    name=name,
+            if valid_name not in packages:
+                packages[valid_name] = LockfilePackage(
+                    name=valid_name,
                     version=version,
                     resolved=resolved if isinstance(resolved, str) else None,
                     integrity=integrity if isinstance(integrity, str) else None,
@@ -264,7 +308,8 @@ def diff_lockfiles(
 
 def read_lockfile_from_git(ref: str, repo_dir: Path | None = None) -> str:
     """Read package-lock.json from a specific git ref."""
-    cmd = ["git", "show", f"{ref}:package-lock.json"]
+    safe_ref = validate_git_ref(ref)
+    cmd = ["git", "show", f"{safe_ref}:package-lock.json", "--"]
     try:
         proc = subprocess.run(  # noqa: S603
             cmd,
@@ -276,7 +321,7 @@ def read_lockfile_from_git(ref: str, repo_dir: Path | None = None) -> str:
         return proc.stdout
     except subprocess.CalledProcessError as exc:
         stderr = exc.stderr.strip() if exc.stderr else ""
-        msg = f"Could not read package-lock.json from git ref '{ref}': {stderr}"
+        msg = f"Could not read package-lock.json from git ref '{safe_ref}': {stderr}"
         raise LockfileError(msg) from exc
 
 
@@ -363,6 +408,75 @@ def scan_lockfile_diff(
             old_ver = change.old_version
 
             if not new_ver:
+                continue
+
+            # Check for non-registry source (git, file, or non-registry URL)
+            is_git = bool(
+                change.resolved
+                and (
+                    change.resolved.startswith("git+")
+                    or change.resolved.startswith("git://")
+                    or (
+                        "github.com" in change.resolved
+                        and not change.resolved.endswith(".tgz")
+                    )
+                )
+            )
+            is_file = bool(change.resolved and change.resolved.startswith("file:"))
+            is_non_reg_url = False
+            if change.resolved and not (is_git or is_file):
+                try:
+                    parsed_res = urllib.parse.urlparse(change.resolved)
+                    if (
+                        parsed_res.scheme.lower() != "https"
+                        or not client.is_host_allowed(parsed_res.hostname or "")
+                    ):
+                        is_non_reg_url = True
+                except Exception:
+                    is_non_reg_url = True
+
+            if is_git or is_file or is_non_reg_url:
+                source_desc = (
+                    "git repository"
+                    if is_git
+                    else ("local file" if is_file else "custom non-registry URL")
+                )
+                ev_unscanned = Evidence(
+                    id="unscanned_non_registry_source",
+                    severity=Severity.MEDIUM,
+                    file="package-lock.json",
+                    explanation=(
+                        f"Package '{pkg_name}@{new_ver}' resolved from {source_desc}: "
+                        f"{redact_url_secrets(change.resolved or '')}. "
+                        "Non-registry sources are not scanned by the registry audit gate."
+                    ),
+                    legitimate_use_note=(
+                        "Projects sometimes depend on forks, git branches, or local packages."
+                    ),
+                )
+                if overall_decision != Decision.BLOCK:
+                    overall_decision = Decision.WARN
+                package_results.append({
+                    "package": pkg_name,
+                    "old_version": old_ver,
+                    "new_version": new_ver,
+                    "change_type": change.change_type,
+                    "decision": "WARN",
+                    "evidence": [ev_unscanned.id],
+                    "evidence_details": [
+                        {
+                            "id": ev_unscanned.id,
+                            "severity": ev_unscanned.severity.name,
+                            "file": ev_unscanned.file,
+                            "explanation": ev_unscanned.explanation,
+                            "legitimate_use_note": ev_unscanned.legitimate_use_note,
+                        }
+                    ],
+                    "limitations": [
+                        f"Package {pkg_name}@{new_ver} from {source_desc} not scanned."
+                    ],
+                    "status": "unscanned_non_registry_source",
+                })
                 continue
 
             try:

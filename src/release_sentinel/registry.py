@@ -20,9 +20,11 @@ from __future__ import annotations
 
 import base64
 import hashlib
+import ipaddress
 import json
 import logging
 import re
+import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -40,6 +42,100 @@ _READ_TIMEOUT = 60.0  # seconds
 
 # Integrity string format: "<algorithm>-<base64-digest>"
 _INTEGRITY_RE = re.compile(r"^(?P<alg>sha512|sha384|sha256|sha1)-(?P<digest>[A-Za-z0-9+/=]+)$")
+
+DEFAULT_ALLOWED_REGISTRY_HOSTS: frozenset[str] = frozenset({"registry.npmjs.org"})
+MAX_TARBALL_BYTES: int = 100 * 1024 * 1024  # 100 MB per tarball
+DEFAULT_MAX_TOTAL_DOWNLOAD_BYTES: int = 500 * 1024 * 1024  # 500 MB per session
+
+
+def redact_url_secrets(url: str) -> str:
+    """Strip basic auth credentials and query string tokens/keys from URLs before logging."""
+    if not url:
+        return url
+    # Redact user:pass@host
+    redacted = re.sub(r"://([^:@\s]+):([^@\s]+)@", r"://\1:***@", url)
+    # Redact single token auth without password e.g. token@host
+    redacted = re.sub(r"://([^:@\s]+)@", r"://***@", redacted)
+    # Redact sensitive query parameters
+    redacted = re.sub(
+        r"([?&](?:token|key|secret|auth|password|apiKey|_authToken)=)[^&]+",
+        r"\1***",
+        redacted,
+        flags=re.IGNORECASE,
+    )
+    return redacted
+
+
+def _is_private_or_local_ip(host: str) -> bool:
+    """Return True if host is a loopback, private, link-local, or otherwise non-routable address."""
+    if not host:
+        return True
+    host_clean = host.strip("[]").lower()
+    if host_clean in ("localhost", "localhost.localdomain"):
+        return True
+    try:
+        ip = ipaddress.ip_address(host_clean)
+        return (
+            ip.is_private
+            or ip.is_loopback
+            or ip.is_link_local
+            or ip.is_multicast
+            or ip.is_reserved
+            or ip.is_unspecified
+        )
+    except ValueError:
+        return False
+
+
+def validate_registry_url(
+    url: str,
+    allowed_hosts: set[str] | frozenset[str] = DEFAULT_ALLOWED_REGISTRY_HOSTS,
+) -> urllib.parse.ParseResult:
+    """Validate a registry or tarball URL against SSRF and allowlist rules.
+
+    Raises RegistryError if URL is unsafe or not allowed.
+    """
+    if not url:
+        raise RegistryError("Empty URL provided")
+    try:
+        parsed = urllib.parse.urlparse(url)
+    except Exception as exc:
+        raise RegistryError(f"Invalid URL {redact_url_secrets(url)}: {exc}") from exc
+
+    scheme = parsed.scheme.lower()
+    if scheme != "https":
+        raise RegistryError(
+            f"Rejected non-HTTPS registry URL scheme {parsed.scheme!r} in {redact_url_secrets(url)}"
+        )
+
+    host = parsed.hostname
+    if not host:
+        raise RegistryError(f"URL missing hostname in {redact_url_secrets(url)}")
+
+    host_lower = host.lower()
+    if _is_private_or_local_ip(host_lower):
+        raise RegistryError(
+            f"Rejected private/loopback/link-local host {host!r} in {redact_url_secrets(url)}"
+        )
+
+    allowed_set = {h.lower() for h in allowed_hosts}
+    if host_lower not in allowed_set:
+        raise RegistryError(
+            f"Host {host!r} is not in allowed registry hosts {sorted(allowed_hosts)}"
+        )
+
+    return parsed
+
+
+def _verify_path_containment(base_dir: Path, target_path: Path) -> None:
+    """Verify that target_path resolves strictly within base_dir."""
+    try:
+        resolved_base = base_dir.resolve()
+        resolved_target = target_path.resolve()
+        if not resolved_target.is_relative_to(resolved_base):
+            raise RegistryError(f"Path traversal detected: {target_path} outside {base_dir}")
+    except (ValueError, RuntimeError) as exc:
+        raise RegistryError(f"Path traversal validation failed: {exc}") from exc
 
 
 class RegistryError(Exception):
@@ -71,15 +167,56 @@ class NpmRegistryClient:
         self,
         cache_dir: Path,
         http_client: httpx.Client | None = None,
+        allowed_hosts: set[str] | frozenset[str] | None = None,
+        max_total_download_bytes: int = DEFAULT_MAX_TOTAL_DOWNLOAD_BYTES,
     ) -> None:
         self._cache_dir = Path(cache_dir)
         self._cache_dir.mkdir(parents=True, exist_ok=True)
         self._owned_client = http_client is None
-        self._http = http_client or httpx.Client(
-            headers={"User-Agent": _USER_AGENT},
-            timeout=httpx.Timeout(_READ_TIMEOUT, connect=_CONNECT_TIMEOUT),
-            follow_redirects=True,
+        self._allowed_hosts = (
+            frozenset(allowed_hosts) if allowed_hosts else DEFAULT_ALLOWED_REGISTRY_HOSTS
         )
+        self._max_total_download_bytes = max_total_download_bytes
+        self._total_bytes_downloaded: int = 0
+
+        def _check_redirect(resp: httpx.Response) -> None:
+            if resp.is_redirect:
+                loc = resp.headers.get("Location")
+                if loc:
+                    full_loc = str(resp.url.join(loc))
+                    validate_registry_url(full_loc, self._allowed_hosts)
+
+        if http_client is not None:
+            self._http = http_client
+        else:
+            self._http = httpx.Client(
+                headers={"User-Agent": _USER_AGENT},
+                timeout=httpx.Timeout(_READ_TIMEOUT, connect=_CONNECT_TIMEOUT),
+                follow_redirects=True,
+                event_hooks={"response": [_check_redirect]},
+            )
+
+    @property
+    def allowed_hosts(self) -> frozenset[str]:
+        """Allowed registry hostnames."""
+        return self._allowed_hosts
+
+    def is_host_allowed(self, host: str) -> bool:
+        """Check whether a hostname is in the allowed registry hosts and not local/private."""
+        if not host:
+            return False
+        h = host.lower()
+        if _is_private_or_local_ip(h):
+            return False
+        return h in {a.lower() for a in self._allowed_hosts}
+
+    def _record_download_bytes(self, num_bytes: int) -> None:
+        self._total_bytes_downloaded += num_bytes
+        if self._total_bytes_downloaded > self._max_total_download_bytes:
+            raise RegistryError(
+                f"Total download budget exceeded: {self._total_bytes_downloaded} > "
+                f"{self._max_total_download_bytes} bytes"
+            )
 
     @property
     def cache_dir(self) -> Path:
@@ -229,17 +366,32 @@ class NpmRegistryClient:
                 shutil.copy2(cache_path, dest_path)
             return dest_path
 
+        validate_registry_url(tarball_url, self._allowed_hosts)
+        _verify_path_containment(self._cache_dir, cache_path)
+
         # Download.
-        logger.info("Downloading %s@%s from %s", name, version, tarball_url)
+        logger.info("Downloading %s@%s from %s", name, version, redact_url_secrets(tarball_url))
         try:
             response = self._http.get(tarball_url)
+            for r in getattr(response, "history", []):
+                validate_registry_url(str(r.url), self._allowed_hosts)
+            if isinstance(getattr(response, "url", None), (str, httpx.URL)):
+                validate_registry_url(str(response.url), self._allowed_hosts)
             response.raise_for_status()
         except httpx.HTTPError as exc:
             raise RegistryError(f"HTTP error downloading tarball: {exc}") from exc
 
+        content = response.content
+        if len(content) > MAX_TARBALL_BYTES:
+            raise RegistryError(
+                f"Tarball {name}@{version} size ({len(content)} bytes) exceeds per-tarball limit "
+                f"of {MAX_TARBALL_BYTES} bytes"
+            )
+        self._record_download_bytes(len(content))
+
         # Write to cache then copy to dest.
         cache_path.parent.mkdir(parents=True, exist_ok=True)
-        cache_path.write_bytes(response.content)
+        cache_path.write_bytes(content)
         logger.debug("Cached tarball to %s", cache_path)
 
         _verify_file(cache_path, integrity, shasum)
@@ -264,23 +416,37 @@ class NpmRegistryClient:
         shasum: str | None = None,
     ) -> Path:
         """Download a tarball directly from a specified URL (e.g. from lockfile 'resolved')."""
+        validate_registry_url(tarball_url, self._allowed_hosts)
         safe_name = _safe_filename(name)
         cache_path = self._cache_dir / safe_name / f"{safe_name}-{version}.tgz"
+        _verify_path_containment(self._cache_dir, cache_path)
         if cache_path.exists():
-            logger.debug("Cache hit for url %s: %s", tarball_url, cache_path)
+            logger.debug("Cache hit for url %s: %s", redact_url_secrets(tarball_url), cache_path)
             _verify_file(cache_path, integrity or "", shasum or "")
             return cache_path
 
         cache_path.parent.mkdir(parents=True, exist_ok=True)
-        logger.info("Downloading %s@%s from URL %s", name, version, tarball_url)
+        logger.info("Downloading %s@%s from URL %s", name, version, redact_url_secrets(tarball_url))
         try:
             resp = self._http.get(tarball_url)
+            for r in getattr(resp, "history", []):
+                validate_registry_url(str(r.url), self._allowed_hosts)
+            if isinstance(getattr(resp, "url", None), (str, httpx.URL)):
+                validate_registry_url(str(resp.url), self._allowed_hosts)
             resp.raise_for_status()
         except httpx.HTTPError as exc:
-            msg = f"HTTP error downloading tarball from {tarball_url}: {exc}"
+            msg = f"HTTP error downloading tarball from {redact_url_secrets(tarball_url)}: {exc}"
             raise RegistryError(msg) from exc
 
-        cache_path.write_bytes(resp.content)
+        content = resp.content
+        if len(content) > MAX_TARBALL_BYTES:
+            raise RegistryError(
+                f"Tarball {name}@{version} size ({len(content)} bytes) exceeds per-tarball limit "
+                f"of {MAX_TARBALL_BYTES} bytes"
+            )
+        self._record_download_bytes(len(content))
+
+        cache_path.write_bytes(content)
         _verify_file(cache_path, integrity or "", shasum or "")
         return cache_path
 
@@ -304,9 +470,14 @@ class NpmRegistryClient:
                 logger.warning("Bad metadata cache entry %s: %s — re-fetching", cache_path, exc)
 
         url = f"{_REGISTRY_BASE}/{_url_encode_name(name)}"
-        logger.info("Fetching metadata from %s", url)
+        validate_registry_url(url, self._allowed_hosts)
+        logger.info("Fetching metadata from %s", redact_url_secrets(url))
         try:
             response = self._http.get(url)
+            for r in getattr(response, "history", []):
+                validate_registry_url(str(r.url), self._allowed_hosts)
+            if isinstance(getattr(response, "url", None), (str, httpx.URL)):
+                validate_registry_url(str(response.url), self._allowed_hosts)
             response.raise_for_status()
         except httpx.HTTPError as exc:
             raise RegistryError(f"HTTP error fetching metadata for {name!r}: {exc}") from exc
@@ -478,8 +649,12 @@ def _safe_filename(name: str) -> str:
     """Convert an npm package name to a safe filesystem component.
 
     Scoped packages (``@scope/pkg``) become ``@scope__pkg``.
+    Rejects path traversal and illegal characters.
     """
-    return name.replace("/", "__")
+    clean = name.replace("\\", "__").replace("/", "__")
+    if ".." in clean or clean.startswith((".", "__")) or "\x00" in clean:
+        raise RegistryError(f"Unsafe package name for filesystem path: {name!r}")
+    return clean
 
 
 def _url_encode_name(name: str) -> str:
