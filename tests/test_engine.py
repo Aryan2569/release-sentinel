@@ -184,3 +184,56 @@ description = "custom block pair"
         ]
         decision, _ = decide(evidence, policy_path=policy_file)
         assert decision == Decision.BLOCK
+
+
+class TestPolicyProfiles:
+    def test_default_profile_caps_standalone_heuristics_at_warn(self):
+        from release_sentinel.policy import load_policy
+
+        pol_default = load_policy(profile="default")
+        evidence = [
+            make_evidence(Severity.HIGH, "dynamic_code"),
+            make_evidence(Severity.MEDIUM, "network_access"),
+        ]
+        decision, _ = decide(evidence, policy=pol_default)
+        assert decision == Decision.WARN
+
+    def test_strict_profile_blocks_dynamic_code_with_network(self):
+        from release_sentinel.policy import load_policy
+
+        pol_strict = load_policy(profile="strict")
+        evidence = [
+            make_evidence(Severity.HIGH, "dynamic_code"),
+            make_evidence(Severity.MEDIUM, "network_access"),
+        ]
+        decision, _ = decide(evidence, policy=pol_strict)
+        assert decision == Decision.BLOCK
+
+    def test_default_profile_blocks_high_confidence_signals(self):
+        from release_sentinel.policy import load_policy
+
+        pol_default = load_policy(profile="default")
+
+        # install_script_network
+        ev1 = [make_evidence(Severity.CRITICAL, "install_script_network")]
+        d1, _ = decide(ev1, policy=pol_default)
+        assert d1 == Decision.BLOCK
+
+        # decode_and_execute
+        ev2 = [make_evidence(Severity.CRITICAL, "decode_and_execute")]
+        d2, _ = decide(ev2, policy=pol_default)
+        assert d2 == Decision.BLOCK
+
+        # credential_leak
+        ev3 = [make_evidence(Severity.CRITICAL, "credential_leak")]
+        d3, _ = decide(ev3, policy=pol_default)
+        assert d3 == Decision.BLOCK
+
+    def test_invalid_profile_raises_value_error(self):
+        import pytest
+
+        from release_sentinel.policy import load_policy
+
+        with pytest.raises(ValueError, match="Invalid policy profile"):
+            load_policy(profile="ultra")
+

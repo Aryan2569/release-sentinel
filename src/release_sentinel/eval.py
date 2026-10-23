@@ -176,6 +176,7 @@ def analyze_eval_pair(
             registry_client=registry_client,
             samples_root=samples_root,
             dep_stats=dep_stats,
+            mode="eval",
         )
 
         # 4. Policy decision

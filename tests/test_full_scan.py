@@ -294,14 +294,31 @@ class TestDependencyAwareUpdates:
         mock_client = MagicMock()
         mock_client.get_metadata.side_effect = Exception("Not found")
 
-        evidence = analyze_release(
+        # Eval mode: INFO severity -> ALLOW
+        evidence_eval = analyze_release(
             new_rel,
             baseline=old_rel,
             as_of=now,
             registry_client=mock_client,
+            mode="eval",
         )
-        decision, _ = decide(evidence, is_full_scan=False)
+        decision, _ = decide(evidence_eval, is_full_scan=False)
         assert decision == Decision.ALLOW
-        unres = [e for e in evidence if e.id == "unresolvable_dependency"]
+        unres = [e for e in evidence_eval if e.id == "unresolvable_dependency"]
         assert len(unres) == 1
         assert unres[0].severity == Severity.INFO
+
+        # Live mode (Part 4a): MEDIUM severity -> WARN
+        evidence_live = analyze_release(
+            new_rel,
+            baseline=old_rel,
+            as_of=now,
+            registry_client=mock_client,
+            mode="live",
+        )
+        decision_live, _ = decide(evidence_live, is_full_scan=False)
+        assert decision_live == Decision.WARN
+        unres_live = [e for e in evidence_live if e.id == "unresolvable_dependency"]
+        assert len(unres_live) == 1
+        assert unres_live[0].severity == Severity.MEDIUM
+        assert "[Exception: Not found]" in unres_live[0].explanation

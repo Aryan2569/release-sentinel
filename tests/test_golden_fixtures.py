@@ -18,11 +18,15 @@ from release_sentinel.extractor import extract_release
 from release_sentinel.models import Decision, Severity
 
 
-def _extract_and_decide(tmp_path: Path, old_tgz: Path, new_tgz: Path):
+def _extract_and_decide(tmp_path: Path, old_tgz: Path, new_tgz: Path, policy=None):
     old = extract_release(old_tgz, tmp_path / "old")
     new = extract_release(new_tgz, tmp_path / "new")
     evidence = compare_releases(old, new)
-    decision, limitations = decide(evidence)
+    if policy is None:
+        from release_sentinel.policy import load_policy
+
+        policy = load_policy(profile="strict")
+    decision, limitations = decide(evidence, policy=policy)
     return decision, evidence, limitations
 
 

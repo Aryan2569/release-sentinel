@@ -21,11 +21,18 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import TYPE_CHECKING
 
+import httpx
 import nodesemver
 
 from release_sentinel.extractor import ExtractionConfig, extract_release_in_memory
 from release_sentinel.models import Evidence, Severity
-from release_sentinel.registry import NpmRegistryClient, RegistryError, VersionNotFoundError
+from release_sentinel.registry import (
+    IntegrityError,
+    NpmRegistryClient,
+    RegistryError,
+    VersionNotFoundError,
+    _parse_npm_time,
+)
 from release_sentinel.zip_loader import load_zip_release
 
 if TYPE_CHECKING:
@@ -75,6 +82,7 @@ def resolve_added_dependency(
     config: ExtractionConfig | None = None,
     policy: Policy | None = None,
     analyze_fn: Callable[..., list[Evidence]] | None = None,
+    mode: str = "live",
 ) -> tuple[str | None, list[Evidence], str]:
     """Resolve an added dependency and analyze it in full-scan mode.
 
@@ -109,6 +117,8 @@ def resolve_added_dependency(
         as_of = as_of.replace(tzinfo=UTC)
 
     # 1. Try Live Registry
+    last_err_cls = "UnknownError"
+    last_err_msg = ""
     try:
         meta = registry_client.get_metadata(name, as_of=as_of)
         versions_dict = meta.get("versions", {})
@@ -125,60 +135,85 @@ def resolve_added_dependency(
             )
             dep_release = extract_release_in_memory(tarball_path, config=config)
 
-            # Find previous version of dependency published before as_of
-            time_map = {
-                k: v
-                for k, v in meta.get("time", {}).items()
-                if k not in ("created", "modified")
-            }
-            target_time = time_map.get(target_version, "")
+            # Diff-mode eligibility (Part 4d): diff against previous version only if established
+            # as of as_of
+            # (first published at least 90 days earlier AND at least 5 published versions)
+            created_str = meta.get("time", {}).get("created")
+            is_old_enough = False
+            if created_str:
+                try:
+                    created_dt = _parse_npm_time(created_str)
+                    is_old_enough = (as_of - created_dt).total_seconds() >= 90 * 86400
+                except Exception:
+                    is_old_enough = False
 
-            earlier_versions = []
-            for v in versions_dict:
-                if v != target_version:
-                    t = time_map.get(v, "")
-                    if target_time and t and t < target_time:
-                        earlier_versions.append(v)
-                    elif (
-                        not target_time
-                        and nodesemver.valid(v)
-                        and nodesemver.valid(target_version)
-                    ):
-                        if nodesemver.lt(v, target_version):
-                            earlier_versions.append(v)
+            has_enough_versions = len(available_versions) >= 5
+            is_established = is_old_enough and has_enough_versions
 
             baseline_dep_release = None
-            if earlier_versions:
-                if target_time:
-                    prev_version = max(earlier_versions, key=lambda v: time_map.get(v, ""))
-                else:
-                    prev_version = max(
-                        earlier_versions,
-                        key=lambda v: nodesemver.parse(v) if nodesemver.valid(v) else (0, 0, 0),
-                    )
+            if is_established:
+                time_map = {
+                    k: v
+                    for k, v in meta.get("time", {}).items()
+                    if k not in ("created", "modified")
+                }
+                target_time = time_map.get(target_version, "")
 
-                try:
-                    prev_tarball = registry_client.download_tarball(
-                        name=name,
-                        version=prev_version,
-                        as_of=as_of,
-                        dest_dir=dest_dir,
-                    )
-                    baseline_dep_release = extract_release_in_memory(prev_tarball, config=config)
-                    logger.debug(
-                        "Analyzing added dependency %s in DIFF mode against %s",
-                        name,
-                        prev_version,
-                    )
-                except Exception as exc:
-                    logger.debug(
-                        "Failed to fetch baseline %s@%s for diff mode: %s; "
-                        "falling back to full-scan",
-                        name,
-                        prev_version,
-                        exc,
-                    )
-                    baseline_dep_release = None
+                earlier_versions = []
+                for v in versions_dict:
+                    if v != target_version:
+                        t = time_map.get(v, "")
+                        if target_time and t and t < target_time:
+                            earlier_versions.append(v)
+                        elif (
+                            not target_time
+                            and nodesemver.valid(v)
+                            and nodesemver.valid(target_version)
+                        ):
+                            if nodesemver.lt(v, target_version):
+                                earlier_versions.append(v)
+
+                if earlier_versions:
+                    if target_time:
+                        prev_version = max(earlier_versions, key=lambda v: time_map.get(v, ""))
+                    else:
+                        prev_version = max(
+                            earlier_versions,
+                            key=lambda v: nodesemver.parse(v) if nodesemver.valid(v) else (0, 0, 0),
+                        )
+
+                    try:
+                        prev_tarball = registry_client.download_tarball(
+                            name=name,
+                            version=prev_version,
+                            as_of=as_of,
+                            dest_dir=dest_dir,
+                        )
+                        baseline_dep_release = extract_release_in_memory(
+                            prev_tarball, config=config
+                        )
+                        logger.debug(
+                            "Analyzing added dependency %s in DIFF mode against %s",
+                            name,
+                            prev_version,
+                        )
+                    except Exception as exc:
+                        logger.debug(
+                            "Failed to fetch baseline %s@%s for diff mode: %s; "
+                            "falling back to full-scan",
+                            name,
+                            prev_version,
+                            exc,
+                        )
+                        baseline_dep_release = None
+            else:
+                logger.debug(
+                    "Added dependency %s unestablished (created=%s, versions=%d); "
+                    "running full-scan",
+                    name,
+                    created_str,
+                    len(available_versions),
+                )
 
             # Analyze dependency: diff mode if baseline exists, full-scan if brand new
             # Pass registry_client=None to keep depth-1
@@ -196,8 +231,20 @@ def resolve_added_dependency(
             labeled_evidence = _label_evidence(evidence, name, target_version, replayed=False)
             return target_version, labeled_evidence, "live"
 
-    except (RegistryError, VersionNotFoundError, Exception) as exc:
-        logger.debug("Live resolution failed for %s@%s: %s", name, spec, exc)
+    except (
+        httpx.HTTPError,
+        RegistryError,
+        VersionNotFoundError,
+        IntegrityError,
+        ValueError,
+        Exception,
+    ) as exc:
+        last_err_cls = exc.__class__.__name__
+        last_err_msg = str(exc)
+        logger.warning(
+            "Live resolution failed for %s@%s [%s]: %s",
+            name, spec, last_err_cls, last_err_msg
+        )
 
     # 2. Try REPLAY Resolver in evaluation mode
     if samples_root is not None and samples_root.exists():
@@ -213,14 +260,16 @@ def resolve_added_dependency(
             ver, ev = replayed_res
             return ver, ev, "replayed"
 
-    # 3. Unresolvable
+    # 3. Unresolvable (Fail-closed: MEDIUM in live mode, INFO in eval mode)
+    sev = Severity.INFO if mode == "eval" else Severity.MEDIUM
+    err_desc = f" [{last_err_cls}: {last_err_msg}]" if last_err_msg else ""
     unres_ev = Evidence(
         id="unresolvable_dependency",
-        severity=Severity.INFO,
+        severity=sev,
         file=None,
         explanation=(
-            f"Added dependency '{name}@{spec}' could not be resolved from npm registry "
-            f"or dataset as of {as_of.isoformat()}."
+            f"Added dependency '{name}@{spec}' could not be resolved or analyzed from npm registry "
+            f"or dataset as of {as_of.isoformat()}{err_desc}."
         ),
         legitimate_use_note=(
             "Private packages, unpublished packages, or registry network errors can "

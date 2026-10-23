@@ -1,0 +1,204 @@
+# Policy Variant 5 (v1.1): CI Workflow + Obfuscated Code + Dynamic Code / Blob Corroboration with Bin Entry Downgrades
+[decision]
+single_signal_cap = "WARN"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "network_access"]
+description = "New install hook that also makes network calls"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "dynamic_code"]
+description = "New install hook that uses eval or new Function"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "credential_file_read"]
+description = "New install hook that reads credential files"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "long_encoded_blob"]
+description = "New install hook combined with obfuscated blobs"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "high_entropy_string"]
+description = "New install hook combined with high-entropy strings"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "shell_profile_write"]
+description = "New install hook that modifies shell profiles"
+
+[[decision.block_requires]]
+signals = ["native_binary_present", "install_script_added"]
+description = "New native binary added alongside a new install hook"
+
+[[decision.block_requires]]
+signals = ["process_exec", "credential_file_read"]
+description = "Process execution co-occurring with credential file access"
+
+[[decision.block_requires]]
+signals = ["dynamic_code", "network_access"]
+description = "Dynamic code evaluation combined with network access"
+
+[[decision.block_requires]]
+signals = ["install_script_added", "process_exec"]
+description = "New install hook that executes system processes"
+
+[[decision.block_requires]]
+signals = ["env_enumeration", "network_access"]
+description = "Environment variable enumeration combined with network access"
+
+[[decision.block_requires]]
+signals = ["env_enumeration", "hardcoded_url"]
+description = "Environment variable enumeration combined with outbound URL"
+
+[[decision.block_requires]]
+signals = ["env_enumeration", "hardcoded_ip"]
+description = "Environment variable enumeration combined with outbound IP"
+
+[[decision.block_requires]]
+signals = ["install_script_network"]
+description = "Install hook downloads from network"
+
+[[decision.block_requires]]
+signals = ["install_script_executes"]
+description = "Install hook executes system commands"
+
+[[decision.block_requires]]
+signals = ["install_script_dynamic"]
+description = "Install hook executes dynamic code"
+
+[[decision.block_requires]]
+signals = ["decode_and_execute"]
+description = "Decode-then-execute obfuscated payload chain"
+
+[[decision.block_requires]]
+signals = ["credential_leak"]
+description = "Credential file read co-occurring with network access in same file"
+
+# CI workflow corroborations
+[[decision.block_requires]]
+signals = ["ci_write", "registry_token"]
+description = "CI workflow modification combined with secret or credential token"
+
+[[decision.block_requires]]
+signals = ["ci_write", "hardcoded_ip"]
+description = "CI workflow modification combined with hardcoded IP address"
+
+[[decision.block_requires]]
+signals = ["ci_write", "hardcoded_url"]
+description = "CI workflow modification combined with outbound URL"
+
+# Obfuscated code corroborations
+[[decision.block_requires]]
+signals = ["obfuscated_code", "network_access"]
+description = "Obfuscated code combined with network access"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "hardcoded_ip"]
+description = "Obfuscated code combined with hardcoded IP address"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "process_exec"]
+description = "Obfuscated code combined with process execution"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "env_enumeration"]
+description = "Obfuscated code combined with environment enumeration"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "install_script_added"]
+description = "Obfuscated code combined with new lifecycle script"
+
+[[decision.block_requires]]
+signals = ["obfuscated_code", "registry_token"]
+description = "Obfuscated code combined with secret token"
+
+# v1.1 Dynamic Code & Obfuscation additions (Decision 26)
+[[decision.block_requires]]
+signals = ["dynamic_code", "long_encoded_blob"]
+description = "Dynamic code execution combined with encoded blob"
+
+[[decision.block_requires]]
+signals = ["dynamic_code", "large_size_jump"]
+description = "Dynamic code execution combined with large size jump"
+
+# v1.1 Dependency Added Corroborations (Decision 26)
+[[decision.block_requires]]
+signals = ["dependency_added", "install_script_added"]
+description = "Added dependency alongside added lifecycle script"
+
+[[decision.block_requires]]
+signals = ["dependency_added", "dynamic_code"]
+description = "Added dependency combined with dynamic code execution"
+
+[[decision.block_requires]]
+signals = ["dependency_added", "hardcoded_ip"]
+description = "Added dependency combined with hardcoded IP"
+
+[severity_overrides]
+hollow_dependency_injection = "MEDIUM"
+lookalike_dependency_name = "MEDIUM"
+
+install_script_changed = "MEDIUM"
+dependency_added = "LOW"
+dev_dependency_added = "INFO"
+peer_dependency_added = "INFO"
+dependency_removed = "INFO"
+dependency_version_changed = "INFO"
+unresolvable_dependency = "INFO"
+large_file_count_jump = "LOW"
+new_files_summary = "LOW"
+bin_entry_added = "LOW"
+bin_entry_changed = "LOW"
+
+[full_scan]
+single_signal_cap = "WARN"
+
+[[full_scan.block_requires]]
+signals = ["install_script_network"]
+description = "Install-time script that downloads from the network"
+
+[[full_scan.block_requires]]
+signals = ["install_script_executes"]
+description = "Install-time script that executes system processes"
+
+[[full_scan.block_requires]]
+signals = ["install_script_dynamic"]
+description = "Install-time script that evaluates dynamic code"
+
+[[full_scan.block_requires]]
+signals = ["credential_leak"]
+description = "Credential file read co-occurring with network access in the same file"
+
+[[full_scan.block_requires]]
+signals = ["ci_write", "registry_token"]
+description = "CI workflow modification combined with secret or credential token"
+
+[[full_scan.block_requires]]
+signals = ["ci_write", "hardcoded_ip"]
+description = "CI workflow modification combined with hardcoded IP address"
+
+[[full_scan.block_requires]]
+signals = ["ci_write", "hardcoded_url"]
+description = "CI workflow modification combined with outbound URL"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "network_access"]
+description = "Obfuscated code combined with network access"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "hardcoded_ip"]
+description = "Obfuscated code combined with hardcoded IP address"
+
+[[full_scan.block_requires]]
+signals = ["obfuscated_code", "process_exec"]
+description = "Obfuscated code combined with process execution"
+
+[[full_scan.block_requires]]
+signals = ["dynamic_code", "long_encoded_blob"]
+description = "Dynamic code evaluation combined with encoded blob"
+
+[full_scan.severity_overrides]
+native_binary_present = "LOW"
+unresolvable_dependency = "INFO"
+bin_entry_added = "LOW"
+bin_entry_changed = "LOW"

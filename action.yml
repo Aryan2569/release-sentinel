@@ -27,6 +27,10 @@ inputs:
     description: "Path to a custom TOML policy file to overlay"
     required: false
     default: ""
+  profile:
+    description: "Policy profile: 'default' (low-noise) or 'strict' (frozen v1.4 research policy)"
+    required: false
+    default: "default"
   github-token:
     description: "GitHub token for posting PR comments"
     required: false
@@ -64,9 +68,10 @@ runs:
         EXPERIMENTAL_HOLLOW: ${{ inputs.experimental-hollow }}
         MAX_PACKAGES: ${{ inputs.max-packages }}
         POLICY: ${{ inputs.policy }}
+        PROFILE: ${{ inputs.profile }}
         BASE_REF: ${{ github.base_ref }}
       run: |
-        ARGS=(check --format markdown --head "$LOCKFILE" --fail-on "$FAIL_ON" --max-packages "$MAX_PACKAGES")
+        ARGS=(check --format markdown --head "$LOCKFILE" --fail-on "$FAIL_ON" --max-packages "$MAX_PACKAGES" --profile "$PROFILE")
         if [ "$EXPERIMENTAL_HOLLOW" = "true" ]; then
           ARGS+=(--experimental-hollow)
         fi

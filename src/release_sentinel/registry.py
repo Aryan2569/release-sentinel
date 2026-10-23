@@ -39,7 +39,7 @@ _CONNECT_TIMEOUT = 10.0  # seconds
 _READ_TIMEOUT = 60.0  # seconds
 
 # Integrity string format: "<algorithm>-<base64-digest>"
-_INTEGRITY_RE = re.compile(r"^(?P<alg>sha512|sha384|sha256)-(?P<digest>[A-Za-z0-9+/=]+)$")
+_INTEGRITY_RE = re.compile(r"^(?P<alg>sha512|sha384|sha256|sha1)-(?P<digest>[A-Za-z0-9+/=]+)$")
 
 
 class RegistryError(Exception):

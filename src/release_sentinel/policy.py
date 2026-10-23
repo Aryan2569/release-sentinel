@@ -68,20 +68,25 @@ _STATIC_LIMITATIONS: list[str] = [
 # ---------------------------------------------------------------------------
 
 
-def load_policy(policy_path: Path | None = None, experimental_hollow: bool = False) -> Policy:
+def load_policy(
+    policy_path: Path | None = None,
+    profile: str = "default",
+    experimental_hollow: bool = False,
+) -> Policy:
     """Load and return a :class:`Policy`.
 
-    Starts from the bundled default, then overlays the user-supplied file.
+    Starts from the bundled profile ('default' or 'strict'), then overlays the user-supplied file.
 
     Parameters
     ----------
     policy_path:
-        Path to a user TOML policy file.  If ``None``, only the default is used.
+        Path to a user TOML policy file. If ``None``, only the default profile is used.
+    profile:
+        Policy profile name: 'default' (low-noise) or 'strict' (frozen v1.4 research policy).
     experimental_hollow:
         If True, enables the experimental block rule for hollow+lookalike releases.
     """
-    # Load the bundled default
-    raw = _load_default_toml()
+    raw = _load_profile_toml(profile)
 
     # Overlay user file
     if policy_path is not None:
@@ -93,27 +98,39 @@ def load_policy(policy_path: Path | None = None, experimental_hollow: bool = Fal
     return policy
 
 
-def _load_default_toml() -> dict:
-    """Load the bundled default policy TOML using importlib.resources."""
+def _load_profile_toml(profile: str = "default") -> dict:
+    """Load the bundled policy TOML for the given profile using importlib.resources."""
+    profile_lower = profile.lower().strip()
+    if profile_lower not in ("default", "strict"):
+        raise ValueError(
+            f"Invalid policy profile {profile!r}. Supported profiles are 'default' and 'strict'."
+        )
+    filename = f"policy_{profile_lower}.toml"
     try:
-        ref = resources.files("release_sentinel.data").joinpath("policy_default.toml")
+        ref = resources.files("release_sentinel.data").joinpath(filename)
         with ref.open("rb") as fh:
             return tomllib.load(fh)
     except Exception as exc:
         raise FileNotFoundError(
-            "Cannot locate bundled release_sentinel.data/policy_default.toml. "
+            f"Cannot locate bundled release_sentinel.data/{filename}. "
             "Make sure the package is installed correctly."
         ) from exc
 
 
-def _default_policy_path() -> Path:
+def _load_default_toml() -> dict:
+    """Load the bundled default policy TOML using importlib.resources."""
+    return _load_profile_toml("default")
+
+
+def _default_policy_path(profile: str = "default") -> Path:
     """Return the path to the bundled default policy TOML."""
+    filename = f"policy_{profile.lower().strip()}.toml"
     try:
-        ref = resources.files("release_sentinel.data").joinpath("policy_default.toml")
+        ref = resources.files("release_sentinel.data").joinpath(filename)
         return Path(str(ref))
     except Exception as exc:
         raise FileNotFoundError(
-            "Cannot locate bundled release_sentinel.data/policy_default.toml. "
+            f"Cannot locate bundled release_sentinel.data/{filename}. "
             "Make sure the package is installed correctly."
         ) from exc
 

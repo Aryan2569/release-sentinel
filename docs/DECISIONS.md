@@ -605,3 +605,39 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
 
 
 
+
+
+## Stage 6b: Real-World Noise, Fail-Closed Behavior, and Security Hardening (v1.5)
+
+- **Part 1: Real-World Noise Analysis and Root Cause Classification**:
+  - *4-Repo Baseline Replay (56 updates, 1,104 packages scanned)*:
+    - Decisions: 27 ALLOW (48.2%), 19 WARN (33.9%), 10 BLOCK (17.9%).
+    - Cross-reference with Datadog malicious dataset manifest (`data/labels_npm_compromised.csv`) and OSV data: **0 overlap**. All replayed packages are genuine, benign open-source dependencies.
+    - Per-package false-BLOCK rate: **1.72%** (19 blocked package instances across 1,104 scanned packages).
+    - Per-update false-BLOCK rate: **17.86%** (10 blocked updates out of 56 commits).
+  - *The Aggregation Effect*:
+    - In lockfile scanning, an update scans an average of $n \approx 20$ packages simultaneously. Even with a seemingly low per-package false-BLOCK rate of $p = 1.72\%$, the probability that at least one package falsely blocks the CI update is $1 - (1 - p)^n = 1 - (0.9828)^{20} \approx 29.5\%$.
+    - *Operational Rule*: For CI gates to maintain an update false-BLOCK rate $\le 2\%$, the per-package false-BLOCK rate must be bounded below $0.1\%$.
+
+- **Part 2: Precision Fixes with Technical Justification**:
+  - *Part 2a: Registry Lifecycle Hooks*: npm executes only `preinstall`, `install`, and `postinstall` when installing dependencies from a public registry tarball. `prepare` and `prepublish` are executed only for git/file dependencies or in the project's own repository. Treating `prepare`/`prepublish` as install-time scripts for registry tarballs caused false escalations on build tools. Registry tarball scanning now strictly isolates install targets to `{"preinstall", "install", "postinstall"}` while preserving `prepare`/`prepublish` for root projects and git dependencies.
+  - *Part 2b: Tightened decode_and_execute*: Decoding utilities (`Buffer.from(..., 'base64')`, `atob`) are routine in benign data processing (e.g., token parsing, binary serialization). `decode_and_execute` is now strictly restricted to explicit code/process sinks (`eval`, `new Function`, `vm.runIn*`, `child_process.*`) that directly accept the decoded expression within the same syntactic statement.
+
+- **Part 3: Policy Profiles (strict vs default)**:
+  - *Profile Bifurcation*:
+    - `strict`: Preserves the frozen v1.4 research policy (`data/policy_strict.toml`). Retains identical evaluation metrics against benchmark datasets without retroactive tuning.
+    - `default`: Production CI profile (`data/policy_default.toml`). Non-install-time single heuristic signals demote to WARN. BLOCK is reserved for verified install-time execution, install-time network exfiltration, credential theft, and corroborated malicious clusters.
+  - *CLI and Action Support*:
+    - Added `--profile [default|strict]` to `release-sentinel check` and `diff` CLI commands.
+    - Added `profile: default` input parameter to GitHub Action (`action.yml`).
+  - *4-Repo Replay Verification (112 updates across bootstrap, mocha, socket.io, superagent; 1,815 packages scanned)*:
+    - Under `strict`: 57 ALLOW (50.9%), 40 WARN (35.7%), 15 BLOCK (13.4%), 21 blocked packages.
+    - Under `default`: 57 ALLOW (50.9%), 55 WARN (49.1%), **0 BLOCK (0.0%)**, **0 blocked packages**.
+    - False-BLOCK rate on real-world updates reduced from $13.4\%$ down to **$0.0\%$** (surpassing the target $\le 2\%$).
+
+- **Part 4: Fail-Closed Behavior in Live Mode**:
+  - *Part 4a: Typed Error Reporting in Live Mode*: Unresolvable dependencies (due to network failure, 404, or private registry auth) in live mode emit structured evidence recording the concrete error class `[HTTPError: 404]` at `Severity.MEDIUM` (WARN), ensuring CI does not silently pass uninspected code. In evaluation harness mode (`mode="eval"`), these unresolvable fixtures remain `Severity.INFO` (ALLOW) to maintain benchmark comparability.
+  - *Part 4b: Install Targets Never Exempt*: Even if an install script points to a path matching an ignore pattern (such as `.github/`, `test/`, `fixtures/`, `data/`), install-target classification overrides the path exemption. All install script targets are deep-inspected without exception.
+  - *Part 4c: Comment-Stripping Evasion Protection*: Attackers may attempt to evade comment-stripping regular expressions by crafting malicious payloads with interleaved comment markers. Content scanning evaluates the union of stripped `clean_text` and unstripped `raw_text` for high-severity execution and network signals, while strictly restricting URL/IP extraction to stripped text to prevent false positives from benign URLs in header comments.
+  - *Part 4d: Established Age/Version Requirement for Diff Mode*: Added dependencies are only eligible for diff-mode evaluation against their previous version if the dependency is established (published $\ge 90$ days prior and having $\ge 5$ versions published before `as_of`). Brand-new or single-version decoy packages are analyzed in full-scan mode.
+  - *Part 4e: Peer and Optional Dependencies in package.json Diffing*: When analyzing standalone `package.json` diffs outside lockfile mode, `peerDependencies` and `optionalDependencies` are evaluated as installed runtime dependencies rather than ignored.

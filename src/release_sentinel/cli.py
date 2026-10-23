@@ -193,6 +193,13 @@ def diff(
             help="Path to a custom TOML policy file to overlay.",
         ),
     ] = None,
+    profile: Annotated[
+        str,
+        typer.Option(
+            "--profile",
+            help="Policy profile: 'default' (low-noise) or 'strict' (frozen v1.4 research policy).",
+        ),
+    ] = "default",
     max_files: Annotated[
         int,
         typer.Option("--max-files", help="Soft cap for maximum extracted files (default: 5000)."),
@@ -268,6 +275,7 @@ def diff(
             as_of=as_of_dt,
             cache_dir=effective_cache,
             policy_path=policy,
+            profile=profile,
             max_files=max_files,
             max_size=max_size,
             quiet=quiet,
@@ -300,6 +308,7 @@ def _run_analysis(
     as_of: datetime,
     cache_dir: Path,
     policy_path: Path | None = None,
+    profile: str = "default",
     max_files: int = 5000,
     max_size: int = 200,
     quiet: bool = False,
@@ -338,7 +347,9 @@ def _run_analysis(
             # --- Diff & Analyze ---
             if not quiet:
                 console.print("[dim]Comparing releases…[/dim]")
-            policy = load_policy(policy_path, experimental_hollow=experimental_hollow)
+            policy = load_policy(
+                policy_path, profile=profile, experimental_hollow=experimental_hollow
+            )
             evidence = analyze_release(
                 new=new_result,
                 baseline=old_result,
@@ -742,6 +753,13 @@ def check(
         Path | None,
         typer.Option("--policy", help="Path to custom policy TOML file."),
     ] = None,
+    profile: Annotated[
+        str,
+        typer.Option(
+            "--profile",
+            help="Policy profile: 'default' (low-noise) or 'strict' (frozen v1.4 research policy).",
+        ),
+    ] = "default",
     experimental_hollow: Annotated[
         bool,
         typer.Option("--experimental-hollow", help="Enable experimental hollow release detection."),
@@ -780,7 +798,7 @@ def check(
 
     as_of_dt = _parse_as_of(as_of) if as_of else datetime.now(UTC)
     effective_cache = cache_dir or _DEFAULT_CACHE_DIR
-    pol = load_policy(policy) if policy else load_policy()
+    pol = load_policy(policy, profile=profile)
 
     try:
         if base_ref:
@@ -871,6 +889,13 @@ def demo(
         typer.Option("--samples-root", help="Datadog samples root (defaults to RS_SAMPLES_ROOT)"),
     ] = None,
     policy: Annotated[Path | None, typer.Option("--policy", help="Custom policy TOML")] = None,
+    profile: Annotated[
+        str,
+        typer.Option(
+            "--profile",
+            help="Policy profile: 'default' (low-noise) or 'strict' (frozen v1.4 research policy).",
+        ),
+    ] = "default",
     cache_dir: Annotated[Path | None, typer.Option("--cache-dir", help="Cache directory")] = None,
 ) -> None:
     """Run an in-memory evaluation demo on an encrypted dataset sample (never executes code)."""
@@ -899,7 +924,7 @@ def demo(
         raise typer.Exit(code=2)
 
     eff_cache = cache_dir or _DEFAULT_CACHE_DIR
-    pol = load_policy(policy) if policy else load_policy()
+    pol = load_policy(policy, profile=profile)
 
     try:
         # Locate encrypted sample zip under eff_samples_root

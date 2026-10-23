@@ -1246,8 +1246,8 @@ def scan_new_content(
         file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
         file_size = len(file_bytes)
         is_min = is_minified_or_bundled(data, rel_path, cat)
-        is_exempt = is_exempt_path(rel_path, cat)
         is_install_target = rel_path in install_script_targets
+        is_exempt = False if is_install_target else is_exempt_path(rel_path, cat)
         was_previously_minified = rel_path in old_caps.existing_minified_paths
 
         # Check 1: Size budget exceedance (hard limit: 25 MB)
@@ -1292,13 +1292,21 @@ def scan_new_content(
             if len(clean_text) > CHUNK_SIZE
             else [clean_text]
         )
+        raw_chunks = (
+            _get_overlapping_text_chunks(raw_text)
+            if len(raw_text) > CHUNK_SIZE
+            else [raw_text]
+        ) if clean_text != raw_text else []
 
         # Specialized signals: process_exec and credential_file_read
-        for chunk in chunks:
+        for chunk in chunks + raw_chunks:
+            is_raw = chunk in raw_chunks
             if "process_exec" in seen_signals and "credential_file_read" in seen_signals:
                 break
             if "process_exec" not in seen_signals:
                 for _, snippet, norm in find_process_exec_matches(chunk):
+                    if is_raw and _is_comment_line(snippet):
+                        continue
                     if ("process_exec", norm) not in old_caps.normalized_keys:
                         seen_signals.add("process_exec")
                         sev = _escalate_if_install_target(Severity.MEDIUM, is_install_target)
@@ -1315,6 +1323,8 @@ def scan_new_content(
 
             if "credential_file_read" not in seen_signals:
                 for _, snippet, norm in find_credential_read_matches(chunk):
+                    if is_raw and _is_comment_line(snippet):
+                        continue
                     if ("credential_file_read", norm) not in old_caps.normalized_keys:
                         seen_signals.add("credential_file_read")
                         sev = _escalate_if_install_target(Severity.HIGH, is_install_target)
@@ -1332,13 +1342,22 @@ def scan_new_content(
         # Never line-diff minified or bundled files!
         if is_min:
             inspect_lines = clean_text.splitlines()
+            raw_inspect_lines = raw_text.splitlines() if clean_text != raw_text else []
         elif rel_path in old_file_paths:
             old_raw = old.read_text(rel_path)
             old_clean = strip_js_comments(old_raw) if _is_js_or_ts_file(rel_path) else old_raw
             old_lines_set = set(old_clean.splitlines())
             inspect_lines = [ln for ln in clean_text.splitlines() if ln not in old_lines_set]
+            if clean_text != raw_text:
+                old_raw_lines_set = set(old_raw.splitlines())
+                raw_inspect_lines = [
+                    ln for ln in raw_text.splitlines() if ln not in old_raw_lines_set
+                ]
+            else:
+                raw_inspect_lines = []
         else:
             inspect_lines = clean_text.splitlines()
+            raw_inspect_lines = raw_text.splitlines() if clean_text != raw_text else []
 
         if not inspect_lines:
             continue
@@ -1645,6 +1664,9 @@ def scan_new_content(
                         )
 
                     else:
+                        if signal.id == 'registry_token' and not is_install_target:
+                            if is_exempt or rel_path.lower().endswith(('.yml', '.yaml', '.json')):
+                                continue
                         norm = _normalize_match(signal.id, match_text)
                         if (signal.id, norm) in old_caps.normalized_keys:
                             continue
@@ -1660,6 +1682,61 @@ def scan_new_content(
                             )
                         )
 
+        _RAW_CANDIDATE_SIGNALS = {
+            'dynamic_code',
+            'network_access',
+            'long_encoded_blob',
+            'registry_token',
+            'ci_write',
+            'shell_profile_write',
+            'git_hook_write',
+        }
+        if raw_inspect_lines:
+            for raw_line in raw_inspect_lines:
+                if _is_comment_line(raw_line):
+                    continue
+                for signal in _SIGNALS:
+                    if signal.id not in _RAW_CANDIDATE_SIGNALS or signal.id in seen_signals:
+                        continue
+                    if signal.id == 'registry_token' and not is_install_target:
+                        if is_exempt or rel_path.lower().endswith(('.yml', '.yaml', '.json')):
+                            continue
+                    m = _search_windowed(signal.pattern, raw_line)
+                    if not m or _is_in_comment(raw_line, m.start(), in_block_comment=False):
+                        continue
+                    match_text = m.group(0)
+                    if signal.id == 'long_encoded_blob':
+                        if is_exempt:
+                            continue
+                        h = hashlib.sha256(match_text.encode('utf-8')).hexdigest()
+                        if h in old_caps.blob_hashes:
+                            continue
+                        seen_signals.add('long_encoded_blob')
+                        sev = _escalate_if_install_target(signal.severity, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id='long_encoded_blob',
+                                severity=sev,
+                                file=rel_path,
+                                explanation=signal.explanation_template.format(match=match_text),
+                                legitimate_use_note=signal.legitimate_use_note,
+                            )
+                        )
+                    else:
+                        norm = _normalize_match(signal.id, match_text)
+                        if (signal.id, norm) in old_caps.normalized_keys:
+                            continue
+                        seen_signals.add(signal.id)
+                        sev = _escalate_if_install_target(signal.severity, is_install_target)
+                        evidence.append(
+                            Evidence(
+                                id=signal.id,
+                                severity=sev,
+                                file=rel_path,
+                                explanation=signal.explanation_template.format(match=match_text),
+                                legitimate_use_note=signal.legitimate_use_note,
+                            )
+                        )
         if budget_timed_out:
             continue
 
@@ -1852,14 +1929,14 @@ def scan_full_release(
         }:
             continue
 
-        if is_exempt_path(rel_path, cat):
+        is_install_target = rel_path in targets
+        if not is_install_target and is_exempt_path(rel_path, cat):
             continue
 
         file_bytes = data if isinstance(data, (bytes, bytearray)) else data.encode("utf-8")
         file_size = len(file_bytes)
         is_min = is_minified_or_bundled(data, rel_path, cat)
-        is_exempt = False
-        is_install_target = rel_path in targets
+        is_exempt = False if is_install_target else is_exempt_path(rel_path, cat)
 
         # Check 1: Size budget exceedance
         if file_size > PER_FILE_SIZE_BUDGET:
@@ -1925,6 +2002,11 @@ def scan_full_release(
             if len(clean_text) > CHUNK_SIZE
             else [clean_text]
         )
+        raw_chunks = (
+            _get_overlapping_text_chunks(raw_text)
+            if len(raw_text) > CHUNK_SIZE
+            else [raw_text]
+        ) if clean_text != raw_text else []
 
         proc_matches = []
         cred_matches = []
@@ -2046,6 +2128,74 @@ def scan_full_release(
                     )
                 )
 
+        for chunk in raw_chunks:
+            if not proc_matches:
+                proc_matches = [
+                    m for m in find_process_exec_matches(chunk) if not _is_comment_line(m[1])
+                ]
+            if not cred_matches:
+                cred_matches = [
+                    m for m in find_credential_read_matches(chunk) if not _is_comment_line(m[1])
+                ]
+            if not has_network_apis:
+                has_network_apis = bool(
+                    re.search(
+                        r'''(?x)
+                        require\s*\(\s*['\"](?:http|https|net|dgram)['\"]\s*\)
+                        | \bfetch\s*\(
+                        | \.get\s*\(\s*['\"](http|https)
+                        | new\s+XMLHttpRequest
+                        | require\s*\(\s*['\"](?:axios|node-fetch|got|request|superagent)['\"]\s*\)
+                        ''',
+                        chunk,
+                    )
+                )
+            if not has_dynamic:
+                has_dynamic = bool(
+                    re.search(
+                        r'''(?x)
+                        \beval\s*\(
+                        | new\s+Function\s*\(
+                        | vm\.runIn(?:New)?Context
+                        | vm\.Script\s*\(
+                        ''',
+                        chunk,
+                    )
+                )
+            if not has_direct_decode_exec:
+                has_direct_decode_exec = bool(_search_windowed(_DIRECT_DECODE_EXEC_RE, chunk))
+            if not has_chain_decode_exec:
+                has_chain_decode_exec = bool(_search_windowed(_CHAIN_DECODE_EXEC_RE, chunk))
+            if not has_env_dump:
+                has_env_dump = bool(
+                    re.search(
+                        r'''(?x)
+                        Object\.(?:keys|values|entries)\s*\(\s*process\.env\s*\)
+                        | JSON\.stringify\s*\(\s*process\.env\s*\)
+                        | for\s*\([^)]*\bin\s+process\.env\b
+                        ''',
+                        chunk,
+                    )
+                )
+            if not has_shell_profile:
+                has_shell_profile = bool(
+                    re.search(
+                        r'''(?x)
+                        ['\"`.+]\.(?:bashrc|zshrc|profile|bash_profile|zprofile)['\"`]
+                        ''',
+                        chunk,
+                    )
+                )
+            if not has_ci_write:
+                has_ci_write = bool(
+                    re.search(
+                        r'''(?x)
+                        ['\"`.+]\.(?:github[/\\]workflows|gitlab-ci|circleci)
+                        | ['\"`.+]azure-pipelines
+                        ''',
+                        chunk,
+                    )
+                )
         has_network = has_network_apis or has_network_url or has_network_ip
         has_env_bulk = has_env_dump or len(env_matches) >= 10
 

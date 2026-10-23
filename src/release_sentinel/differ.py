@@ -73,6 +73,7 @@ def compare_releases(
     new: ExtractionResult | ReleaseContents,
     experimental_hollow: bool = False,
     is_registry_package: bool = True,
+    mode: str = "live",
 ) -> list[Evidence]:
     """Compare two extracted releases and return evidence items.
 
@@ -202,6 +203,7 @@ def analyze_release(
     dep_stats: dict[str, int] | None = None,
     experimental_hollow: bool = False,
     is_registry_package: bool = True,
+    mode: str = "live",
 ) -> list[Evidence]:
     """Analyze a release either against a baseline (diff mode) or standalone (full-scan mode).
 
@@ -302,6 +304,7 @@ def analyze_release(
                         config=config,
                         policy=policy,
                         analyze_fn=analyze_release,
+                        mode=mode,
                     )
                     evidence.extend(dep_evidence)
                     if dep_stats is not None:
@@ -527,7 +530,7 @@ def _diff_install_scripts(
 ) -> list[Evidence]:
     """Detect added or changed install-time lifecycle scripts."""
     if install_scripts is None:
-        install_scripts = _REGISTRY_INSTALL_SCRIPTS
+        install_scripts = _ALL_INSTALL_SCRIPTS
     evidence: list[Evidence] = []
     old_scripts: dict[str, str] = old_pkg.get("scripts", {}) or {}
     new_scripts: dict[str, str] = new_pkg.get("scripts", {}) or {}
@@ -1267,7 +1270,7 @@ def _extract_install_script_targets(
         return set()
 
     if install_scripts is None:
-        install_scripts = _REGISTRY_INSTALL_SCRIPTS
+        install_scripts = _ALL_INSTALL_SCRIPTS
 
     targets: set[str] = set()
     for hook in install_scripts:
