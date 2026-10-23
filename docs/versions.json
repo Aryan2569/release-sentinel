@@ -76,5 +76,29 @@
     },
     "policy_sha256": "513a603964d60f03b5bc9254c53dd2d95062a4965b3aeb2692c119b772ba14cb",
     "detector_code_sha256": "64a708654d4acf6ff1e55eaaa1db280f10feeafe1f956ab5e4c9dce5bd1808fa"
+  },
+  "v1.5": {
+    "git_tag": "v1.5",
+    "commit_sha": "19c683834e4392da8a7a8e704c39d50c274cda7f",
+    "malicious_results_jsonl": "data/eval_results_v11.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v11.csv",
+      "validation_smoke": "data/smoke_validation_v11.csv",
+      "matched_negatives": "data/matched_negatives_results_v11.jsonl"
+    },
+    "policy_sha256": "513a603964d60f03b5bc9254c53dd2d95062a4965b3aeb2692c119b772ba14cb",
+    "detector_code_sha256": "79144498707d07f07f22e75692010ab172835031f898af89bb1b6d8110bf5940"
+  },
+  "v1.5.1": {
+    "git_tag": "v1.5.1",
+    "commit_sha": "c9e3a3255bbdfae2a80454f241829da143a1ed36",
+    "malicious_results_jsonl": "data/eval_results_v11.jsonl",
+    "benign_results": {
+      "tuning_smoke": "data/smoke_results_v11.csv",
+      "validation_smoke": "data/smoke_validation_v11.csv",
+      "matched_negatives": "data/matched_negatives_results_v11.jsonl"
+    },
+    "policy_sha256": "513a603964d60f03b5bc9254c53dd2d95062a4965b3aeb2692c119b772ba14cb",
+    "detector_code_sha256": "79144498707d07f07f22e75692010ab172835031f898af89bb1b6d8110bf5940"
   }
 }

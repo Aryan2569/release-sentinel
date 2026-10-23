@@ -27,6 +27,7 @@ VERSIONS_JSON = Path("docs/versions.json")
 CAMPAIGNS_JSON = Path("data/eval_campaigns.json")
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 DEP_RECON_JSON = Path("data/dependency_reconciliation.json")
+REPLAY_12REPOS_JSON = Path("data/replay_12repos_summary.json")
 
 METRICS_OUT = Path("docs/METRICS.json")
 EVAL_REPORT_MD = Path("docs/eval_results_v7.md")
@@ -229,11 +230,14 @@ def recompute_all_metrics() -> dict[str, Any]:
         campaign_metrics[ver_name] = compute_campaign_metrics(mal_p, campaigns_dict, pair_to_campaign)
         benign_metrics[ver_name] = compute_benign_metrics(ver_info.get("benign_results", {}))
 
+    replay_12repos = json.load(open(REPLAY_12REPOS_JSON, encoding="utf-8")) if REPLAY_12REPOS_JSON.exists() else {}
+
     return {
         "sample": sample_metrics,
         "campaign": campaign_metrics,
         "benign": benign_metrics,
         "dependency_additions": dep_recon.get("counts_per_split", {}),
+        "replay_12repos": replay_12repos,
         "versions": versions,
     }
 
@@ -266,6 +270,26 @@ def verify_doc_consistency(metrics: dict[str, Any]) -> None:
     b_v14 = metrics["benign"]["v1.4"]["total_benign"]
     assert b_v14["pairs"] == 800, f"Expected 800 benign pairs, got {b_v14['pairs']}"
     assert b_v14["false_blocks"] == 0, f"Expected 0 false blocks, got {b_v14['false_blocks']}"
+
+    # Verify that v1.5 and v1.5.1 maintain 0 false BLOCKs across 800 benign packages
+    for ver in ["v1.5", "v1.5.1"]:
+        if ver in metrics["benign"]:
+            b_ver = metrics["benign"][ver]["total_benign"]
+            assert b_ver["pairs"] == 800, f"Expected 800 benign pairs for {ver}, got {b_ver['pairs']}"
+            assert b_ver["false_blocks"] == 0, f"Expected 0 false blocks for {ver}, got {b_ver['false_blocks']}"
+
+    # Verify Stage 6b 12-repo replay results under default vs strict
+    replay = metrics.get("replay_12repos", {})
+    assert "default" in replay, "Missing default 12-repo replay metrics"
+    assert "strict" in replay, "Missing strict 12-repo replay metrics"
+    def_rep = replay["default"]
+    strict_rep = replay["strict"]
+    assert def_rep["total_updates"] == 288, f"Expected 288 updates, got {def_rep['total_updates']}"
+    assert def_rep["total_pkgs"] == 5965, f"Expected 5965 pkgs, got {def_rep['total_pkgs']}"
+    def_block_rate = (def_rep["block"] / def_rep["total_updates"]) * 100
+    assert def_block_rate <= 2.0, f"Expected default false BLOCK rate <= 2.0%, got {def_block_rate:.2f}%"
+    assert def_rep["block"] == 2, f"Expected exactly 2 default blocks, got {def_rep['block']}"
+    assert strict_rep["block"] == 22, f"Expected 22 strict blocks, got {strict_rep['block']}"
 
     # Verify v1.4 TEST-B lenient BLOCK consistency (strictly 3 of 5 campaigns have a blocked pair; 4 of 5 warned)
     c_v14 = metrics["campaign"]["v1.4"]
