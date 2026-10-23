@@ -91,7 +91,7 @@
   },
   "v1.5.1": {
     "git_tag": "v1.5.1",
-    "commit_sha": "c9e3a3255bbdfae2a80454f241829da143a1ed36",
+    "commit_sha": "73871b268b8b0e7c53d4c4b57423c7ad9987814c",
     "malicious_results_jsonl": "data/eval_results_v11.jsonl",
     "benign_results": {
       "tuning_smoke": "data/smoke_results_v11.csv",
