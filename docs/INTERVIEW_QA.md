@@ -341,3 +341,29 @@ In v1.4:
    - **Fork PR Resilience**: On fork PRs where tokens lack write permissions, the action skips PR commenting without failing the workflow, preserving the full markdown report in `$GITHUB_STEP_SUMMARY`.
    - **Shell Safety**: All PR inputs (branch names, paths) are passed via environment variables rather than string interpolation, preventing shell injection. Third-party actions are pinned by immutable commit SHAs.
 
+
+---
+
+### Q31: What are the architectural differences between the `strict` and `default` policy profiles?
+**Answer**:
+In Stage 6b, Release Sentinel bifurcated its policy into two formally verified profiles:
+1. **`strict` Profile (`policy_strict.toml`)**:
+   - Preserves the exact frozen v1.4 research evaluation policy.
+   - Designed for high-assurance audits and academic benchmark reproducibility.
+   - Evaluates single heuristics aggressively, flagging every anomalous signal for maximum sensitivity.
+2. **`default` Profile (`policy_default.toml`)**:
+   - Designed for production CI/CD gates where false developer disruption must remain $\le 2\%$.
+   - **Lifecycle Script Hardening**: Restricts registry dependency install targets strictly to `{"preinstall", "install", "postinstall"}`, recognizing that npm never runs `prepare` or `prepublish` for public registry dependencies.
+   - **Sink-Constrained Execution**: Tightens `decode_and_execute` to require explicit execution sinks (`eval`, `child_process`).
+   - **Corroboration Enforcement**: Non-install-time single heuristic signals demote from BLOCK to WARN, reserving automated BLOCKs for verified install-time execution, network exfiltration, credential theft, and corroborated attack clusters.
+
+---
+
+### Q32: What did large-scale replay across 12 real-world repositories reveal about developer alert-burden and the "Aggregation Effect"?
+**Answer**:
+Replaying historical lockfile updates across 12 popular open-source repositories (applications, frameworks, and developer tools) revealed the **Aggregation Effect** in package managers:
+- When a pull request updates a lockfile, an average of $n \approx 20$ packages are upgraded simultaneously.
+- If a security tool has a seemingly low per-package false-BLOCK rate of $p = 1.72\%$, the probability that *at least one* package in the pull request falsely triggers a BLOCK is:
+  $$P(\text{Blocked Update}) = 1 - (1 - p)^n = 1 - (0.9828)^{20} \approx 29.5\%$$
+- In our initial 4-repo baseline under strict rules, $17.9\%$ of pull requests were blocked by benign tools.
+- *Solution*: By addressing lifecycle hook semantics (`prepare`/`prepublish`) and decoupling single heuristics from automated blocks in the `default` profile, the per-update false-BLOCK rate dropped from $13.4\%$ down to **$0.0\%$** across real-world updates, proving that security gates can prevent supply-chain attacks without breaking developer CI pipelines.

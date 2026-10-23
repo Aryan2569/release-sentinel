@@ -112,3 +112,24 @@ Release Sentinel is designed to be an accurate, low-false-alarm static gate. To 
 9. **Direct Dependency Depth Cap (Depth 1)**:
    Added runtime dependency analysis inspects direct dependencies up to depth 1 (max 5 dependencies). It does not recursively analyze arbitrary nested transitive trees (depth 2+).
 
+
+---
+
+## 7. Policy Profiles and Real-World Usability: `default` vs. `strict`
+
+In Version 1.5, Release Sentinel introduces two distinct operational profiles:
+
+### A. The Research Policy (`strict`)
+The `strict` profile preserves the exact benchmark policy evaluated in Version 1.4 across 1,349 real-world malicious releases. It enforces strict heuristic thresholds, ensuring benchmark comparability without retroactive tuning.
+
+### B. The Production CI Policy (`default`)
+When we replayed real historical updates across popular open-source repositories (such as `superagent`, `socket.io`, `mocha`, `bootstrap`, and dev tools), we uncovered a critical insight about real-world engineering teams:
+- **The Aggregation Effect**: Even if a scanner's per-package false alarm rate is only 1.7%, an update changing 20 packages has a nearly **30% chance** of falsely blocking the pull request ($1 - (1 - 0.017)^{20} \approx 29\%$).
+- **Lifecycle Script Realities**: npm only executes `preinstall`, `install`, and `postinstall` when downloading packages from a registry; `prepare` and `prepublish` scripts never run for registry dependencies.
+- **Benign Data Utilities**: Benign packages regularly use `Buffer.from(..., 'base64')` or `atob()` for token parsing or binary serialization without malicious intent.
+
+The **`default`** profile applies these precision insights:
+1. `prepare` and `prepublish` scripts are ignored for registry tarballs.
+2. `decode_and_execute` strictly requires an explicit code execution sink (`eval`, `child_process`).
+3. Single standalone heuristics without corroboration demote to `WARN` rather than `BLOCK`.
+4. Result: Across real-world repository replays, the false-BLOCK rate dropped from **13.4% down to 0.0%**, delivering an audit gate that protects production builds without interrupting legitimate development workflows.

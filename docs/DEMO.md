@@ -7,7 +7,7 @@ This guide describes how to run the interactive demonstration of Release Sentine
 ## 1. Safety Guarantees During Demo
 
 - **Never Executes Package Code (Rule 1):** The demo operates entirely via static AST/regex analysis and structural inspection. No scripts or modules are imported or run.
-- **In-Memory Decryption (Rule 2 & 7):** The encrypted sample archive is decrypted with password `infected` directly into memory buffers. The malicious payload is **never written to disk**.
+- **In-Memory Decryption (Rule 2 & 7):** The encrypted sample archive is decrypted with password `infected` directly into memory buffers. The malicious payload is **never written to disk**. *(Note on encryption format: The test dataset sample archives utilize standard PKWARE ZipCrypto stream encryption, not AES-256; archive decryption is handled transparently in pure-Python memory streams via Python's standard library `zipfile` module without writing raw malicious binaries to disk).*
 
 ---
 

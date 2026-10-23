@@ -81,3 +81,54 @@ In large mono-repositories or major framework upgrades, hundreds or thousands of
 When a package update introduces new runtime dependencies, Release Sentinel resolves each added dependency and inspects it (in diff mode against its previous release if one exists, or in tightened full-scan mode if brand new).
 
 **Limitation**: This dependency-aware inspection operates strictly at **depth 1** (up to 5 direct added runtime dependencies). It does not recursively expand or analyze transitive sub-dependencies (depth 2+). If an attacker injects a malicious payload nested multiple levels down the dependency tree inside a clean, newly added direct dependency, that transitive payload is not analyzed.
+
+
+---
+
+## 10. The Capability-Novelty Blind Spot
+
+Release Sentinel operates differentially by design: static capability signals (`dynamic_code`, `process_exec`, `network_access`, `env_enumeration`) are baseline-subtracted. If a package already contained calls to `eval()`, `child_process.exec()`, or `http.get()` in its baseline version, adding further calls to those same APIs in an update does not trigger new capability evidence.
+
+**Limitation**: If an attacker compromises a package that *already legitimately utilized* powerful system primitives (for example, a CLI runner that already spawned child processes, or an HTTP library that already initiated network calls), new malicious invocations of those existing capabilities will not produce evidence flags. Detection in such compromised packages relies strictly on:
+- Introductions of new external hosts or unlisted public IP addresses (`hardcoded_url`, `hardcoded_ip`).
+- High-entropy or base64-encoded blobs (`long_encoded_blob`, `high_entropy_string`).
+- Newly added or modified install lifecycle hooks (`install_script_added`, `install_script_changed`).
+- Large anomalous size jumps or mass additions of executable files (`large_size_jump`, `notable_new_file`).
+- Persistence modifications (`ci_write`, `shell_profile_write`, `git_hook_write`).
+
+---
+
+## 11. Scripting Language Payloads (.sh, .py, .ps1, .bat)
+
+Release Sentinel classifies files into structural categories (`FileCategory`):
+- `.sh`, `.ps1`, `.bat`, `.cmd` are categorized as `FileCategory.EXECUTABLE`. When newly introduced in an update, they emit `notable_new_file` at `Severity.MEDIUM`. Furthermore, install-time script commands in `package.json` that execute shell scripts (e.g. `sh setup.sh`, `powershell -enc ...`, `cmd /c ...`) are audited by `_check_lifecycle_script_command`.
+- `.py` files are categorized as `FileCategory.SCRIPT`.
+
+**Limitation**: The deep static content scanner is specialized for JavaScript and TypeScript syntax (e.g., AST/regex matching on `process.env`, `require('child_process')`, `Buffer.from`, `eval()`). Non-JS scripts (`.sh`, `.ps1`, `.bat`, `.py`) are not parsed or scanned for language-specific constructs (such as Python `subprocess.Popen` or PowerShell `Invoke-Expression`). Detection of non-JS payloads relies on lifecycle script invocation auditing and file-addition warnings, rather than language-specific static AST parsing.
+
+---
+
+## 12. String-Concatenation and Dynamic-Require Evasions
+
+Attackers may attempt static analysis evasion through dynamic property access and string obfuscation:
+- Property concatenation: `global['ev' + 'al'](...)` or `window['f' + 'etch'](...)`
+- Dynamic module resolution: `require(['child', 'process'].join('_'))`
+- Byte array assembly: `String.fromCharCode(101, 118, 97, 108)`
+
+**Limitation**: While Release Sentinel flags dense hex/unicode escape sequences (`obfuscated_code`), Shannon entropy spikes (`high_entropy_string`), and base64 payloads (`long_encoded_blob`), subtle string concatenation or dynamic `require()` patterns that remain short and low-entropy without triggering obfuscation thresholds can evade static string matching. Full symbolic execution and taint tracking are intentionally excluded to keep per-package analysis latency under 100 milliseconds.
+
+---
+
+## 13. Files Exceeding 20,000 Lines (Chunked Scanning Divergence)
+
+For files up to 25 MB with under 20,000 lines, Release Sentinel scans individual newly modified lines and performs fine-grained Shannon entropy calculation on all string tokens.
+
+**Limitation**: For files exceeding 20,000 lines (such as massive auto-generated parser tables or bundled distributions), Release Sentinel switches to chunked windowed scanning (1 MB overlapping chunks with 64 KB overlap). In chunked mode, critical regex signals (`dynamic_code`, `process_exec`, `network_access`, `hardcoded_url`, `credential_file_read`, `registry_token`) are thoroughly evaluated, but per-line token Shannon entropy and minified long-line calculations are skipped to prevent CPU exhaustion.
+
+---
+
+## 14. Absence of Live Remote GitHub Commit/Tag Validation
+
+Supply-chain attacks such as repo-jacking or unauthorized registry publications sometimes publish npm tarballs that do not correspond to any genuine commit or tagged release in the upstream GitHub repository.
+
+**Limitation**: Release Sentinel audits packages by inspecting npm registry metadata, tarball signatures, and extracted payload files. It does not make live out-of-band network calls to GitHub, GitLab, or Bitbucket APIs to verify whether a published version matches a signed git commit or GitHub Actions OIDC provenance attestation (`npm provenance`).
