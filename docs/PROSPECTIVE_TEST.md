@@ -8,7 +8,7 @@ This document establishes the scientific protocol for future, prospectively held
 
 All retrospective analyses and post-hoc rules for v1.2 were developed using the Datadog dataset as of the snapshot below:
 
-- **Repository**: `C:\rs-data\datadog`
+- **Repository**: `<path-to-datadog-dataset>`
 - **Git Commit Hash**: `8a74a4c8ee0e1a2927f0419e0710968702ded609`
 - **Snapshot Date**: `2026-10-16 10:25:21 +0200`
 - **Dataset Cutoff**: All samples discovered on or before `2026-10-16`
@@ -24,7 +24,7 @@ When new real supply-chain attack samples are committed to the upstream reposito
 ### Step 1: Upstream Synchronization
 Pull the latest commits from the Datadog dataset repository:
 ```powershell
-git -C C:\rs-data\datadog pull origin main
+git -C <path-to-datadog-dataset> pull origin main
 ```
 
 ### Step 2: Prospective Cohort Extraction

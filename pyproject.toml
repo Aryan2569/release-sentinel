@@ -5,17 +5,21 @@ build-backend = "hatchling.build"
 [project]
 name = "release-sentinel"
 dynamic = ["version"]
-description = "Time-aware security gate for npm dependency updates"
+description = "Time-aware static security gate for npm package-lock.json dependency updates."
 readme = "README.md"
-license = { file = "LICENSE" }
+license = { text = "MIT" }
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
-authors = [{ name = "Release Sentinel Contributors" }]
-keywords = ["npm", "security", "supply-chain", "dependency-audit"]
+authors = [{ name = "Release Sentinel Maintainers", email = "maintainers@release-sentinel.dev" }]
+keywords = ["npm", "security", "supply-chain", "dependency-audit", "lockfile"]
 classifiers = [
     "Development Status :: 3 - Alpha",
+    "Environment :: Console",
     "Intended Audience :: Developers",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Security",
 ]
 dependencies = [
@@ -25,6 +29,13 @@ dependencies = [
     "pydantic>=2.7",
     "node-semver>=0.9.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/release-sentinel/release-sentinel"
+Documentation = "https://github.com/release-sentinel/release-sentinel#readme"
+Repository = "https://github.com/release-sentinel/release-sentinel.git"
+Issues = "https://github.com/release-sentinel/release-sentinel/issues"
+Changelog = "https://github.com/release-sentinel/release-sentinel/blob/main/CHANGELOG.md"
 
 [project.scripts]
 sentinel = "release_sentinel.cli:app"

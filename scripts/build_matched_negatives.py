@@ -33,7 +33,9 @@ def parse_semver(v: str) -> tuple[int, int, int] | None:
 
 
 def main() -> int:
-    manifest_path = Path(r"C:\rs-data\datadog\samples\npm\manifest.json")
+    from release_sentinel.eval import get_samples_root
+
+    manifest_path = get_samples_root() / "samples" / "npm" / "manifest.json"
     with open(manifest_path, encoding="utf-8") as f:
         manifest = json.load(f)
 

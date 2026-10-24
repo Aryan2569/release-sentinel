@@ -1,3 +1,4 @@
+
 """Audit lifecycle script commands across 2,000 popular npm packages and malicious eval pairs.
 
 Addresses Stage 5g Part 1:
@@ -14,7 +15,6 @@ import asyncio
 import csv
 import json
 import logging
-import os
 import re
 import sys
 import zipfile
@@ -24,6 +24,7 @@ from pathlib import Path
 import httpx
 
 from release_sentinel.differ import _check_lifecycle_script_command
+from release_sentinel.eval import get_samples_root
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
@@ -202,7 +203,7 @@ def run_audit() -> None:
                     benign_distinct_commands[alt_name].add(cmd)
 
     # 4. Analyze malicious pairs
-    samples_root = Path(os.environ.get("RS_SAMPLES_ROOT", "C:/rs-data/datadog"))
+        samples_root = get_samples_root()
     with open("data/eval_pairs.csv", encoding="utf-8") as f:
         eval_pairs = list(csv.DictReader(f))
 

@@ -155,7 +155,7 @@ Eliminated root causes of false alarms discovered in smoke testing:
 
 ### D18 — In-memory encrypted ZIP loading, ReleaseContents abstraction, and NTFS security cleanup (Stage 3a)
 - Malware sample handling (Rule 7): Real malicious samples stay in their encrypted ZIPs at rest in
-  `C:\rs-data\datadog`. They are never extracted to disk, never written to temp folders, and never
+  `<path-to-datadog-dataset>`. They are never extracted to disk, never written to temp folders, and never
   executed or imported. Unit tests use synthetic ZipCrypto ZIPs generated in memory/temp during the test.
 - `ReleaseContents` abstraction: Introduced a lightweight in-memory representation (`rel_path -> bytes`)
   shared by both the tarball extractor and ZIP loader. `differ.py` and `content_scanner.py` operate
@@ -220,7 +220,7 @@ Eliminated root causes of false alarms discovered in smoke testing:
   - Persistence & CI modifications: Modifications to shell profiles (`shell_profile_write`) or CI workflows (`ci_write`).
   Full-scan operates under the calibrated 25 MB / 10.0s fail-closed budgets. Baseline download failures no longer abort evaluation; they seamlessly fall back to full-scan mode (0 baseline download failures across 1,349 eval pairs).
 - **Dependency-Aware Updates**:
-  When an update adds direct runtime dependencies (`dependencies` in `new_pkg` not in `old_pkg`), `analyze_release` resolves the highest version satisfying the declared range as of `as_of` via `node-semver`. It limits resolution to depth 1 and at most 5 added dependencies per release. Each added dependency is extracted in memory, scanned via full-scan mode, and returned evidence is prefixed with `[dep: pkg@ver]`. In evaluation mode, if a dependency is absent from the live registry (e.g. placeholder/delisted packages like `plain-crypto-js` added in `axios@1.14.1`), a REPLAY resolver loads it from `C:\rs-data\datadog`. Dependencies that cannot be resolved emit `unresolvable_dependency` (INFO; never alerts). Across 1,349 malicious updates, 153 releases added dependencies; 24 resolved live, 1 was replayed, and 2 were unresolvable.
+  When an update adds direct runtime dependencies (`dependencies` in `new_pkg` not in `old_pkg`), `analyze_release` resolves the highest version satisfying the declared range as of `as_of` via `node-semver`. It limits resolution to depth 1 and at most 5 added dependencies per release. Each added dependency is extracted in memory, scanned via full-scan mode, and returned evidence is prefixed with `[dep: pkg@ver]`. In evaluation mode, if a dependency is absent from the live registry (e.g. placeholder/delisted packages like `plain-crypto-js` added in `axios@1.14.1`), a REPLAY resolver loads it from `<path-to-datadog-dataset>`. Dependencies that cannot be resolved emit `unresolvable_dependency` (INFO; never alerts). Across 1,349 malicious updates, 153 releases added dependencies; 24 resolved live, 1 was replayed, and 2 were unresolvable.
 - **Benign Gate & Signal Value Breakdown**:
   Re-evaluated all 800 benign updates across the three independent benchmarks:
   - Tuning Smoke (100 pairs): 89 ALLOW, 11 WARN, 0 BLOCK (11.0 alerts/100, +0.0 change).

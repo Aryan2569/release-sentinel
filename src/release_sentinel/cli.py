@@ -37,6 +37,7 @@ from rich.table import Table
 from release_sentinel import __version__
 from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
+from release_sentinel.eval import get_samples_root
 from release_sentinel.extractor import ExtractionConfig, extract_release
 from release_sentinel.lockfile import (
     DEFAULT_MAX_PACKAGES,
@@ -911,8 +912,6 @@ def demo(
     cache_dir: Annotated[Path | None, typer.Option("--cache-dir", help="Cache directory")] = None,
 ) -> None:
     """Run an in-memory evaluation demo on an encrypted dataset sample (never executes code)."""
-    import os
-
     from release_sentinel.extractor import extract_release_in_memory
     from release_sentinel.zip_loader import load_zip_release
 
@@ -928,11 +927,13 @@ def demo(
     else:
         p_name, old_v, new_v = "axios", "1.14.0", "1.14.1"
 
-    eff_samples_root = samples_root or Path(
-        os.environ.get("RS_SAMPLES_ROOT", r"C:\rs-data\datadog")
-    )
+    eff_samples_root = get_samples_root(samples_root)
     if not eff_samples_root.exists():
-        console.print(f"[bold red]Error:[/] Samples root directory not found: {eff_samples_root}")
+        console.print(
+            f"[bold red]Error:[/] Samples root directory not found: {eff_samples_root}. "
+            "Please set the RS_SAMPLES_ROOT environment variable pointing to the Datadog dataset. "
+            "See docs/REPRODUCING.md."
+        )
         raise typer.Exit(code=2)
 
     eff_cache = cache_dir or _DEFAULT_CACHE_DIR

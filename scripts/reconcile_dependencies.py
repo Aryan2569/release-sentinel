@@ -18,12 +18,12 @@ from typing import Any
 
 import httpx
 
-from release_sentinel.eval import parse_discovery_date_as_of
+from release_sentinel.eval import get_samples_root, parse_discovery_date_as_of
 from release_sentinel.extractor import extract_release_in_memory
 from release_sentinel.registry import NpmRegistryClient
 from release_sentinel.zip_loader import load_zip_release
 
-SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+SAMPLES_ROOT = get_samples_root()
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 EVAL_RESULTS_V6 = Path("data/eval_results_v6.jsonl")

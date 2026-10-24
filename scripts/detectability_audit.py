@@ -26,7 +26,7 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 from typing import Any
 
-from release_sentinel.eval import parse_discovery_date_as_of
+from release_sentinel.eval import get_samples_root, parse_discovery_date_as_of
 from release_sentinel.extractor import extract_release_in_memory
 from release_sentinel.file_classifier import FileCategory, classify
 from release_sentinel.registry import NpmRegistryClient, _safe_filename
@@ -35,7 +35,8 @@ from release_sentinel.zip_loader import load_zip_release
 logging.basicConfig(level=logging.WARNING)
 
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-SAMPLES_ROOT = Path("C:/rs-data/datadog")
+
+SAMPLES_ROOT = get_samples_root()
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 EVAL_RESULTS_V5 = Path("data/eval_results_v5.jsonl")
 CLUSTERS_V5 = Path("data/eval_clusters_v5.json")

@@ -28,9 +28,35 @@ from release_sentinel.zip_loader import load_zip_release
 logger = logging.getLogger(__name__)
 
 _DEFAULT_CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-_DEFAULT_SAMPLES_ROOT = (
-    Path(os.environ["RS_SAMPLES_ROOT"]) if "RS_SAMPLES_ROOT" in os.environ else None
-)
+
+
+def get_samples_root(explicit: Path | None = None) -> Path:
+    """Resolve the root directory containing encrypted malware sample ZIPs.
+
+    Checks:
+    1. Explicit path argument
+    2. RS_SAMPLES_ROOT environment variable
+    3. Windows user registry environment (if on Windows)
+    4. Default relative path: Path("data/samples")
+    """
+    if explicit is not None:
+        return explicit
+    if "RS_SAMPLES_ROOT" in os.environ and os.environ["RS_SAMPLES_ROOT"]:
+        return Path(os.environ["RS_SAMPLES_ROOT"])
+    if os.name == "nt":
+        import winreg
+
+        try:
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as k:
+                val, _ = winreg.QueryValueEx(k, "RS_SAMPLES_ROOT")
+                if val:
+                    return Path(val)
+        except OSError:
+            pass
+    return Path("data/samples")
+
+
+_DEFAULT_SAMPLES_ROOT = get_samples_root()
 
 
 @dataclass

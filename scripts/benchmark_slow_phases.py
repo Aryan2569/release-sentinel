@@ -5,12 +5,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from release_sentinel.differ import analyze_release
+from release_sentinel.eval import get_samples_root
 from release_sentinel.extractor import ExtractionConfig, extract_release_in_memory
 from release_sentinel.policy import load_policy
 from release_sentinel.registry import NpmRegistryClient
 from release_sentinel.zip_loader import load_zip_release
 
-SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+SAMPLES_ROOT = get_samples_root()
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
 
 # The 8 slow pairs identified

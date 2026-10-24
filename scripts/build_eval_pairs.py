@@ -31,6 +31,7 @@ from typing import Any
 
 import httpx
 
+from release_sentinel.eval import get_samples_root
 from release_sentinel.registry import _safe_filename
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
@@ -38,7 +39,8 @@ logger = logging.getLogger(__name__)
 
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
 METADATA_CACHE = CACHE_DIR / "metadata"
-MANIFEST_PATH = Path(r"C:\rs-data\datadog\samples\npm\manifest.json")
+
+MANIFEST_PATH = get_samples_root() / "samples" / "npm" / "manifest.json"
 LABELS_PATH = Path("data/labels_npm_compromised.csv")
 OUTPUT_PATH = Path("data/eval_pairs.csv")
 

@@ -29,7 +29,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--new-samples-dir",
         type=Path,
-        default=Path(r"C:\rs-data\datadog"),
+        default=None,
         help="Path to root of Datadog dataset repository",
     )
     parser.add_argument(

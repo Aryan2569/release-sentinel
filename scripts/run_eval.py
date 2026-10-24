@@ -4,7 +4,7 @@ Runs the frozen detector over all buildable eval pairs in data/eval_pairs.csv.
 MEASUREMENT ONLY: does not modify detection rules, severities, or policy.
 
 Rules and constraints enforced:
-- Rule 7: Samples remain encrypted at rest in C:\\rs-data\\datadog.
+- Rule 7: Samples remain encrypted at rest in RS_SAMPLES_ROOT.
   Members are read in memory only. No sample content is written to disk.
 - Output contains NO snippets or sample file contents.
 - Evaluation split: DEV (< 2026-01-01) vs TEST (>= 2026-01-01).
@@ -34,7 +34,7 @@ from typing import Any
 import httpx
 
 from release_sentinel.engine import decide
-from release_sentinel.eval import analyze_eval_pair, parse_discovery_date_as_of
+from release_sentinel.eval import analyze_eval_pair, get_samples_root, parse_discovery_date_as_of
 from release_sentinel.models import Severity
 from release_sentinel.registry import (
     NpmRegistryClient,
@@ -65,7 +65,8 @@ _SEV_ORDER = [
     Severity.INFO,
 ]
 
-SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+
+SAMPLES_ROOT = get_samples_root()
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 RESULTS_JSONL = Path("data/eval_results.jsonl")

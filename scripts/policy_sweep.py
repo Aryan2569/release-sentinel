@@ -21,6 +21,7 @@ from typing import Any
 
 from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
+from release_sentinel.eval import get_samples_root
 from release_sentinel.extractor import extract_release_in_memory
 from release_sentinel.models import Decision, Evidence, Severity
 from release_sentinel.policy import Policy
@@ -29,7 +30,8 @@ from release_sentinel.registry import NpmRegistryClient
 logger = logging.getLogger("policy_sweep")
 
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+
+SAMPLES_ROOT = get_samples_root()
 
 SCANNER_FILES = [
     Path("src/release_sentinel/differ.py"),

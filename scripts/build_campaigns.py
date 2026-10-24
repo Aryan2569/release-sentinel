@@ -18,7 +18,6 @@ from __future__ import annotations
 import csv
 import json
 import math
-import os
 import re
 import tarfile
 import zipfile
@@ -27,10 +26,12 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any
 
+from release_sentinel.eval import get_samples_root
 from release_sentinel.registry import _safe_filename
 
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-SAMPLES_ROOT = Path(os.environ.get("RS_SAMPLES_ROOT", r"C:\rs-data\datadog"))
+
+SAMPLES_ROOT = get_samples_root()
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 EVAL_RESULTS_V5 = Path("data/eval_results_v5.jsonl")
 EVAL_RESULTS_V6 = Path("data/eval_results_v6.jsonl")

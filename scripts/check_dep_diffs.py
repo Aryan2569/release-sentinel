@@ -3,12 +3,13 @@ import json
 from datetime import UTC, datetime
 from pathlib import Path
 
-from release_sentinel.eval import analyze_eval_pair
+from release_sentinel.eval import analyze_eval_pair, get_samples_root
 from release_sentinel.policy import load_policy
 from release_sentinel.registry import NpmRegistryClient
 
 CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
-SAMPLES_ROOT = Path(r"C:\rs-data\datadog")
+
+SAMPLES_ROOT = get_samples_root()
 
 client = NpmRegistryClient(cache_dir=CACHE_DIR)
 policy = load_policy()

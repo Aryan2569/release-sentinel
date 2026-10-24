@@ -14,10 +14,10 @@ This guide describes how to run the interactive demonstration of Release Sentine
 ## 2. Prerequisites
 
 The demo requires access to the encrypted sample corpus:
-- By default, Release Sentinel looks in `C:\rs-data\datadog` on this system.
+- By default, Release Sentinel looks in `<path-to-datadog-dataset>` on this system.
 - Or set the environment variable:
   ```powershell
-  $env:RS_SAMPLES_ROOT = "C:\rs-data\datadog"
+  $env:RS_SAMPLES_ROOT = "<path-to-datadog-dataset>"
   ```
 
 ---

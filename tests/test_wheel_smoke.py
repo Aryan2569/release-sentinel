@@ -73,7 +73,7 @@ def test_wheel_installation_and_smoke_check(tmp_path: Path):
         errors="replace",
         check=True,
     )
-    assert "0.1.0" in proc.stdout or "0.1.0" in proc.stderr
+    assert "0.5.0" in proc.stdout or "0.5.0" in proc.stderr
 
     # 6. Test `sentinel check` on fixture lockfiles from empty directory
     base_lock = isolated_dir / "base.json"
