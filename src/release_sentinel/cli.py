@@ -780,6 +780,10 @@ def check(
         Path | None,
         typer.Option("--cache-dir", help="Cache directory (default: ~/.cache/release_sentinel)."),
     ] = None,
+    json_output_file: Annotated[
+        Path | None,
+        typer.Option("--json-output-file", help="Path to write complete JSON report to."),
+    ] = None,
 ) -> None:
     """Audit dependency changes in an npm package-lock.json diff against security policy."""
     fail_on_clean = fail_on.strip().lower()
@@ -843,6 +847,14 @@ def check(
     except Exception as exc:
         console.print(f"[bold red]Internal error:[/] {exc}")
         raise typer.Exit(code=2) from exc
+
+    # Write optional json report file
+    if json_output_file is not None:
+        import dataclasses
+        json_output_file.write_text(
+            json.dumps(dataclasses.asdict(report), indent=2, default=str),
+            encoding="utf-8",
+        )
 
     # Render output
     if format_clean == "json":

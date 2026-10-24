@@ -2,6 +2,10 @@ name: "Release Sentinel Lockfile Gate"
 description: "Time-aware static security gate for npm package-lock.json dependency updates."
 author: "Release Sentinel Contributors"
 
+branding:
+  icon: "shield"
+  color: "blue"
+
 inputs:
   lockfile:
     description: "Path to npm package-lock.json file"
@@ -15,6 +19,10 @@ inputs:
     description: "Whether to post/update a GitHub PR comment with findings"
     required: false
     default: "true"
+  comment-on:
+    description: "Gate condition for posting PR comments: 'block', 'notable', 'warn', or 'always'"
+    required: false
+    default: "notable"
   experimental-hollow:
     description: "Enable experimental hollow-release detection (post-hoc WARN-only heuristic)"
     required: false
@@ -22,7 +30,7 @@ inputs:
   max-packages:
     description: "Maximum changed packages to scan before capping"
     required: false
-    default: "200"
+    default: "300"
   policy:
     description: "Path to a custom TOML policy file to overlay"
     required: false
@@ -43,6 +51,14 @@ runs:
       uses: actions/setup-python@39cd14951b08e74b54015eac00f077de37722e50 # v5.1.1
       with:
         python-version: "3.12"
+
+    - name: Cache npm registry tarballs
+      uses: actions/cache@0c45773b623bea8c8e75f6c82b208c3cf94ea4f9 # v4.0.2
+      with:
+        path: ~/.cache/release_sentinel
+        key: ${{ runner.os }}-sentinel-${{ hashFiles(inputs.lockfile) }}
+        restore-keys: |
+          ${{ runner.os }}-sentinel-
 
     - name: Install Release Sentinel
       shell: bash
@@ -71,7 +87,7 @@ runs:
         PROFILE: ${{ inputs.profile }}
         BASE_REF: ${{ github.base_ref }}
       run: |
-        ARGS=(check --format markdown --head "$LOCKFILE" --fail-on "$FAIL_ON" --max-packages "$MAX_PACKAGES" --profile "$PROFILE")
+        ARGS=(check --format markdown --head "$LOCKFILE" --fail-on "$FAIL_ON" --max-packages "$MAX_PACKAGES" --profile "$PROFILE" --json-output-file release_sentinel_report.json)
         if [ "$EXPERIMENTAL_HOLLOW" = "true" ]; then
           ARGS+=(--experimental-hollow)
         fi
@@ -102,9 +118,28 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         PR_NUMBER: ${{ github.event.pull_request.number }}
         REPO: ${{ github.repository }}
+        COMMENT_ON: ${{ inputs.comment-on }}
       run: |
         if [ ! -f release_sentinel_report.md ]; then
           echo "No report file generated; skipping comment."
+          exit 0
+        fi
+
+        # Evaluate comment-on condition
+        SHOULD_COMMENT=$(python -c "
+        import json, sys
+        from release_sentinel.lockfile import should_post_comment
+        try:
+            with open('release_sentinel_report.json', 'r', encoding='utf-8') as f:
+                rep = json.load(f)
+            print('true' if should_post_comment(rep, sys.argv[1]) else 'false')
+        except Exception:
+            # Fall back to posting on BLOCK or if report cannot be parsed
+            print('true')
+        " "$COMMENT_ON")
+
+        if [ "$SHOULD_COMMENT" != "true" ]; then
+          echo "Skipping PR comment (findings do not meet notable threshold under comment-on: $COMMENT_ON). Step summary is preserved."
           exit 0
         fi
 

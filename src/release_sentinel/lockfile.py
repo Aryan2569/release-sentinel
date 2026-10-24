@@ -161,6 +161,77 @@ class LockfileDiffReport:
     has_budget_exceeded: bool = False
 
 
+def is_report_notable(report: LockfileDiffReport | dict[str, Any]) -> bool:
+    """Determine whether a lockfile diff report meets the 'notable' criterion for alerts.
+
+    A report is notable if:
+    - Overall decision is BLOCK, or
+    - Overall decision is WARN and at least one finding meets:
+      1) At least one HIGH or CRITICAL evidence item,
+      2) An install-time hook change (install_script_added or install_script_changed),
+      3) At least 2 distinct MEDIUM evidence types in a single package.
+    """
+    if isinstance(report, LockfileDiffReport):
+        if report.decision == Decision.BLOCK:
+            return True
+        pkg_results = report.package_results
+    else:
+        dec = str(report.get("decision", "")).upper()
+        if dec in ("BLOCK", Decision.BLOCK.value):
+            return True
+        pkg_results = report.get("package_results", [])
+
+    for pkg in pkg_results:
+        details = pkg.get("evidence_details", [])
+        has_high_crit = any(
+            str(d.get("severity", "")).upper() in ("HIGH", "CRITICAL")
+            for d in details
+        )
+        ev_ids = [d.get("id") for d in details] if details else pkg.get("evidence", [])
+        has_hook = any(
+            hid in ev_ids for hid in ("install_script_added", "install_script_changed")
+        )
+
+        medium_ids = {
+            d.get("id")
+            for d in details
+            if str(d.get("severity", "")).upper() == "MEDIUM"
+        }
+        if has_high_crit or has_hook or len(medium_ids) >= 2:
+            return True
+
+    return False
+
+
+def should_post_comment(
+    report: LockfileDiffReport | dict[str, Any],
+    comment_on: str,
+) -> bool:
+    """Determine whether to post/update a PR comment based on the comment-on setting.
+
+    Settings:
+    - 'block': only on BLOCK
+    - 'notable': on BLOCK, or WARN meeting the notable criterion
+    - 'warn': on BLOCK or any WARN
+    - 'always': on all verdicts (BLOCK, WARN, ALLOW)
+    """
+    c_on = comment_on.strip().lower()
+    if isinstance(report, LockfileDiffReport):
+        dec = report.decision.value
+    else:
+        dec = str(report.get("decision", "")).upper()
+
+    if c_on == "always":
+        return True
+    if c_on == "block":
+        return dec == "BLOCK"
+    if c_on in ("warn", "all_warn"):
+        return dec in ("BLOCK", "WARN")
+    if c_on == "notable":
+        return dec == "BLOCK" or (dec == "WARN" and is_report_notable(report))
+    return False
+
+
 def check_supported_lockfile_path(path: str | Path) -> None:
     """Verify that the given path is not a yarn or pnpm lockfile."""
     p_str = str(path).replace("\\", "/").lower()
