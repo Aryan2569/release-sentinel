@@ -349,24 +349,34 @@ class TestLockfileDiffScanning:
         })
 
         mock_client = MagicMock()
-        # Mock metadata showing 1.0.0 was published earlier
+        # Mock metadata showing an established package satisfying maturity rule (Stage 7a Part 0b)
         mock_client.get_metadata.return_value = {
-            "versions": {"1.0.0": {}, "2.0.0": {}},
+            "versions": {
+                "1.0.0": {},
+                "1.0.1": {},
+                "1.0.2": {},
+                "1.0.3": {},
+                "2.0.0": {},
+            },
             "time": {
-                "1.0.0": "2023-01-01T00:00:00.000Z",
-                "2.0.0": "2023-06-01T00:00:00.000Z",
+                "created": "2020-01-01T00:00:00.000Z",
+                "1.0.0": "2020-01-01T00:00:00.000Z",
+                "1.0.1": "2020-06-01T00:00:00.000Z",
+                "1.0.2": "2021-01-01T00:00:00.000Z",
+                "1.0.3": "2021-06-01T00:00:00.000Z",
+                "2.0.0": "2022-01-01T00:00:00.000Z",
             },
         }
-        old_tar = tmp_path / "1.0.0.tgz"
+        old_tar = tmp_path / "1.0.3.tgz"
         new_tar = tmp_path / "2.0.0.tgz"
         old_tar.write_bytes(b"dummy-1")
         new_tar.write_bytes(b"dummy-2")
-        mock_client.download_tarball.side_effect = lambda name, version, *a, **kw: old_tar if version == "1.0.0" else new_tar  # noqa: E501
+        mock_client.download_tarball.side_effect = lambda name, version, *a, **kw: old_tar if version == "1.0.3" else new_tar  # noqa: E501
 
         def mock_extract(tar_path, config=None):
             if tar_path == old_tar:
                 return ReleaseContents(files={
-                    "package.json": b'{"name": "added-pkg", "version": "1.0.0"}',
+                    "package.json": b'{"name": "added-pkg", "version": "1.0.3"}',
                     "index.js": b"module.exports = 1;",
                 })
             return ReleaseContents(files={
@@ -385,6 +395,6 @@ class TestLockfileDiffScanning:
         assert report.decision == Decision.ALLOW
         assert len(report.package_results) == 1
         pkg_res = report.package_results[0]
-        assert pkg_res["old_version"] == "1.0.0"  # Resolved earlier version
+        assert pkg_res["old_version"] == "1.0.3"  # Resolved earlier version
         assert pkg_res["new_version"] == "2.0.0"
         assert pkg_res["decision"] == "ALLOW"

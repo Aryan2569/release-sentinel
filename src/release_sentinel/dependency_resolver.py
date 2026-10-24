@@ -18,8 +18,9 @@ import re
 import subprocess
 from collections.abc import Callable
 from datetime import UTC, datetime
+from functools import cmp_to_key
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import httpx
 import nodesemver
@@ -39,6 +40,131 @@ if TYPE_CHECKING:
     from release_sentinel.policy import Policy
 
 logger = logging.getLogger(__name__)
+
+
+def _semver_cmp(a: str, b: str) -> int:
+    try:
+        return int(nodesemver.compare(a, b, loose=True))
+    except Exception:
+        return (a > b) - (a < b)
+
+
+def _valid_semver(v: str) -> bool:
+    try:
+        return bool(nodesemver.valid(v, loose=True))
+    except Exception:
+        return False
+
+
+def _parse_semver(v: str) -> object:
+    try:
+        return nodesemver.parse(v, loose=True)
+    except Exception:
+        return None
+
+
+def select_baseline_for_added_package(
+    name: str,
+    new_version: str,
+    metadata: dict[str, Any],
+    as_of: datetime,
+) -> str | None:
+    """Select baseline version for an added package under the maturity rule (Stage 7a Part 0b).
+
+    (i) Maturity rule: The package must have been first published at least 90 days
+        before `as_of` AND have at least 5 published versions on or before `as_of`.
+        If not satisfied, diff mode is not allowed (returns None -> full-scan).
+    (ii) Baseline selection: Picks the previous version in the SAME major line
+        (highest lower semver published before `new_version`), falling back to
+        previous-by-publish-time across all versions only if none exists in the same major.
+    """
+    if as_of.tzinfo is None:
+        as_of = as_of.replace(tzinfo=UTC)
+
+    time_map = {
+        k: v
+        for k, v in metadata.get("time", {}).items()
+        if k not in ("created", "modified")
+    }
+
+    # (i) Check maturity rule
+    created_str = metadata.get("time", {}).get("created")
+    if not created_str and time_map:
+        created_str = min(time_map.values())
+
+    if not created_str:
+        return None
+
+    try:
+        created_dt = _parse_npm_time(created_str)
+        is_old_enough = (as_of - created_dt).total_seconds() >= 90 * 86400
+    except Exception:
+        return None
+
+    if not is_old_enough:
+        return None
+
+    versions_dict = metadata.get("versions", {})
+    available_versions = list(versions_dict.keys()) if versions_dict else list(time_map.keys())
+    if len(available_versions) < 5:
+        return None
+
+    # (ii) Baseline selection for new_version
+    target_time = time_map.get(new_version, "")
+
+    earlier_versions: list[str] = []
+    for v in available_versions:
+        if v == new_version:
+            continue
+        v_time = time_map.get(v, "")
+        if target_time and v_time:
+            if v_time < target_time:
+                earlier_versions.append(v)
+        elif (
+            not target_time
+            and _valid_semver(v)
+            and _valid_semver(new_version)
+        ):
+            if nodesemver.lt(v, new_version, loose=True):
+                earlier_versions.append(v)
+        else:
+            if _valid_semver(v) and _valid_semver(new_version):
+                if nodesemver.lt(v, new_version, loose=True):
+                    earlier_versions.append(v)
+
+    if not earlier_versions:
+        return None
+
+    # Try same major line first: highest lower semver published before new_version
+    if _valid_semver(new_version):
+        target_sem = _parse_semver(new_version)
+        if target_sem is not None:
+            target_major = target_sem.major
+            same_major_candidates = [
+                v
+                for v in earlier_versions
+                if _valid_semver(v)
+                and _parse_semver(v) is not None
+                and _parse_semver(v).major == target_major
+                and nodesemver.lt(v, new_version, loose=True)
+            ]
+            if same_major_candidates:
+                return max(
+                    same_major_candidates,
+                    key=cmp_to_key(_semver_cmp),
+                )
+
+    # Fallback to previous-by-publish-time
+    if target_time:
+        candidates_with_time = [v for v in earlier_versions if time_map.get(v)]
+        if candidates_with_time:
+            return max(candidates_with_time, key=lambda v: time_map.get(v, ""))
+
+    valid_earlier = [v for v in earlier_versions if _valid_semver(v)]
+    if valid_earlier:
+        return max(valid_earlier, key=cmp_to_key(_semver_cmp))
+
+    return max(earlier_versions)
 
 
 def resolve_highest_version(
@@ -135,84 +261,40 @@ def resolve_added_dependency(
             )
             dep_release = extract_release_in_memory(tarball_path, config=config)
 
-            # Diff-mode eligibility (Part 4d): diff against previous version only if established
-            # as of as_of
-            # (first published at least 90 days earlier AND at least 5 published versions)
-            created_str = meta.get("time", {}).get("created")
-            is_old_enough = False
-            if created_str:
-                try:
-                    created_dt = _parse_npm_time(created_str)
-                    is_old_enough = (as_of - created_dt).total_seconds() >= 90 * 86400
-                except Exception:
-                    is_old_enough = False
-
-            has_enough_versions = len(available_versions) >= 5
-            is_established = is_old_enough and has_enough_versions
-
+            # Diff-mode eligibility (Stage 7a Part 0b):
+            # Apply shared maturity rule and same-major baseline selection
             baseline_dep_release = None
-            if is_established:
-                time_map = {
-                    k: v
-                    for k, v in meta.get("time", {}).items()
-                    if k not in ("created", "modified")
-                }
-                target_time = time_map.get(target_version, "")
+            prev_version = select_baseline_for_added_package(name, target_version, meta, as_of)
 
-                earlier_versions = []
-                for v in versions_dict:
-                    if v != target_version:
-                        t = time_map.get(v, "")
-                        if target_time and t and t < target_time:
-                            earlier_versions.append(v)
-                        elif (
-                            not target_time
-                            and nodesemver.valid(v)
-                            and nodesemver.valid(target_version)
-                        ):
-                            if nodesemver.lt(v, target_version):
-                                earlier_versions.append(v)
-
-                if earlier_versions:
-                    if target_time:
-                        prev_version = max(earlier_versions, key=lambda v: time_map.get(v, ""))
-                    else:
-                        prev_version = max(
-                            earlier_versions,
-                            key=lambda v: nodesemver.parse(v) if nodesemver.valid(v) else (0, 0, 0),
-                        )
-
-                    try:
-                        prev_tarball = registry_client.download_tarball(
-                            name=name,
-                            version=prev_version,
-                            as_of=as_of,
-                            dest_dir=dest_dir,
-                        )
-                        baseline_dep_release = extract_release_in_memory(
-                            prev_tarball, config=config
-                        )
-                        logger.debug(
-                            "Analyzing added dependency %s in DIFF mode against %s",
-                            name,
-                            prev_version,
-                        )
-                    except Exception as exc:
-                        logger.debug(
-                            "Failed to fetch baseline %s@%s for diff mode: %s; "
-                            "falling back to full-scan",
-                            name,
-                            prev_version,
-                            exc,
-                        )
-                        baseline_dep_release = None
+            if prev_version:
+                try:
+                    prev_tarball = registry_client.download_tarball(
+                        name=name,
+                        version=prev_version,
+                        as_of=as_of,
+                        dest_dir=dest_dir,
+                    )
+                    baseline_dep_release = extract_release_in_memory(
+                        prev_tarball, config=config
+                    )
+                    logger.debug(
+                        "Analyzing added dependency %s in DIFF mode against %s",
+                        name,
+                        prev_version,
+                    )
+                except Exception as exc:
+                    logger.debug(
+                        "Failed to fetch baseline %s@%s for diff mode: %s; "
+                        "falling back to full-scan",
+                        name,
+                        prev_version,
+                        exc,
+                    )
+                    baseline_dep_release = None
             else:
                 logger.debug(
-                    "Added dependency %s unestablished (created=%s, versions=%d); "
-                    "running full-scan",
+                    "Added dependency %s not eligible for diff mode; running full-scan",
                     name,
-                    created_str,
-                    len(available_versions),
                 )
 
             # Analyze dependency: diff mode if baseline exists, full-scan if brand new

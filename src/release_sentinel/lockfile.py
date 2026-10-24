@@ -16,13 +16,16 @@ import logging
 import re
 import subprocess
 import urllib.parse
+from collections.abc import Iterable, Mapping
 from dataclasses import dataclass
 from datetime import UTC, datetime
+from functools import cmp_to_key
 from pathlib import Path
 from typing import Any
 
 import nodesemver
 
+from release_sentinel.dependency_resolver import select_baseline_for_added_package
 from release_sentinel.differ import analyze_release
 from release_sentinel.engine import decide
 from release_sentinel.extractor import ExtractionConfig, extract_release_in_memory
@@ -37,7 +40,7 @@ from release_sentinel.registry import (
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_MAX_PACKAGES = 200
+DEFAULT_MAX_PACKAGES = 300
 DEFAULT_CACHE_DIR = Path.home() / ".cache" / "release_sentinel"
 
 
@@ -96,6 +99,7 @@ class LockfilePackage:
     version: str
     resolved: str | None = None
     integrity: str | None = None
+    has_install_script: bool = False
 
 
 @dataclass(frozen=True)
@@ -108,6 +112,40 @@ class PackageChange:
     change_type: str  # 'added', 'upgraded', 'downgraded', 'removed'
     resolved: str | None = None
     integrity: str | None = None
+    has_install_script: bool = False
+
+
+class LockfilePackages(dict[tuple[str, str], LockfilePackage]):
+    """Mapping of (name, version) -> LockfilePackage with backwards-compatible string lookup."""
+
+    def __contains__(self, key: object) -> bool:
+        if isinstance(key, str):
+            return any(k[0] == key for k in self.keys())
+        return super().__contains__(key)
+
+    def __getitem__(self, key: object) -> LockfilePackage:
+        if isinstance(key, str):
+            for (pkg_name, _), pkg in self.items():
+                if pkg_name == key:
+                    return pkg
+            raise KeyError(key)
+        if isinstance(key, tuple):
+            return super().__getitem__(key)
+        raise KeyError(key)
+
+    def get(
+        self,
+        key: object,
+        default: LockfilePackage | None = None,
+    ) -> LockfilePackage | None:
+        if isinstance(key, str):
+            for (pkg_name, _), pkg in self.items():
+                if pkg_name == key:
+                    return pkg
+            return default
+        if isinstance(key, tuple):
+            return super().get(key, default)
+        return default
 
 
 @dataclass
@@ -139,13 +177,7 @@ def check_supported_lockfile_path(path: str | Path) -> None:
 
 
 def _extract_pkg_name_from_path(pkg_path: str) -> str | None:
-    """Extract package name from node_modules key in lockfile v2/v3.
-
-    Examples:
-      'node_modules/lodash' -> 'lodash'
-      'node_modules/@types/node' -> '@types/node'
-      'node_modules/foo/node_modules/bar' -> 'bar'
-    """
+    """Extract package name from node_modules key in lockfile v2/v3."""
     if not pkg_path:
         return None  # Root package
 
@@ -159,7 +191,7 @@ def _extract_pkg_name_from_path(pkg_path: str) -> str | None:
 
 def _walk_v1_dependencies(
     deps_dict: dict[str, Any],
-    out: dict[str, LockfilePackage],
+    out: LockfilePackages,
 ) -> None:
     """Recursively collect packages from a v1 dependencies tree."""
     for name, data in deps_dict.items():
@@ -169,18 +201,20 @@ def _walk_v1_dependencies(
         if version and isinstance(version, str):
             resolved = data.get("resolved")
             integrity = data.get("integrity")
+            has_install = bool(data.get("hasInstallScript"))
             try:
                 valid_name = validate_package_name(name)
             except LockfileError as exc:
                 raise LockfileParseError(f"Invalid dependency name in lockfile: {exc}") from exc
 
-            # Prefer top-level or first encountered
-            if valid_name not in out:
-                out[valid_name] = LockfilePackage(
+            key = (valid_name, version)
+            if key not in out:
+                out[key] = LockfilePackage(
                     name=valid_name,
                     version=version,
                     resolved=resolved if isinstance(resolved, str) else None,
                     integrity=integrity if isinstance(integrity, str) else None,
+                    has_install_script=has_install,
                 )
         nested = data.get("dependencies")
         if isinstance(nested, dict):
@@ -190,8 +224,8 @@ def _walk_v1_dependencies(
 def parse_lockfile_content(
     content: str | bytes,
     filename: str = "package-lock.json",
-) -> dict[str, LockfilePackage]:
-    """Parse a package-lock.json content into a dictionary of package name -> LockfilePackage."""
+) -> LockfilePackages:
+    """Parse a package-lock.json content into a dictionary of (name, version) -> LockfilePackage."""
     check_supported_lockfile_path(filename)
 
     if isinstance(content, bytes):
@@ -205,7 +239,7 @@ def parse_lockfile_content(
     if not isinstance(data, dict):
         raise LockfileParseError(f"Lockfile root must be a JSON object ({filename})")
 
-    packages: dict[str, LockfilePackage] = {}
+    packages = LockfilePackages()
 
     # v2 and v3 have 'packages'
     if "packages" in data and isinstance(data["packages"], dict):
@@ -231,13 +265,16 @@ def parse_lockfile_content(
 
             resolved = pkg_info.get("resolved")
             integrity = pkg_info.get("integrity")
+            has_install = bool(pkg_info.get("hasInstallScript"))
 
-            if valid_name not in packages:
-                packages[valid_name] = LockfilePackage(
+            key = (valid_name, version)
+            if key not in packages:
+                packages[key] = LockfilePackage(
                     name=valid_name,
                     version=version,
                     resolved=resolved if isinstance(resolved, str) else None,
                     integrity=integrity if isinstance(integrity, str) else None,
+                    has_install_script=has_install,
                 )
 
     # v1 (or v2 fallback) has 'dependencies'
@@ -247,52 +284,152 @@ def parse_lockfile_content(
     return packages
 
 
+def _is_semver_gt(v1: str, v2: str) -> bool:
+    """Return True if v1 > v2 under semver rules."""
+    try:
+        if nodesemver.valid(v1, loose=True) and nodesemver.valid(v2, loose=True):
+            return bool(nodesemver.gt(v1, v2, loose=True))
+    except Exception as exc:
+        logger.debug("Semver comparison error for %r vs %r: %s", v1, v2, exc)
+    return v1 > v2
+
+
+def _semver_cmp(a: str, b: str) -> int:
+    try:
+        return int(nodesemver.compare(a, b, loose=True))
+    except Exception as exc:
+        logger.debug("Semver compare error for %r vs %r: %s", a, b, exc)
+        return (a > b) - (a < b)
+
+
+_semver_sort_key = cmp_to_key(_semver_cmp)
+
+
+def _normalize_pkg_map(
+    pkgs: Mapping[object, LockfilePackage] | Iterable[LockfilePackage],
+) -> dict[tuple[str, str], LockfilePackage]:
+    result: dict[tuple[str, str], LockfilePackage] = {}
+    if isinstance(pkgs, (set, list)):
+        for p in pkgs:
+            result[(p.name, p.version)] = p
+    elif isinstance(pkgs, (dict, Mapping)):
+        for k, v in pkgs.items():
+            if isinstance(k, tuple):
+                result[k] = v
+            else:
+                result[(v.name, v.version)] = v
+    return result
+
+
 def diff_lockfiles(
-    old_pkgs: dict[str, LockfilePackage],
-    new_pkgs: dict[str, LockfilePackage],
+    old_pkgs: Mapping[object, LockfilePackage] | Iterable[LockfilePackage],
+    new_pkgs: Mapping[object, LockfilePackage] | Iterable[LockfilePackage],
     max_packages: int = DEFAULT_MAX_PACKAGES,
 ) -> list[PackageChange]:
     """Compute differences between two parsed lockfile maps."""
-    all_names = sorted(set(old_pkgs.keys()) | set(new_pkgs.keys()))
+    old_map = _normalize_pkg_map(old_pkgs)
+    new_map = _normalize_pkg_map(new_pkgs)
+
+    old_pairs = set(old_map.keys())
+    new_pairs = set(new_map.keys())
+
+    added_pairs = new_pairs - old_pairs
+    removed_pairs = old_pairs - new_pairs
+
+    all_names = sorted({n for n, _ in added_pairs} | {n for n, _ in removed_pairs})
     changes: list[PackageChange] = []
 
     for name in all_names:
-        old_entry = old_pkgs.get(name)
-        new_entry = new_pkgs.get(name)
+        name_added = sorted([v for n, v in added_pairs if n == name], key=_semver_sort_key)
+        name_removed = sorted([v for n, v in removed_pairs if n == name], key=_semver_sort_key)
 
-        if old_entry is None and new_entry is not None:
+        # Best-effort upgraded/downgraded pairing when name loses one version and gains one
+        if len(name_removed) == 1 and len(name_added) == 1:
+            old_v = name_removed[0]
+            new_v = name_added[0]
+            new_pkg = new_map[(name, new_v)]
+            change_type = "upgraded" if _is_semver_gt(new_v, old_v) else "downgraded"
             changes.append(
                 PackageChange(
                     name=name,
-                    old_version=None,
-                    new_version=new_entry.version,
-                    change_type="added",
-                    resolved=new_entry.resolved,
-                    integrity=new_entry.integrity,
+                    old_version=old_v,
+                    new_version=new_v,
+                    change_type=change_type,
+                    resolved=new_pkg.resolved,
+                    integrity=new_pkg.integrity,
+                    has_install_script=new_pkg.has_install_script,
                 )
             )
-        elif old_entry is not None and new_entry is None:
-            changes.append(
-                PackageChange(
-                    name=name,
-                    old_version=old_entry.version,
-                    new_version=None,
-                    change_type="removed",
-                    resolved=old_entry.resolved,
-                    integrity=old_entry.integrity,
-                )
-            )
-        elif old_entry is not None and new_entry is not None:
-            if old_entry.version != new_entry.version:
-                change_type = "upgraded" if new_entry.version > old_entry.version else "downgraded"
+        elif len(name_removed) > 0 and len(name_added) > 0:
+            paired_count = min(len(name_removed), len(name_added))
+            for i in range(paired_count):
+                old_v = name_removed[i]
+                new_v = name_added[i]
+                new_pkg = new_map[(name, new_v)]
+                change_type = "upgraded" if _is_semver_gt(new_v, old_v) else "downgraded"
                 changes.append(
                     PackageChange(
                         name=name,
-                        old_version=old_entry.version,
-                        new_version=new_entry.version,
+                        old_version=old_v,
+                        new_version=new_v,
                         change_type=change_type,
-                        resolved=new_entry.resolved,
-                        integrity=new_entry.integrity,
+                        resolved=new_pkg.resolved,
+                        integrity=new_pkg.integrity,
+                        has_install_script=new_pkg.has_install_script,
+                    )
+                )
+            for new_v in name_added[paired_count:]:
+                new_pkg = new_map[(name, new_v)]
+                changes.append(
+                    PackageChange(
+                        name=name,
+                        old_version=None,
+                        new_version=new_v,
+                        change_type="added",
+                        resolved=new_pkg.resolved,
+                        integrity=new_pkg.integrity,
+                        has_install_script=new_pkg.has_install_script,
+                    )
+                )
+            for old_v in name_removed[paired_count:]:
+                old_pkg = old_map[(name, old_v)]
+                changes.append(
+                    PackageChange(
+                        name=name,
+                        old_version=old_v,
+                        new_version=None,
+                        change_type="removed",
+                        resolved=old_pkg.resolved,
+                        integrity=old_pkg.integrity,
+                        has_install_script=old_pkg.has_install_script,
+                    )
+                )
+        elif len(name_added) > 0:
+            for new_v in name_added:
+                new_pkg = new_map[(name, new_v)]
+                changes.append(
+                    PackageChange(
+                        name=name,
+                        old_version=None,
+                        new_version=new_v,
+                        change_type="added",
+                        resolved=new_pkg.resolved,
+                        integrity=new_pkg.integrity,
+                        has_install_script=new_pkg.has_install_script,
+                    )
+                )
+        elif len(name_removed) > 0:
+            for old_v in name_removed:
+                old_pkg = old_map[(name, old_v)]
+                changes.append(
+                    PackageChange(
+                        name=name,
+                        old_version=old_v,
+                        new_version=None,
+                        change_type="removed",
+                        resolved=old_pkg.resolved,
+                        integrity=old_pkg.integrity,
+                        has_install_script=old_pkg.has_install_script,
                     )
                 )
 
@@ -304,6 +441,59 @@ def diff_lockfiles(
         )
 
     return changes
+
+
+def _sort_changes_by_risk(
+    changes: list[PackageChange],
+    client: NpmRegistryClient | None = None,
+    as_of: datetime | None = None,
+) -> list[PackageChange]:
+    """Sort scannable package changes by risk priority (Stage 7a Part 0c).
+
+    Priority:
+    1. Added packages first, then upgraded (and downgraded).
+    2. Within each group: packages that declare preinstall/install/postinstall first.
+    3. Within each group: newest published first.
+    """
+    def risk_tuple(c: PackageChange) -> tuple[int, int, float, str]:
+        # Tier 1: Added first (0) vs upgraded/downgraded (1)
+        tier1 = 0 if c.change_type == "added" else 1
+
+        # Tier 2: Declares preinstall/install/postinstall
+        has_hook = c.has_install_script
+        pub_iso = ""
+
+        if client and as_of and c.new_version:
+            try:
+                meta = client.get_metadata(c.name, as_of=as_of)
+                if not has_hook:
+                    scripts = (
+                        meta.get("versions", {})
+                        .get(c.new_version, {})
+                        .get("scripts", {})
+                    )
+                    if isinstance(scripts, dict) and any(
+                        h in scripts for h in ("preinstall", "install", "postinstall")
+                    ):
+                        has_hook = True
+                pub_iso = meta.get("time", {}).get(c.new_version, "")
+            except Exception as exc:
+                logger.debug("Risk sort metadata lookup failed for %s: %s", c.name, exc)
+
+        tier2 = 0 if has_hook else 1
+
+        # Tier 3: Newest published first (negative epoch)
+        epoch = 0.0
+        if pub_iso:
+            try:
+                dt = datetime.fromisoformat(pub_iso.replace("Z", "+00:00"))
+                epoch = dt.timestamp()
+            except Exception as exc:
+                logger.debug("Failed to parse pub_iso for %s: %s", c.name, exc)
+
+        return (tier1, tier2, -epoch, c.name)
+
+    return sorted(changes, key=risk_tuple)
 
 
 def read_lockfile_from_git(ref: str, repo_dir: Path | None = None) -> str:
@@ -326,13 +516,9 @@ def read_lockfile_from_git(ref: str, repo_dir: Path | None = None) -> str:
 
 
 def read_lockfile_from_path(path_or_dir: Path | str) -> tuple[str, str]:
-    """Read lockfile content from a path or directory containing package-lock.json.
-
-    Returns (content, resolved_filename).
-    """
+    """Read lockfile content from a path or directory containing package-lock.json."""
     p = Path(path_or_dir)
     if p.is_dir():
-        # Check for yarn or pnpm first
         if (p / "yarn.lock").exists() and not (p / "package-lock.json").exists():
             check_supported_lockfile_path(p / "yarn.lock")
         if (p / "pnpm-lock.yaml").exists() and not (p / "package-lock.json").exists():
@@ -374,27 +560,31 @@ def scan_lockfile_diff(
 
     has_budget_exceeded = False
     skipped_count = 0
+    skipped_packages: list[PackageChange] = []
     try:
         changes = diff_lockfiles(old_pkgs, new_pkgs, max_packages=max_packages)
+        scannable_changes = [c for c in changes if c.change_type != "removed"]
     except LockfileBudgetExceededError:
-        # User requested: "Cap with --max-packages (default 200; report how many were skipped)"
-        # Scan up to max_packages, skip remaining, fail closed to WARN
         changes = diff_lockfiles(old_pkgs, new_pkgs, max_packages=999_999)
         scannable = [c for c in changes if c.change_type != "removed"]
-        skipped_count = len(scannable) - max_packages
         has_budget_exceeded = True
-
-    scannable_changes = [c for c in changes if c.change_type != "removed"]
-    if has_budget_exceeded:
-        scannable_changes = scannable_changes[:max_packages]
+        default_cache = cache_dir or DEFAULT_CACHE_DIR
+        client_for_sort = registry_client or NpmRegistryClient(cache_dir=default_cache)
+        prioritized = _sort_changes_by_risk(scannable, client=client_for_sort, as_of=as_of)
+        scannable_changes = prioritized[:max_packages]
+        skipped_packages = prioritized[max_packages:]
+        skipped_count = len(skipped_packages)
 
     package_results: list[dict[str, Any]] = []
     overall_decision = Decision.WARN if has_budget_exceeded else Decision.ALLOW
     all_limitations: list[str] = []
     if has_budget_exceeded:
+        skipped_names = [c.name for c in skipped_packages[:50]]
+        names_str = ", ".join(skipped_names)
         all_limitations.append(
             f"Exceeded max-packages limit: scanned {max_packages}, skipped {skipped_count} "
-            f"packages; analysis capped by safety budget."
+            f"packages by risk priority. Skipped packages (first 50): {names_str}; "
+            "analysis capped by safety budget."
         )
 
     client = registry_client or NpmRegistryClient(cache_dir=cache_dir or DEFAULT_CACHE_DIR)
@@ -498,45 +688,23 @@ def scan_lockfile_diff(
 
                 rc_new = extract_release_in_memory(new_tarball, config=cfg)
 
-                # For added packages (Part 0a dependency-aware path):
-                # resolve earlier version published before as_of if one exists.
+                # For added packages (Stage 7a Part 0b):
+                # Apply shared maturity rule and same-major baseline selection
                 rc_old = None
                 if old_ver is None:
                     try:
                         meta = client.get_metadata(pkg_name, as_of=as_of)
-                        versions_dict = meta.get("versions", {})
-                        time_map = {
-                            k: v for k, v in meta.get("time", {}).items()
-                            if k not in ("created", "modified")
-                        }
-                        target_time = time_map.get(new_ver, "")
-                        earlier = [
-                            v for v in versions_dict
-                            if v != new_ver and (
-                                (target_time and time_map.get(v, "") < target_time)
-                                or (
-                                not target_time
-                                and nodesemver.valid(v)
-                                and nodesemver.valid(new_ver)
-                                and nodesemver.lt(v, new_ver)
-                            )
-                            )
-                        ]
-                        if earlier:
-                            if target_time:
-                                prev_ver = max(earlier, key=lambda v: time_map.get(v, ""))
-                            else:
-                                prev_ver = max(
-                                    earlier,
-                                    key=lambda v: nodesemver.parse(v) if nodesemver.valid(v) else (0, 0, 0),  # noqa: E501
-                                )
+                        prev_ver = select_baseline_for_added_package(
+                            pkg_name, new_ver, meta, as_of
+                        )
+                        if prev_ver:
                             old_ver = prev_ver
                             old_tarball = client.download_tarball(
                                 name=pkg_name, version=old_ver, as_of=as_of
                             )
                             rc_old = extract_release_in_memory(old_tarball, config=cfg)
                     except Exception as e_dep:
-                        logger.debug("Baseline lookup for added dep %s: %s", pkg_name, e_dep)
+                        logger.debug("Baseline lookup for added package %s: %s", pkg_name, e_dep)
                         rc_old = None
                 elif old_ver:
                     try:
@@ -622,7 +790,7 @@ def scan_lockfile_diff(
                             "severity": Severity.HIGH.name,
                             "file": None,
                             "explanation": f"Tarball integrity mismatch for {pkg_name}@{new_ver}: {exc}",  # noqa: E501
-                            "legitimate_use_note": "Registry CDN sync issue, corrupted download, or tampering.",  # noqa: E501,
+                            "legitimate_use_note": "Registry CDN sync issue, corrupted download, or tampering.",  # noqa: E501
                         }
                     ],
                     "limitations": [f"Tarball integrity check failed for {pkg_name}: {exc}"],
@@ -645,7 +813,7 @@ def scan_lockfile_diff(
                             "severity": Severity.MEDIUM.name,
                             "file": None,
                             "explanation": f"Failed to inspect {pkg_name}@{new_ver}: {exc}",
-                            "legitimate_use_note": "Corrupted archive, malformed package.json, or unsupported file.",  # noqa: E501,
+                            "legitimate_use_note": "Corrupted archive, malformed package.json, or unsupported file.",  # noqa: E501
                         }
                     ],
                     "limitations": [f"Inspection failed for {pkg_name}: {exc}"],
