@@ -2373,6 +2373,239 @@
       ]
     }
   },
+  "default_profile": {
+    "sample": {
+      "ALL": {
+        "pairs": 1349,
+        "fc_warn": 1214,
+        "fc_warn_pct": 89.99,
+        "fc_block": 915,
+        "fc_block_pct": 67.83,
+        "eo_warn": 1213,
+        "eo_warn_pct": 89.92,
+        "eo_block": 915,
+        "eo_block_pct": 67.83,
+        "incomp": 1349,
+        "incomp_pct": 100.0
+      },
+      "DEV": {
+        "pairs": 857,
+        "fc_warn": 848,
+        "fc_warn_pct": 98.95,
+        "fc_block": 782,
+        "fc_block_pct": 91.25,
+        "eo_warn": 848,
+        "eo_warn_pct": 98.95,
+        "eo_block": 782,
+        "eo_block_pct": 91.25,
+        "incomp": 857,
+        "incomp_pct": 100.0
+      },
+      "VAL": {
+        "pairs": 94,
+        "fc_warn": 94,
+        "fc_warn_pct": 100.0,
+        "fc_block": 79,
+        "fc_block_pct": 84.04,
+        "eo_warn": 94,
+        "eo_warn_pct": 100.0,
+        "eo_block": 79,
+        "eo_block_pct": 84.04,
+        "incomp": 94,
+        "incomp_pct": 100.0
+      },
+      "TEST-A": {
+        "pairs": 274,
+        "fc_warn": 263,
+        "fc_warn_pct": 95.99,
+        "fc_block": 52,
+        "fc_block_pct": 18.98,
+        "eo_warn": 262,
+        "eo_warn_pct": 95.62,
+        "eo_block": 52,
+        "eo_block_pct": 18.98,
+        "incomp": 274,
+        "incomp_pct": 100.0
+      },
+      "TEST-B": {
+        "pairs": 124,
+        "fc_warn": 9,
+        "fc_warn_pct": 7.26,
+        "fc_block": 2,
+        "fc_block_pct": 1.61,
+        "eo_warn": 9,
+        "eo_warn_pct": 7.26,
+        "eo_block": 2,
+        "eo_block_pct": 1.61,
+        "incomp": 124,
+        "incomp_pct": 100.0
+      }
+    },
+    "campaign": {
+      "ALL": {
+        "campaigns": 140,
+        "lenient_fc_warn": 127,
+        "lenient_fc_warn_pct": 90.71,
+        "lenient_fc_block": 34,
+        "lenient_fc_block_pct": 24.29,
+        "lenient_eo_warn": 127,
+        "lenient_eo_warn_pct": 90.71,
+        "lenient_eo_warn_ci": [
+          84.64,
+          94.96
+        ],
+        "lenient_eo_block": 34,
+        "lenient_eo_block_pct": 24.29,
+        "lenient_eo_block_ci": [
+          17.44,
+          32.25
+        ],
+        "macro_fc_warn_pct": 89.39,
+        "macro_fc_block_pct": 23.54,
+        "macro_eo_warn_pct": 89.38,
+        "macro_eo_block_pct": 23.54
+      },
+      "DEV": {
+        "campaigns": 53,
+        "lenient_fc_warn": 48,
+        "lenient_fc_warn_pct": 90.57,
+        "lenient_fc_block": 9,
+        "lenient_fc_block_pct": 16.98,
+        "lenient_eo_warn": 48,
+        "lenient_eo_warn_pct": 90.57,
+        "lenient_eo_warn_ci": [
+          79.34,
+          96.87
+        ],
+        "lenient_eo_block": 9,
+        "lenient_eo_block_pct": 16.98,
+        "lenient_eo_block_ci": [
+          8.07,
+          29.8
+        ],
+        "macro_fc_warn_pct": 89.06,
+        "macro_fc_block_pct": 16.16,
+        "macro_eo_warn_pct": 89.06,
+        "macro_eo_block_pct": 16.16
+      },
+      "VAL": {
+        "campaigns": 12,
+        "lenient_fc_warn": 12,
+        "lenient_fc_warn_pct": 100.0,
+        "lenient_fc_block": 6,
+        "lenient_fc_block_pct": 50.0,
+        "lenient_eo_warn": 12,
+        "lenient_eo_warn_pct": 100.0,
+        "lenient_eo_warn_ci": [
+          73.54,
+          100.0
+        ],
+        "lenient_eo_block": 6,
+        "lenient_eo_block_pct": 50.0,
+        "lenient_eo_block_ci": [
+          21.09,
+          78.91
+        ],
+        "macro_fc_warn_pct": 100.0,
+        "macro_fc_block_pct": 46.88,
+        "macro_eo_warn_pct": 100.0,
+        "macro_eo_block_pct": 46.88
+      },
+      "TEST-A": {
+        "campaigns": 70,
+        "lenient_fc_warn": 63,
+        "lenient_fc_warn_pct": 90.0,
+        "lenient_fc_block": 17,
+        "lenient_fc_block_pct": 24.29,
+        "lenient_eo_warn": 63,
+        "lenient_eo_warn_pct": 90.0,
+        "lenient_eo_warn_ci": [
+          80.48,
+          95.88
+        ],
+        "lenient_eo_block": 17,
+        "lenient_eo_block_pct": 24.29,
+        "lenient_eo_block_ci": [
+          14.83,
+          36.01
+        ],
+        "macro_fc_warn_pct": 89.88,
+        "macro_fc_block_pct": 23.95,
+        "macro_eo_warn_pct": 89.85,
+        "macro_eo_block_pct": 23.95
+      },
+      "TEST-B": {
+        "campaigns": 5,
+        "lenient_fc_warn": 4,
+        "lenient_fc_warn_pct": 80.0,
+        "lenient_fc_block": 2,
+        "lenient_fc_block_pct": 40.0,
+        "lenient_eo_warn": 4,
+        "lenient_eo_warn_pct": 80.0,
+        "lenient_eo_warn_ci": [
+          28.36,
+          99.49
+        ],
+        "lenient_eo_block": 2,
+        "lenient_eo_block_pct": 40.0,
+        "lenient_eo_block_ci": [
+          5.27,
+          85.34
+        ],
+        "macro_fc_warn_pct": 60.68,
+        "macro_fc_block_pct": 40.0,
+        "macro_eo_warn_pct": 60.68,
+        "macro_eo_block_pct": 40.0
+      }
+    },
+    "top_5_campaigns": {
+      "camp_0052": {
+        "name": "camp_0052",
+        "split": "DEV",
+        "total_members": 407,
+        "warn_count": 407,
+        "warn_pct": 100.0,
+        "block_count": 394,
+        "block_pct": 96.81
+      },
+      "camp_0048": {
+        "name": "camp_0048",
+        "split": "DEV",
+        "total_members": 351,
+        "warn_count": 351,
+        "warn_pct": 100.0,
+        "block_count": 349,
+        "block_pct": 99.43
+      },
+      "camp_0136": {
+        "name": "camp_0136",
+        "split": "TEST-B",
+        "total_members": 118,
+        "warn_count": 4,
+        "warn_pct": 3.39,
+        "block_count": 0,
+        "block_pct": 0.0
+      },
+      "camp_0065": {
+        "name": "camp_0065",
+        "split": "VAL",
+        "total_members": 103,
+        "warn_count": 103,
+        "warn_pct": 100.0,
+        "block_count": 0,
+        "block_pct": 0.0
+      },
+      "camp_0066": {
+        "name": "camp_0066",
+        "split": "TEST-A",
+        "total_members": 60,
+        "warn_count": 60,
+        "warn_pct": 100.0,
+        "block_count": 0,
+        "block_pct": 0.0
+      }
+    }
+  },
   "versions": {
     "v1.0": {
       "git_tag": "v1.0",

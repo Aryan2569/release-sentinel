@@ -28,6 +28,7 @@ CAMPAIGNS_JSON = Path("data/eval_campaigns.json")
 EVAL_PAIRS_CSV = Path("data/eval_pairs.csv")
 DEP_RECON_JSON = Path("data/dependency_reconciliation.json")
 REPLAY_12REPOS_JSON = Path("data/replay_12repos_summary.json")
+EVAL_RESULTS_DEFAULT = Path("data/eval_results_default.jsonl")
 
 METRICS_OUT = Path("docs/METRICS.json")
 EVAL_REPORT_MD = Path("docs/eval_results_v7.md")
@@ -158,6 +159,32 @@ def compute_campaign_metrics(
     return split_stats
 
 
+def compute_top5_campaigns(
+    results_path: Path, campaigns_dict: dict[str, Any]
+) -> dict[str, Any]:
+    rows = [json.loads(line) for line in open(results_path, encoding="utf-8")]
+    pair_map = {f"{r['package']}@{r.get('old', '')}@{r['new']}": r for r in rows}
+    top5 = ["camp_0052", "camp_0048", "camp_0136", "camp_0065", "camp_0066"]
+    out = {}
+    for cid in top5:
+        c = campaigns_dict[cid]
+        members = c["members"]
+        m_rows = [pair_map[m] for m in members if m in pair_map]
+        n_m = len(m_rows)
+        c_fc_warn = sum(1 for r in m_rows if r.get("decision") in ("WARN", "BLOCK"))
+        c_fc_block = sum(1 for r in m_rows if r.get("decision") == "BLOCK")
+        out[cid] = {
+            "name": cid,
+            "split": c["primary_split"],
+            "total_members": n_m,
+            "warn_count": c_fc_warn,
+            "warn_pct": round(c_fc_warn / n_m * 100, 2) if n_m else 0.0,
+            "block_count": c_fc_block,
+            "block_pct": round(c_fc_block / n_m * 100, 2) if n_m else 0.0,
+        }
+    return out
+
+
 def compute_benign_metrics(benign_paths: dict[str, str]) -> dict[str, Any]:
     # Tuning smoke
     tuning_p = Path(benign_paths["tuning_smoke"])
@@ -232,12 +259,25 @@ def recompute_all_metrics() -> dict[str, Any]:
 
     replay_12repos = json.load(open(REPLAY_12REPOS_JSON, encoding="utf-8")) if REPLAY_12REPOS_JSON.exists() else {}
 
+    default_profile_metrics: dict[str, Any] = {}
+    if EVAL_RESULTS_DEFAULT.exists():
+        default_profile_metrics = {
+            "sample": compute_sample_metrics(EVAL_RESULTS_DEFAULT),
+            "campaign": compute_campaign_metrics(
+                EVAL_RESULTS_DEFAULT, campaigns_dict, pair_to_campaign
+            ),
+            "top_5_campaigns": compute_top5_campaigns(
+                EVAL_RESULTS_DEFAULT, campaigns_dict
+            ),
+        }
+
     return {
         "sample": sample_metrics,
         "campaign": campaign_metrics,
         "benign": benign_metrics,
         "dependency_additions": dep_recon.get("counts_per_split", {}),
         "replay_12repos": replay_12repos,
+        "default_profile": default_profile_metrics,
         "versions": versions,
     }
 
@@ -329,6 +369,42 @@ def verify_doc_consistency(metrics: dict[str, Any]) -> None:
     assert deps.get("VAL", {}).get("pairs_adding_dependency") == 1
     assert deps.get("TEST-A", {}).get("pairs_adding_dependency") == 54
     assert deps.get("TEST-B", {}).get("pairs_adding_dependency") == 94
+
+    # Verify default profile metrics (Stage 7a Part 0d)
+    assert "default_profile" in metrics, "Missing default_profile in METRICS.json"
+    d_samp = metrics["default_profile"]["sample"]
+    assert d_samp["ALL"]["fc_warn"] == 1214
+    assert d_samp["ALL"]["fc_block"] == 915
+    assert d_samp["DEV"]["fc_warn"] == 848
+    assert d_samp["DEV"]["fc_block"] == 782
+    assert d_samp["VAL"]["fc_warn"] == 94
+    assert d_samp["VAL"]["fc_block"] == 79
+    assert d_samp["TEST-A"]["fc_warn"] == 263
+    assert d_samp["TEST-A"]["fc_block"] == 52
+    assert d_samp["TEST-B"]["fc_warn"] == 9
+    assert d_samp["TEST-B"]["fc_block"] == 2
+
+    d_camp = metrics["default_profile"]["campaign"]
+    assert d_camp["ALL"]["lenient_fc_warn"] == 127
+    assert d_camp["ALL"]["lenient_fc_block"] == 34
+    assert d_camp["VAL"]["lenient_fc_warn"] == 12
+    assert d_camp["VAL"]["lenient_fc_block"] == 6
+    assert d_camp["TEST-A"]["lenient_fc_warn"] == 63
+    assert d_camp["TEST-A"]["lenient_fc_block"] == 17
+    assert d_camp["TEST-B"]["lenient_fc_warn"] == 4
+    assert d_camp["TEST-B"]["lenient_fc_block"] == 2
+
+    d_top5 = metrics["default_profile"]["top_5_campaigns"]
+    assert d_top5["camp_0052"]["warn_count"] == 407
+    assert d_top5["camp_0052"]["block_count"] == 394
+    assert d_top5["camp_0048"]["warn_count"] == 351
+    assert d_top5["camp_0048"]["block_count"] == 349
+    assert d_top5["camp_0136"]["warn_count"] == 4
+    assert d_top5["camp_0136"]["block_count"] == 0
+    assert d_top5["camp_0065"]["warn_count"] == 103
+    assert d_top5["camp_0065"]["block_count"] == 0
+    assert d_top5["camp_0066"]["warn_count"] == 60
+    assert d_top5["camp_0066"]["block_count"] == 0
 
 
 def main() -> None:
