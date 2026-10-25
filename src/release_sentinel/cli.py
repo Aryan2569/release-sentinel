@@ -53,6 +53,13 @@ from release_sentinel.lockfile import (
 from release_sentinel.models import Decision, Evidence, ReleaseRef, Report, Severity
 from release_sentinel.policy import load_policy
 from release_sentinel.registry import NpmRegistryClient, RegistryError
+from release_sentinel.sanitizer import (
+    MAX_FIELD_CHARS,
+    cap_comment_size,
+    defang_gha_commands,
+    render_code_span,
+    sanitize_untrusted_text,
+)
 
 app = typer.Typer(
     name="sentinel",
@@ -427,11 +434,12 @@ def _generate_one_line_summary(report: Report, evidence: list[Evidence]) -> str:
 
 
 def _safe_print(text: str) -> None:
-    """Safely print text to stdout even on legacy Windows terminals with charmap encoding."""
+    """Safely print text to stdout defanging GitHub Actions commands and handling encoding."""
+    defanged = defang_gha_commands(text)
     try:
-        print(text)
+        print(defanged)
     except UnicodeEncodeError:
-        sys.stdout.buffer.write(text.encode("utf-8", errors="replace"))
+        sys.stdout.buffer.write(defanged.encode("utf-8", errors="replace"))
         sys.stdout.buffer.write(b"\n")
         sys.stdout.buffer.flush()
 
@@ -513,7 +521,13 @@ def _render_markdown(report: Report, evidence: list[Evidence]) -> str:
         Decision.BLOCK: "🚫",
     }
     icon = decision_icons.get(report.decision, "ℹ️")
-    summary = _generate_one_line_summary(report, evidence)
+    summary = sanitize_untrusted_text(
+        _generate_one_line_summary(report, evidence),
+        max_length=MAX_FIELD_CHARS,
+    )
+    pkg_name = render_code_span(report.new_release.name)
+    old_ver = render_code_span(report.old_release.version)
+    new_ver = render_code_span(report.new_release.version)
 
     lines: list[str] = [
         f"## {icon} Release Sentinel: {report.decision.value}",
@@ -522,13 +536,13 @@ def _render_markdown(report: Report, evidence: list[Evidence]) -> str:
         "",
         "| Detail | Value |",
         "|---|---|",
-        f"| **Package** | `{report.new_release.name}` |",
+        f"| **Package** | {pkg_name} |",
         (
-            f"| **Old Version** | `{report.old_release.version}` "
+            f"| **Old Version** | {old_ver} "
             f"({report.old_release.published_at.strftime('%Y-%m-%d')}) |"
         ),
         (
-            f"| **New Version** | `{report.new_release.version}` "
+            f"| **New Version** | {new_ver} "
             f"({report.new_release.published_at.strftime('%Y-%m-%d')}) |"
         ),
         f"| **Decision** | **{report.decision.value}** |",
@@ -543,9 +557,10 @@ def _render_markdown(report: Report, evidence: list[Evidence]) -> str:
             lines.append("| Severity | ID | File | Explanation |")
             lines.append("|---|---|---|---|")
             for ev in items:
-                file_str = f"`{ev.file}`" if ev.file else "—"
-                clean_exp = ev.explanation.replace("\n", " ").replace("|", "\\|")
-                lines.append(f"| **{ev.severity.value}** | `{ev.id}` | {file_str} | {clean_exp} |")
+                file_str = render_code_span(ev.file) if ev.file else "—"
+                id_str = render_code_span(ev.id)
+                clean_exp = sanitize_untrusted_text(ev.explanation, max_length=MAX_FIELD_CHARS)
+                lines.append(f"| **{ev.severity.value}** | {id_str} | {file_str} | {clean_exp} |")
             lines.append("")
     else:
         lines.append("*No suspicious evidence detected at this severity level.*")
@@ -555,10 +570,13 @@ def _render_markdown(report: Report, evidence: list[Evidence]) -> str:
     lines.append("<summary><strong>Limitations & Scope</strong></summary>")
     lines.append("")
     for lim in report.limitations:
-        lines.append(f"- {lim}")
+        clean_lim = sanitize_untrusted_text(
+            lim, max_length=MAX_FIELD_CHARS, collapse_newlines=False
+        )
+        lines.append(f"- {clean_lim}")
     lines.append("</details>")
 
-    return "\n".join(lines)
+    return cap_comment_size("\n".join(lines))
 
 
 # ------------------------------------------------------------------
@@ -625,23 +643,24 @@ def format_lockfile_markdown(report: LockfileDiffReport) -> str:
         )
         lines.append("| :--- | :--- | :---: | :--- | :--- | :--- |")
         for pkg in flagged:
-            p_name = f"`{pkg['package']}`"
+            p_name = render_code_span(pkg["package"])
             old_v = pkg["old_version"] or "(new)"
             new_v = pkg["new_version"] or "(none)"
-            v_change = f"`{old_v}` → `{new_v}`"
+            v_change = f"{render_code_span(old_v)} → {render_code_span(new_v)}"
             dec_str = "🛑 BLOCK" if pkg["decision"] == "BLOCK" else "⚠️ WARN"
-            top_ev = pkg["evidence"][0] if pkg["evidence"] else "inspection_failed"
+            top_ev_raw = pkg["evidence"][0] if pkg["evidence"] else "inspection_failed"
+            top_ev = render_code_span(top_ev_raw)
             details = pkg.get("evidence_details", [])
-            why = details[0]["explanation"] if details else "Suspicious behavior detected."
-            why = why.replace("|", "/").replace("\n", " ").strip()
-            legit = (
+            why_raw = details[0]["explanation"] if details else "Suspicious behavior detected."
+            why = sanitize_untrusted_text(why_raw, max_length=MAX_FIELD_CHARS)
+            legit_raw = (
                 details[0].get("legitimate_use_note", "No legitimate explanation registered.")
                 if details
                 else "No legitimate explanation registered."
             )
-            legit = legit.replace("|", "/").replace("\n", " ").strip()
+            legit = sanitize_untrusted_text(legit_raw, max_length=MAX_FIELD_CHARS)
             lines.append(
-                f"| {p_name} | {v_change} | {dec_str} | `{top_ev}` | {why} | {legit} |"
+                f"| {p_name} | {v_change} | {dec_str} | {top_ev} | {why} | {legit} |"
             )
         lines.append("")
 
@@ -652,11 +671,15 @@ def format_lockfile_markdown(report: LockfileDiffReport) -> str:
         lines.append("| Package | Version Change | Decision | Notes |")
         lines.append("| :--- | :--- | :---: | :--- |")
         for pkg in clean:
-            p_name = f"`{pkg['package']}`"
+            p_name = render_code_span(pkg["package"])
             old_v = pkg["old_version"] or "(new)"
             new_v = pkg["new_version"] or "(none)"
-            v_change = f"`{old_v}` → `{new_v}`"
-            notes = ", ".join(f"`{e}`" for e in pkg["evidence"]) if pkg["evidence"] else "Clean"
+            v_change = f"{render_code_span(old_v)} → {render_code_span(new_v)}"
+            notes = (
+                ", ".join(render_code_span(e) for e in pkg["evidence"])
+                if pkg["evidence"]
+                else "Clean"
+            )
             lines.append(f"| {p_name} | {v_change} | ✅ ALLOW | {notes} |")
         lines.append("")
         lines.append("</details>")
@@ -666,14 +689,19 @@ def format_lockfile_markdown(report: LockfileDiffReport) -> str:
     lines.append("")
     if report.limitations:
         for lim in report.limitations:
-            lines.append(f"- {lim}")
+            clean_lim = sanitize_untrusted_text(
+                lim, max_length=MAX_FIELD_CHARS, collapse_newlines=False
+            )
+            lines.append(f"- {clean_lim}")
     else:
         lines.append(
             "- JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible."  # noqa: E501
         )
-        lines.append("- Transitive dependencies not pinned in lockfile are not analyzed.")
+        lines.append(
+            "- Every changed lockfile entry (including transitive dependencies) is scanned."
+        )
     lines.append("")
-    return "\n".join(lines)
+    return cap_comment_size("\n".join(lines))
 
 
 def print_lockfile_text(report: LockfileDiffReport, quiet: bool = False) -> None:
