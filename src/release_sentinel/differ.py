@@ -74,6 +74,7 @@ def compare_releases(
     experimental_hollow: bool = False,
     is_registry_package: bool = True,
     mode: str = "live",
+    follow_dependencies: bool = True,
 ) -> list[Evidence]:
     """Compare two extracted releases and return evidence items.
 
@@ -204,6 +205,7 @@ def analyze_release(
     experimental_hollow: bool = False,
     is_registry_package: bool = True,
     mode: str = "live",
+    follow_dependencies: bool = True,
 ) -> list[Evidence]:
     """Analyze a release either against a baseline (diff mode) or standalone (full-scan mode).
 
@@ -289,7 +291,7 @@ def analyze_release(
 
             added_deps = [(k, str(v)) for k, v in new_deps_dict.items() if k not in old_deps]
 
-            if added_deps:
+            if added_deps and follow_dependencies:
                 from release_sentinel.dependency_resolver import resolve_added_dependency
 
                 target_dir = dest_dir or (registry_client.cache_dir / "tarballs" / "deps")

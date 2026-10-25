@@ -916,6 +916,7 @@ def scan_lockfile_diff(
                     registry_client=client,
                     experimental_hollow=experimental_hollow,
                     is_registry_package=is_reg,
+                    follow_dependencies=False,
                 )
                 if extra_evidence:
                     evidence.extend(extra_evidence)
@@ -1001,12 +1002,24 @@ def scan_lockfile_diff(
         if close_client:
             client.close()
 
+    clean_limitations = [
+        lim for lim in all_limitations
+        if "Transitive (indirect) dependencies" not in lim
+    ]
+    clean_limitations.append(
+        "Every changed lockfile entry (including transitive dependencies) is scanned."
+    )
+    if policy.replace_block_requires:
+        clean_limitations.append(
+            "Warning: Built-in multi-signal block_requires rules are overridden by custom policy."
+        )
+
     return LockfileDiffReport(
         base_source=base_source,
         head_source=head_source,
         total_packages_scanned=len(package_results),
         decision=overall_decision,
         package_results=package_results,
-        limitations=sorted(set(all_limitations)),
+        limitations=sorted(set(clean_limitations)),
         has_budget_exceeded=has_budget_exceeded,
     )

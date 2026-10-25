@@ -17,6 +17,7 @@ from __future__ import annotations
 
 import logging
 import tomllib
+from collections import defaultdict
 from dataclasses import dataclass, field
 from importlib import resources
 from pathlib import Path
@@ -49,13 +50,14 @@ class Policy:
     full_scan_block_requires: list[BlockRequires] = field(default_factory=list)
     full_scan_severity_overrides: dict[str, Severity] = field(default_factory=dict)
     experimental_hollow: bool = False
+    replace_block_requires: bool = False
 
 
 # Limitations that are always true regardless of policy
 _STATIC_LIMITATIONS: list[str] = [
     "JavaScript/TypeScript source is scanned with regex heuristics, not fully parsed — "
     "obfuscated code may evade detection.",
-    "Transitive (indirect) dependencies are not analysed.",
+    "Transitive (indirect) dependencies beyond depth-1 added dependencies are not analysed.",
     "Known vulnerability databases (OSV, NVD, npm advisory) are not consulted.",
     "Binary files (.node, .wasm, compiled extensions) cannot be inspected for malicious content.",
     "'No evidence found' does not mean 'safe' — it means nothing suspicious was detected "
@@ -87,14 +89,32 @@ def load_policy(
         If True, enables the experimental block rule for hollow+lookalike releases.
     """
     raw = _load_profile_toml(profile)
+    replace_block = False
 
     # Overlay user file
     if policy_path is not None:
         user_raw = _load_toml(policy_path)
-        raw = _deep_merge(raw, user_raw)
+        replace_block = bool(
+            user_raw.get("decision", {}).get("replace_block_requires", False)
+            or user_raw.get("replace_block_requires", False)
+        )
+        if replace_block:
+            raw = _deep_merge(raw, user_raw)
+        else:
+            # Merges additively: preserve base block_requires and append user block_requires
+            base_br = list(raw.get("decision", {}).get("block_requires", []))
+            base_fs_br = list(raw.get("full_scan", {}).get("block_requires", []))
+            user_br = user_raw.get("decision", {}).get("block_requires", [])
+            user_fs_br = user_raw.get("full_scan", {}).get("block_requires", [])
+            raw = _deep_merge(raw, user_raw)
+            if user_br:
+                raw.setdefault("decision", {})["block_requires"] = base_br + user_br
+            if user_fs_br:
+                raw.setdefault("full_scan", {})["block_requires"] = base_fs_br + user_fs_br
 
     policy = _parse_policy(raw)
     policy.experimental_hollow = experimental_hollow
+    policy.replace_block_requires = replace_block
     return policy
 
 
@@ -246,6 +266,11 @@ def decide(
 
     limitations = list(_STATIC_LIMITATIONS)
 
+    if policy.replace_block_requires:
+        limitations.append(
+            "Warning: Built-in multi-signal block_requires rules are overridden by custom policy."
+        )
+
     has_incomplete = any(ev.id in ("inspection_incomplete", "partial_scan") for ev in evidence)
     if has_incomplete:
         for ev in evidence:
@@ -284,16 +309,23 @@ def decide(
         decision = Decision.WARN if has_incomplete else Decision.ALLOW
         return decision, limitations
 
-    # Collect distinct signal IDs present in alerting evidence
-    signal_ids = {ev.id for ev in alerting}
+    # Group alerting evidence by package context
+    by_context: dict[str, list[Evidence]] = defaultdict(list)
+    for ev in alerting:
+        by_context[_pkg_context(ev)].append(ev)
 
-    # Check block_requires (both multi-signal pairs and standalone corroborated patterns)
-    for pair in block_reqs:
-        if all(sig in signal_ids for sig in pair.signals):
-            # Corroboration satisfied — check that at least one HIGH/CRITICAL present
-            matching_ev = [ev for ev in alerting if ev.id in pair.signals]
-            if any(ev.severity in (Severity.HIGH, Severity.CRITICAL) for ev in matching_ev):
-                return Decision.BLOCK, limitations
+    # Check block_requires within each package context
+    for _ctx, ctx_evidence in by_context.items():
+        ctx_signals = {ev.id for ev in ctx_evidence}
+        for pair in block_reqs:
+            if all(sig in ctx_signals for sig in pair.signals):
+                # Corroboration satisfied — check for HIGH/CRITICAL in this context
+                matching_ev = [ev for ev in ctx_evidence if ev.id in pair.signals]
+                if any(ev.severity in (Severity.HIGH, Severity.CRITICAL) for ev in matching_ev):
+                    return Decision.BLOCK, limitations
+
+    # Collect distinct signal IDs present in alerting evidence across all contexts
+    signal_ids = {ev.id for ev in alerting}
 
     # Single-signal rule: only one distinct alerting signal type
     if len(signal_ids) == 1:
@@ -312,10 +344,10 @@ def decide(
     # Multi-signal but no block_requires matches
     max_sev = _max_severity(alerting)
     if max_sev == Severity.LOW:
-        # Check if any corroboration pair was matched (all-low pair falls back to WARN)
+        # Check if any corroboration pair was matched within any context
         any_pair_matched = any(
-            all(sig in signal_ids for sig in pair.signals)
-            for pair in block_reqs
+            any(all(sig in {e.id for e in ctx_evs} for sig in pair.signals) for pair in block_reqs)
+            for ctx_evs in by_context.values()
         )
         if any_pair_matched or has_incomplete:
             return Decision.WARN, limitations
@@ -351,6 +383,20 @@ def _max_severity(evidence: list[Evidence]) -> Severity:
         Severity.CRITICAL: 3,
     }
     return max(evidence, key=lambda e: _order[e.severity]).severity
+
+
+def _pkg_context(ev: Evidence) -> str:
+    """Return the package context for an evidence item ('root' or dependency name)."""
+    if ev.explanation and ev.explanation.startswith("[dep: "):
+        end = ev.explanation.find("@", 6)
+        if end != -1:
+            return ev.explanation[6:end].strip()
+    if ev.file and ev.file.startswith("node_modules/"):
+        parts = ev.file[len("node_modules/") :].split("/")
+        if parts[0].startswith("@") and len(parts) > 1:
+            return f"{parts[0]}/{parts[1]}"
+        return parts[0]
+    return "root"
 
 
 def _decision_order(d: Decision) -> int:

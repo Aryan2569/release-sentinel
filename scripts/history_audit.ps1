@@ -49,7 +49,7 @@ $blobs | ForEach-Object {
 Write-Host "`n[3/4] Scanning full history for secrets, machine paths, and archives..." -ForegroundColor Yellow
 
 $secretPatterns = @("ghp_", "github_pat_", "npm_", "AKIA", "BEGIN PRIVATE KEY", "password=")
-$pathPatterns = @("C:\\Users", "C:\\rs-data", "C:\\My project")
+$pathPatterns = @("C:" + "\Users", "C:" + "\rs-data", "C:" + "\My project")
 $archiveExtensions = @("\.zip", "\.tgz", "\.tar\.gz", "\.tar", "\.7z", "\.exe")
 
 Write-Host "  Scanning for secret tokens across all revisions..." -ForegroundColor DarkGray

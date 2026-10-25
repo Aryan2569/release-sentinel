@@ -641,3 +641,26 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   - *Part 4c: Comment-Stripping Evasion Protection*: Attackers may attempt to evade comment-stripping regular expressions by crafting malicious payloads with interleaved comment markers. Content scanning evaluates the union of stripped `clean_text` and unstripped `raw_text` for high-severity execution and network signals, while strictly restricting URL/IP extraction to stripped text to prevent false positives from benign URLs in header comments.
   - *Part 4d: Established Age/Version Requirement for Diff Mode*: Added dependencies are only eligible for diff-mode evaluation against their previous version if the dependency is established (published $\ge 90$ days prior and having $\ge 5$ versions published before `as_of`). Brand-new or single-version decoy packages are analyzed in full-scan mode.
   - *Part 4e: Peer and Optional Dependencies in package.json Diffing*: When analyzing standalone `package.json` diffs outside lockfile mode, `peerDependencies` and `optionalDependencies` are evaluated as installed runtime dependencies rather than ignored.
+
+## Stage 7c: Publish Blockers, CI Rehearsal, and Security Hardening
+
+- **Part 0: CI Rehearsal & History Audit**:
+  - *Isolated CI Rehearsal*: Cloned repository into clean temp directory outside workspace, created isolated virtualenv, and executed all CI steps. Verified hash-locked installation with `pip install --require-hashes`, added wheel support for Python 3.14 (`httpcore==1.0.9`, `pydantic==2.14.1`, `pydantic-core==2.50.1`, `h11==0.16.0`, `colorama==0.4.6`), added `cache-dependency-path: requirements-action.lock` in `.github/workflows/ci.yml`, added `pyyaml>=6.0` to dev dependencies, added `build` and wheel smoke test steps to CI.
+  - *Deep History Audit*: Created `scripts/history_audit.ps1` auditing all authors/committers, 20 largest blobs, repository size (6.19 MiB object size), secret scans, local path references, and archive signatures across all revisions.
+- **Part 1: Comment & Summary Injection Hardening**:
+  - Implemented `release_sentinel.sanitizer` module providing:
+    - Neutralization of `@mentions` and `#123` issue references using zero-width spaces (`\u200b`).
+    - Escaping of HTML tags (`&lt;` and `&gt;`) and defanging of HTML comments (`&lt;!--`).
+    - Defanging of the sentinel comment marker `<!-- release-sentinel-pr-comment -->`.
+    - Dynamic code-span and fenced-block fences strictly longer than any internal backtick run.
+    - Capping untrusted fields at 300 characters and collapsing internal table newlines.
+    - Capping total markdown comment length at 60 KB (61,440 characters) with explicit `[Report truncated to stay within GitHub PR comment limits]` note.
+    - Defanging lines starting with `::` in stdout to prevent GitHub Actions workflow command injection.
+    - In `action.yml`, matched existing PR comments by both the marker AND trusted author (`github-actions[bot]` or current actor).
+- **Part 2: Accuracy & Safety Fixes**:
+  - *Mode-Dependent Limitations*: In lockfile mode, reports now state that every changed lockfile entry (including transitives) is scanned; the depth-1 limitation note is retained strictly in single-package mode.
+  - *Policy Overlay Rules*: User policy `block_requires` is additive by default (merges with profile rules). Added `replace_block_requires = true` option in user policy TOML that replaces profile rules and emits a visible warning in report limitations.
+  - *Lockfile Mode Dependency Following*: In lockfile mode, `analyze_release` bypasses child dependency resolution (`follow_dependencies=False`) since all changed direct and transitive dependencies are already individually diffed and analyzed in the lockfile diff.
+  - *Package Context Corroboration*: In single-package mode, `block_requires` multi-signal pairs must be satisfied within the same package context (a signal on an added dependency cannot cross-corroborate with the root package's signals). Evaluated across 288 replayed updates (0 decision changes, 2 BLOCKs unchanged) and 1,349 malicious eval pairs (0 decision changes, zero recall loss).
+  - *Integrity Verification Rate*: Measured on all 288 replayed updates (5,965 scanned packages): `lockfile_missing_integrity` occurred 0 times (0.00% rate, +0.0% to WARN rate).
+

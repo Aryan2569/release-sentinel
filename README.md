@@ -104,7 +104,7 @@ jobs:
 | :---- | :---------- | :------ | :------------- |
 | `lockfile` | Path to npm `package-lock.json` file | `package-lock.json` | Valid file path |
 | `fail-on` | Threshold that causes the CI job to fail | `block` | `block`, `warn`, `never` |
-| `comment-on` | Condition to post or update PR comments | `notable` | `block`, `notable`, `warn`, `always` |
+| `comment-on` | Condition to post or update PR comments. Teams wanting a quiet setup should set `comment-on: block`, because `notable` comments on ~30% of real-world dependency updates (mostly benign postinstall additions and network access). | `notable` | `block`, `notable`, `warn`, `always` |
 | `profile` | Policy configuration profile | `default` | `default` (low-noise), `strict` (research baseline) |
 | `max-packages`| Maximum changed packages to analyze before capping | `300` | Integer $\ge 1$ |
 | `github-token`| Token for posting pull request comments | `${{ github.token }}` | GitHub token with PR write access |
@@ -138,7 +138,7 @@ When a compromised package is detected in a dependency update, Release Sentinel 
 
 ### Limitations & Scope
 - JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible.
-- Transitive dependencies not pinned in lockfile are not analyzed.
+- Every changed lockfile entry (including transitive dependencies) is scanned.
 
 ---
 
@@ -199,10 +199,10 @@ Supply chain attacks underwent a significant tactical shift between 2025 and 202
 | **`camp_0048`** | 2025 | 351 pkgs | Install-hook execution (`postinstall`) | 351 BLOCK / 351 WARN | **349 BLOCK** / 351 WARN | 🛑 Automated BLOCK (99.4%) |
 | **`camp_0065`** | 2026 | 103 pkgs | Runtime obfuscation / dynamic loader | 103 BLOCK / 103 WARN | **0 BLOCK** / **103 WARN** | ⚠️ PR Review Advisory (100%) |
 | **`camp_0066`** | 2026 | 60 pkgs | Encoded payload without install script | 0 BLOCK / 60 WARN | **0 BLOCK** / **60 WARN** | ⚠️ PR Review Advisory (100%) |
-| **`camp_0136`** | 2026 | 118 pkgs | Deep runtime exfiltration / hollow updates | 1 BLOCK / 4 WARN | **0 BLOCK** / **4 WARN** | ⚠️ PR Review Advisory (4/118) |
+| **`camp_0136`** | 2026 | 118 pkgs | Hollow dependency-injection wave | 1 BLOCK / 4 WARN | **0 BLOCK** / **4 WARN** | ⚠️ PR Review Advisory (4/118) |
 
 - **2025 Install Hooks**: The two largest 2025 waves (`camp_0052` and `camp_0048`) rely on automated execution during `npm install`. The default profile BLOCKs both waves almost completely (394/407 and 349/351).
-- **2026 Runtime Obfuscation**: The three largest 2026 waves (`camp_0065`, `camp_0066`, `camp_0136`) abandoned install scripts entirely, hiding obfuscated code in package bodies. In the low-noise `default` profile, single uncorroborated heuristics cap at **WARN** to eliminate false-BLOCKs on production build tools. Consequently, Release Sentinel WARNs on all three waves (0/103, 0/60, and 4/118 BLOCKs), flagging them for human review via PR comments.
+- **2026 Waves**: Late-2025 and 2026 waves abandoned install scripts entirely. Waves like `camp_0065` (103 pkgs) and `camp_0066` (60 pkgs) rely on runtime obfuscation, while `camp_0136` (118 pkgs) is a hollow dependency-injection wave that injects lookalike dependencies. In the low-noise `default` profile, single uncorroborated heuristics cap at **WARN** to eliminate false-BLOCKs on production build tools. Consequently, Release Sentinel WARNs on all three waves (0/103, 0/60, and 4/118 BLOCKs), flagging them for human review via PR comments.
 
 ### Real-World Replay Burden & PR Comment Optimization
 
@@ -210,6 +210,7 @@ To measure production signal-to-noise ratio, Release Sentinel was replayed acros
 
 - **Update-Level Verdicts**: Out of 288 updates, 162 are clean ALLOW (56.25%), 124 trigger warnings (43.06%), and 2 trigger BLOCK (0.69%).
 - **Per-Package Warning Rate**: 901 warned packages out of 5,965 total packages (15.10%).
+- **Integrity Verification**: `lockfile_missing_integrity` occurred on **0 of 288 replayed updates (0.00%)** across all 5,965 scanned packages (+0.0% addition to WARN rate), verifying that standard npm lockfiles consistently pin SHA-512 cryptographic hashes.
 - **PR Comment Gating Threshold Evaluation**:
   We evaluated three PR comment thresholds across both the 288 real-world updates and all 140 benchmark campaigns:
   - **Variant A** (BLOCK, or WARN with HIGH/CRITICAL or install-hook change): Comments on 47 of 288 updates (16.3%), but only alerts on **84 of 140 campaigns (60.0%)**, completely missing 42 campaigns (including the 2026 waves).

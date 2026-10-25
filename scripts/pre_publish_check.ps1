@@ -90,8 +90,8 @@ for f in tracked:
     p = Path(f)
     if not p.is_file():
         continue
-    # Exclude the pre-publish audit script itself from path-pattern self-matches
-    if f.endswith('pre_publish_check.ps1'):
+    # Exclude audit scripts themselves from path-pattern self-matches
+    if f.endswith('pre_publish_check.ps1') or f.endswith('history_audit.ps1'):
         continue
     try:
         content = p.read_text(encoding='utf-8', errors='ignore')
