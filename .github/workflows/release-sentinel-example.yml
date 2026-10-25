@@ -30,7 +30,7 @@ jobs:
           fetch-depth: 0
 
       - name: Run Release Sentinel
-        uses: ./ # When referencing externally: your-org/release-sentinel@<commit-sha>
+        uses: ./ # When referencing externally: Aryan2569/release-sentinel@<commit-sha>
         with:
           lockfile: "package-lock.json"
           fail-on: "block" # Options: block (default), warn, never

@@ -17,6 +17,7 @@ import json
 import tarfile
 import time
 from datetime import UTC, datetime
+from pathlib import Path
 from unittest.mock import MagicMock
 
 import httpx
@@ -310,3 +311,56 @@ class TestStage7bPart0Security:
         res = runner.invoke(app, ["lockfile", "--head", str(outside_file), "--base-ref", "HEAD"])
         assert res.exit_code == 2
         assert "outside git repo" in res.output or "Error" in res.output
+
+
+class TestStage7bPart1Hygiene:
+    def test_requirements_action_lock_exists_and_hashed(self):
+        lock_path = Path("requirements-action.lock")
+        assert lock_path.exists(), "requirements-action.lock must exist"
+        content = lock_path.read_text(encoding="utf-8")
+        assert "--hash=sha256:" in content
+        # Must contain all direct dependencies
+        for pkg in ("typer", "rich", "httpx", "pydantic", "node-semver"):
+            assert pkg in content
+
+    def test_dependabot_config(self):
+        import yaml
+
+        dep_path = Path(".github/dependabot.yml")
+        assert dep_path.exists(), ".github/dependabot.yml must exist"
+        data = yaml.safe_load(dep_path.read_text(encoding="utf-8"))
+        assert data.get("version") == 2
+        ecosystems = {u.get("package-ecosystem") for u in data.get("updates", [])}
+        assert "pip" in ecosystems
+        assert "github-actions" in ecosystems
+
+    def test_pinned_action_shas(self):
+        import re
+
+        action_yml = Path("action.yml").read_text(encoding="utf-8")
+        ci_yml = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+
+        # Verify setup-python SHA is the verified commit SHA
+        expected_setup_python = "39cd14951b08e74b54015e9e001cdefcf80e669f"
+        assert f"actions/setup-python@{expected_setup_python}" in action_yml
+        assert f"actions/setup-python@{expected_setup_python}" in ci_yml
+
+        # Check all uses: actions/* in action.yml and ci.yml use full 40-char hex SHAs
+        sha_re = re.compile(r"uses:\s*actions/([a-zA-Z0-9_-]+)@([a-f0-9]{40})")
+        for content in (action_yml, ci_yml):
+            for line in content.splitlines():
+                if "uses: actions/" in line:
+                    match = sha_re.search(line)
+                    assert match is not None, f"Action not pinned by 40-char SHA: {line}"
+
+    def test_workflow_permissions(self):
+        import yaml
+
+        for path in (
+            Path(".github/workflows/ci.yml"),
+            Path(".github/workflows/release-sentinel-example.yml"),
+        ):
+            data = yaml.safe_load(path.read_text(encoding="utf-8"))
+            perms = data.get("permissions", {})
+            assert perms.get("contents") == "read", f"Workflow {path} missing contents: read"
+
