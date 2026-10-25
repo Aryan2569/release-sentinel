@@ -55,4 +55,8 @@ cache/
 *.zip
 data/external/
 
+# Replay cache files
+data/replay_cache_*.json
+data/replay_cache/
+
 
