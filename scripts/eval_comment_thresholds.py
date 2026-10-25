@@ -1,11 +1,10 @@
 """Evaluate comment threshold variants on replay updates and malicious dataset."""
 
-import csv
 import glob
 import json
 
 # 1. Load 140 campaigns and pair-to-campaign mapping
-with open("data/eval_campaigns.json", "r", encoding="utf-8") as f:
+with open("data/eval_campaigns.json", encoding="utf-8") as f:
     camps_dict = json.load(f)
 
 pair_to_camp = {}
@@ -19,7 +18,7 @@ print(f"Mapped {len(pair_to_camp)} pairs to 140 campaigns")
 replay_files = glob.glob("data/replay_cache_default_*.json")
 all_updates = []
 for rf in replay_files:
-    with open(rf, "r", encoding="utf-8") as f:
+    with open(rf, encoding="utf-8") as f:
         data = json.load(f)
         all_updates.extend(data.get("results", []))
 
@@ -58,7 +57,7 @@ rA, rB, rC = eval_replay(all_updates)
 n_replay = len(all_updates)
 
 # 3. Malicious evaluation (1,349 pairs, 140 campaigns)
-with open("data/eval_results_default.jsonl", "r", encoding="utf-8") as f:
+with open("data/eval_results_default.jsonl", encoding="utf-8") as f:
     eval_rows = [json.loads(line) for line in f if line.strip()]
 
 pA, pB, pC = 0, 0, 0

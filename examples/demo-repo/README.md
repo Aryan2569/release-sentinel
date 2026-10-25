@@ -46,7 +46,7 @@ You can test Release Sentinel against this demo repository locally using the CLI
 1. Fork or clone this repository to your GitHub account.
 2. Update `.github/workflows/sentinel.yml` to point to the published action:
    ```yaml
-   uses: <your-github-user>/release-sentinel@v0.5.0
+   uses: Aryan2569/release-sentinel@v0.5.0
    ```
 3. Create a new branch:
    ```bash

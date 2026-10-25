@@ -134,5 +134,5 @@ Verify that external users can install and execute Release Sentinel seamlessly:
 
 2. **Verify GitHub Action in Demo Repo**:
    - Push a test commit or pull request to `examples/demo-repo/`.
-   - Confirm that the workflow runs using `release-sentinel/release-sentinel@v0.5.0`.
+   - Confirm that the workflow runs using `Aryan2569/release-sentinel@v0.5.0`.
    - Confirm step summary and pull request commenting behavior.

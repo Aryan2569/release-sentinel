@@ -1,6 +1,6 @@
 # Release Sentinel
 
-[![CI](https://github.com/release-sentinel/release-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/release-sentinel/release-sentinel/actions)
+[![CI](https://github.com/Aryan2569/release-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/Aryan2569/release-sentinel/actions)
 [![PyPI version](https://img.shields.io/pypi/v/release-sentinel.svg)](https://pypi.org/project/release-sentinel/)
 [![Python versions](https://img.shields.io/pypi/pyversions/release-sentinel.svg)](https://pypi.org/project/release-sentinel/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -72,16 +72,30 @@ jobs:
       pull-requests: write # Required for posting PR comments
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          # Fetch full history so base ref can be inspected via git show
+          fetch-depth: 0
 
       - name: Run Release Sentinel
-        uses: release-sentinel/release-sentinel@v0.5.0
+        uses: Aryan2569/release-sentinel@v0.5.0
         with:
           lockfile: "package-lock.json"
           fail-on: "block"
           comment-on: "notable"
           profile: "default"
           max-packages: 300
+
+### Critical Security Rules for Using This Action
+
+1. **Trigger on `pull_request`, NEVER `pull_request_target`**:
+   `pull_request_target` executes in the context of the base repository branch and grants write tokens and secret access to fork PRs. An attacker opening a malicious pull request could exploit `pull_request_target` to exfiltrate repository secrets or compromise the repository. The `pull_request` trigger runs strictly within the unprivileged, read-only fork context.
+2. **Require `fetch-depth: 0`**:
+   The action diffs your updated lockfile against the base branch (`origin/${{ github.base_ref }}`). Passing `fetch-depth: 0` to `actions/checkout` ensures the base commit is available locally for `git show`.
+3. **Zero Code Execution**:
+   Release Sentinel never runs `npm install`, `node`, shell scripts, or lifecycle hooks. It inspects package diffs purely through static in-memory AST and regex analysis.
+4. **Supply-Chain Hardening & Hash Locking**:
+   The action dependencies are strictly pinned by cryptographic SHA-256 hashes (`requirements-action.lock`) and installed with `--require-hashes` and `--no-deps`. All third-party action dependencies are pinned by immutable 40-character commit SHAs.
 ```
 
 ### Action Configuration Options
@@ -142,7 +156,14 @@ Supply chain attacks frequently inject malicious behavior by adding runtime depe
 - **`default` (Low-Noise CI Gate)**: Requires high-confidence corroborating evidence to block (such as install-time network downloads, credential file exfiltration, or CI workflow tampering). Heuristics like standalone base64 blobs or minified code emit warnings or summary notices without blocking builds.
 - **`strict` (Research Baseline)**: The frozen v1.4 research policy evaluated across academic datasets. Alerts broadly on single indicators for high-assurance audits.
 
-### 4. Fail-Closed Live Architecture with Safety Budgets
+### 4. Lockfile Injection Defenses & Registry Hardening
+- **Resolved URL Verification**: Verifies that any registry `resolved` URL matches the entry's declared name and version (`https://registry.npmjs.org/<name>/-/<basename>-<version>.tgz`). Mismatches emit `lockfile_resolved_mismatch` and BLOCK immediately under all profiles.
+- **Integrity Requirement**: Entries omitting `integrity` hashes emit `lockfile_missing_integrity` (WARN).
+- **Cryptographic Cache Binding**: Cache keys are bound to `(name, version, integrity or url hash)`. Corrupted downloads are purged immediately.
+- **Streaming Tarball Limits**: Downloads are streamed in 64 KB chunks, enforcing a 100 MB per-tarball limit and a 500 MB session budget during download.
+- **Metadata TTL**: Live registry lookups refresh cached metadata older than 1 hour.
+
+### 5. Fail-Closed Live Architecture with Safety Budgets
 To protect production CI against denial-of-service and evasive attacks, Release Sentinel enforces strict deterministic budgets:
 - **Package Cap**: Scans up to 300 packages per update, prioritizing added packages and install hooks first.
 - **Extraction Limits**: Rejects archives exceeding 5,000 files, 200 MB uncompressed size, or 25 MB single-file ceiling.
@@ -168,15 +189,34 @@ All metrics below are generated directly by [`scripts/verify_metrics.py`](file:/
 
 > **Note on Test Splits**: The `default` profile maintains **100% of WARN+ detection coverage** (1,214 of 1,349 pairs; 127 of 140 campaigns) while demoting ambiguous single-signal heuristics to reduce CI noise. TEST-B represents multi-version obfuscated malware families where static diffing without install scripts requires behavioral execution.
 
-### Real-World Replay Burden (12 Popular Repositories)
+### Attack Wave Breakdown: 2025 Install Hooks vs. 2026 Runtime Obfuscation
+
+Supply chain attacks underwent a significant tactical shift between 2025 and 2026:
+
+| Campaign Wave | Year | Total Packages | Attack Style | Strict Profile (v1.4) | Default Profile (v0.5.0) | Default Action Impact |
+| :--- | :---: | :---: | :--- | :---: | :---: | :--- |
+| **`camp_0052`** | 2025 | 407 pkgs | Install-hook download (`preinstall`) | 407 BLOCK / 407 WARN | **394 BLOCK** / 407 WARN | 🛑 Automated BLOCK (96.8%) |
+| **`camp_0048`** | 2025 | 351 pkgs | Install-hook execution (`postinstall`) | 351 BLOCK / 351 WARN | **349 BLOCK** / 351 WARN | 🛑 Automated BLOCK (99.4%) |
+| **`camp_0065`** | 2026 | 103 pkgs | Runtime obfuscation / dynamic loader | 103 BLOCK / 103 WARN | **0 BLOCK** / **103 WARN** | ⚠️ PR Review Advisory (100%) |
+| **`camp_0066`** | 2026 | 60 pkgs | Encoded payload without install script | 0 BLOCK / 60 WARN | **0 BLOCK** / **60 WARN** | ⚠️ PR Review Advisory (100%) |
+| **`camp_0136`** | 2026 | 118 pkgs | Deep runtime exfiltration / hollow updates | 1 BLOCK / 4 WARN | **0 BLOCK** / **4 WARN** | ⚠️ PR Review Advisory (4/118) |
+
+- **2025 Install Hooks**: The two largest 2025 waves (`camp_0052` and `camp_0048`) rely on automated execution during `npm install`. The default profile BLOCKs both waves almost completely (394/407 and 349/351).
+- **2026 Runtime Obfuscation**: The three largest 2026 waves (`camp_0065`, `camp_0066`, `camp_0136`) abandoned install scripts entirely, hiding obfuscated code in package bodies. In the low-noise `default` profile, single uncorroborated heuristics cap at **WARN** to eliminate false-BLOCKs on production build tools. Consequently, Release Sentinel WARNs on all three waves (0/103, 0/60, and 4/118 BLOCKs), flagging them for human review via PR comments.
+
+### Real-World Replay Burden & PR Comment Optimization
 
 To measure production signal-to-noise ratio, Release Sentinel was replayed across **288 historical dependency updates** spanning **5,965 scanned packages** in 12 major open-source projects (`bootstrap`, `commander`, `glob`, `helmet`, `marked`, `mocha`, `nodemon`, `rimraf`, `socket.io`, `superagent`, `terser`, `winston`):
 
+- **Update-Level Verdicts**: Out of 288 updates, 162 are clean ALLOW (56.25%), 124 trigger warnings (43.06%), and 2 trigger BLOCK (0.69%).
 - **Per-Package Warning Rate**: 901 warned packages out of 5,965 total packages (15.10%).
-- **PR Comment Gating (`comment-on: notable`)**:
-  - Out of 288 updates, 162 are clean ALLOW (56.25%), 124 trigger warnings (43.06%), and 2 trigger BLOCK (0.69%).
-  - Under `comment-on: notable`, PR comments are posted only for BLOCK verdicts or notable warnings (containing HIGH/CRITICAL signals, install-hook changes, or $\ge 2$ distinct medium signals).
-  - This reduces noisy PR comments from 126 updates (43.75%) down to **86 updates (29.86%)** — an immediate **31.7% reduction in PR noise** without missing critical indicators.
+- **PR Comment Gating Threshold Evaluation**:
+  We evaluated three PR comment thresholds across both the 288 real-world updates and all 140 benchmark campaigns:
+  - **Variant A** (BLOCK, or WARN with HIGH/CRITICAL or install-hook change): Comments on 47 of 288 updates (16.3%), but only alerts on **84 of 140 campaigns (60.0%)**, completely missing 42 campaigns (including the 2026 waves).
+  - **Variant B (`notable`, default)** (Variant A plus $\ge 2$ distinct MEDIUM signals): Comments on **86 updates (29.86%)**, while successfully alerting on **126 of 140 campaigns (90.00%)**—retaining 100% of the 2026 waves that comment under default profile.
+  - **Variant C** (BLOCK only): Comments on 2 of 288 updates (0.69%), but drops campaign comment coverage down to **34 of 140 campaigns (24.29%)**.
+
+Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 updates (43.75%) down to **86 updates (29.86%)** — an immediate **31.7% reduction in PR noise** while preserving 90% campaign detection.
 
 ### Attack Style Evolution Over Time
 

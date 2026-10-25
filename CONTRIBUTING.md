@@ -8,7 +8,7 @@ Release Sentinel requires **Python 3.12+**.
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/release-sentinel/release-sentinel.git
+   git clone https://github.com/Aryan2569/release-sentinel.git
    cd release-sentinel
    ```
 

@@ -367,3 +367,43 @@ Replaying historical lockfile updates across 12 popular open-source repositories
   $$P(\text{Blocked Update}) = 1 - (1 - p)^n = 1 - (0.9828)^{20} \approx 29.5\%$$
 - In our initial 4-repo baseline under strict rules, $17.9\%$ of pull requests were blocked by benign tools.
 - *Solution*: By addressing lifecycle hook semantics (`prepare`/`prepublish`) and decoupling single heuristics from automated blocks in the `default` profile, the per-update false-BLOCK rate dropped from $13.4\%$ down to **$0.0\%$** across real-world updates, proving that security gates can prevent supply-chain attacks without breaking developer CI pipelines.
+
+---
+
+### Q33: How does Release Sentinel defend against Lockfile Injection and Package Aliasing attacks (Stage 7b)?
+**Answer**:
+In lockfile injection attacks, an attacker crafts a malicious `package-lock.json` where a trusted dependency name (such as `lodash@4.17.21`) has its `resolved` URL pointed to a completely different malicious tarball (e.g. `https://registry.npmjs.org/evil/-/evil-1.0.0.tgz`), while omitting or spoofing integrity hashes.
+Release Sentinel thwarts this attack vector through multiple layers:
+1. **Resolved URL Path Verification**: For registry-sourced entries, Release Sentinel validates that the `resolved` path strictly conforms to `/{name}/-/{basename}-{version}.tgz` (handling scoped packages like `/@scope/pkg/-/pkg-version.tgz`). Any URL path mismatch generates `lockfile_resolved_mismatch` (HIGH severity / Decision.BLOCK under both `default` and `strict` profiles), immediately halting analysis without downloading untrusted tarballs.
+2. **Missing Integrity Alerts**: An entry without an `integrity` hash generates `lockfile_missing_integrity` (MEDIUM severity / Decision.WARN).
+3. **Cryptographically Bound Cache Keys**: Tarball cache paths are strictly bound to `(name, version, integrity or resolved-URL hash)`. Cached files cannot be aliased or served across mismatched URLs or corrupted checksums.
+4. **Streaming Tarball Size Caps**: Tarballs are streamed in 64 KB chunks with per-tarball size limits (`MAX_TARBALL_BYTES = 100 MB`) and session download limits enforced chunk-by-chunk while reading, preventing denial-of-service from unbounded tarballs.
+5. **Metadata Time-To-Live**: Live registry mode invalidates cached packuments older than 1 hour (`metadata_ttl_seconds = 3600`), ensuring rapid detection of newly published or unpublished versions.
+
+---
+
+### Q34: How is GitHub Action Supply-Chain Hygiene enforced?
+**Answer**:
+1. **Hash-Locked Dependencies**:
+   The action dependencies are locked with cryptographic SHA-256 hashes in `requirements-action.lock`. In CI, dependencies are installed using `pip install --require-hashes -r requirements-action.lock` followed by `pip install --no-deps "${{ github.action_path }}"`. This ensures that every byte installed on the CI runner is tamper-evident and immune to PyPI dependency hijacking.
+2. **Commit SHA Verification**:
+   All third-party GitHub Actions (such as `actions/checkout` and `actions/setup-python`) are pinned by immutable 40-character commit SHAs rather than mutable tags. Every pinned SHA is verified against the official GitHub API to eliminate drift.
+3. **Security Permissions & Event Triggers**:
+   - Workflows specify explicit least-privilege permissions: `permissions: contents: read` (plus `pull-requests: write` when commenting is enabled).
+   - The action strictly requires the `pull_request` event trigger, **never** `pull_request_target`. `pull_request_target` grants repository write permissions and secrets to fork PRs, enabling dangerous privilege escalation. `pull_request` executes in the isolated, unprivileged context of the PR.
+   - The action strictly performs static analysis and **never** executes package code or lifecycle scripts.
+
+---
+
+### Q35: Why does the `default` profile BLOCK 2025 install-hook waves while only WARNING on 2026 waves, and how does `comment-on: notable` solve the alert burden?
+**Answer**:
+1. **Evolving Attack Vectors**:
+   - In 2025, attackers launched massive automated publishing waves (`camp_0052` with 407 packages, `camp_0048` with 351 packages) containing blatant install-time hooks (`preinstall`/`postinstall`) that immediately executed shell commands or downloaded payloads. The `default` profile blocks these waves decisively: **394 of 407 (96.8%)** in `camp_0052` and **349 of 351 (99.4%)** in `camp_0048`.
+   - In late 2025 and 2026, attackers adapted by abandoning install scripts to evade basic detectors (`camp_0065` with 103 packages, `camp_0066` with 60 packages, and `camp_0136` with 118 packages). These releases hide obfuscated code or delayed runtime exfiltration within deep package files. In the low-noise `default` profile, single uncorroborated heuristics cap at **WARN** to preserve zero false-BLOCKs on production code, resulting in **103/103 WARN** on `camp_0065`, **60/60 WARN** on `camp_0066`, and **4/118 WARN** on `camp_0136` (0 BLOCKs).
+   - In comparison, the research `strict` profile blocks `camp_0065` (103/103) by treating single heuristics as blocking signals.
+2. **PR Comment Optimization (`comment-on: notable`)**:
+   - Posting a PR comment on every single warning would flood developers across 43.1% of historical dependency updates.
+   - Restricting comments to BLOCK only would completely silence the three 2026 waves, dropping campaign comment coverage down to **24.3% (34 of 140 campaigns)**.
+   - Under `comment-on: notable` (Variant B), PR comments are triggered on BLOCK or WARN containing HIGH/CRITICAL signals, install-hook changes, or $\ge 2$ distinct medium evidence types.
+   - This achieves the optimal trade-off: it captures **90.0% of campaigns (126 of 140)**—including the major 2026 waves—while cutting developer PR comment noise from 43.1% down to **29.9%** on real-world repository replays.
+

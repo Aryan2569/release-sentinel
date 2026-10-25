@@ -132,3 +132,37 @@ For files up to 25 MB with under 20,000 lines, Release Sentinel scans individual
 Supply-chain attacks such as repo-jacking or unauthorized registry publications sometimes publish npm tarballs that do not correspond to any genuine commit or tagged release in the upstream GitHub repository.
 
 **Limitation**: Release Sentinel audits packages by inspecting npm registry metadata, tarball signatures, and extracted payload files. It does not make live out-of-band network calls to GitHub, GitLab, or Bitbucket APIs to verify whether a published version matches a signed git commit or GitHub Actions OIDC provenance attestation (`npm provenance`).
+
+---
+
+## 15. Lockfile Injection, Integrity Constraints, and Resolved URL Verification
+
+npm `package-lock.json` entries specify package metadata, an integrity checksum (e.g. `sha512-...`), and a `resolved` URL indicating where npm downloads the package tarball.
+
+**Defensive Boundary & Limitation**:
+- **Resolved URL Verification**: Release Sentinel verifies that any registry-hosted `resolved` URL matches the entry's declared name and version (`https://registry.npmjs.org/<name>/-/<basename>-<version>.tgz`, with full scope handling). A mismatch produces `lockfile_resolved_mismatch` (HIGH severity / Decision.BLOCK under both `default` and `strict` profiles) to thwart lockfile injection / tarball aliasing attacks.
+- **Integrity Requirement**: Entries omitting `integrity` hashes generate `lockfile_missing_integrity` (MEDIUM severity / Decision.WARN). Custom private registries with bespoke non-standard URL path formats or legacy npm v1 lockfiles lacking integrity hashes will trigger warnings.
+
+---
+
+## 16. Metadata Cache TTL (1-Hour Invalidation in Live Mode)
+
+In live analysis mode, npm packument metadata is cached with a 1-hour time-to-live (`metadata_ttl_seconds = 3600`).
+
+**Limitation**: If an attacker or maintainer publishes or unpublishes a release within the 1-hour TTL window, an existing live client instance that previously cached that package will reuse its cached packument until the TTL expires or the cache is cleared. In evaluation and benchmark modes, metadata is kept frozen to guarantee reproducible results.
+
+---
+
+## 17. Single Root Lockfile Unless Explicitly Given
+
+By default, `sentinel check` operates on a single `package-lock.json` file located in the repository root or passed via `--head`.
+
+**Limitation**: Multi-package monorepos that maintain distinct nested `package-lock.json` files in workspace subdirectories must invoke `sentinel check` individually for each lockfile path. `--base-ref` automatically resolves the repository-relative path of the target lockfile, but does not auto-discover multiple independent lockfiles in a single invocation.
+
+---
+
+## 18. Hash-Pinned Action Requirements and Environment Hardening
+
+GitHub Action execution relies on strict cryptographic supply-chain pinning (`requirements-action.lock`).
+
+**Limitation**: The action installs dependencies strictly via `pip install --require-hashes` and `pip install --no-deps`. Custom runners with modified Python environments or unlisted platforms outside standard wheel distributions must maintain a regenerated lockfile matching their specific architecture hashes.
