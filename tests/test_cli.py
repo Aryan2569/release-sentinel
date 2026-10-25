@@ -141,12 +141,12 @@ class TestCliExecution:
     def test_invalid_format_exits_with_error(self):
         result = runner.invoke(app, ["diff", "pkg", "1.0.0", "1.0.1", "--format", "yaml"])
         assert result.exit_code == 1
-        assert "Invalid --format" in result.stderr
+        assert "Invalid --format" in result.output
 
     def test_invalid_min_severity_exits_with_error(self):
         result = runner.invoke(app, ["diff", "pkg", "1.0.0", "1.0.1", "--min-severity", "SUPER"])
         assert result.exit_code == 1
-        assert "Invalid --min-severity" in result.stderr
+        assert "Invalid --min-severity" in result.output
 
     @patch("release_sentinel.cli._run_analysis")
     def test_cli_diff_json_format(self, mock_run: patch):
