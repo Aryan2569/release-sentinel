@@ -10,6 +10,10 @@
 [decision]
 single_signal_cap = "WARN"
 
+[[decision.block_requires]]
+signals = ["lockfile_resolved_mismatch"]
+description = "Lockfile entry resolved URL does not match package name and version (lockfile injection)"
+
 # 1. Install-time script downloading and executing fetched content
 [[decision.block_requires]]
 signals = ["install_script_network"]
@@ -143,6 +147,10 @@ description = "CI workflow modification combined with hardcoded IP address"
 [[full_scan.block_requires]]
 signals = ["ci_write", "hardcoded_url"]
 description = "CI workflow modification combined with outbound URL"
+
+[[full_scan.block_requires]]
+signals = ["lockfile_resolved_mismatch"]
+description = "Lockfile entry resolved URL does not match package name and version (lockfile injection)"
 
 [full_scan.severity_overrides]
 native_binary_present = "LOW"

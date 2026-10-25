@@ -243,13 +243,19 @@ class TestLockfileDiffScanning:
         base_json = json.dumps({
             "lockfileVersion": 3,
             "packages": {
-                "node_modules/lodash": {"version": "4.17.20"},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "integrity": "sha512-olddummy",
+                },
             },
         })
         head_json = json.dumps({
             "lockfileVersion": 3,
             "packages": {
-                "node_modules/lodash": {"version": "4.17.21"},
+                "node_modules/lodash": {
+                    "version": "4.17.21",
+                    "integrity": "sha512-fKT/8IBcj35qo6Q9skSbU/BH890j6k2W9aPInUQdecI7OPhTkUd2Xv/WFqggO0v7fY1Rz9ha8qrRihLqaMnRgw==",  # noqa: E501
+                },
             },
         })
 
@@ -344,7 +350,10 @@ class TestLockfileDiffScanning:
         head_json = json.dumps({
             "lockfileVersion": 3,
             "packages": {
-                "node_modules/added-pkg": {"version": "2.0.0"},
+                "node_modules/added-pkg": {
+                    "version": "2.0.0",
+                    "integrity": "sha512-ILBGG5cRPZBU3O9DyuuRYA+PRPmNdXhOS29lKOCbotgLBcbcxVmUf6thnYxej1vfzsIZLPOwbuY78JwIc89vpg==",  # noqa: E501
+                },
             },
         })
 

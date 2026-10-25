@@ -45,6 +45,7 @@ from release_sentinel.lockfile import (
     LockfileError,
     LockfileParseError,
     UnsupportedLockfileError,
+    get_git_repo_root,
     read_lockfile_from_git,
     read_lockfile_from_path,
     scan_lockfile_diff,
@@ -806,19 +807,43 @@ def check(
     pol = load_policy(policy, profile=profile)
 
     try:
-        if base_ref:
-            base_content = read_lockfile_from_git(base_ref)
-            base_source = f"git:{base_ref}"
-        elif base:
-            base_content, base_source = read_lockfile_from_path(base)
-        else:
+        if not base and not base_ref:
             console.print(
                 "[bold red]Error:[/] Either --base <path> or --base-ref <ref> must be specified."
             )
             raise typer.Exit(code=2)
 
+        if base:
+            base_content, base_source = read_lockfile_from_path(base)
+
         target_head = head or Path("package-lock.json")
         head_content, head_source = read_lockfile_from_path(target_head)
+
+        if base_ref:
+            try:
+                repo_root = get_git_repo_root()
+            except LockfileError as exc:
+                console.print(f"[bold red]Error:[/] {exc}")
+                raise typer.Exit(code=2) from exc
+
+            resolved_head = target_head.resolve()
+            if resolved_head.is_dir():
+                resolved_head = resolved_head / "package-lock.json"
+
+            try:
+                rel_lockfile_path = resolved_head.relative_to(repo_root).as_posix()
+            except ValueError as err:
+                console.print(
+                    f"[bold red]Error:[/] Head lockfile '{target_head}' is outside git repo."
+                )
+                raise typer.Exit(code=2) from err
+
+            base_content = read_lockfile_from_git(
+                base_ref,
+                lockfile_rel_path=rel_lockfile_path,
+                repo_dir=repo_root,
+            )
+            base_source = f"git:{base_ref}:{rel_lockfile_path}"
 
         with NpmRegistryClient(cache_dir=effective_cache) as client:
             report = scan_lockfile_diff(

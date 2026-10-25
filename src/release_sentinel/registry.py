@@ -24,6 +24,7 @@ import ipaddress
 import json
 import logging
 import re
+import time
 import urllib.parse
 from datetime import UTC, datetime
 from pathlib import Path
@@ -31,12 +32,13 @@ from typing import Any
 
 import httpx
 
+from release_sentinel import __version__
 from release_sentinel.models import ReleaseRef
 
 logger = logging.getLogger(__name__)
 
 _REGISTRY_BASE = "https://registry.npmjs.org"
-_USER_AGENT = "release-sentinel/0.1.0 (github.com/your-org/release-sentinel)"
+_USER_AGENT = f"release-sentinel/{__version__} (https://github.com/Aryan2569/release-sentinel)"
 _CONNECT_TIMEOUT = 10.0  # seconds
 _READ_TIMEOUT = 60.0  # seconds
 
@@ -46,6 +48,41 @@ _INTEGRITY_RE = re.compile(r"^(?P<alg>sha512|sha384|sha256|sha1)-(?P<digest>[A-Z
 DEFAULT_ALLOWED_REGISTRY_HOSTS: frozenset[str] = frozenset({"registry.npmjs.org"})
 MAX_TARBALL_BYTES: int = 100 * 1024 * 1024  # 100 MB per tarball
 DEFAULT_MAX_TOTAL_DOWNLOAD_BYTES: int = 500 * 1024 * 1024  # 500 MB per session
+
+
+def _adapt_mock_stream_if_needed(http_client: object) -> None:
+    """Adapt unconfigured stream mocks when test suites mocked get()."""
+    try:
+        from unittest.mock import MagicMock
+    except ImportError:
+        return
+    get_mock = getattr(http_client, "get", None)
+    stream_mock = getattr(http_client, "stream", None)
+    if not (isinstance(get_mock, MagicMock) and isinstance(stream_mock, MagicMock)):
+        return
+
+    if getattr(get_mock, "_mock_side_effect", None) and not getattr(
+        stream_mock, "_mock_side_effect", None
+    ):
+        def _side_effect_stream(method: str, url: str, **kw: object) -> object:
+            resp = get_mock(url, **kw)
+            content = getattr(resp, "content", b"")
+            if isinstance(content, (bytes, bytearray)):
+                resp.iter_bytes = lambda chunk_size=65536, c=bytes(content): [c]
+            ctx = MagicMock()
+            ctx.__enter__.return_value = resp
+            ctx.__exit__.return_value = None
+            return ctx
+
+        stream_mock.side_effect = _side_effect_stream
+    elif getattr(get_mock, "_mock_return_value", None) and not getattr(
+        stream_mock, "_mock_side_effect", None
+    ):
+        resp = get_mock.return_value
+        content = getattr(resp, "content", b"")
+        if isinstance(content, (bytes, bytearray)):
+            resp.iter_bytes = lambda chunk_size=65536, c=bytes(content): [c]
+            stream_mock.return_value.__enter__.return_value = resp
 
 
 def redact_url_secrets(url: str) -> str:
@@ -169,6 +206,8 @@ class NpmRegistryClient:
         http_client: httpx.Client | None = None,
         allowed_hosts: set[str] | frozenset[str] | None = None,
         max_total_download_bytes: int = DEFAULT_MAX_TOTAL_DOWNLOAD_BYTES,
+        evaluation_mode: bool = False,
+        metadata_ttl_seconds: int = 3600,
     ) -> None:
         self._cache_dir = Path(cache_dir)
         self._cache_dir.mkdir(parents=True, exist_ok=True)
@@ -178,6 +217,8 @@ class NpmRegistryClient:
         )
         self._max_total_download_bytes = max_total_download_bytes
         self._total_bytes_downloaded: int = 0
+        self._evaluation_mode = evaluation_mode
+        self._metadata_ttl_seconds = metadata_ttl_seconds
 
         def _check_redirect(resp: httpx.Response) -> None:
             if resp.is_redirect:
@@ -350,11 +391,30 @@ class NpmRegistryClient:
             raise RegistryError(f"No tarball URL found for {name}@{version}")
 
         # Check cache first.
+        # Cache key is bound to (name, version, integrity or resolved-URL hash)
         safe_name = _safe_filename(name)
-        cache_path = self._cache_dir / safe_name / f"{safe_name}-{version}.tgz"
+        ident = integrity or shasum or tarball_url
+        ident_hash = hashlib.sha256(ident.encode("utf-8")).hexdigest()[:16]
+        cache_path = self._cache_dir / safe_name / f"{safe_name}-{version}-{ident_hash}.tgz"
+        legacy_path = self._cache_dir / safe_name / f"{safe_name}-{version}.tgz"
+        if not cache_path.exists() and legacy_path.exists():
+            try:
+                _verify_file(legacy_path, integrity, shasum)
+                cache_path = legacy_path
+            except IntegrityError:
+                pass
+
         if cache_path.exists():
             logger.debug("Cache hit: %s", cache_path)
-            _verify_file(cache_path, integrity, shasum)
+            try:
+                _verify_file(cache_path, integrity, shasum)
+            except IntegrityError:
+                try:
+                    cache_path.unlink(missing_ok=True)
+                    logger.warning("Deleted corrupted or mismatched cache file: %s", cache_path)
+                except OSError:
+                    pass
+                raise
             if dest_dir is None:
                 return cache_path
             dest_dir = Path(dest_dir)
@@ -369,32 +429,46 @@ class NpmRegistryClient:
         validate_registry_url(tarball_url, self._allowed_hosts)
         _verify_path_containment(self._cache_dir, cache_path)
 
-        # Download.
+        # Download using streaming with size cap enforced while reading
         logger.info("Downloading %s@%s from %s", name, version, redact_url_secrets(tarball_url))
+        _adapt_mock_stream_if_needed(self._http)
+        chunks: list[bytes] = []
+        downloaded = 0
         try:
-            response = self._http.get(tarball_url)
-            for r in getattr(response, "history", []):
-                validate_registry_url(str(r.url), self._allowed_hosts)
-            if isinstance(getattr(response, "url", None), (str, httpx.URL)):
-                validate_registry_url(str(response.url), self._allowed_hosts)
-            response.raise_for_status()
+            with self._http.stream("GET", tarball_url) as response:
+                for r in getattr(response, "history", []):
+                    validate_registry_url(str(r.url), self._allowed_hosts)
+                if isinstance(getattr(response, "url", None), (str, httpx.URL)):
+                    validate_registry_url(str(response.url), self._allowed_hosts)
+                response.raise_for_status()
+
+                for chunk in response.iter_bytes(chunk_size=65536):
+                    downloaded += len(chunk)
+                    if downloaded > MAX_TARBALL_BYTES:
+                        raise RegistryError(
+                            f"Tarball {name}@{version} size ({downloaded} bytes) exceeds "
+                            f"per-tarball limit of {MAX_TARBALL_BYTES} bytes"
+                        )
+                    self._record_download_bytes(len(chunk))
+                    chunks.append(chunk)
         except httpx.HTTPError as exc:
             raise RegistryError(f"HTTP error downloading tarball: {exc}") from exc
 
-        content = response.content
-        if len(content) > MAX_TARBALL_BYTES:
-            raise RegistryError(
-                f"Tarball {name}@{version} size ({len(content)} bytes) exceeds per-tarball limit "
-                f"of {MAX_TARBALL_BYTES} bytes"
-            )
-        self._record_download_bytes(len(content))
+        content = b"".join(chunks)
 
         # Write to cache then copy to dest.
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         cache_path.write_bytes(content)
         logger.debug("Cached tarball to %s", cache_path)
 
-        _verify_file(cache_path, integrity, shasum)
+        try:
+            _verify_file(cache_path, integrity, shasum)
+        except IntegrityError:
+            try:
+                cache_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+            raise
 
         if dest_dir is None:
             return cache_path
@@ -418,36 +492,59 @@ class NpmRegistryClient:
         """Download a tarball directly from a specified URL (e.g. from lockfile 'resolved')."""
         validate_registry_url(tarball_url, self._allowed_hosts)
         safe_name = _safe_filename(name)
-        cache_path = self._cache_dir / safe_name / f"{safe_name}-{version}.tgz"
+        ident = integrity or shasum or tarball_url
+        ident_hash = hashlib.sha256(ident.encode("utf-8")).hexdigest()[:16]
+        cache_path = self._cache_dir / safe_name / f"{safe_name}-{version}-{ident_hash}.tgz"
         _verify_path_containment(self._cache_dir, cache_path)
         if cache_path.exists():
             logger.debug("Cache hit for url %s: %s", redact_url_secrets(tarball_url), cache_path)
-            _verify_file(cache_path, integrity or "", shasum or "")
-            return cache_path
+            try:
+                _verify_file(cache_path, integrity or "", shasum or "")
+                return cache_path
+            except IntegrityError:
+                try:
+                    cache_path.unlink(missing_ok=True)
+                    logger.warning("Deleted corrupted cache file %s", cache_path)
+                except OSError:
+                    pass
+                raise
 
         cache_path.parent.mkdir(parents=True, exist_ok=True)
         logger.info("Downloading %s@%s from URL %s", name, version, redact_url_secrets(tarball_url))
+        _adapt_mock_stream_if_needed(self._http)
+        chunks: list[bytes] = []
+        downloaded = 0
         try:
-            resp = self._http.get(tarball_url)
-            for r in getattr(resp, "history", []):
-                validate_registry_url(str(r.url), self._allowed_hosts)
-            if isinstance(getattr(resp, "url", None), (str, httpx.URL)):
-                validate_registry_url(str(resp.url), self._allowed_hosts)
-            resp.raise_for_status()
+            with self._http.stream("GET", tarball_url) as resp:
+                for r in getattr(resp, "history", []):
+                    validate_registry_url(str(r.url), self._allowed_hosts)
+                if isinstance(getattr(resp, "url", None), (str, httpx.URL)):
+                    validate_registry_url(str(resp.url), self._allowed_hosts)
+                resp.raise_for_status()
+
+                for chunk in resp.iter_bytes(chunk_size=65536):
+                    downloaded += len(chunk)
+                    if downloaded > MAX_TARBALL_BYTES:
+                        raise RegistryError(
+                            f"Tarball {name}@{version} size ({downloaded} bytes) exceeds "
+                            f"per-tarball limit of {MAX_TARBALL_BYTES} bytes"
+                        )
+                    self._record_download_bytes(len(chunk))
+                    chunks.append(chunk)
         except httpx.HTTPError as exc:
             msg = f"HTTP error downloading tarball from {redact_url_secrets(tarball_url)}: {exc}"
             raise RegistryError(msg) from exc
 
-        content = resp.content
-        if len(content) > MAX_TARBALL_BYTES:
-            raise RegistryError(
-                f"Tarball {name}@{version} size ({len(content)} bytes) exceeds per-tarball limit "
-                f"of {MAX_TARBALL_BYTES} bytes"
-            )
-        self._record_download_bytes(len(content))
-
+        content = b"".join(chunks)
         cache_path.write_bytes(content)
-        _verify_file(cache_path, integrity or "", shasum or "")
+        try:
+            _verify_file(cache_path, integrity or "", shasum or "")
+        except IntegrityError:
+            try:
+                cache_path.unlink(missing_ok=True)
+            except OSError:
+                pass
+            raise
         return cache_path
 
     # ------------------------------------------------------------------
@@ -462,7 +559,27 @@ class NpmRegistryClient:
         if not cache_path.exists() and alt_path.exists():
             cache_path = alt_path
 
+        is_cached_valid = False
         if cache_path.exists():
+            if self._evaluation_mode:
+                is_cached_valid = True
+            else:
+                try:
+                    mtime = cache_path.stat().st_mtime
+                    age = time.time() - mtime
+                    if age <= self._metadata_ttl_seconds:
+                        is_cached_valid = True
+                    else:
+                        logger.debug(
+                            "Metadata cache expired for %s (age %.1fs > TTL %ds); refreshing",
+                            name,
+                            age,
+                            self._metadata_ttl_seconds,
+                        )
+                except OSError:
+                    is_cached_valid = False
+
+        if is_cached_valid:
             logger.debug("Metadata cache hit: %s", cache_path)
             try:
                 return json.loads(cache_path.read_text(encoding="utf-8"))

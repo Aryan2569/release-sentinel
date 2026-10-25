@@ -567,10 +567,53 @@ def _sort_changes_by_risk(
     return sorted(changes, key=risk_tuple)
 
 
-def read_lockfile_from_git(ref: str, repo_dir: Path | None = None) -> str:
-    """Read package-lock.json from a specific git ref."""
+def is_resolved_path_matching(pkg_name: str, version: str, resolved_url: str | None) -> bool:
+    """Check if the resolved URL path matches the package name and version.
+
+    Standard npm registry format:
+    https://registry.npmjs.org/<name>/-/<basename>-<version>.tgz
+    Handles scoped packages:
+    https://registry.npmjs.org/@scope/pkg/-/pkg-version.tgz
+    """
+    if not resolved_url:
+        return True
+    try:
+        parsed = urllib.parse.urlparse(resolved_url)
+        path = urllib.parse.unquote(parsed.path)
+        basename = pkg_name.split("/")[-1]
+        expected_path = f"/{pkg_name}/-/{basename}-{version}.tgz"
+        return path == expected_path
+    except Exception:
+        return False
+
+
+def get_git_repo_root(cwd: Path | None = None) -> Path:
+    """Return the absolute path to the git repository root."""
+    try:
+        proc = subprocess.run(  # noqa: S603
+            ["git", "rev-parse", "--show-toplevel"],  # noqa: S607
+            cwd=str(cwd) if cwd else None,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        return Path(proc.stdout.strip()).resolve()
+    except Exception as exc:
+        raise LockfileError(f"Not inside a git repository: {exc}") from exc
+
+
+def read_lockfile_from_git(
+    ref: str,
+    lockfile_rel_path: str = "package-lock.json",
+    repo_dir: Path | None = None,
+) -> str:
+    """Read lockfile from a specific git ref at the repository-relative path."""
     safe_ref = validate_git_ref(ref)
-    cmd = ["git", "show", f"{safe_ref}:package-lock.json", "--"]
+    clean_path = lockfile_rel_path.replace("\\", "/").strip().lstrip("/")
+    if not clean_path or clean_path.startswith("..") or "/../" in clean_path:
+        raise LockfileError(f"Invalid repository-relative lockfile path: {lockfile_rel_path!r}")
+
+    cmd = ["git", "show", f"{safe_ref}:{clean_path}", "--"]
     try:
         proc = subprocess.run(  # noqa: S603
             cmd,
@@ -582,7 +625,7 @@ def read_lockfile_from_git(ref: str, repo_dir: Path | None = None) -> str:
         return proc.stdout
     except subprocess.CalledProcessError as exc:
         stderr = exc.stderr.strip() if exc.stderr else ""
-        msg = f"Could not read package-lock.json from git ref '{safe_ref}': {stderr}"
+        msg = f"Could not read {clean_path} from git ref '{safe_ref}': {stderr}"
         raise LockfileError(msg) from exc
 
 
@@ -740,6 +783,65 @@ def scan_lockfile_diff(
                 })
                 continue
 
+            if change.resolved and not is_resolved_path_matching(
+                pkg_name, new_ver, change.resolved
+            ):
+                basename = pkg_name.split("/")[-1]
+                expected_path = f"/{pkg_name}/-/{basename}-{new_ver}.tgz"
+                ev_mismatch = Evidence(
+                    id="lockfile_resolved_mismatch",
+                    severity=Severity.HIGH,
+                    file="package-lock.json",
+                    explanation=(
+                        f"Lockfile entry for '{pkg_name}@{new_ver}' resolves to unexpected URL "
+                        f"'{redact_url_secrets(change.resolved)}' (expected path '{expected_path}'). "  # noqa: E501
+                        "This indicates potential lockfile injection or package aliasing attack."
+                    ),
+                    legitimate_use_note=(
+                        "Private registries or custom mirrors with non-standard URL path schemes."
+                    ),
+                )
+                decision, lims = decide([ev_mismatch], policy=policy, is_full_scan=False)
+                package_results.append({
+                    "package": pkg_name,
+                    "old_version": old_ver,
+                    "new_version": new_ver,
+                    "change_type": change.change_type,
+                    "decision": decision.name,
+                    "evidence": [ev_mismatch.id],
+                    "evidence_details": [
+                        {
+                            "id": ev_mismatch.id,
+                            "severity": ev_mismatch.severity.name,
+                            "file": ev_mismatch.file,
+                            "explanation": ev_mismatch.explanation,
+                            "legitimate_use_note": ev_mismatch.legitimate_use_note,
+                        }
+                    ],
+                    "limitations": lims,
+                    "status": "lockfile_resolved_mismatch",
+                })
+                all_limitations.extend(lims)
+                overall_decision = Decision.BLOCK
+                continue
+
+            extra_evidence: list[Evidence] = []
+            if not change.integrity:
+                extra_evidence.append(
+                    Evidence(
+                        id="lockfile_missing_integrity",
+                        severity=Severity.MEDIUM,
+                        file="package-lock.json",
+                        explanation=(
+                            f"Lockfile entry for '{pkg_name}@{new_ver}' is missing integrity hash. "
+                            "Without an integrity hash, tarball tampering cannot be detected."
+                        ),
+                        legitimate_use_note=(
+                            "Older npm lockfiles or local workspace entries may omit integrity."
+                        ),
+                    )
+                )
+
             try:
                 # Download new tarball (using resolved URL if present)
                 if change.resolved:
@@ -815,6 +917,8 @@ def scan_lockfile_diff(
                     experimental_hollow=experimental_hollow,
                     is_registry_package=is_reg,
                 )
+                if extra_evidence:
+                    evidence.extend(extra_evidence)
                 is_full = rc_old is None
                 decision, lims = decide(evidence, policy=policy, is_full_scan=is_full)
 
