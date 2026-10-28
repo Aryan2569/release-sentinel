@@ -2609,7 +2609,7 @@
   "versions": {
     "v1.0": {
       "git_tag": "v1.0",
-      "commit_sha": "5c0e791c623bfa4aaa2044745e6a5ae1d6849397",
+      "commit_sha": "f74afbb39fd733218807e7d9e97c204d2c27d9a6",
       "malicious_results_jsonl": "data/eval_results_v5.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v5.csv",
@@ -2620,7 +2620,7 @@
     },
     "v1.1": {
       "git_tag": "v1.1",
-      "commit_sha": "822e22317720999a9a28bb416e9823fb98665849",
+      "commit_sha": "44d186ef4185b8c71834916ee80fbd8e016c16f1",
       "malicious_results_jsonl": "data/eval_results_v6.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v6.csv",
@@ -2631,7 +2631,7 @@
     },
     "v1.2": {
       "git_tag": "v1.2",
-      "commit_sha": "28d0af2d1a37d6eef2726225e9f21e8ac496c432",
+      "commit_sha": "898b386c67b5cc415a7b0fb83c9352e64f8f2af5",
       "malicious_results_jsonl": "data/eval_results_v7.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v7.csv",
@@ -2642,7 +2642,7 @@
     },
     "v1.2.1": {
       "git_tag": "v1.2.1",
-      "commit_sha": "bc92a00385b82fd2a1425f250c3e0da4f8656043",
+      "commit_sha": "6097ec625ed015d33616ae9ae218c8b6de377b12",
       "malicious_results_jsonl": "data/eval_results_v8.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v8.csv",
@@ -2653,7 +2653,7 @@
     },
     "v1.3": {
       "git_tag": "v1.3",
-      "commit_sha": "8726aa7b4dc9e5cf89a03e7e055959015e79f968",
+      "commit_sha": "27bc0b9d850a792c620b2607491546c5d8bc1554",
       "malicious_results_jsonl": "data/eval_results_v9.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v9.csv",
@@ -2664,7 +2664,7 @@
     },
     "v1.3.1": {
       "git_tag": "v1.3.1",
-      "commit_sha": "8617cd1a9a36d2c6f17a7c3f99aef9a940f381a3",
+      "commit_sha": "81828050e22eaf24cee7991769e79c68cf809d64",
       "malicious_results_jsonl": "data/eval_results_v10.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v10.csv",
@@ -2675,7 +2675,7 @@
     },
     "v1.4": {
       "git_tag": "v1.4",
-      "commit_sha": "dd6b45c330daeb0b84fa8a1fbf943312aba4d933",
+      "commit_sha": "0fbc493a19d24d810e3044a3302ffca63bedd56f",
       "malicious_results_jsonl": "data/eval_results_v11.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v11.csv",
@@ -2687,7 +2687,7 @@
     },
     "v1.5": {
       "git_tag": "v1.5",
-      "commit_sha": "19c683834e4392da8a7a8e704c39d50c274cda7f",
+      "commit_sha": "6732c573d602f58e3911650a4d5750edb3d5d18d",
       "malicious_results_jsonl": "data/eval_results_v11.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v11.csv",
@@ -2699,7 +2699,7 @@
     },
     "v1.5.1": {
       "git_tag": "v1.5.1",
-      "commit_sha": "73871b268b8b0e7c53d4c4b57423c7ad9987814c",
+      "commit_sha": "ff2d0d946d4ad831debedfc19a97f14f8238145e",
       "malicious_results_jsonl": "data/eval_results_v11.jsonl",
       "benign_results": {
         "tuning_smoke": "data/smoke_results_v11.csv",
