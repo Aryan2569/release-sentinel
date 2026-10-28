@@ -201,7 +201,7 @@ class TestZipLoaderSafety:
             load_zip_release(zip_bytes)
 
     def test_windows_absolute_path_rejected(self) -> None:
-        files = {"C:/evil.bat": b'data'}
+        files = {"D:/evil.bat": b'data'}
         zip_bytes = make_synthetic_encrypted_zip(files)
         with pytest.raises(ExtractionError, match="Refusing Windows absolute path"):
             load_zip_release(zip_bytes)

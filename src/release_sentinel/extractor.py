@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 _HARD_MAX_FILE_COUNT = 10_000
 _HARD_MAX_TOTAL_SIZE = 500 * 1024 * 1024  # 500 MB
 
-# Matches Windows-style absolute paths like C:\ or D:/
+# Matches Windows-style drive absolute paths (e.g. D:\ or D:/)
 _WINDOWS_ABS_RE = re.compile(r"^[A-Za-z]:[/\\]")
 
 # Priority file patterns for soft-cap partial extraction

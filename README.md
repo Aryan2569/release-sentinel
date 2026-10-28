@@ -1,11 +1,9 @@
 # Release Sentinel
 
 [![CI](https://github.com/Aryan2569/release-sentinel/actions/workflows/ci.yml/badge.svg)](https://github.com/Aryan2569/release-sentinel/actions)
-[![PyPI version](https://img.shields.io/pypi/v/release-sentinel.svg)](https://pypi.org/project/release-sentinel/)
-[![Python versions](https://img.shields.io/pypi/pyversions/release-sentinel.svg)](https://pypi.org/project/release-sentinel/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-Release Sentinel is a time-aware static security gate that catches compromised npm package updates in pull requests before you merge them. Unlike vulnerability scanners that query advisory databases of known CVEs or dynamic sandboxes that execute untrusted code, Release Sentinel performs fast, safe, in-memory differential static analysis between published package versions at update time.
+Release Sentinel is a time-aware static security gate that flags suspicious changes in npm dependency updates in pull requests before you merge them. Unlike vulnerability scanners that query advisory databases of known CVEs or dynamic sandboxes that execute untrusted code, Release Sentinel performs fast, safe, in-memory differential static analysis between published package versions at update time.
 
 ---
 
@@ -22,10 +20,10 @@ Release Sentinel is in public alpha. It is engineered with an **advisory-first**
 
 ### Local CLI Installation
 
-Install Release Sentinel from PyPI using Python 3.12+:
+Install Release Sentinel from the alpha release tag using Python 3.12+:
 
 ```bash
-pip install release-sentinel
+pip install git+https://github.com/Aryan2569/release-sentinel@v0.5.0
 ```
 
 ### Auditing a Lockfile Diff
@@ -44,11 +42,15 @@ sentinel check --base-ref origin/main --head package-lock.json
 
 ### Exit Code Semantics
 
-Release Sentinel adheres to standard CI exit codes:
-
-- **`0` (Pass)**: All inspected package changes passed within configured security policy.
-- **`1` (Gate Failed)**: One or more package changes triggered a policy violation (`BLOCK`, or `WARN` when `--fail-on warn` is set).
-- **`2` (Usage / Input Error)**: Invalid arguments, malformed lockfiles, or unsupported formats (e.g. yarn/pnpm).
+- **`sentinel check` (CI Security Gate)**:
+  - **`0` (Pass)**: All inspected package changes passed within configured security policy.
+  - **`1` (Gate Failed)**: One or more package changes triggered a policy violation (`BLOCK`, or `WARN` when `--fail-on warn` is set).
+  - **`2` (Usage / Input Error)**: Invalid arguments, malformed lockfiles, or unsupported formats (e.g. yarn/pnpm).
+- **`sentinel diff` (Package Comparator)**:
+  - **`0` (ALLOW)**: Clean package difference.
+  - **`1` (WARN)**: Suspicious signals detected.
+  - **`2` (BLOCK)**: Severe security violations detected.
+  - **`1` (Input / Usage Error)**: Invalid options or unparseable versions.
 
 ---
 
@@ -85,6 +87,7 @@ jobs:
           comment-on: "notable"
           profile: "default"
           max-packages: 300
+```
 
 ### Critical Security Rules for Using This Action
 
@@ -93,10 +96,9 @@ jobs:
 2. **Require `fetch-depth: 0`**:
    The action diffs your updated lockfile against the base branch (`origin/${{ github.base_ref }}`). Passing `fetch-depth: 0` to `actions/checkout` ensures the base commit is available locally for `git show`.
 3. **Zero Code Execution**:
-   Release Sentinel never runs `npm install`, `node`, shell scripts, or lifecycle hooks. It inspects package diffs purely through static in-memory AST and regex analysis.
+   Release Sentinel never runs `npm install`, `node`, shell scripts, or lifecycle hooks. It inspects package diffs purely through static in-memory regex-based heuristics.
 4. **Supply-Chain Hardening & Hash Locking**:
    The action dependencies are strictly pinned by cryptographic SHA-256 hashes (`requirements-action.lock`) and installed with `--require-hashes` and `--no-deps`. All third-party action dependencies are pinned by immutable 40-character commit SHAs.
-```
 
 ### Action Configuration Options
 
@@ -120,23 +122,16 @@ When a compromised package is detected in a dependency update, Release Sentinel 
 <!-- release-sentinel-pr-comment -->
 ## Release Sentinel Security Gate
 
-**Verdict:** 🛑 **BLOCK** — 1 package(s) blocked out of 1 scanned.
+**Verdict:** ⚠️ **WARN** — 1 package(s) flagged with warnings out of 1 scanned.
 
 ### Flagged Packages
 
 | Package | Version Change | Decision | Top Evidence | Why It Matters | Legitimate Explanation |
-| :--- | :---: | :---: | :--- | :--- | :--- |
-| `axios` | `1.14.0` → `1.14.1` | 🛑 BLOCK | `[dep: plain-crypto-js@1.0.0] install_script_executes` | Newly introduced dependency executes shell commands during `npm install`. | Packages legitimately add install helper scripts. Review the file content to verify it performs only expected setup. |
-
-<details>
-<summary><b>Inspected Packages (ALLOW) (0)</b></summary>
-
-| Package | Version Change | Decision | Notes |
-| :--- | :---: | :---: | :--- |
-
-</details>
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| `axios` | `1.14.0` → `1.14.1` | ⚠️ WARN | `install_script_present` | [dep: plain-crypto-js@​4.2.1] Lifecycle script 'postinstall' references script target 'setup.js' that is missing from the package. | Broken or incomplete package packaging. |
 
 ### Limitations & Scope
+
 - JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible.
 - Every changed lockfile entry (including transitive dependencies) is scanned.
 
@@ -166,7 +161,7 @@ Supply chain attacks frequently inject malicious behavior by adding runtime depe
 ### 5. Fail-Closed Live Architecture with Safety Budgets
 To protect production CI against denial-of-service and evasive attacks, Release Sentinel enforces strict deterministic budgets:
 - **Package Cap**: Scans up to 300 packages per update, prioritizing added packages and install hooks first.
-- **Extraction Limits**: Rejects archives exceeding 5,000 files, 200 MB uncompressed size, or 25 MB single-file ceiling.
+- **Extraction Limits**: Soft caps degrade gracefully (extracting priority files when archives exceed 5,000 files or 200 MB uncompressed size, recording explicit limitations), while files exceeding 25 MB fail closed to WARN.
 - **Linear-Time Chunking**: Files up to 25 MB are scanned in overlapping linear-time windows, preventing attackers from evading detection past initial file prefixes.
 
 ---
@@ -177,17 +172,17 @@ Release Sentinel's detection efficacy and false alarm rates are continuously val
 
 ### Malicious Recall Benchmark (1,349 Evaluation Pairs)
 
-All metrics below are generated directly by [`scripts/verify_metrics.py`](file:///c:/My%20project/scripts/verify_metrics.py) from canonical evaluation records in [`docs/METRICS.json`](file:///c:/My%20project/docs/METRICS.json):
+All metrics below are generated directly by [`scripts/verify_metrics.py`](scripts/verify_metrics.py) from canonical evaluation records in [`docs/METRICS.json`](docs/METRICS.json):
 
 | Dataset Split | Pairs / Campaigns | Strict Profile Recall (v1.4) | Default Profile Recall (v0.5.0) | Lenient Campaign Recall (Default) [95% CI] |
 | :--- | :---: | :---: | :---: | :---: |
 | **DEV** | 857 pairs / 53 camp. | 98.95% WARN+ / 94.63% BLOCK | 98.95% WARN+ / 91.25% BLOCK | 48/53 (90.57%) [79.34%, 96.87%] |
 | **VAL** | 94 pairs / 12 camp. | 100.0% WARN+ / 96.81% BLOCK | 100.0% WARN+ / 84.04% BLOCK | 12/12 (100.0%) [73.54%, 100.0%] |
-| **TEST-A** (Held-Out) | 274 pairs / 70 camp. | 95.99% WARN+ / 71.90% BLOCK | 95.99% WARN+ / 18.98% BLOCK | 63/70 (90.00%) [80.48%, 95.88%] |
+| **TEST-A** (Tuned on / Post-hoc) | 274 pairs / 70 camp. | 95.99% WARN+ / 71.90% BLOCK | 95.99% WARN+ / 18.98% BLOCK | 63/70 (90.00%) [80.48%, 95.88%] |
 | **TEST-B** (Aggregate) | 124 pairs / 5 camp. | 7.26% WARN+ / 2.42% BLOCK | 7.26% WARN+ / 1.61% BLOCK | 4/5 (80.00%) [28.36%, 99.49%] |
 | **ALL** | 1,349 pairs / 140 camp. | 89.99% WARN+ / 81.69% BLOCK | 89.99% WARN+ / 67.83% BLOCK | 127/140 (90.71%) [84.64%, 94.96%] |
 
-> **Note on Test Splits**: The `default` profile maintains **100% of WARN+ detection coverage** (1,214 of 1,349 pairs; 127 of 140 campaigns) while demoting ambiguous single-signal heuristics to reduce CI noise. TEST-B represents multi-version obfuscated malware families where static diffing without install scripts requires behavioral execution.
+> **Note on Test Splits**: The `default` profile maintains **100% of WARN+ detection coverage** (1,214 of 1,349 pairs; 127 of 140 campaigns) while demoting ambiguous single-signal heuristics to reduce CI noise. TEST-B is dominated by the hollow dependency-injection wave (metadata-only releases that add runtime dependencies without package code). The hollow-release and lookalike detection rules are experimental, post-hoc, and WARN-only.
 
 ### Attack Wave Breakdown: 2025 Install Hooks vs. 2026 Runtime Obfuscation
 
@@ -223,7 +218,7 @@ Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 
 
 ![Attack Style Over Time](docs/attack_style_over_time.png)
 
-*Figure 1: Evolution of npm supply chain attack vectors from 2021 to 2024. Attacks have progressively shifted away from blatant install-script hooks (`preinstall`/`postinstall`) toward multi-stage credential harvesting, indirect dependency additions, and obfuscated runtime loaders.*
+*Figure 1: Evolution of npm supply chain attack vectors across discovery dates from late 2024 to October 2026 (based on METRICS.json and docs/attack_style_over_time.md). Attacks have progressively shifted away from standalone install scripts toward runtime dependency additions: malicious pairs adding a runtime dependency account for 1.2% in DEV, 1.1% in VAL, 17.1% in TEST-A, and 94.9% in TEST-B.*
 
 ---
 
@@ -237,11 +232,16 @@ Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 
 - Newly introduced runtime dependencies carrying suspicious or uninspected payloads.
 
 ### What Release Sentinel Does Not Catch
-- **Pure Runtime Logic Bombs**: Deep application logic changes executed solely within user code paths without external network access or credential access.
-- **Minified Build Artifacts**: Differences buried entirely inside pre-bundled, minified client bundles (e.g. webpack/rollup output) without source maps.
-- **Pre-existing Compromises**: Packages that were compromised prior to the chosen baseline release.
+- **Capability-Novelty Blind Spot**: Static capability signals (`eval()`, `child_process.exec()`, `http.get()`) are baseline-subtracted. If a package legitimately used those APIs in its baseline version, adding further calls to those same APIs in an update does not trigger new capability evidence unless accompanied by new unlisted hosts, encoded payloads, or install scripts.
+- **Non-JavaScript Scripting Payloads**: Content analysis is specialized for JavaScript and TypeScript syntax. Scripts in `.sh`, `.ps1`, `.bat`, or `.py` trigger file-addition notices (`notable_new_file`) or lifecycle command warnings, but their internal script bodies are not parsed or scanned for language-specific constructs.
+- **Hollow Dependency-Injection Waves (Metadata-Only)**: The newest wave of supply-chain attacks publishes hollow releases with empty bodies that inject lookalike runtime dependencies. In the low-noise default profile, these are warned on (4 of 118 members in `camp_0136`) under experimental, post-hoc rules.
+- **TanStack-Style Bundled Tool Waves under Default Profile**: Multi-version dev tools and runtime loaders without install scripts cap at WARN under the low-noise default profile to prevent breaking legitimate developer builds.
+- **Changed (Not New) Native Binaries**: Pre-existing `.node`, `.wasm`, `.so`, or `.dll` binary assets modified in an update are not decompiled, disassembled, or reverse-engineered.
+- **Alternative Package Managers (Yarn / pnpm)**: Only npm `package-lock.json` (v1, v2, v3) is supported. `yarn.lock` and `pnpm-lock.yaml` are unsupported and rejected.
+- **No Live Remote GitHub Commit/Tag Validation**: Does not query GitHub or GitLab APIs to verify whether published npm tarballs correspond to signed commits or GitHub Actions OIDC provenance attestations (`npm provenance`).
+- **Live Malware Dataset Warning**: The DataDog research dataset contains real, live malicious npm packages. In accordance with Rules 1 and 7, Release Sentinel reads them solely in memory as inert data for static inspection; malicious code is never extracted to disk or executed.
 
-For full technical specifications of evasion boundaries and mitigations, consult [`docs/LIMITATIONS.md`](file:///c:/My%20project/docs/LIMITATIONS.md).
+For full technical specifications of evasion boundaries and mitigations, consult [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md).
 
 ---
 
@@ -249,7 +249,7 @@ For full technical specifications of evasion boundaries and mitigations, consult
 
 Anyone can independently verify Release Sentinel's published metrics using the public DataDog research dataset without downloading any private malware corpora.
 
-See [`docs/REPRODUCING.md`](file:///c:/My%20project/docs/REPRODUCING.md) for step-by-step instructions on setting up sparse git checkouts and executing verification test harnesses.
+See [`docs/REPRODUCING.md`](docs/REPRODUCING.md) for step-by-step instructions on setting up sparse git checkouts and executing verification test harnesses.
 
 ---
 
@@ -257,13 +257,13 @@ See [`docs/REPRODUCING.md`](file:///c:/My%20project/docs/REPRODUCING.md) for ste
 
 - **Lockfile Ecosystems**: Native parsing and diffing for `pnpm-lock.yaml` and Yarn (`yarn.lock` v1/v2).
 - **Multi-Language Expansion**: Python supply chain analysis (`requirements.txt`, `poetry.lock`) via PyPI.
-- **Custom Rule Plugins**: Extensible policy rule authoring via TOML and Rego policies.
+- **Custom Rule Plugins**: Extensible policy rule authoring via TOML.
 - **IDE Extensions**: Pre-merge inline annotations in VS Code and JetBrains IDEs.
 
 ---
 
 ## License & Acknowledgments
 
-Release Sentinel is licensed under the [MIT License](file:///c:/My%20project/LICENSE).
+Release Sentinel is licensed under the [MIT License](LICENSE).
 
 We gratefully acknowledge the researchers and maintainers of the [DataDog Malicious Software Packages Dataset](https://github.com/DataDog/malicious-software-packages-dataset) and the public [npm Registry](https://registry.npmjs.org) for enabling open, reproducible security research.

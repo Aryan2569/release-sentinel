@@ -6,7 +6,7 @@ This guide explains how to independently reproduce the evaluation results report
 
 ## Safety Requirements
 
-All evaluations strictly follow the seven core safety rules in [`PROJECT_RULES.md`](file:///c:/My%20project/docs/PROJECT_RULES.md):
+All evaluations strictly follow the seven core safety rules in [`PROJECT_RULES.md`](PROJECT_RULES.md):
 - **Rule 1 & 7**: Malicious packages are never executed, installed, or extracted to disk. They remain in encrypted ZIP archives at rest (`password: infected`) and are inspected solely in memory.
 - **Rule 3**: Evaluation functions enforce time-awareness via `as_of: datetime` cutoffs matching discovery timestamps.
 
@@ -19,8 +19,8 @@ The malicious evaluation dataset is sourced directly from the public [DataDog Ma
 To clone only the necessary npm samples using git sparse-checkout:
 
 ```powershell
-# Set target directory (e.g., C:\rs-data\datadog on Windows or ~/rs-data/datadog on Linux)
-$SAMPLES_DIR = "C:\rs-data\datadog"
+# Set target directory (e.g., $HOME/rs-data/datadog on Windows or ~/rs-data/datadog on Linux)
+$SAMPLES_DIR = "$HOME/rs-data/datadog"
 
 git clone --depth 1 --filter=blob:none --no-checkout https://github.com/DataDog/malicious-software-packages-dataset.git $SAMPLES_DIR
 git -C $SAMPLES_DIR config core.protectNTFS false
@@ -32,8 +32,8 @@ Set the environment variable pointing Release Sentinel to this directory:
 
 ```powershell
 # Windows PowerShell:
-$env:RS_SAMPLES_ROOT = "C:\rs-data\datadog"
-[System.Environment]::SetEnvironmentVariable("RS_SAMPLES_ROOT", "C:\rs-data\datadog", "User")
+$env:RS_SAMPLES_ROOT = "$HOME/rs-data/datadog"
+[System.Environment]::SetEnvironmentVariable("RS_SAMPLES_ROOT", "$HOME/rs-data/datadog", "User")
 
 # Linux / macOS:
 export RS_SAMPLES_ROOT=~/rs-data/datadog
@@ -72,5 +72,5 @@ This script computes all sample-level and campaign-level recall metrics (includi
 
 - **DEV (857 pairs, 53 campaigns)**: Used for initial heuristic development and policy calibration.
 - **VAL (94 pairs, 12 campaigns)**: Used for tuning validation and regression checking.
-- **TEST-A (274 pairs, 70 campaigns)**: Held-out test set for out-of-sample generalization.
+- **TEST-A (274 pairs, 70 campaigns)**: Tuned on / post-hoc evaluation split.
 - **TEST-B (124 pairs, 5 campaigns)**: Aggregate-only blind evaluation split; no per-pair inspection.

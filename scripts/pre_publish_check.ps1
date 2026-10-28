@@ -82,22 +82,34 @@ PATTERNS = {
     'npm_token': re.compile(r'npm_[a-zA-Z0-9]{30,}'),
     'aws_key': re.compile(r'AKIA[0-9A-Z]{16}'),
     'private_key': re.compile(r'-----BEGIN (?:RSA |EC )?PRIVATE KEY-----'),
-    'hardcoded_path': re.compile(r'[a-zA-Z]:\\\\(?:Users|rs-data|My project)'),
+    'file_uri': re.compile(r'file:///'),
+    'my_project_url': re.compile(r'My%20project'),
+    'my_project_space': re.compile(r'My project'),
+    'drive_c_slash': re.compile(r'(?i)\bc:/'),
+    'drive_c_backslash': re.compile(r'(?i)\bc:\\'),
+    'rs_data': re.compile(r'rs-data'),
+}
+
+EXCLUDED = {
+    'scripts/pre_publish_check.ps1',
+    'scripts/history_audit.ps1',
+    'tests/test_pre_publish_paths.py',
 }
 
 findings = []
 for f in tracked:
+    if f in EXCLUDED:
+        continue
     p = Path(f)
     if not p.is_file():
-        continue
-    # Exclude audit scripts themselves from path-pattern self-matches
-    if f.endswith('pre_publish_check.ps1') or f.endswith('history_audit.ps1'):
         continue
     try:
         content = p.read_text(encoding='utf-8', errors='ignore')
     except Exception:
         continue
     for p_name, pat in PATTERNS.items():
+        if f == 'docs/REPRODUCING.md' and p_name == 'rs_data':
+            continue
         matches = pat.findall(content)
         if matches:
             findings.append((f, p_name, matches[:2]))
