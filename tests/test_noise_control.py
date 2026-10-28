@@ -144,6 +144,19 @@ def test_should_post_comment_matrix():
     assert should_post_comment(quiet_report, "block") is False
     assert should_post_comment(allow_report, "block") is False
 
+    # invalid comment_on
+    assert should_post_comment(block_report, "invalid") is False
+    assert should_post_comment(allow_report, "invalid") is False
+
+    # LockfileDiffReport object instance
+    from release_sentinel.lockfile import LockfileDiffReport
+    from release_sentinel.models import Decision
+    typed_block = LockfileDiffReport("base", "head", 1, Decision.BLOCK, [], [])
+    typed_allow = LockfileDiffReport("base", "head", 1, Decision.ALLOW, [], [])
+    assert should_post_comment(typed_block, "block") is True
+    assert should_post_comment(typed_allow, "block") is False
+    assert should_post_comment(typed_allow, "always") is True
+
 
 def test_cli_check_json_output_file(tmp_path: Path):
     runner = CliRunner()

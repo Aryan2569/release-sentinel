@@ -287,6 +287,7 @@ class TestCliCheck:
         result = runner.invoke(app, ["check"])
         assert result.exit_code == 2
         assert "Either --base" in result.output
+        assert "Internal error" not in result.output
 
     def test_check_invalid_fail_on_exits_2(self):
         result = runner.invoke(app, ["check", "--base", "package-lock.json", "--fail-on", "bad"])

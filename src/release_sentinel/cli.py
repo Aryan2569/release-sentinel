@@ -31,6 +31,7 @@ from typing import Annotated
 import typer
 from rich import box
 from rich.console import Console
+from rich.markup import escape
 from rich.panel import Panel
 from rich.table import Table
 
@@ -237,13 +238,20 @@ def diff(
         ),
     ] = None,
 ) -> None:
-    """Compare two versions of an npm package and return a security gate decision."""
+    """Compare two versions of an npm package and return a security gate decision.
+
+    Exit codes:
+      0: ALLOW (all checks passed)
+      1: WARN (suspicious signals detected, or argument usage error)
+      2: BLOCK (severe security violation detected, or registry error)
+      3: Unexpected internal error
+    """
     # --- Resolve as_of ---
     if as_of is not None:
         try:
             as_of_dt = _parse_as_of(as_of)
         except ValueError as exc:
-            console.print(f"[red]Invalid --as-of value: {exc}[/red]")
+            console.print(f"[red]Invalid --as-of value: {escape(str(exc))}[/red]")
             raise typer.Exit(code=1) from exc
     else:
         as_of_dt = datetime.now(tz=UTC)
@@ -270,9 +278,9 @@ def diff(
         console.print(
             f"\n[bold]Release Sentinel[/bold]  "
             f"[dim]v{__version__}[/dim]\n"
-            f"  Package : [cyan]{package}[/cyan]\n"
-            f"  Old     : [cyan]{old_version}[/cyan]\n"
-            f"  New     : [cyan]{new_version}[/cyan]\n"
+            f"  Package : [cyan]{escape(package)}[/cyan]\n"
+            f"  Old     : [cyan]{escape(old_version)}[/cyan]\n"
+            f"  New     : [cyan]{escape(new_version)}[/cyan]\n"
             f"  As-of   : [cyan]{as_of_dt.isoformat()}[/cyan]\n"
         )
 
@@ -292,10 +300,12 @@ def diff(
             samples_root=samples_root,
         )
     except RegistryError as exc:
-        console.print(f"[red]Registry error: {exc}[/red]")
+        console.print(f"[red]Registry error: {escape(str(exc))}[/red]")
         raise typer.Exit(code=2) from exc
+    except typer.Exit:
+        raise
     except Exception as exc:
-        console.print(f"[red]Unexpected error: {exc}[/red]")
+        console.print(f"[red]Unexpected error: {escape(str(exc))}[/red]")
         raise typer.Exit(code=3) from exc
 
     _render_output(report, selected_format, min_sev_enum)
@@ -464,7 +474,7 @@ def _print_report_text(report: Report, evidence: list[Evidence]) -> None:
     summary = _generate_one_line_summary(report, evidence)
     style = _DECISION_STYLE[report.decision]
 
-    console.print(f"[bold]Summary:[/bold] [{style}]{summary}[/{style}]\n")
+    console.print(f"[bold]Summary:[/bold] [{style}]{escape(summary)}[/{style}]\n")
 
     decision_text = f"[{style}]{report.decision.value}[/{style}]"
     console.print(
@@ -472,9 +482,9 @@ def _print_report_text(report: Report, evidence: list[Evidence]) -> None:
             f"Decision: {decision_text}\n"
             f"Total evidence items: {len(report.evidence)} "
             f"(showing {len(evidence)})\n"
-            f"Old: {report.old_release.name}@{report.old_release.version} "
+            f"Old: {escape(report.old_release.name)}@{escape(report.old_release.version)} "
             f"(published {report.old_release.published_at.strftime('%Y-%m-%d')})\n"
-            f"New: {report.new_release.name}@{report.new_release.version} "
+            f"New: {escape(report.new_release.name)}@{escape(report.new_release.version)} "
             f"(published {report.new_release.published_at.strftime('%Y-%m-%d')})",
             title="[bold]Release Sentinel Report[/bold]",
             border_style=style,
@@ -484,7 +494,7 @@ def _print_report_text(report: Report, evidence: list[Evidence]) -> None:
     if evidence:
         grouped = _group_evidence(evidence)
         for group_name, items in grouped.items():
-            console.print(f"\n[bold cyan]● {group_name}[/bold cyan]")
+            console.print(f"\n[bold cyan]● {escape(group_name)}[/bold cyan]")
             table = Table(
                 "Severity",
                 "ID",
@@ -498,9 +508,9 @@ def _print_report_text(report: Report, evidence: list[Evidence]) -> None:
                 sev_style = _SEVERITY_STYLE.get(ev.severity.value, "")
                 table.add_row(
                     f"[{sev_style}]{ev.severity.value}[/{sev_style}]",
-                    ev.id,
-                    ev.file or "—",
-                    ev.explanation[:120] + ("…" if len(ev.explanation) > 120 else ""),
+                    escape(ev.id),
+                    escape(ev.file or "—"),
+                    escape(ev.explanation[:120] + ("…" if len(ev.explanation) > 120 else "")),
                 )
             console.print(table)
     else:
@@ -509,7 +519,7 @@ def _print_report_text(report: Report, evidence: list[Evidence]) -> None:
     # Limitations
     console.print("\n[bold dim]Limitations[/bold dim]")
     for lim in report.limitations:
-        console.print(f"  [dim]• {lim}[/dim]")
+        console.print(f"  [dim]• {escape(lim)}[/dim]")
     console.print()
 
 
@@ -714,7 +724,7 @@ def print_lockfile_text(report: LockfileDiffReport, quiet: bool = False) -> None
         return
 
     table = Table(
-        title=f"Release Sentinel Lockfile Diff Report ({report.base_source} → {report.head_source})",  # noqa: E501
+        title=f"Release Sentinel Lockfile Diff Report ({escape(report.base_source)} → {escape(report.head_source)})",  # noqa: E501
         box=box.ROUNDED,
     )
     table.add_column("Package", style="bold")
@@ -728,18 +738,18 @@ def print_lockfile_text(report: LockfileDiffReport, quiet: bool = False) -> None
         style = _DECISION_STYLE.get(dec, "white")
         ev_str = ", ".join(pkg["evidence"]) if pkg["evidence"] else "—"
         table.add_row(
-            pkg["package"],
-            pkg["old_version"] or "(new)",
-            pkg["new_version"] or "(none)",
+            escape(str(pkg["package"])),
+            escape(str(pkg["old_version"] or "(new)")),
+            escape(str(pkg["new_version"] or "(none)")),
             f"[{style}]{dec.name}[/{style}]",
-            ev_str,
+            escape(ev_str),
         )
 
     console.print(table)
     if report.limitations:
         console.print("[dim]Limitations:[/dim]")
         for lim in report.limitations:
-            console.print(f"  [dim]- {lim}[/dim]")
+            console.print(f"  [dim]- {escape(lim)}[/dim]")
 
     verdict_style = _DECISION_STYLE.get(report.decision, "white")
     console.print(
@@ -815,18 +825,24 @@ def check(
         typer.Option("--json-output-file", help="Path to write complete JSON report to."),
     ] = None,
 ) -> None:
-    """Audit dependency changes in an npm package-lock.json diff against security policy."""
+    """Audit dependency changes in an npm package-lock.json diff against security policy.
+
+    Exit codes:
+      0: Pass (policy gate satisfied)
+      1: Gate failed (BLOCK, or WARN when --fail-on warn)
+      2: Usage, input, or internal error
+    """
     fail_on_clean = fail_on.strip().lower()
     if fail_on_clean not in ("block", "warn", "never"):
         console.print(
-            f"[bold red]Error:[/] Invalid --fail-on option '{fail_on}'. Choose from: block, warn, never."  # noqa: E501
+            f"[bold red]Error:[/] Invalid --fail-on option '{escape(fail_on)}'. Choose from: block, warn, never."  # noqa: E501
         )
         raise typer.Exit(code=2)
 
     format_clean = format.strip().lower()
     if format_clean not in ("text", "json", "markdown"):
         console.print(
-            f"[bold red]Error:[/] Invalid --format option '{format}'. Choose from: text, json, markdown."  # noqa: E501
+            f"[bold red]Error:[/] Invalid --format option '{escape(format)}'. Choose from: text, json, markdown."  # noqa: E501
         )
         raise typer.Exit(code=2)
 
@@ -887,19 +903,21 @@ def check(
             )
 
     except UnsupportedLockfileError as exc:
-        console.print(f"[bold red]Error:[/] {exc}")
+        console.print(f"[bold red]Error:[/] {escape(str(exc))}")
         raise typer.Exit(code=2) from exc
     except LockfileParseError as exc:
-        console.print(f"[bold red]Error:[/] {exc}")
+        console.print(f"[bold red]Error:[/] {escape(str(exc))}")
         raise typer.Exit(code=2) from exc
     except LockfileError as exc:
-        console.print(f"[bold red]Error:[/] {exc}")
+        console.print(f"[bold red]Error:[/] {escape(str(exc))}")
         raise typer.Exit(code=2) from exc
     except FileNotFoundError as exc:
-        console.print(f"[bold red]Error:[/] {exc}")
+        console.print(f"[bold red]Error:[/] {escape(str(exc))}")
         raise typer.Exit(code=2) from exc
+    except typer.Exit:
+        raise
     except Exception as exc:
-        console.print(f"[bold red]Internal error:[/] {exc}")
+        console.print(f"[bold red]Internal error:[/] {escape(str(exc))}")
         raise typer.Exit(code=2) from exc
 
     # Write optional json report file
@@ -1044,8 +1062,10 @@ def demo(
             limitations=lims,
         )
         _render_output(rep, format, Severity.LOW)
+    except typer.Exit:
+        raise
     except Exception as exc:
-        console.print(f"[bold red]Demo error:[/] {exc}")
+        console.print(f"[bold red]Demo error:[/] {escape(str(exc))}")
         raise typer.Exit(code=2) from exc
 
 
