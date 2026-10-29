@@ -10,7 +10,7 @@ readme = "README.md"
 license = { text = "MIT" }
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
-authors = [{ name = "Release Sentinel Maintainers", email = "maintainers@release-sentinel.dev" }]
+authors = [{ name = "Aryan Kumar" }]
 keywords = ["npm", "security", "supply-chain", "dependency-audit", "lockfile"]
 classifiers = [
     "Development Status :: 3 - Alpha",

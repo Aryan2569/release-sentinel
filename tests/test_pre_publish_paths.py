@@ -13,6 +13,9 @@ FORBIDDEN_PATTERNS = {
     "c_slash": re.compile(r"(?i)\bc:/"),
     "c_backslash": re.compile(r"(?i)\bc:\\"),
     "rs_data": re.compile(r"rs-data"),
+    "release_sentinel_dev": re.compile(r"release-sentinel\.dev"),
+    "maintainers_at": re.compile(r"maintainers@"),
+    "old_personal_email": re.compile(r"aryan25kumar69@gmail\.com"),
 }
 
 EXCLUDED_FILES = {

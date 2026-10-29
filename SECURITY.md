@@ -16,7 +16,7 @@ Release Sentinel is currently in active development. Only the latest minor relea
 If you believe you have discovered a vulnerability in Release Sentinel:
 
 1. **GitHub Private Vulnerability Reporting**: Use the **Security** tab on the repository and select **Report a vulnerability**.
-2. **Email**: If GitHub reporting is unavailable, email `security@release-sentinel.dev` with:
+2. **Details to include**:
    - A description of the issue and potential security impact.
    - Minimal reproduction steps or proof-of-concept.
    - Any suggested mitigations.
