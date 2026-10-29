@@ -668,7 +668,7 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
 ## Stage 7e: Pre-Publish Hardening, Sanitizer Hardening, and Consistency Fixes
 
 - **Part 1: Identity & Metadata Sanitization**:
-  - Purged placeholder domains (`release-sentinel.dev`), generic maintainer emails (`maintainers@...`), and personal email addresses from `pyproject.toml`, `SECURITY.md`, and project files. Updated package authors to Aryan Kumar.
+  - Purged placeholder domains, generic maintainer contact emails, and personal email addresses from `pyproject.toml`, `SECURITY.md`, and project files. Updated package authors to Aryan Kumar.
   - Enforced repository cleanliness via `scripts/pre_publish_check.ps1` and `tests/test_pre_publish_paths.py`.
 
 - **Part 2: Markdown Sanitizer Hardening**:

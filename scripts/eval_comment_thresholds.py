@@ -25,11 +25,14 @@ for cid, cinfo in camps_dict.items():
 print(f"Mapped {len(pair_to_camp)} pairs to 140 campaigns")
 
 # 2. Replay updates (288 updates)
-cache_dir = Path("data")
+import os
+
+cache_dir = Path(os.environ.get("RS_REPLAY_CACHE_DIR", "data"))
 replay_files = list(cache_dir.glob("replay_cache_default_*.json"))
 if not replay_files:
-    cache_dir = Path(r"C:\My project\data")
-    replay_files = list(cache_dir.glob("replay_cache_default_*.json"))
+    sibling_cache = Path(__file__).resolve().parent.parent.parent / "data"
+    if list(sibling_cache.glob("replay_cache_default_*.json")):
+        replay_files = list(sibling_cache.glob("replay_cache_default_*.json"))
 
 all_updates = []
 for rf in replay_files:
