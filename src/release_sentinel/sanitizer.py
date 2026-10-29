@@ -23,6 +23,27 @@ COMMENT_MARKER: str = "<!-- release-sentinel-pr-comment -->"
 _MENTION_RE = re.compile(r"@([a-zA-Z0-9_-]+)")
 _ISSUE_RE = re.compile(r"#([0-9]+)")
 _CONSECUTIVE_BACKTICKS_RE = re.compile(r"`+")
+_URL_RE = re.compile(r"https?://[^\s)\]>\"'`]+")
+
+
+def defang_urls(text: str) -> str:
+    """Defang URLs in untrusted text so they cannot be parsed as links or autolinks.
+
+    Converts https:// -> hxxps:// and http:// -> hxxp:// to prevent markdown linkifiers
+    or autolinkers from creating clickable links.
+    """
+    if not text:
+        return text
+
+    def _replace_url(match: re.Match[str]) -> str:
+        url = match.group(0)
+        if url.startswith("https://"):
+            return "hxxps://" + url[8:]
+        elif url.startswith("http://"):
+            return "hxxp://" + url[7:]
+        return url
+
+    return _URL_RE.sub(_replace_url, text)
 
 
 def defang_gha_commands(text: str) -> str:
@@ -48,22 +69,32 @@ def sanitize_untrusted_text(
     max_length: int = MAX_FIELD_CHARS,
     collapse_newlines: bool = True,
     escape_html: bool = True,
+    escape_markdown: bool = True,
 ) -> str:
-    """Sanitize untrusted text from packages before embedding into Markdown or reports."""
+    """Sanitize untrusted text from packages before embedding into Markdown or reports.
+
+    Escapes Markdown metacharacters (\\ ` * _ [ ] ( ) ! # > | ~) and HTML (< > &),
+    defangs URLs (hxxps://...), neutralizes @mentions and #issues, and collapses
+    newlines to prevent layout breakout.
+    """
     if not text:
         return ""
 
     s = text
 
-    # Strip or defang the comment marker so untrusted fields cannot fake it
-    s = s.replace(COMMENT_MARKER, "&lt;!-- release-sentinel-pr-comment --&gt;")
+    # Defang URLs before character escaping
+    s = defang_urls(s)
 
-    # Defang HTML comment openers
-    s = s.replace("<!--", "&lt;!--")
+    # Defang GHA commands
+    s = defang_gha_commands(s)
 
-    # Escape HTML tags
+    # HTML escaping (<, >, &)
     if escape_html:
-        s = s.replace("<", "&lt;").replace(">", "&gt;")
+        s = s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    else:
+        # Defang comment marker and HTML comments even if HTML escaping is off
+        s = s.replace(COMMENT_MARKER, "&lt;!-- release-sentinel-pr-comment --&gt;")
+        s = s.replace("<!--", "&lt;!--")
 
     # Neutralize @mentions and #issue references using zero-width spaces
     s = _MENTION_RE.sub(lambda m: f"@\u200b{m.group(1)}", s)
@@ -72,9 +103,26 @@ def sanitize_untrusted_text(
     # Collapse newlines and tabs into single spaces for table/summary safety
     if collapse_newlines:
         s = re.sub(r"[\r\n\t]+", " ", s)
-        # Also replace raw pipe characters to prevent breaking Markdown tables
         s = s.replace("|", "/")
         s = re.sub(r" +", " ", s).strip()
+
+    # Markdown metacharacters escaping
+    if escape_markdown:
+        # Backslash first so subsequent backslashes are not re-escaped
+        s = s.replace("\\", "\\\\")
+        for char in ("`", "*", "_", "[", "]", "(", ")", "!", "#", "~"):
+            s = s.replace(char, "\\" + char)
+        if not collapse_newlines:
+            s = s.replace("|", "\\|")
+        if not escape_html:
+            s = s.replace(">", "\\>")
+        # Preserve defanged HTML comments and neutralized tokens
+        s = s.replace("&lt;\\!--", "&lt;!--")
+        s = re.sub(r"(@\u200b[a-zA-Z0-9]+)\\+(_)", r"\1\2", s)
+        s = re.sub(r"\\+(#\u200b[0-9]+)", r"\1", s)
+    elif collapse_newlines:
+        # If markdown escaping is disabled (e.g. for code spans), still protect pipes
+        s = s.replace("|", "\\|")
 
     # Cap length
     if len(s) > max_length:
@@ -92,7 +140,9 @@ def render_code_span(text: str, max_length: int = MAX_FIELD_CHARS) -> str:
     if not text:
         return "`—`"
 
-    sanitized = sanitize_untrusted_text(text, max_length=max_length, collapse_newlines=True)
+    sanitized = sanitize_untrusted_text(
+        text, max_length=max_length, collapse_newlines=True, escape_markdown=False
+    )
     if not sanitized:
         return "`—`"
 
@@ -128,7 +178,11 @@ def render_fenced_code_block(text: str, lang: str = "") -> str:
 def cap_comment_size(comment: str, max_chars: int = MAX_COMMENT_CHARS) -> str:
     """Cap a full Markdown comment string so it never exceeds GitHub's limit.
 
-    If comment exceeds max_chars, it is cleanly truncated with TRUNCATION_NOTE.
+    If comment exceeds max_chars:
+    1. Cuts cleanly at a line boundary.
+    2. Detects open <details> tags and unclosed code fences (```) and closes them cleanly.
+    3. Appends TRUNCATION_NOTE.
+    Guarantees len(result) <= max_chars.
     """
     if len(comment) <= max_chars:
         return comment
@@ -137,4 +191,42 @@ def cap_comment_size(comment: str, max_chars: int = MAX_COMMENT_CHARS) -> str:
     if cutoff < 0:
         return TRUNCATION_NOTE[:max_chars]
 
-    return comment[:cutoff] + TRUNCATION_NOTE
+    # If there are no newlines at all, fall back to simple slice + note
+    if "\n" not in comment[:cutoff]:
+        return comment[:cutoff] + TRUNCATION_NOTE
+
+    # Reserve budget for closing tags (``` + multiple </details>) and TRUNCATION_NOTE
+    reserve_budget = len(TRUNCATION_NOTE) + 200
+    preliminary_cutoff = max(0, max_chars - reserve_budget)
+
+    prefix = comment[:preliminary_cutoff]
+    last_nl = prefix.rfind("\n")
+    if last_nl > 0:
+        truncated = prefix[:last_nl]
+    else:
+        truncated = prefix
+
+    closers: list[str] = []
+    # Check unclosed code fences: lines starting with ```
+    fence_count = len(re.findall(r"^```", truncated, re.MULTILINE))
+    if fence_count % 2 != 0:
+        closers.append("```")
+
+    # Check unclosed <details> tags
+    open_details = len(re.findall(r"(?i)<details\b", truncated))
+    closed_details = len(re.findall(r"(?i)</details>", truncated))
+    unclosed = open_details - closed_details
+    if unclosed > 0:
+        for _ in range(unclosed):
+            closers.append("</details>")
+
+    closing_text = ""
+    if closers:
+        closing_text = "\n" + "\n".join(closers)
+
+    result = truncated + closing_text + TRUNCATION_NOTE
+    if len(result) > max_chars:
+        avail = max_chars - len(TRUNCATION_NOTE)
+        result = comment[:max(0, avail)] + TRUNCATION_NOTE
+
+    return result

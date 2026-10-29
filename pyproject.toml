@@ -56,7 +56,7 @@ packages = ["src/release_sentinel"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]
 markers = [
     "network: marks tests that make real network calls (deselect with '-m not network')",
 ]

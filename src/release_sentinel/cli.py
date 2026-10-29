@@ -581,7 +581,7 @@ def _render_markdown(report: Report, evidence: list[Evidence]) -> str:
     lines.append("")
     for lim in report.limitations:
         clean_lim = sanitize_untrusted_text(
-            lim, max_length=MAX_FIELD_CHARS, collapse_newlines=False
+            lim, max_length=MAX_FIELD_CHARS, collapse_newlines=True
         )
         lines.append(f"- {clean_lim}")
     lines.append("</details>")
@@ -700,7 +700,7 @@ def format_lockfile_markdown(report: LockfileDiffReport) -> str:
     if report.limitations:
         for lim in report.limitations:
             clean_lim = sanitize_untrusted_text(
-                lim, max_length=MAX_FIELD_CHARS, collapse_newlines=False
+                lim, max_length=MAX_FIELD_CHARS, collapse_newlines=True
             )
             lines.append(f"- {clean_lim}")
     else:

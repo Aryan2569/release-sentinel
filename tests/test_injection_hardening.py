@@ -245,3 +245,87 @@ class TestHostileMarkdownFixtures:
             and c.get("user", {}).get("login", "").lower() in trusted_authors
         ]
         assert found == ["202"]
+
+    def test_commonmark_hostile_fixtures_contain_no_injected_elements(self):
+        from markdown_it import MarkdownIt
+
+        md = MarkdownIt("commonmark").enable("table")
+        hostiles = [
+            "![x](https://evil.example/p.png)",
+            "[click](https://evil.example)",
+            "https://evil.example/x",
+            "<https://evil.example/x>",
+            "\n# Fake heading\n| a | b |",
+            "*bold*",
+            "_italic_",
+            "<script>alert(1)</script>",
+            "@octocat",
+            "#123",
+            "<!-- release-sentinel-pr-comment -->",
+            "::error::fake",
+        ]
+
+        for h in hostiles:
+            sanitized = sanitize_untrusted_text(h)
+            html = md.render(sanitized)
+            assert "<a " not in html, f"Link injected for {h}: {html}"
+            assert "<a>" not in html, f"Link injected for {h}: {html}"
+            assert "<img " not in html, f"Image injected for {h}: {html}"
+            assert "<img>" not in html, f"Image injected for {h}: {html}"
+            for level in range(1, 7):
+                assert f"<h{level}>" not in html, f"Heading h{level} injected for {h}: {html}"
+            assert "<table>" not in html, f"Table injected for {h}: {html}"
+            assert "<script" not in html, f"Script tag injected for {h}: {html}"
+            assert "@octocat" not in html, f"Mention preserved without defanging for {h}: {html}"
+
+    def test_full_markdown_rendering_hostile_containment(self):
+        from markdown_it import MarkdownIt
+
+        md = MarkdownIt("commonmark").enable("table")
+        ev = [
+            Evidence(
+                id="install_script_added",
+                severity=Severity.HIGH,
+                file="path/to/\n| table_breaker |",
+                explanation="![img](https://evil.example/x.png) and [click](https://evil.example)",
+                legitimate_use_note="*bold* and <script>bad()</script>",
+            )
+        ]
+        rep = _make_report(
+            "bad-pkg#123",
+            "1.0.0",
+            "1.0.1",
+            ev,
+            decision=Decision.BLOCK,
+        )
+        rep.limitations = [
+            "\n# Injected Heading\n| a | b |\n[evil](https://evil.example)",
+        ]
+
+        rendered = _render_markdown(rep, ev)
+        html = md.render(rendered)
+
+        # Confirm no evil links or images are in the HTML output
+        assert "evil.example" in html  # defanged text present
+        assert 'href="https://evil.example"' not in html
+        assert "<img" not in html
+        assert "<script" not in html
+        # Confirm no extra headings were created in limitations
+        assert "<h1>" not in html
+
+    def test_cap_comment_line_boundary_and_unclosed_tags(self):
+        unclosed_comment = (
+            "<details>\n<summary>Test</summary>\n```js\n"
+            + ("const some_variable_name = 12345;\n" * 500)
+        )
+        capped = cap_comment_size(unclosed_comment, max_chars=1000)
+
+        assert len(capped) <= 1000
+        assert capped.endswith(TRUNCATION_NOTE)
+        # Check clean closure of fence and details
+        assert "```\n</details>" in capped or ("```" in capped and "</details>" in capped)
+        # Verify line boundary cut: no partial word like 'const some_varia'
+        lines = capped.splitlines()
+        # The line right before closing markers / note should be a full statement
+        data_lines = [line for line in lines if "const" in line]
+        assert all(line == "const some_variable_name = 12345;" for line in data_lines)
