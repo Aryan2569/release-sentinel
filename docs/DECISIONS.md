@@ -664,3 +664,32 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   - *Package Context Corroboration*: In single-package mode, `block_requires` multi-signal pairs must be satisfied within the same package context (a signal on an added dependency cannot cross-corroborate with the root package's signals). Evaluated across 288 replayed updates (0 decision changes, 2 BLOCKs unchanged) and 1,349 malicious eval pairs (0 decision changes, zero recall loss).
   - *Integrity Verification Rate*: Measured on all 288 replayed updates (5,965 scanned packages): `lockfile_missing_integrity` occurred 0 times (0.00% rate, +0.0% to WARN rate).
 
+
+## Stage 7e: Pre-Publish Hardening, Sanitizer Hardening, and Consistency Fixes
+
+- **Part 1: Identity & Metadata Sanitization**:
+  - Purged placeholder domains (`release-sentinel.dev`), generic maintainer emails (`maintainers@...`), and personal email addresses from `pyproject.toml`, `SECURITY.md`, and project files. Updated package authors to Aryan Kumar.
+  - Enforced repository cleanliness via `scripts/pre_publish_check.ps1` and `tests/test_pre_publish_paths.py`.
+
+- **Part 2: Markdown Sanitizer Hardening**:
+  - Hardened `release_sentinel.sanitizer` against formatting injection:
+    - Escaped Markdown metacharacters (`\`, ``` ` ```, `*`, `_`, `[`, `]`, `(`, `)`, `!`, `#`, `>`, `|`, `~`) and HTML metacharacters (`<`, `>`, `&`) in untrusted text fields (package descriptions, script commands, explanations, limitations, filenames).
+    - Defanged URLs to `hxxps://...` to prevent autolink generation.
+    - Collapsed newlines in list items and limitations to prevent escaping table cells and list scopes.
+    - Line-boundary truncation in `cap_comment_size` with clean auto-closure of open `<details>` and fenced code blocks (` ``` `).
+    - Added CommonMark/GFM rendering tests verifying zero injected `<a>`, `<img>`, headings, or table elements from untrusted inputs.
+
+- **Part 3: Comment Threshold Correctness**:
+  - In `src/release_sentinel/lockfile.py`, recorded both `raw_severity` and `effective_severity` (post policy-override) in `evidence_details`.
+  - Updated `is_report_notable` to evaluate only non-ALLOW packages and to evaluate `effective_severity` (HIGH/CRITICAL or $\ge 2$ distinct MEDIUM signals) or install hook modifications.
+  - Re-evaluated thresholds across 288 replayed updates (5,965 packages) and 1,349 benchmark pairs / 140 campaigns:
+    - Variant A: 47/288 replay updates (16.32%), 1,106/1,349 pairs (81.99%), 84/140 campaigns (60.00%).
+    - Variant B (`notable`, default): 86/288 replay updates (29.86%), 1,213/1,349 pairs (89.92%), 126/140 campaigns (90.00%).
+    - Variant C (BLOCK only): 2/288 replay updates (0.69%), 915/1349 pairs (67.83%), 34/140 campaigns (24.29%).
+    - Confirmed zero changes to overall exit codes or decisions.
+
+- **Part 4: Product Consistency & Safety Invariants**:
+  - *Lockfile Resolved Mismatch Blocking*: `lockfile_resolved_mismatch` produces `Decision.BLOCK` for both the individual package row and the overall scan verdict under both `default` and `strict` profiles. This is a fundamental product-safety invariant against lockfile injection and package aliasing (e.g. pointing a known dependency like `lodash` to a malicious third-party tarball URL). As zero benchmark pairs or replayed updates contain URL path mismatches, this safety rule preserves all frozen v1.4 research metrics.
+  - *Max-Packages Option Help Text*: Corrected `--max-packages` help text to reflect `DEFAULT_MAX_PACKAGES = 300`.
+  - *Registry Source Constraints*: Documented that by default only packages from the official public npm registry (`https://registry.npmjs.org`) are fetched; alternative mirrors (e.g. `registry.yarnpkg.com`), private registries, and direct URLs emit an unscanned non-registry source `WARN` (`unscanned_non_registry_source`).
+

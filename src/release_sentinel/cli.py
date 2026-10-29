@@ -806,7 +806,7 @@ def check(
     ] = False,
     max_packages: Annotated[
         int,
-        typer.Option("--max-packages", help="Maximum packages to scan before capping (default: 200)."),  # noqa: E501
+        typer.Option("--max-packages", help="Maximum packages to scan before capping (default: 300)."),  # noqa: E501
     ] = DEFAULT_MAX_PACKAGES,
     as_of: Annotated[
         str | None,

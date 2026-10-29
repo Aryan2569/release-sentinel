@@ -22,7 +22,9 @@ npm allows packages to declare dependencies using alternative specifiers rather 
 - Direct tarball URLs: `https://example.com/package.tgz`
 - Local file paths: `file:../local-pkg`
 
-**Limitation**: Release Sentinel's dependency resolver interacts strictly with npm-compatible package registries via standard semantic versioning queries. Non-registry specifications are recorded in the manifest diff but are not resolved or fetched for child dependency analysis.
+- Mirror or private registries: `https://registry.yarnpkg.com`
+
+**Limitation**: Release Sentinel interacts strictly with the official npm registry (`https://registry.npmjs.org`) by default. Packages sourced from private registries, registry mirrors (e.g., `registry.yarnpkg.com`), Git repositories, or direct tarball URLs emit an unscanned non-registry source `WARN` (`unscanned_non_registry_source`) rather than fetching archives from unverified third-party endpoints. Non-registry dependency specifications are recorded in the manifest diff but are not fetched for transitive dependency analysis.
 
 ---
 
