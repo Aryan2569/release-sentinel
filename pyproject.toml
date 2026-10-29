@@ -56,7 +56,7 @@ packages = ["src/release_sentinel"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["src"]
+pythonpath = ["src", "."]
 markers = [
     "network: marks tests that make real network calls (deselect with '-m not network')",
 ]
@@ -86,7 +86,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ANN", "S"]
-"scripts/*" = ["ANN", "S", "E501"]
+"scripts/*" = ["ANN", "S", "E501", "E402"]
 
 [tool.coverage.run]
 source = ["src/release_sentinel"]

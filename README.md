@@ -115,9 +115,13 @@ jobs:
 
 ---
 
-## Example Pull Request Comment
+## Example Pull Request Comments
 
-When a compromised package is detected in a dependency update, Release Sentinel posts an actionable review comment directly on the pull request:
+When a suspicious or compromised package is detected in a dependency update, Release Sentinel posts an actionable review comment directly on the pull request.
+
+### Advisory Warning (Advisory Gate: xios 1.14.0 → 1.14.1)
+
+*Note: The dataset sample has its payload file removed, so the scanner reports the install hook's missing script target.*
 
 <!-- release-sentinel-pr-comment -->
 ## Release Sentinel Security Gate
@@ -128,12 +132,30 @@ When a compromised package is detected in a dependency update, Release Sentinel 
 
 | Package | Version Change | Decision | Top Evidence | Why It Matters | Legitimate Explanation |
 | :--- | :--- | :---: | :--- | :--- | :--- |
-| `axios` | `1.14.0` → `1.14.1` | ⚠️ WARN | `install_script_present` | [dep: plain-crypto-js@​4.2.1] Lifecycle script 'postinstall' references script target 'setup.js' that is missing from the package. | Broken or incomplete package packaging. |
+| `axios` | `1.14.0` → `1.14.1` | ⚠️ WARN | `install_script_present` | \[dep: plain-crypto-js@​4.2.1\] Lifecycle script 'postinstall' references script target 'setup.js' that is missing from the package. | Broken or incomplete package packaging. |
 
 ### Limitations & Scope
 
 - JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible.
-- Every changed lockfile entry (including transitive dependencies) is scanned.
+- Every changed lockfile entry \(including transitive dependencies\) is scanned.
+
+### Automated Block (2025 Install Hook Wave: @ahmedhfarag/ngx-perfect-scrollbar 20.0.19 → 20.0.20)
+
+<!-- release-sentinel-pr-comment -->
+## Release Sentinel Security Gate
+
+**Verdict:** 🛑 **BLOCK** — 1 package(s) blocked out of 1 scanned.
+
+### Flagged Packages
+
+| Package | Version Change | Decision | Top Evidence | Why It Matters | Legitimate Explanation |
+| :--- | :--- | :---: | :--- | :--- | :--- |
+| `@​ahmedhfarag/ngx-perfect-scrollbar` | `20.0.19` → `20.0.20` | 🛑 BLOCK | `install_script_network` | Added lifecycle hook 'preinstall' downloads executable content from external network endpoints. | Precompiled platform binary downloads during installation. |
+
+### Limitations & Scope
+
+- JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible.
+- Every changed lockfile entry \(including transitive dependencies\) is scanned.
 
 ---
 
