@@ -182,9 +182,13 @@ def is_report_notable(report: LockfileDiffReport | dict[str, Any]) -> bool:
         pkg_results = report.get("package_results", [])
 
     for pkg in pkg_results:
+        pkg_dec = str(pkg.get("decision", "")).upper()
+        if pkg_dec in ("ALLOW", "DECISION.ALLOW"):
+            continue
+
         details = pkg.get("evidence_details", [])
         has_high_crit = any(
-            str(d.get("severity", "")).upper() in ("HIGH", "CRITICAL")
+            str(d.get("effective_severity", d.get("severity", ""))).upper() in ("HIGH", "CRITICAL")
             for d in details
         )
         ev_ids = [d.get("id") for d in details] if details else pkg.get("evidence", [])
@@ -195,7 +199,7 @@ def is_report_notable(report: LockfileDiffReport | dict[str, Any]) -> bool:
         medium_ids = {
             d.get("id")
             for d in details
-            if str(d.get("severity", "")).upper() == "MEDIUM"
+            if str(d.get("effective_severity", d.get("severity", ""))).upper() == "MEDIUM"
         }
         if has_high_crit or has_hook or len(medium_ids) >= 2:
             return True
@@ -771,6 +775,8 @@ def scan_lockfile_diff(
                         {
                             "id": ev_unscanned.id,
                             "severity": ev_unscanned.severity.name,
+                            "raw_severity": ev_unscanned.severity.name,
+                            "effective_severity": ev_unscanned.severity.name,
                             "file": ev_unscanned.file,
                             "explanation": ev_unscanned.explanation,
                             "legitimate_use_note": ev_unscanned.legitimate_use_note,
@@ -801,18 +807,20 @@ def scan_lockfile_diff(
                         "Private registries or custom mirrors with non-standard URL path schemes."
                     ),
                 )
-                decision, lims = decide([ev_mismatch], policy=policy, is_full_scan=False)
+                _, lims = decide([ev_mismatch], policy=policy, is_full_scan=False)
                 package_results.append({
                     "package": pkg_name,
                     "old_version": old_ver,
                     "new_version": new_ver,
                     "change_type": change.change_type,
-                    "decision": decision.name,
+                    "decision": Decision.BLOCK.name,
                     "evidence": [ev_mismatch.id],
                     "evidence_details": [
                         {
                             "id": ev_mismatch.id,
                             "severity": ev_mismatch.severity.name,
+                            "raw_severity": ev_mismatch.severity.name,
+                            "effective_severity": ev_mismatch.severity.name,
                             "file": ev_mismatch.file,
                             "explanation": ev_mismatch.explanation,
                             "legitimate_use_note": ev_mismatch.legitimate_use_note,
@@ -922,12 +930,31 @@ def scan_lockfile_diff(
                     evidence.extend(extra_evidence)
                 is_full = rc_old is None
                 decision, lims = decide(evidence, policy=policy, is_full_scan=is_full)
+                pkg_overrides = (
+                    {**policy.severity_overrides, **policy.full_scan_severity_overrides}
+                    if is_full
+                    else policy.severity_overrides
+                )
 
                 # Track highest overall severity decision
                 if decision == Decision.BLOCK:
                     overall_decision = Decision.BLOCK
                 elif decision == Decision.WARN and overall_decision != Decision.BLOCK:
                     overall_decision = Decision.WARN
+
+                ev_details = []
+                for e in evidence:
+                    eff_s = pkg_overrides.get(e.id, e.severity)
+                    eff_s_name = eff_s.name if hasattr(eff_s, "name") else str(eff_s)
+                    ev_details.append({
+                        "id": e.id,
+                        "severity": eff_s_name,
+                        "raw_severity": e.severity.name,
+                        "effective_severity": eff_s_name,
+                        "file": e.file,
+                        "explanation": e.explanation,
+                        "legitimate_use_note": e.legitimate_use_note,
+                    })
 
                 package_results.append({
                     "package": pkg_name,
@@ -936,16 +963,7 @@ def scan_lockfile_diff(
                     "change_type": change.change_type,
                     "decision": decision.name,
                     "evidence": [e.id for e in evidence],
-                    "evidence_details": [
-                        {
-                            "id": e.id,
-                            "severity": e.severity.name,
-                            "file": e.file,
-                            "explanation": e.explanation,
-                            "legitimate_use_note": e.legitimate_use_note,
-                        }
-                        for e in evidence
-                    ],
+                    "evidence_details": ev_details,
                     "limitations": lims,
                     "status": "ok",
                 })
@@ -964,6 +982,8 @@ def scan_lockfile_diff(
                         {
                             "id": "integrity_mismatch",
                             "severity": Severity.HIGH.name,
+                            "raw_severity": Severity.HIGH.name,
+                            "effective_severity": Severity.HIGH.name,
                             "file": None,
                             "explanation": f"Tarball integrity mismatch for {pkg_name}@{new_ver}: {exc}",  # noqa: E501
                             "legitimate_use_note": "Registry CDN sync issue, corrupted download, or tampering.",  # noqa: E501
@@ -987,6 +1007,8 @@ def scan_lockfile_diff(
                         {
                             "id": "inspection_failed",
                             "severity": Severity.MEDIUM.name,
+                            "raw_severity": Severity.MEDIUM.name,
+                            "effective_severity": Severity.MEDIUM.name,
                             "file": None,
                             "explanation": f"Failed to inspect {pkg_name}@{new_ver}: {exc}",
                             "legitimate_use_note": "Corrupted archive, malformed package.json, or unsupported file.",  # noqa: E501

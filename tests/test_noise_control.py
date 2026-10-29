@@ -104,6 +104,55 @@ def test_is_not_notable_low_and_single_medium():
     assert is_report_notable(report) is False
 
 
+def test_is_not_notable_allow_package_with_evidence():
+    report = {
+        "decision": "WARN",
+        "package_results": [
+            {
+                "package": "clean-pkg",
+                "decision": "ALLOW",
+                "evidence_details": [
+                    {"id": "dynamic_code", "severity": "HIGH", "effective_severity": "HIGH"},
+                ],
+            }
+        ],
+    }
+    # An ALLOW package should never drive report notability
+    assert is_report_notable(report) is False
+
+
+def test_is_report_notable_uses_effective_severity():
+    # Raw severity is HIGH, but effective severity was overridden to LOW
+    demoted_report = {
+        "decision": "WARN",
+        "package_results": [
+            {
+                "package": "pkg-a",
+                "decision": "WARN",
+                "evidence_details": [
+                    {"id": "some_sig", "severity": "HIGH", "effective_severity": "LOW"},
+                ],
+            }
+        ],
+    }
+    assert is_report_notable(demoted_report) is False
+
+    # Raw severity is LOW, but effective severity was overridden to HIGH
+    promoted_report = {
+        "decision": "WARN",
+        "package_results": [
+            {
+                "package": "pkg-a",
+                "decision": "WARN",
+                "evidence_details": [
+                    {"id": "some_sig", "severity": "LOW", "effective_severity": "HIGH"},
+                ],
+            }
+        ],
+    }
+    assert is_report_notable(promoted_report) is True
+
+
 def test_should_post_comment_matrix():
     notable_report = {
         "decision": "WARN",
@@ -149,8 +198,6 @@ def test_should_post_comment_matrix():
     assert should_post_comment(allow_report, "invalid") is False
 
     # LockfileDiffReport object instance
-    from release_sentinel.lockfile import LockfileDiffReport
-    from release_sentinel.models import Decision
     typed_block = LockfileDiffReport("base", "head", 1, Decision.BLOCK, [], [])
     typed_allow = LockfileDiffReport("base", "head", 1, Decision.ALLOW, [], [])
     assert should_post_comment(typed_block, "block") is True
