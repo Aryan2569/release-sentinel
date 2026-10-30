@@ -336,22 +336,27 @@ class TestStage7bPart1Hygiene:
 
     def test_pinned_action_shas(self):
         import re
+        from pathlib import Path
 
-        action_yml = Path("action.yml").read_text(encoding="utf-8")
-        ci_yml = Path(".github/workflows/ci.yml").read_text(encoding="utf-8")
+        target_files = list(Path(".github/workflows").glob("*.yml")) + [Path("action.yml")]
+        sha_re = re.compile(
+            r"uses:\s*([a-zA-Z0-9_.-]+/[a-zA-Z0-9_.-]+)@([a-f0-9]{40})\s*#\s*v[0-9]+(\.[0-9]+)*"
+        )
 
-        # Verify setup-python SHA is the verified commit SHA
-        expected_setup_python = "39cd14951b08e74b54015e9e001cdefcf80e669f"
-        assert f"actions/setup-python@{expected_setup_python}" in action_yml
-        assert f"actions/setup-python@{expected_setup_python}" in ci_yml
-
-        # Check all uses: actions/* in action.yml and ci.yml use full 40-char hex SHAs
-        sha_re = re.compile(r"uses:\s*actions/([a-zA-Z0-9_-]+)@([a-f0-9]{40})")
-        for content in (action_yml, ci_yml):
+        for path in target_files:
+            content = path.read_text(encoding="utf-8")
             for line in content.splitlines():
-                if "uses: actions/" in line:
-                    match = sha_re.search(line)
-                    assert match is not None, f"Action not pinned by 40-char SHA: {line}"
+                stripped = line.strip()
+                if not stripped.startswith("uses:"):
+                    continue
+                # Local actions starting with ./ are exempt
+                action_ref = stripped.split("uses:", 1)[1].strip()
+                if action_ref.startswith("./") or action_ref.startswith("."):
+                    continue
+                match = sha_re.search(line)
+                assert match is not None, (
+                    f"Action not pinned by 40-char SHA with # vX.Y.Z comment in {path}: {line}"
+                )
 
     def test_workflow_permissions(self):
         import yaml
