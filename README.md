@@ -114,7 +114,7 @@ jobs:
 | `max-packages`| Maximum changed packages to analyze before capping | `300` | Integer $\ge 1$ |
 | `github-token`| Token for posting pull request comments | `${{ github.token }}` | GitHub token with PR write access |
 
-> **Performance Note**: The composite action includes caching via `actions/cache@v4` for `~/.cache/release_sentinel` keyed on the lockfile hash. A cache hit drops the typical workflow run time from ~30s to ~2s.
+> **Performance Note**: The composite action includes caching via pinned `actions/cache` (v6.1.0) for `~/.cache/release_sentinel` keyed on the lockfile hash. A cache hit drops the typical workflow run time from ~30s to ~2s.
 
 ---
 
