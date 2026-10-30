@@ -59,16 +59,18 @@ When evaluating or showcasing Release Sentinel in CI, three standard pull reques
   - Gate status: **Passed** (exit code `0`).
   - PR comment: **None**. Because `comment-on: notable` is configured, clean updates do not produce noisy comments. Full audit details appear in `$GITHUB_STEP_SUMMARY`.
 
-### PR 2: Tarball Aliasing / URL Mismatch (`BLOCK`, Security Comment)
-- **Change**: Bump `lodash` to `4.17.21` in `package-lock.json`, but alter its `resolved` URL to point to a mismatched tarball (e.g. `https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz`).
+### PR 2: Same-Version Integrity Swap (`BLOCK`, Security Comment)
+- **Change**: Keep `lodash` at version `4.17.20`, but replace its `integrity` string in `package-lock.json` with a tampered SHA-512 hash:
+  - Version: `"4.17.20"` (unchanged)
+  - Integrity: `"sha512-00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000=="`
+- **Expected Outcome**:
+  - Verdict: `🛑 BLOCK`.
+  - Gate status: **Failed** (exit code `1` under `fail-on: block`).
+  - PR comment: **Posted automatically**. An alert detailing `lockfile_integrity_changed` (`Severity.HIGH`) is posted directly to the pull request conversation, blocking merge without downloading tarball content.
+
+### PR 3: Wrong-Resolved-URL Bump (`BLOCK`, Security Comment)
+- **Change**: Bump `lodash` to `4.17.21` in `package-lock.json`, but alter its `resolved` URL to point to an incongruent tarball (e.g. `https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz`).
 - **Expected Outcome**:
   - Verdict: `🛑 BLOCK`.
   - Gate status: **Failed** (exit code `1` under `fail-on: block`).
   - PR comment: **Posted automatically**. An alert detailing `lockfile_resolved_mismatch` (`Severity.HIGH`) is posted directly to the pull request conversation, blocking merge.
-
-### PR 3: Lifecycle Install Script Addition (`WARN`/`BLOCK`, Notable Finding)
-- **Change**: Introduce an update or dependency that registers an install-time lifecycle hook (`preinstall`, `install`, `postinstall`).
-- **Expected Outcome**:
-  - Verdict: `⚠️ WARN` (or `🛑 BLOCK` if corroborated with network access or dynamic code).
-  - Gate status: Passes under `fail-on: block` unless corroborated; fails under `fail-on: warn`.
-  - PR comment: **Posted automatically**. Because `install_script_added` carries `Severity.HIGH`, it meets the `notable` threshold, surfacing a detailed evidence table to reviewers.
