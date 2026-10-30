@@ -411,13 +411,12 @@ class TestLockfileDiffScanning:
 
 
 class TestLockfileTamperingChecks:
-    """Document current behavior for lockfile tampering scenarios (Stage 7g Step 4)."""
+    """Lockfile tampering detection checks across same-version and bumped entries (Stage 7h)."""
 
-    def test_tamper_same_version_different_integrity_currently_allow(self):
+    def test_tamper_same_version_different_integrity_blocks(self):
         """Case (a): Same name and version has different integrity than base.
 
-        Current behavior: diff_lockfiles keys purely by (name, version), so identical
-        Decision is ALLOW with 0 packages scanned.
+        Produces Decision.BLOCK with evidence ['lockfile_integrity_changed'].
         """
         base_v3 = {
             "name": "demo-app",
@@ -446,15 +445,21 @@ class TestLockfileTamperingChecks:
             },
         }
         report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
-        assert report.decision == Decision.ALLOW
-        assert report.total_packages_scanned == 0
-        assert len(report.package_results) == 0
+        assert report.decision == Decision.BLOCK
+        assert report.total_packages_scanned == 1
+        assert len(report.package_results) == 1
+        pkg_res = report.package_results[0]
+        assert pkg_res["package"] == "lodash"
+        assert pkg_res["old_version"] == "4.17.20"
+        assert pkg_res["new_version"] == "4.17.20"
+        assert pkg_res["decision"] == "BLOCK"
+        assert "lockfile_integrity_changed" in pkg_res["evidence"]
+        assert pkg_res["status"] == "lockfile_integrity_changed"
 
-    def test_tamper_same_version_different_resolved_url_currently_allow(self):
-        """Case (b): Same name and version has different resolved URL on npmjs.org.
+    def test_tamper_same_version_different_resolved_url_warns(self):
+        """Case (b): Same name and version has different resolved URL while integrity is equal.
 
-        Current behavior: diff_lockfiles keys purely by (name, version), so identical
-        Decision is ALLOW with 0 packages scanned.
+        Produces Decision.WARN with evidence ['lockfile_resolved_changed'].
         """
         base_v3 = {
             "name": "demo-app",
@@ -477,15 +482,22 @@ class TestLockfileTamperingChecks:
                 "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
                 "node_modules/lodash": {
                     "version": "4.17.20",
-                    "resolved": "https://registry.npmjs.org/lodash/-/tampered-lodash-4.17.20.tgz",
+                    "resolved": "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz",
                     "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
                 },
             },
         }
         report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
-        assert report.decision == Decision.ALLOW
-        assert report.total_packages_scanned == 0
-        assert len(report.package_results) == 0
+        assert report.decision == Decision.WARN
+        assert report.total_packages_scanned == 1
+        assert len(report.package_results) == 1
+        pkg_res = report.package_results[0]
+        assert pkg_res["package"] == "lodash"
+        assert pkg_res["old_version"] == "4.17.20"
+        assert pkg_res["new_version"] == "4.17.20"
+        assert pkg_res["decision"] == "WARN"
+        assert "lockfile_resolved_changed" in pkg_res["evidence"]
+        assert pkg_res["status"] == "lockfile_resolved_changed"
 
     def test_tamper_bumped_version_resolved_points_to_old_tarball_blocks(self):
         """Case (c): Bumped version whose resolved URL points to the old version's tarball.
@@ -530,3 +542,179 @@ class TestLockfileTamperingChecks:
         assert pkg_res["decision"] == "BLOCK"
         assert pkg_res["evidence"] == ["lockfile_resolved_mismatch"]
         assert pkg_res["status"] == "lockfile_resolved_mismatch"
+
+    def test_tamper_head_lacks_integrity_while_base_had_it_warns(self):
+        """Rule (b): Head lockfile strips integrity hash while base lockfile had it.
+
+        Emits lockfile_missing_integrity with Decision.WARN without downloading tarball.
+        """
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    # integrity removed
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.WARN
+        assert report.total_packages_scanned == 1
+        assert len(report.package_results) == 1
+        pkg_res = report.package_results[0]
+        assert pkg_res["package"] == "lodash"
+        assert pkg_res["decision"] == "WARN"
+        assert "lockfile_missing_integrity" in pkg_res["evidence"]
+
+    def test_tamper_head_conflicting_integrities_at_multiple_paths(self):
+        """Rule (d): Head has same (name, version) at multiple paths with different hashes."""
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-AAA==",
+                },
+                "node_modules/dep/node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-BBB==",
+                },
+            },
+        }
+        base_v3 = {"name": "demo-app", "version": "1.0.0", "lockfileVersion": 3, "packages": {}}
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.WARN
+        ev_ids = [e for pkg in report.package_results for e in pkg.get("evidence", [])]
+        assert "lockfile_integrity_changed" in ev_ids
+
+    def test_nested_duplicates_with_identical_integrity_allows(self):
+        """Nested duplicate entries in head having identical integrity do not cause conflict."""
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+                "node_modules/dep/node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.ALLOW
+        assert report.total_packages_scanned == 0
+
+    def test_base_lacked_integrity_head_has_integrity_ignored(self):
+        """Base lacked integrity and head gained one: ignored, produces Decision.ALLOW."""
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    # no integrity in base
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.ALLOW
+        assert report.total_packages_scanned == 0
+
+    def test_v1_to_v3_lockfile_conversion_does_not_false_block(self):
+        """Converting a lockfile from v1 to v3 with unchanged packages must not false BLOCK."""
+        base_v1 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 1,
+            "dependencies": {
+                "lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+                "chalk": {
+                    "version": "4.1.0",
+                    "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz",
+                    "integrity": "sha512-qwx12ZsWLofyMT8FccNeBCSWi9GUMziFQ+RwBKFVPKUWhjjIIFBYD9vNPnQ8GbpFXVW302U4L4XrSDy6aW4RnA==",  # noqa: E501
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {
+                    "name": "demo-app",
+                    "version": "1.0.0",
+                    "dependencies": {"lodash": "4.17.20", "chalk": "4.1.0"},
+                },
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+                "node_modules/chalk": {
+                    "version": "4.1.0",
+                    "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz",
+                    "integrity": "sha512-qwx12ZsWLofyMT8FccNeBCSWi9GUMziFQ+RwBKFVPKUWhjjIIFBYD9vNPnQ8GbpFXVW302U4L4XrSDy6aW4RnA==",  # noqa: E501
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v1), json.dumps(head_v3))
+        assert report.decision == Decision.ALLOW
+        assert report.total_packages_scanned == 0
