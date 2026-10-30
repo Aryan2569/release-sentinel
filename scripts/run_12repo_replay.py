@@ -196,8 +196,13 @@ def run_replay_for_profile(profile: str, max_commits_per_repo: int = 25) -> dict
                 "pair_key": pair_key,
                 "base_sha": update_res["base_sha"],
                 "head_sha": update_res["head_sha"],
+                "date": update_res.get("date"),
+                "subject": update_res.get("subject"),
                 "decision": d,
+                "packages_scanned": update_res.get("packages_scanned", 0),
                 "evidence": update_res.get("evidence", []),
+                "warns": update_res.get("warns", []),
+                "blocks": update_res.get("blocks", []),
                 "skipped": update_res.get("skipped", False),
             })
 

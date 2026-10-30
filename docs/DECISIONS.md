@@ -728,3 +728,38 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
     - False BLOCKs on real history: **0 across all 288 updates** under both `default` and `strict` profiles.
   - Confirmed PR comment rate is unchanged: Single MEDIUM lockfile metadata findings do not satisfy the `notable` comment gating threshold unless corroborated by HIGH/CRITICAL severity or $\ge 2$ distinct MEDIUM signals, resulting in 0 additional PR comments.
   - Confirmed zero impact on frozen v1.4 malicious benchmark metrics (1,349 evaluation pairs and `scripts/verify_metrics.py` remain 100% invariant).
+
+
+---
+
+## Stage 7i: Replay Number Reconciliation & Lockfile Rule Noise Elimination
+
+- **Reconciliation of Replay Updates (284 vs 288 Updates)**:
+  - Investigated the evaluable update discrepancy between the Stage 7h run (284 updates) and committed metrics (288 updates across 12 repositories, 5,965 scanned packages).
+  - Identified the exact 4 skipped updates in `socket.io` where reading the root `package-lock.json` failed:
+    1. `5a31aaf9..42480e9a`: Head commit moved root `package-lock.json` to `packages/socket.io-postgres-emitter/package-lock.json`.
+    2. `42480e9a..c7144920`: Base commit lacked root `package-lock.json`.
+    3. `0c431243..27fd420e`: Head commit moved root `package-lock.json` to `packages/socket.io-cluster-adapter/package-lock.json`.
+    4. `27fd420e..0ae76360`: Base commit lacked root `package-lock.json`.
+  - Confirmed these updates were never evaluable package diffs in earlier Stage 6b replays (`packages_scanned: 0`, recorded under fail-closed semantics as `WARN` with `evidence: ["replay_error"]`).
+  - Updated `scripts/replay_repo.py` and `scripts/run_12repo_replay.py` to record `skipped: true` with an explicit `skip_reason` and track `skipped_updates` in summary output rather than silently dropping or obscuring them.
+
+- **Rule (b) Missing Integrity Filtering (Registry-Hosted Scope)**:
+  - Root-caused the 1,304 package instances across 19 updates in Stage 7h: npm v3 legitimately stripped both `resolved` and `integrity` together for local workspace packages, links, and devDependencies.
+  - Filtered Rule (b) to emit `lockfile_missing_integrity` (WARN) strictly when a registry-hosted entry (`resolved` on `registry.npmjs.org`, `not link`, not `file:`/`git:`) loses its integrity hash while remaining registry-hosted.
+  - Re-measurement on real-world history: **0 updates (0 / 288, 0.00%)** and **0 package instances**.
+
+- **Rule (d) Multi-Path Conflicting Integrity Filtering (Same-Algorithm & npm Aliases)**:
+  - Root-caused the 163 instances across 29 updates in Stage 7h:
+    1. 140 instances were lockfile format upgrades from `sha1` to `sha512` where different dependency tree locations were updated at different times.
+    2. 23 instances were npm package aliases (`node_modules/marked-repo` aliasing package `marked` with differing tarball URLs/digests).
+  - Restricted Rule (d) to compare only integrity hashes sharing the same hash algorithm (`sha1` vs `sha512` does not conflict), and excluded npm aliases where `path_name != declared_name`.
+  - Re-measurement on real-world history: **0 updates (0 / 288, 0.00%)** and **0 package instances**.
+
+- **Rule (a) Multi-Hash Overlap & Algorithm Awareness**:
+  - Implemented `has_same_algo_integrity_diff` and `parse_integrity_hashes`. Rule (a) never blocks when algorithms differ or when multi-hash integrity fields share at least one valid digest for every common algorithm, blocking only when the same algorithm has conflicting digests.
+  - Added comprehensive unit tests in `tests/test_lockfile.py` covering multi-hash overlaps, differing algorithms, workspace exclusions, and npm alias resolution.
+
+- **Full Replay Results Record in Committed Summary JSON**:
+  - Committed full per-update results (`updates: [...]` and `skipped_updates: [...]`) directly into `data/replay_12repos_summary.json` so every number can be reproduced offline without network or git clones.
+  - Verified update-level verdicts: 162 ALLOW (56.25%), 124 WARN (43.06%), 2 BLOCK (0.69%), 901 warned packages (15.10%), 31.7% PR noise reduction, and 0 false alarms from lockfile rules.

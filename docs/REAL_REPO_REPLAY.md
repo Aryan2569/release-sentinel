@@ -11,6 +11,7 @@
 - **Consecutive Pairwise Diffs:** For each repository, the last 25 commits touching `package-lock.json` are evaluated consecutively as $(C_{i-1} \to C_i)$, producing 24 sequential dependency update events per repository.
 - **Double Evaluation:** Every update is evaluated under both the **`strict`** profile (frozen v1.4 research evaluation baseline) and the **`default`** profile (production low-noise profile).
 - **Dataset Scale:** 12 repositories $\times$ 24 update pairs = **288 total updates**, scanning **5,965 package transitions**.
+- **Skipped Updates Disclosure:** 4 updates in `socket.io` (`5a31aaf9..42480e9a`, `42480e9a..c7144920`, `0c431243..27fd420e`, and `27fd420e..0ae76360`) encountered missing root `package-lock.json` files during historical monorepo migrations (lockfiles relocated to `packages/*/package-lock.json`). Rather than silently ignoring them, the replay harness explicitly reports `skipped: true`, `packages_scanned: 0`, and records a fail-closed `WARN` verdict with `evidence: ["replay_error"]`.
 
 ---
 
@@ -73,7 +74,20 @@
 
 ---
 
-## 5. Top Evidence IDs Among Alerts
+---
+
+## 5. Lockfile Metadata Defense Prevalence (Stage 7h & Stage 7i)
+
+Release Sentinel evaluates same-version lockfile entries (packages whose `(name, version)` exist in both base and head lockfiles) alongside version bumps. Across all 288 replayed updates and 5,965 package transitions, the lockfile integrity rules exhibited **zero false alarms**:
+
+| Rule | Signal ID | Trigger Condition | Severity & Verdict | Replay Rate (288 Updates) | Signal Tuning & False-Alarm Filters |
+| :--- | :--- | :--- | :---: | :---: | :--- |
+| **Rule (a)** | `lockfile_integrity_changed` | Same algorithm has different digest | HIGH / **BLOCK** | **0 / 288 (0.00%)** | Registry tarballs for immutable versions never change; algorithm migrations (`sha1` vs `sha512`) and multi-hash overlaps do not block |
+| **Rule (b)** | `lockfile_missing_integrity` | Head entry lacks integrity while base had it | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Flags registry-hosted packages (`registry.npmjs.org`) losing integrity; excludes workspaces (`link: true`) and git/file dependencies |
+| **Rule (c)** | `lockfile_resolved_changed` | Resolved URL changed while integrity equal | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Flags registry mirror switch or private CDN migration while maintaining identical checksum |
+| **Rule (d)** | `lockfile_integrity_changed` | Multi-path entries with conflicting integrities | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Compares only identical hash algorithms; ignores npm aliases (where path name differs from package name) |
+
+## 6. Top Evidence IDs Among Alerts
 
 The top evidence IDs observed across all 288 updates reflect genuine architectural maintenance patterns in open-source ecosystems:
 
@@ -97,7 +111,7 @@ The top evidence IDs observed across all 288 updates reflect genuine architectur
 
 ---
 
-## 6. The Two Blocked Updates Under `default`
+## 7. The Two Blocked Updates Under `default`
 
 Under the `default` profile, only **2 updates out of 288** triggered a BLOCK (both occurring within the massive 1,419-package history of `nodemon`):
 
@@ -111,7 +125,7 @@ All other 10 repositories had **zero BLOCKs (0.0% false-BLOCK rate)**.
 
 ---
 
-## 7. Usability Conclusions & CI Viability
+## 8. Usability Conclusions & CI Viability
 
 1. **The Aggregation Problem Solved**:
    Under `strict`, a 0.52% per-package false BLOCK rate compounded across average PR sizes (20 packages) to disrupt **7.64% of PRs**.

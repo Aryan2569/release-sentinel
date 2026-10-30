@@ -243,14 +243,23 @@ To measure production signal-to-noise ratio, Release Sentinel was replayed acros
 
 - **Update-Level Verdicts**: Out of 288 updates, 162 are clean ALLOW (56.25%), 124 trigger warnings (43.06%), and 2 trigger BLOCK (0.69%).
 - **Per-Package Warning Rate**: 901 warned packages out of 5,965 total packages (15.10%).
-- **Integrity Verification**: `lockfile_missing_integrity` occurred on **0 of 288 replayed updates (0.00%)** across all 5,965 scanned packages (+0.0% addition to WARN rate), verifying that standard npm lockfiles consistently pin SHA-512 cryptographic hashes.
+- **False-BLOCK Rate**: Only 2 out of 288 updates trigger BLOCK (0.69%), confined to historical postinstall JavaScript and token test fixtures in `nodemon`. The other 11 repositories had a **0.0% false-BLOCK rate**.
 - **PR Comment Gating Threshold Evaluation**:
   We evaluated three PR comment thresholds across both the 288 real-world updates and all 140 benchmark campaigns:
-  - **Variant A** (BLOCK, or WARN with HIGH/CRITICAL or install-hook change): Comments on 47 of 288 updates (16.3%), but only alerts on **84 of 140 campaigns (60.0%)**, completely missing 42 campaigns (including the 2026 waves).
+  - **Variant A** (BLOCK, or WARN with HIGH/CRITICAL or install-hook change): Comments on 47 of 288 updates (16.32%), but only alerts on **84 of 140 campaigns (60.00%)**, completely missing 42 campaigns (including the 2026 waves).
   - **Variant B (`notable`, default)** (Variant A plus $\ge 2$ distinct MEDIUM signals evaluated at effective severity): Comments on **86 updates (29.86%)**, while successfully alerting on **126 of 140 campaigns (90.00%)**—retaining 100% of the 2026 waves that comment under default profile.
   - **Variant C** (BLOCK only): Comments on 2 of 288 updates (0.69%), but drops campaign comment coverage down to **34 of 140 campaigns (24.29%)**.
 
-Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 updates (43.75%) down to **86 updates (29.86%)** — an immediate **31.7% reduction in PR noise** while preserving 90% campaign detection.
+Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 updates (43.75%) down to **86 updates (29.86%)** — an immediate **31.7% reduction in PR noise** while preserving 90.0% campaign detection.
+
+#### Lockfile Defense Rule Prevalence Across Replay History
+
+| Rule | Defense Mechanism | Severity & Verdict | Replay Prevalence (288 Updates) | Operational Behavior |
+| :--- | :--- | :---: | :---: | :--- |
+| **Rule (a)** | In-place same-algorithm integrity change | HIGH / **BLOCK** | **0 / 288 (0.00%)** | Immutable registry version tarballs never differ; algorithm migrations (`sha1` vs `sha512`) and multi-hash overlaps are safely allowed |
+| **Rule (b)** | Registry-hosted entry missing integrity | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Flags registry packages losing integrity; excludes local workspaces (`link: true`) and git/file dependencies |
+| **Rule (c)** | Registry resolved URL changed (integrity equal) | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Audit warning for registry mirror migration or proxy routing |
+| **Rule (d)** | Multi-path same-algorithm conflicting integrities | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Evaluates conflicts under the same algorithm; ignores npm package aliases |
 
 ### Attack Style Evolution Over Time
 

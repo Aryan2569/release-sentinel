@@ -35,10 +35,16 @@ if not replay_files:
         replay_files = list(sibling_cache.glob("replay_cache_default_*.json"))
 
 all_updates = []
-for rf in replay_files:
-    with open(rf, encoding="utf-8") as f:
-        data = json.load(f)
-        all_updates.extend(data.get("results", []))
+if replay_files:
+    for rf in replay_files:
+        with open(rf, encoding="utf-8") as f:
+            data = json.load(f)
+            all_updates.extend(data.get("results", []))
+elif (Path("data") / "replay_12repos_summary.json").exists():
+    summary_data = json.loads(
+        (Path("data") / "replay_12repos_summary.json").read_text(encoding="utf-8")
+    )
+    all_updates = summary_data.get("default", {}).get("updates", [])
 
 print(f"Loaded {len(all_updates)} replay updates from {len(replay_files)} files")
 
