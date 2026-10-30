@@ -100,6 +100,11 @@ class LockfilePackage:
     resolved: str | None = None
     integrity: str | None = None
     has_install_script: bool = False
+    all_integrities: tuple[str, ...] = ()
+
+    def __post_init__(self) -> None:
+        if not self.all_integrities and self.integrity:
+            object.__setattr__(self, "all_integrities", (self.integrity,))
 
 
 @dataclass(frozen=True)
@@ -109,10 +114,13 @@ class PackageChange:
     name: str
     old_version: str | None  # None if ADDED
     new_version: str | None  # None if REMOVED
-    change_type: str  # 'added', 'upgraded', 'downgraded', 'removed'
+    change_type: str  # 'added', 'upgraded', 'downgraded', 'removed', 'modified'
     resolved: str | None = None
     integrity: str | None = None
     has_install_script: bool = False
+    old_resolved: str | None = None
+    old_integrity: str | None = None
+    conflicting_integrities: tuple[str, ...] = ()
 
 
 class LockfilePackages(dict[tuple[str, str], LockfilePackage]):
@@ -192,9 +200,7 @@ def is_report_notable(report: LockfileDiffReport | dict[str, Any]) -> bool:
             for d in details
         )
         ev_ids = [d.get("id") for d in details] if details else pkg.get("evidence", [])
-        has_hook = any(
-            hid in ev_ids for hid in ("install_script_added", "install_script_changed")
-        )
+        has_hook = any(hid in ev_ids for hid in ("install_script_added", "install_script_changed"))
 
         medium_ids = {
             d.get("id")
@@ -290,7 +296,26 @@ def _walk_v1_dependencies(
                     resolved=resolved if isinstance(resolved, str) else None,
                     integrity=integrity if isinstance(integrity, str) else None,
                     has_install_script=has_install,
+                    all_integrities=(integrity,)
+                    if isinstance(integrity, str) and integrity
+                    else (),
                 )
+            else:
+                existing = out[key]
+                if (
+                    isinstance(integrity, str)
+                    and integrity
+                    and integrity not in existing.all_integrities
+                ):
+                    out[key] = LockfilePackage(
+                        name=existing.name,
+                        version=existing.version,
+                        resolved=existing.resolved
+                        or (resolved if isinstance(resolved, str) else None),
+                        integrity=existing.integrity or integrity,
+                        has_install_script=existing.has_install_script or has_install,
+                        all_integrities=existing.all_integrities + (integrity,),
+                    )
         nested = data.get("dependencies")
         if isinstance(nested, dict):
             _walk_v1_dependencies(nested, out)
@@ -350,7 +375,26 @@ def parse_lockfile_content(
                     resolved=resolved if isinstance(resolved, str) else None,
                     integrity=integrity if isinstance(integrity, str) else None,
                     has_install_script=has_install,
+                    all_integrities=(integrity,)
+                    if isinstance(integrity, str) and integrity
+                    else (),
                 )
+            else:
+                existing = packages[key]
+                if (
+                    isinstance(integrity, str)
+                    and integrity
+                    and integrity not in existing.all_integrities
+                ):
+                    packages[key] = LockfilePackage(
+                        name=existing.name,
+                        version=existing.version,
+                        resolved=existing.resolved
+                        or (resolved if isinstance(resolved, str) else None),
+                        integrity=existing.integrity or integrity,
+                        has_install_script=existing.has_install_script or has_install,
+                        all_integrities=existing.all_integrities + (integrity,),
+                    )
 
     # v1 (or v2 fallback) has 'dependencies'
     if not packages and "dependencies" in data and isinstance(data["dependencies"], dict):
@@ -384,15 +428,30 @@ def _normalize_pkg_map(
     pkgs: Mapping[object, LockfilePackage] | Iterable[LockfilePackage],
 ) -> dict[tuple[str, str], LockfilePackage]:
     result: dict[tuple[str, str], LockfilePackage] = {}
-    if isinstance(pkgs, (set, list)):
-        for p in pkgs:
-            result[(p.name, p.version)] = p
-    elif isinstance(pkgs, (dict, Mapping)):
-        for k, v in pkgs.items():
-            if isinstance(k, tuple):
-                result[k] = v
-            else:
-                result[(v.name, v.version)] = v
+    items: Iterable[LockfilePackage]
+    if isinstance(pkgs, Mapping):
+        items = pkgs.values()
+    else:
+        items = pkgs
+    for p in items:
+        key = (p.name, p.version)
+        if key not in result:
+            result[key] = p
+        else:
+            existing = result[key]
+            merged_integrities = existing.all_integrities
+            for intg in p.all_integrities:
+                if intg and intg not in merged_integrities:
+                    merged_integrities = merged_integrities + (intg,)
+            if merged_integrities != existing.all_integrities:
+                result[key] = LockfilePackage(
+                    name=existing.name,
+                    version=existing.version,
+                    resolved=existing.resolved or p.resolved,
+                    integrity=existing.integrity or p.integrity,
+                    has_install_script=existing.has_install_script or p.has_install_script,
+                    all_integrities=merged_integrities,
+                )
     return result
 
 
@@ -491,6 +550,9 @@ def diff_lockfiles(
                         resolved=new_pkg.resolved,
                         integrity=new_pkg.integrity,
                         has_install_script=new_pkg.has_install_script,
+                        conflicting_integrities=new_pkg.all_integrities
+                        if len(new_pkg.all_integrities) > 1
+                        else (),
                     )
                 )
         elif len(name_removed) > 0:
@@ -507,6 +569,43 @@ def diff_lockfiles(
                         has_install_script=old_pkg.has_install_script,
                     )
                 )
+
+    # Compare entries whose (name, version) exist in BOTH base and head (Stage 7h)
+    common_pairs = old_pairs & new_pairs
+    for name, version in sorted(common_pairs):
+        old_pkg = old_map[(name, version)]
+        new_pkg = new_map[(name, version)]
+
+        has_conflicting = len(new_pkg.all_integrities) > 1
+        integrity_differs = False
+        if old_pkg.integrity and new_pkg.integrity:
+            if old_pkg.integrity.strip() != new_pkg.integrity.strip():
+                integrity_differs = True
+
+        lost_integrity = bool(old_pkg.integrity and not new_pkg.integrity)
+        resolved_changed = bool(
+            old_pkg.resolved != new_pkg.resolved
+            and (
+                old_pkg.integrity == new_pkg.integrity
+                or (not old_pkg.integrity and not new_pkg.integrity)
+            )
+        )
+
+        if has_conflicting or integrity_differs or lost_integrity or resolved_changed:
+            changes.append(
+                PackageChange(
+                    name=name,
+                    old_version=version,
+                    new_version=version,
+                    change_type="modified",
+                    resolved=new_pkg.resolved,
+                    integrity=new_pkg.integrity,
+                    has_install_script=new_pkg.has_install_script,
+                    old_resolved=old_pkg.resolved,
+                    old_integrity=old_pkg.integrity,
+                    conflicting_integrities=new_pkg.all_integrities if has_conflicting else (),
+                )
+            )
 
     scannable_count = sum(1 for c in changes if c.change_type != "removed")
     if scannable_count > max_packages:
@@ -530,6 +629,7 @@ def _sort_changes_by_risk(
     2. Within each group: packages that declare preinstall/install/postinstall first.
     3. Within each group: newest published first.
     """
+
     def risk_tuple(c: PackageChange) -> tuple[int, int, float, str]:
         # Tier 1: Added first (0) vs upgraded/downgraded (1)
         tier1 = 0 if c.change_type == "added" else 1
@@ -542,11 +642,7 @@ def _sort_changes_by_risk(
             try:
                 meta = client.get_metadata(c.name, as_of=as_of)
                 if not has_hook:
-                    scripts = (
-                        meta.get("versions", {})
-                        .get(c.new_version, {})
-                        .get("scripts", {})
-                    )
+                    scripts = meta.get("versions", {}).get(c.new_version, {}).get("scripts", {})
                     if isinstance(scripts, dict) and any(
                         h in scripts for h in ("preinstall", "install", "postinstall")
                     ):
@@ -718,16 +814,206 @@ def scan_lockfile_diff(
             if not new_ver:
                 continue
 
+            # Rule (d): Multiple paths in head with conflicting integrity values
+            if len(change.conflicting_integrities) > 1:
+                hashes_str = ", ".join(repr(h) for h in change.conflicting_integrities)
+                ev_conflict = Evidence(
+                    id="lockfile_integrity_changed",
+                    severity=Severity.HIGH,
+                    file="package-lock.json",
+                    explanation=(
+                        f"Lockfile contains multiple entries for '{pkg_name}@{new_ver}' "
+                        f"with conflicting integrity hashes ({hashes_str}). A single package "
+                        "version cannot legitimately have different tarball contents across "
+                        "install locations."
+                    ),
+                    legitimate_use_note="Malformed or manually edited lockfile.",
+                )
+                package_results.append(
+                    {
+                        "package": pkg_name,
+                        "old_version": old_ver,
+                        "new_version": new_ver,
+                        "change_type": change.change_type,
+                        "decision": Decision.BLOCK.name,
+                        "evidence": [ev_conflict.id],
+                        "evidence_details": [
+                            {
+                                "id": ev_conflict.id,
+                                "severity": ev_conflict.severity.name,
+                                "raw_severity": ev_conflict.severity.name,
+                                "effective_severity": ev_conflict.severity.name,
+                                "file": ev_conflict.file,
+                                "explanation": ev_conflict.explanation,
+                                "legitimate_use_note": ev_conflict.legitimate_use_note,
+                            }
+                        ],
+                        "limitations": [],
+                        "status": "lockfile_integrity_changed",
+                    }
+                )
+                overall_decision = Decision.BLOCK
+                continue
+
+            # Same-version lockfile changes (Stage 7h)
+            if old_ver is not None and old_ver == new_ver:
+                # Rule (a): Both have integrity and values differ
+                if (
+                    change.old_integrity
+                    and change.integrity
+                    and change.old_integrity.strip() != change.integrity.strip()
+                ):
+                    old_algo = change.old_integrity.split("-", 1)[0]
+                    new_algo = change.integrity.split("-", 1)[0]
+                    if old_algo == new_algo:
+                        sev = Severity.HIGH
+                        dec_name = Decision.BLOCK.name
+                        overall_decision = Decision.BLOCK
+                        note = (
+                            "The npm registry never serves two different tarballs for the "
+                            "same version; this indicates tarball tampering or a mirror issue."
+                        )
+                    else:
+                        # Algorithm changed (e.g. sha1 to sha512 during lockfile upgrade)
+                        sev = Severity.MEDIUM
+                        dec_name = Decision.WARN.name
+                        if overall_decision != Decision.BLOCK:
+                            overall_decision = Decision.WARN
+                        note = (
+                            f"Integrity algorithm changed from '{old_algo}' to "
+                            f"'{new_algo}'. This occurs during npm lockfile upgrades, "
+                            "but tarball content cannot be verified without re-downloading."
+                        )
+
+                    ev_int = Evidence(
+                        id="lockfile_integrity_changed",
+                        severity=sev,
+                        file="package-lock.json",
+                        explanation=(
+                            f"Lockfile entry for '{pkg_name}@{new_ver}' changed integrity from "
+                            f"'{change.old_integrity}' to '{change.integrity}'. {note}"
+                        ),
+                        legitimate_use_note=(
+                            "Lockfile re-generation after package unpublish/republish or upgrade."
+                        ),
+                    )
+                    package_results.append(
+                        {
+                            "package": pkg_name,
+                            "old_version": old_ver,
+                            "new_version": new_ver,
+                            "change_type": change.change_type,
+                            "decision": dec_name,
+                            "evidence": [ev_int.id],
+                            "evidence_details": [
+                                {
+                                    "id": ev_int.id,
+                                    "severity": ev_int.severity.name,
+                                    "raw_severity": ev_int.severity.name,
+                                    "effective_severity": ev_int.severity.name,
+                                    "file": ev_int.file,
+                                    "explanation": ev_int.explanation,
+                                    "legitimate_use_note": ev_int.legitimate_use_note,
+                                }
+                            ],
+                            "limitations": [],
+                            "status": "lockfile_integrity_changed",
+                        }
+                    )
+                    continue
+
+                # Rule (b): Head lacks integrity while base had it
+                if change.old_integrity and not change.integrity:
+                    ev_lost = Evidence(
+                        id="lockfile_missing_integrity",
+                        severity=Severity.MEDIUM,
+                        file="package-lock.json",
+                        explanation=(
+                            f"Lockfile entry for '{pkg_name}@{new_ver}' previously had integrity "
+                            f"'{change.old_integrity}' in base, but is missing integrity in head. "
+                            "Without an integrity hash, tarball tampering cannot be detected."
+                        ),
+                        legitimate_use_note=(
+                            "Older npm lockfiles or local workspace entries may omit integrity."
+                        ),
+                    )
+                    if overall_decision != Decision.BLOCK:
+                        overall_decision = Decision.WARN
+                    package_results.append(
+                        {
+                            "package": pkg_name,
+                            "old_version": old_ver,
+                            "new_version": new_ver,
+                            "change_type": change.change_type,
+                            "decision": Decision.WARN.name,
+                            "evidence": [ev_lost.id],
+                            "evidence_details": [
+                                {
+                                    "id": ev_lost.id,
+                                    "severity": ev_lost.severity.name,
+                                    "raw_severity": ev_lost.severity.name,
+                                    "effective_severity": ev_lost.severity.name,
+                                    "file": ev_lost.file,
+                                    "explanation": ev_lost.explanation,
+                                    "legitimate_use_note": ev_lost.legitimate_use_note,
+                                }
+                            ],
+                            "limitations": [],
+                            "status": "lockfile_missing_integrity",
+                        }
+                    )
+                    continue
+
+                # Rule (c): Resolved URL changed while integrity is equal
+                if change.old_resolved != change.resolved:
+                    ev_res = Evidence(
+                        id="lockfile_resolved_changed",
+                        severity=Severity.MEDIUM,
+                        file="package-lock.json",
+                        explanation=(
+                            f"Lockfile entry for '{pkg_name}@{new_ver}' changed resolved URL "
+                            f"from '{redact_url_secrets(change.old_resolved or '')}' to "
+                            f"'{redact_url_secrets(change.resolved or '')}' while "
+                            "maintaining the same integrity hash."
+                        ),
+                        legitimate_use_note=(
+                            "Registry mirror switch, private proxy, or CDN domain migration."
+                        ),
+                    )
+                    if overall_decision != Decision.BLOCK:
+                        overall_decision = Decision.WARN
+                    package_results.append(
+                        {
+                            "package": pkg_name,
+                            "old_version": old_ver,
+                            "new_version": new_ver,
+                            "change_type": change.change_type,
+                            "decision": Decision.WARN.name,
+                            "evidence": [ev_res.id],
+                            "evidence_details": [
+                                {
+                                    "id": ev_res.id,
+                                    "severity": ev_res.severity.name,
+                                    "raw_severity": ev_res.severity.name,
+                                    "effective_severity": ev_res.severity.name,
+                                    "file": ev_res.file,
+                                    "explanation": ev_res.explanation,
+                                    "legitimate_use_note": ev_res.legitimate_use_note,
+                                }
+                            ],
+                            "limitations": [],
+                            "status": "lockfile_resolved_changed",
+                        }
+                    )
+                    continue
+
             # Check for non-registry source (git, file, or non-registry URL)
             is_git = bool(
                 change.resolved
                 and (
                     change.resolved.startswith("git+")
                     or change.resolved.startswith("git://")
-                    or (
-                        "github.com" in change.resolved
-                        and not change.resolved.endswith(".tgz")
-                    )
+                    or ("github.com" in change.resolved and not change.resolved.endswith(".tgz"))
                 )
             )
             is_file = bool(change.resolved and change.resolved.startswith("file:"))
@@ -735,9 +1021,8 @@ def scan_lockfile_diff(
             if change.resolved and not (is_git or is_file):
                 try:
                     parsed_res = urllib.parse.urlparse(change.resolved)
-                    if (
-                        parsed_res.scheme.lower() != "https"
-                        or not client.is_host_allowed(parsed_res.hostname or "")
+                    if parsed_res.scheme.lower() != "https" or not client.is_host_allowed(
+                        parsed_res.hostname or ""
                     ):
                         is_non_reg_url = True
                 except Exception:
@@ -764,29 +1049,31 @@ def scan_lockfile_diff(
                 )
                 if overall_decision != Decision.BLOCK:
                     overall_decision = Decision.WARN
-                package_results.append({
-                    "package": pkg_name,
-                    "old_version": old_ver,
-                    "new_version": new_ver,
-                    "change_type": change.change_type,
-                    "decision": "WARN",
-                    "evidence": [ev_unscanned.id],
-                    "evidence_details": [
-                        {
-                            "id": ev_unscanned.id,
-                            "severity": ev_unscanned.severity.name,
-                            "raw_severity": ev_unscanned.severity.name,
-                            "effective_severity": ev_unscanned.severity.name,
-                            "file": ev_unscanned.file,
-                            "explanation": ev_unscanned.explanation,
-                            "legitimate_use_note": ev_unscanned.legitimate_use_note,
-                        }
-                    ],
-                    "limitations": [
-                        f"Package {pkg_name}@{new_ver} from {source_desc} not scanned."
-                    ],
-                    "status": "unscanned_non_registry_source",
-                })
+                package_results.append(
+                    {
+                        "package": pkg_name,
+                        "old_version": old_ver,
+                        "new_version": new_ver,
+                        "change_type": change.change_type,
+                        "decision": "WARN",
+                        "evidence": [ev_unscanned.id],
+                        "evidence_details": [
+                            {
+                                "id": ev_unscanned.id,
+                                "severity": ev_unscanned.severity.name,
+                                "raw_severity": ev_unscanned.severity.name,
+                                "effective_severity": ev_unscanned.severity.name,
+                                "file": ev_unscanned.file,
+                                "explanation": ev_unscanned.explanation,
+                                "legitimate_use_note": ev_unscanned.legitimate_use_note,
+                            }
+                        ],
+                        "limitations": [
+                            f"Package {pkg_name}@{new_ver} from {source_desc} not scanned."
+                        ],
+                        "status": "unscanned_non_registry_source",
+                    }
+                )
                 continue
 
             if change.resolved and not is_resolved_path_matching(
@@ -808,27 +1095,29 @@ def scan_lockfile_diff(
                     ),
                 )
                 _, lims = decide([ev_mismatch], policy=policy, is_full_scan=False)
-                package_results.append({
-                    "package": pkg_name,
-                    "old_version": old_ver,
-                    "new_version": new_ver,
-                    "change_type": change.change_type,
-                    "decision": Decision.BLOCK.name,
-                    "evidence": [ev_mismatch.id],
-                    "evidence_details": [
-                        {
-                            "id": ev_mismatch.id,
-                            "severity": ev_mismatch.severity.name,
-                            "raw_severity": ev_mismatch.severity.name,
-                            "effective_severity": ev_mismatch.severity.name,
-                            "file": ev_mismatch.file,
-                            "explanation": ev_mismatch.explanation,
-                            "legitimate_use_note": ev_mismatch.legitimate_use_note,
-                        }
-                    ],
-                    "limitations": lims,
-                    "status": "lockfile_resolved_mismatch",
-                })
+                package_results.append(
+                    {
+                        "package": pkg_name,
+                        "old_version": old_ver,
+                        "new_version": new_ver,
+                        "change_type": change.change_type,
+                        "decision": Decision.BLOCK.name,
+                        "evidence": [ev_mismatch.id],
+                        "evidence_details": [
+                            {
+                                "id": ev_mismatch.id,
+                                "severity": ev_mismatch.severity.name,
+                                "raw_severity": ev_mismatch.severity.name,
+                                "effective_severity": ev_mismatch.severity.name,
+                                "file": ev_mismatch.file,
+                                "explanation": ev_mismatch.explanation,
+                                "legitimate_use_note": ev_mismatch.legitimate_use_note,
+                            }
+                        ],
+                        "limitations": lims,
+                        "status": "lockfile_resolved_mismatch",
+                    }
+                )
                 all_limitations.extend(lims)
                 overall_decision = Decision.BLOCK
                 continue
@@ -875,9 +1164,7 @@ def scan_lockfile_diff(
                 if old_ver is None:
                     try:
                         meta = client.get_metadata(pkg_name, as_of=as_of)
-                        prev_ver = select_baseline_for_added_package(
-                            pkg_name, new_ver, meta, as_of
-                        )
+                        prev_ver = select_baseline_for_added_package(pkg_name, new_ver, meta, as_of)
                         if prev_ver:
                             old_ver = prev_ver
                             old_tarball = client.download_tarball(
@@ -908,8 +1195,7 @@ def scan_lockfile_diff(
                         change.resolved.startswith("git+")
                         or change.resolved.startswith("git://")
                         or (
-                            "github.com" in change.resolved
-                            and not change.resolved.endswith(".tgz")
+                            "github.com" in change.resolved and not change.resolved.endswith(".tgz")
                         )
                     )
                 )
@@ -946,77 +1232,85 @@ def scan_lockfile_diff(
                 for e in evidence:
                     eff_s = pkg_overrides.get(e.id, e.severity)
                     eff_s_name = eff_s.name if hasattr(eff_s, "name") else str(eff_s)
-                    ev_details.append({
-                        "id": e.id,
-                        "severity": eff_s_name,
-                        "raw_severity": e.severity.name,
-                        "effective_severity": eff_s_name,
-                        "file": e.file,
-                        "explanation": e.explanation,
-                        "legitimate_use_note": e.legitimate_use_note,
-                    })
+                    ev_details.append(
+                        {
+                            "id": e.id,
+                            "severity": eff_s_name,
+                            "raw_severity": e.severity.name,
+                            "effective_severity": eff_s_name,
+                            "file": e.file,
+                            "explanation": e.explanation,
+                            "legitimate_use_note": e.legitimate_use_note,
+                        }
+                    )
 
-                package_results.append({
-                    "package": pkg_name,
-                    "old_version": old_ver,
-                    "new_version": new_ver,
-                    "change_type": change.change_type,
-                    "decision": decision.name,
-                    "evidence": [e.id for e in evidence],
-                    "evidence_details": ev_details,
-                    "limitations": lims,
-                    "status": "ok",
-                })
+                package_results.append(
+                    {
+                        "package": pkg_name,
+                        "old_version": old_ver,
+                        "new_version": new_ver,
+                        "change_type": change.change_type,
+                        "decision": decision.name,
+                        "evidence": [e.id for e in evidence],
+                        "evidence_details": ev_details,
+                        "limitations": lims,
+                        "status": "ok",
+                    }
+                )
                 all_limitations.extend(lims)
 
             except IntegrityError as exc:
                 logger.error("Tarball integrity mismatch for %s: %s", pkg_name, exc)
-                package_results.append({
-                    "package": pkg_name,
-                    "old_version": old_ver,
-                    "new_version": new_ver,
-                    "change_type": change.change_type,
-                    "decision": "BLOCK",
-                    "evidence": ["integrity_mismatch"],
-                    "evidence_details": [
-                        {
-                            "id": "integrity_mismatch",
-                            "severity": Severity.HIGH.name,
-                            "raw_severity": Severity.HIGH.name,
-                            "effective_severity": Severity.HIGH.name,
-                            "file": None,
-                            "explanation": f"Tarball integrity mismatch for {pkg_name}@{new_ver}: {exc}",  # noqa: E501
-                            "legitimate_use_note": "Registry CDN sync issue, corrupted download, or tampering.",  # noqa: E501
-                        }
-                    ],
-                    "limitations": [f"Tarball integrity check failed for {pkg_name}: {exc}"],
-                    "status": f"integrity_error: {exc}",
-                })
+                package_results.append(
+                    {
+                        "package": pkg_name,
+                        "old_version": old_ver,
+                        "new_version": new_ver,
+                        "change_type": change.change_type,
+                        "decision": "BLOCK",
+                        "evidence": ["integrity_mismatch"],
+                        "evidence_details": [
+                            {
+                                "id": "integrity_mismatch",
+                                "severity": Severity.HIGH.name,
+                                "raw_severity": Severity.HIGH.name,
+                                "effective_severity": Severity.HIGH.name,
+                                "file": None,
+                                "explanation": f"Tarball integrity mismatch for {pkg_name}@{new_ver}: {exc}",  # noqa: E501
+                                "legitimate_use_note": "Registry CDN sync issue, corrupted download, or tampering.",  # noqa: E501
+                            }
+                        ],
+                        "limitations": [f"Tarball integrity check failed for {pkg_name}: {exc}"],
+                        "status": f"integrity_error: {exc}",
+                    }
+                )
                 overall_decision = Decision.BLOCK
 
             except Exception as exc:
                 logger.error("Error analyzing package %s in lockfile diff: %s", pkg_name, exc)
-                package_results.append({
-                    "package": pkg_name,
-                    "old_version": old_ver,
-                    "new_version": new_ver,
-                    "change_type": change.change_type,
-                    "decision": "WARN",
-                    "evidence": ["inspection_failed"],
-                    "evidence_details": [
-                        {
-                            "id": "inspection_failed",
-                            "severity": Severity.MEDIUM.name,
-                            "raw_severity": Severity.MEDIUM.name,
-                            "effective_severity": Severity.MEDIUM.name,
-                            "file": None,
-                            "explanation": f"Failed to inspect {pkg_name}@{new_ver}: {exc}",
-                            "legitimate_use_note": "Corrupted archive, malformed package.json, or unsupported file.",  # noqa: E501
-                        }
-                    ],
-                    "limitations": [f"Inspection failed for {pkg_name}: {exc}"],
-                    "status": f"error: {exc}",
-                })
+                package_results.append(
+                    {
+                        "package": pkg_name,
+                        "old_version": old_ver,
+                        "new_version": new_ver,
+                        "change_type": change.change_type,
+                        "decision": "WARN",
+                        "evidence": ["inspection_failed"],
+                        "evidence_details": [
+                            {
+                                "id": "inspection_failed",
+                                "severity": Severity.MEDIUM.name,
+                                "raw_severity": Severity.MEDIUM.name,
+                                "effective_severity": Severity.MEDIUM.name,
+                                "file": None,
+                                "explanation": f"Failed to inspect {pkg_name}@{new_ver}: {exc}",
+                                "legitimate_use_note": "Corrupted archive, malformed package.json, or unsupported file.",  # noqa: E501
+                            }
+                        ],
+                        "limitations": [f"Inspection failed for {pkg_name}: {exc}"],
+                        "status": f"error: {exc}",
+                    }
+                )
                 if overall_decision != Decision.BLOCK:
                     overall_decision = Decision.WARN
 
@@ -1025,8 +1319,7 @@ def scan_lockfile_diff(
             client.close()
 
     clean_limitations = [
-        lim for lim in all_limitations
-        if "Transitive (indirect) dependencies" not in lim
+        lim for lim in all_limitations if "Transitive (indirect) dependencies" not in lim
     ]
     clean_limitations.append(
         "Every changed lockfile entry (including transitive dependencies) is scanned."
@@ -1045,7 +1338,6 @@ def scan_lockfile_diff(
         limitations=sorted(set(clean_limitations)),
         has_budget_exceeded=has_budget_exceeded,
     )
-
 
 
 def find_matching_pr_comment_id(

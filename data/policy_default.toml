@@ -11,6 +11,10 @@
 single_signal_cap = "WARN"
 
 [[decision.block_requires]]
+signals = ["lockfile_integrity_changed"]
+description = "Lockfile entry integrity changed for same package version (tampering or corrupted mirror)"
+
+[[decision.block_requires]]
 signals = ["lockfile_resolved_mismatch"]
 description = "Lockfile entry resolved URL does not match package name and version (lockfile injection)"
 
@@ -147,6 +151,10 @@ description = "CI workflow modification combined with hardcoded IP address"
 [[full_scan.block_requires]]
 signals = ["ci_write", "hardcoded_url"]
 description = "CI workflow modification combined with outbound URL"
+
+[[full_scan.block_requires]]
+signals = ["lockfile_integrity_changed"]
+description = "Lockfile entry integrity changed for same package version (tampering or corrupted mirror)"
 
 [[full_scan.block_requires]]
 signals = ["lockfile_resolved_mismatch"]
