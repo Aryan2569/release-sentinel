@@ -7,7 +7,7 @@ This audit provides a **detector-independent evaluation** of all 1,349 evaluatio
 The purpose of this audit is to determine the theoretical upper bound of what any diff-based JavaScript code analyzer could ever detect, and to answer the fundamental question:
 > **Did detector performance degrade due to scanner blind spots on JavaScript code, or did attacker behavior shift to delivery mechanisms that contain no inspectable code diffs?**
 
-All 1,349 pairs were inspected strictly in-memory (conforming to Rule 7: encrypted at rest, never written to disk).
+All 1,349 pairs were inspected strictly in-memory (encrypted at rest, never written to disk).
 
 ---
 

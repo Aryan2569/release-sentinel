@@ -10,7 +10,7 @@ Design (replacing the naïve max-severity rule)
   signals include at least one HIGH or CRITICAL item.
 * Per-evidence severity overrides in the TOML are applied before the decision rules.
 
-Rule 4 (Evidence, not verdicts): limitations are always non-empty.
+Evidence, not verdicts: limitations are always non-empty.
 """
 
 from __future__ import annotations

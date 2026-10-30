@@ -11,8 +11,8 @@ Responsibilities
 
 Hard rules respected here
 --------------------------
-* Rule 3: every public function that touches external data accepts ``as_of``.
-* Rule 5: downloads from ``registry.npmjs.org`` only; User-Agent header always set;
+* Every public function that touches external data accepts ``as_of``.
+* Downloads from ``registry.npmjs.org`` only; User-Agent header always set;
           timeouts always set; writes only to the designated cache directory.
 """
 

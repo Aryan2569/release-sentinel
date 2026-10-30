@@ -686,6 +686,7 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
     - Variant A: 47/288 replay updates (16.32%), 1,106/1,349 pairs (81.99%), 84/140 campaigns (60.00%).
     - Variant B (`notable`, default): 86/288 replay updates (29.86%), 1,213/1,349 pairs (89.92%), 126/140 campaigns (90.00%).
     - Variant C (BLOCK only): 2/288 replay updates (0.69%), 915/1349 pairs (67.83%), 34/140 campaigns (24.29%).
+    - Direct verification confirmed that exactly 0 of the 288 replay updates and exactly 0 of the 1,349 benchmark pairs changed "notable" status between raw and effective severity rules (re-measurement executed directly on the new implementation with effective severity checks). In benign updates, low-noise overridden signals never combined to create spurious multi-MEDIUM alerts; in malicious updates, core structural signals (e.g. `long_encoded_blob`, `process_exec`, `network_access`, `install_script_added`) independently satisfy the notable threshold under both raw and effective definitions.
     - Confirmed zero changes to overall exit codes or decisions.
 
 - **Part 4: Product Consistency & Safety Invariants**:

@@ -80,7 +80,7 @@ class Report(BaseModel):
         decision:      Gate decision: ALLOW / WARN / BLOCK.
         evidence:      Ordered list of findings; empty means nothing suspicious was detected.
         limitations:   Explicit list of things that *could not* be inspected in this analysis.
-                       Per Rule 4, absence of evidence is never silence — it is reported here.
+                       Absence of evidence is never silence — it is reported here.
         as_of:         The timestamp used to filter external data (registry metadata, etc.).
                        All external data used was published before this timestamp.
         generated_at:  UTC timestamp when this report was produced.

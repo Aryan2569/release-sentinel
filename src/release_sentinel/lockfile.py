@@ -4,9 +4,9 @@ Supports npm package-lock.json v1, v2, and v3.
 Detects yarn.lock and pnpm-lock.yaml and raises UnsupportedLockfileError with clear messaging.
 
 Rules enforced:
-- Rule 1: Never execute downloaded package code.
-- Rule 2: Safe in-memory tarball extraction.
-- Rule 5: Writes only inside designated cache and project directory.
+- Never execute downloaded package code.
+- Safe in-memory tarball extraction.
+- Writes only inside designated cache and project directory.
 """
 
 from __future__ import annotations

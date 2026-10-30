@@ -3,9 +3,9 @@
 Scans file content for suspicious patterns using package-wide capability-level diffing.
 Only flags NEW capabilities whose normalized form is absent from the entire old release.
 
-Rule 1: no code is executed. All analysis is done by regex/string matching
+No code is executed: All analysis is done by regex/string matching
         on bytes read from disk.
-Rule 6: patterns are generic heuristics using harmless synthetic strings
+Patterns are generic heuristics using harmless synthetic strings
         in tests, never real malware signatures.
 
 Stage 2.5 changes
@@ -141,7 +141,7 @@ _CREDENTIAL_READ_METADATA = SignalMetadata(
 )
 
 
-# All patterns use harmless synthetic constructs (Rule 6).
+# All patterns use harmless synthetic constructs .
 _SIGNALS: list[Signal] = [
     Signal(
         id="dynamic_code",

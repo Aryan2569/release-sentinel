@@ -122,9 +122,12 @@ jobs:
 
 When a suspicious or compromised package is detected in a dependency update, Release Sentinel posts an actionable review comment directly on the pull request.
 
-### Advisory Warning (Advisory Gate: xios 1.14.0 → 1.14.1)
+### Advisory Warning (Advisory Gate: axios 1.14.0 → 1.14.1)
 
 *Note: The dataset sample has its payload file removed, so the scanner reports the install hook's missing script target.*
+
+<details open>
+<summary><b>View Example Pull Request Comment (Advisory Warning)</b></summary>
 
 <!-- release-sentinel-pr-comment -->
 ## Release Sentinel Security Gate
@@ -142,7 +145,12 @@ When a suspicious or compromised package is detected in a dependency update, Rel
 - JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible.
 - Every changed lockfile entry \(including transitive dependencies\) is scanned.
 
+</details>
+
 ### Automated Block (2025 Install Hook Wave: @ahmedhfarag/ngx-perfect-scrollbar 20.0.19 → 20.0.20)
+
+<details open>
+<summary><b>View Example Pull Request Comment (Automated Block)</b></summary>
 
 <!-- release-sentinel-pr-comment -->
 ## Release Sentinel Security Gate
@@ -159,6 +167,8 @@ When a suspicious or compromised package is detected in a dependency update, Rel
 
 - JavaScript/TypeScript source scanned with static heuristics; dynamic evasion is possible.
 - Every changed lockfile entry \(including transitive dependencies\) is scanned.
+
+</details>
 
 ---
 
@@ -234,7 +244,7 @@ To measure production signal-to-noise ratio, Release Sentinel was replayed acros
 - **PR Comment Gating Threshold Evaluation**:
   We evaluated three PR comment thresholds across both the 288 real-world updates and all 140 benchmark campaigns:
   - **Variant A** (BLOCK, or WARN with HIGH/CRITICAL or install-hook change): Comments on 47 of 288 updates (16.3%), but only alerts on **84 of 140 campaigns (60.0%)**, completely missing 42 campaigns (including the 2026 waves).
-  - **Variant B (`notable`, default)** (Variant A plus $\ge 2$ distinct MEDIUM signals): Comments on **86 updates (29.86%)**, while successfully alerting on **126 of 140 campaigns (90.00%)**—retaining 100% of the 2026 waves that comment under default profile.
+  - **Variant B (`notable`, default)** (Variant A plus $\ge 2$ distinct MEDIUM signals evaluated at effective severity): Comments on **86 updates (29.86%)**, while successfully alerting on **126 of 140 campaigns (90.00%)**—retaining 100% of the 2026 waves that comment under default profile.
   - **Variant C** (BLOCK only): Comments on 2 of 288 updates (0.69%), but drops campaign comment coverage down to **34 of 140 campaigns (24.29%)**.
 
 Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 updates (43.75%) down to **86 updates (29.86%)** — an immediate **31.7% reduction in PR noise** while preserving 90% campaign detection.

@@ -7,8 +7,8 @@ This guide explains how to independently reproduce the evaluation results report
 ## Safety Requirements
 
 All evaluations strictly follow the seven core safety rules in [`PROJECT_RULES.md`](PROJECT_RULES.md):
-- **Rule 1 & 7**: Malicious packages are never executed, installed, or extracted to disk. They remain in encrypted ZIP archives at rest (`password: infected`) and are inspected solely in memory.
-- **Rule 3**: Evaluation functions enforce time-awareness via `as_of: datetime` cutoffs matching discovery timestamps.
+- **Safe In-Memory Inspection**: Malicious packages are never executed, installed, or extracted to disk. They remain in encrypted ZIP archives at rest (`password: infected`) and are inspected solely in memory.
+- **Time-Awareness**: Evaluation functions enforce time-awareness via `as_of: datetime` cutoffs matching discovery timestamps.
 
 ---
 

@@ -1,6 +1,6 @@
 """End-to-end evaluation pair analysis for Release Sentinel (Stage 3a / 5f).
 
-Rule 7 compliance:
+Malicious sample handling:
 - Malicious samples stay in their encrypted ZIPs at rest.
 - New release is loaded directly into memory via zip_loader without writing to disk.
 - Old benign release is fetched from registry and loaded in memory via extract_release_in_memory.

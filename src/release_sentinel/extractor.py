@@ -1,6 +1,6 @@
 """Safe tarball extraction for Release Sentinel.
 
-Hard rules enforced here (Rule 2, updated for Stage 2)
+Hard rules enforced here 
 -------------------------------------------------------
 * Reject absolute paths (starting with ``/`` or a Windows drive letter).
 * Reject path traversal (any component that is ``..``).
@@ -294,7 +294,7 @@ def extract_release_in_memory(
 ) -> ReleaseContents:
     """Safely extract a tarball entirely in memory into a ReleaseContents object.
 
-    No files are written to disk. All Rule 2 safety limits (path traversal,
+    No files are written to disk. All extraction safety limits (path traversal,
     absolute paths, symlinks, caps, and hard ceilings) are enforced.
     """
     if config is None:

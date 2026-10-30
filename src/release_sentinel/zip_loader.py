@@ -1,10 +1,10 @@
 """In-memory loader for encrypted ZIP archives (Release Sentinel Stage 3a).
 
-Hard rules enforced here (Rule 2 and Rule 7):
-- Rule 7: Real malicious samples stay in their encrypted ZIPs at rest.
+Safety invariants enforced here:
+- Real malicious samples stay in their encrypted ZIPs at rest.
           Never extract them to disk (read members in memory only).
           Never write sample contents to disk or temp directories.
-- Rule 2:
+- Safe extraction:
   - Reject absolute paths (starting with / or Windows drive letter).
   - Reject path traversal (components containing "..").
   - Reject symlinks.

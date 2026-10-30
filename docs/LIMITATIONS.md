@@ -1,6 +1,6 @@
 # Release Sentinel: Known Limitations and Blind Spots
 
-This document provides a transparent, comprehensive accounting of the known limitations, architectural boundaries, and blind spots in Release Sentinel v1.3.
+This document provides a transparent, comprehensive accounting of the known limitations, architectural boundaries, and blind spots in Release Sentinel v0.5.0.
 
 ---
 
@@ -21,7 +21,6 @@ npm allows packages to declare dependencies using alternative specifiers rather 
 - Git URLs: `git+https://github.com/user/repo.git#commit`
 - Direct tarball URLs: `https://example.com/package.tgz`
 - Local file paths: `file:../local-pkg`
-
 - Mirror or private registries: `https://registry.yarnpkg.com`
 
 **Limitation**: Release Sentinel interacts strictly with the official npm registry (`https://registry.npmjs.org`) by default. Packages sourced from private registries, registry mirrors (e.g., `registry.yarnpkg.com`), Git repositories, or direct tarball URLs emit an unscanned non-registry source `WARN` (`unscanned_non_registry_source`) rather than fetching archives from unverified third-party endpoints. Non-registry dependency specifications are recorded in the manifest diff but are not fetched for transitive dependency analysis.
@@ -33,7 +32,7 @@ npm allows packages to declare dependencies using alternative specifiers rather 
 - **`binding.gyp`**: npm automatically triggers `node-gyp rebuild` during package installation if a `binding.gyp` file exists in the package root, even if no explicit `install` or `postinstall` script is declared in `package.json`.
 - **Transitive Lifecycle Scripts**: If a package adds a dependency, that dependency may itself declare install-time scripts.
 
-**Limitation**: In accordance with Rule 1 ("Never execute downloaded package code"), Release Sentinel never runs `node-gyp` or C/C++ compilation toolchains. Transitive dependency resolution inspects direct runtime dependencies up to a depth cap of 5 packages, but does not simulate recursive lifecycle hook execution across arbitrary multi-tier dependency trees.
+**Limitation**: By design, Release Sentinel never executes downloaded package code and never runs `node-gyp` or C/C++ compilation toolchains. Transitive dependency resolution inspects direct runtime dependencies up to a depth cap of 5 packages, but does not simulate recursive lifecycle hook execution across arbitrary multi-tier dependency trees.
 
 ---
 
@@ -45,9 +44,11 @@ In late-2026 attacks (including hollow-release campaigns), attackers split the m
 
 ### Hollow Dependency-Injection Detection Rates (`camp_0136` / Mastra Campaign)
 
-The Mastra attack wave (`camp_0136`, 118 packages in TEST-B) published hollow decoy releases containing empty package bodies that inject lookalike runtime dependencies without install lifecycle hooks:
-- **Canonical Benchmark Detection**: In canonical evaluation (`METRICS.json`, `data/eval_results_v11.jsonl`, `data/eval_results_default.jsonl`), member-level detection yields **4 / 118 WARN (3.39%)** under the `default` profile and **1 BLOCK / 3 WARN (4 / 118 WARN+, 3.39%)** under `strict`.
-- **Reconciliation with Earlier Reports**: An exploratory pre-freeze report quoted an 8 / 118 (6.78%) figure during early heuristic tuning of lookalike name patterns before final boundary stabilization. In the canonical frozen benchmark and current engine, exactly 4 of 118 members trigger the experimental `hollow_dependency_injection` rule; the remaining 114 members exhibit no static code anomalies or install hooks.
+The Mastra attack wave (`camp_0136`, 118 packages in TEST-B) published hollow decoy releases containing empty package bodies that inject lookalike runtime dependencies without install lifecycle hooks. Counts evaluated directly from the committed benchmark result files (`data/eval_results_v11.jsonl` and `data/eval_results_default.jsonl`, joined via `data/eval_campaigns.json`):
+- **`default` Profile**: **0 BLOCK / 4 WARN** (4 / 118 WARN+, 3.39%; 114 / 118 ALLOW).
+- **`strict` Profile**: **1 BLOCK / 3 WARN** (4 / 118 WARN+, 3.39%; 114 / 118 ALLOW).
+
+The 4 flagged members trigger the experimental `hollow_dependency_injection` rule; the remaining 114 members contain no install hooks or detectable static code anomalies.
 
 ---
 
@@ -174,3 +175,11 @@ By default, `sentinel check` operates on a single `package-lock.json` file locat
 GitHub Action execution relies on strict cryptographic supply-chain pinning (`requirements-action.lock`).
 
 **Limitation**: The action installs dependencies strictly via `pip install --require-hashes` and `pip install --no-deps`. Custom runners with modified Python environments or unlisted platforms outside standard wheel distributions must maintain a regenerated lockfile matching their specific architecture hashes.
+
+---
+
+## 19. Baseline Poisoning
+
+Release Sentinel analyzes updates differentially by comparing the target release against the immediately preceding baseline version.
+
+**Limitation**: If an attacker compromises a package in two successive releases, or publishes an intermediate malicious release shortly before the proposed update, diffing the update against that malicious baseline will baseline-subtract the attacker's newly introduced capabilities. For example, if version `1.2.0` introduces unauthorized network exfiltration, a subsequent diff between `1.2.0` and `1.2.1` will not flag `network_access` or `process_exec` as novel capabilities because they were already present in `1.2.0`. In dependency-aware analysis, newly added packages with single releases are inspected in full-scan mode, but established dependencies with continuous compromised releases rely on version history auditing and maturity heuristics rather than differential novelty alone.

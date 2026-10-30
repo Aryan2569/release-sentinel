@@ -1,7 +1,7 @@
 """Release differ for Release Sentinel (Stage 2).
 
 Compares two extracted npm releases and returns a list of :class:`Evidence` items.
-All checks are purely static — no code is executed (Rule 1).
+All checks are purely static — no code is executed .
 
 Stage 2 changes
 ---------------

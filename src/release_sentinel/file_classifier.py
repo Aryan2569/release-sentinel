@@ -4,7 +4,7 @@ Classifies files by extension and, for binaries, by magic bytes.
 Used by the differ to decide which files need individual evidence items
 versus aggregated summaries, and which files can be silently ignored.
 
-Rule 6: no real malware patterns here — this module classifies, not detects.
+No real malware patterns here — this module classifies, not detects.
 """
 
 from __future__ import annotations
