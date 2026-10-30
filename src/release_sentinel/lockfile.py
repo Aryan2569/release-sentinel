@@ -814,28 +814,31 @@ def scan_lockfile_diff(
             if not new_ver:
                 continue
 
-            # Rule (d): Multiple paths in head with conflicting integrity values
+            # Rule (d): Multiple paths in head with conflicting integrities (downgraded to WARN)
             if len(change.conflicting_integrities) > 1:
                 hashes_str = ", ".join(repr(h) for h in change.conflicting_integrities)
                 ev_conflict = Evidence(
                     id="lockfile_integrity_changed",
-                    severity=Severity.HIGH,
+                    severity=Severity.MEDIUM,
                     file="package-lock.json",
                     explanation=(
                         f"Lockfile contains multiple entries for '{pkg_name}@{new_ver}' "
-                        f"with conflicting integrity hashes ({hashes_str}). A single package "
-                        "version cannot legitimately have different tarball contents across "
-                        "install locations."
+                        f"with conflicting integrity hashes ({hashes_str}). This may occur "
+                        "with aliased packages, but indicates conflicting tarballs across paths."
                     ),
-                    legitimate_use_note="Malformed or manually edited lockfile.",
+                    legitimate_use_note=(
+                        "Package aliases (npm:pkg@version) or conflicting nested installs."
+                    ),
                 )
+                if overall_decision != Decision.BLOCK:
+                    overall_decision = Decision.WARN
                 package_results.append(
                     {
                         "package": pkg_name,
                         "old_version": old_ver,
                         "new_version": new_ver,
                         "change_type": change.change_type,
-                        "decision": Decision.BLOCK.name,
+                        "decision": Decision.WARN.name,
                         "evidence": [ev_conflict.id],
                         "evidence_details": [
                             {
@@ -852,7 +855,6 @@ def scan_lockfile_diff(
                         "status": "lockfile_integrity_changed",
                     }
                 )
-                overall_decision = Decision.BLOCK
                 continue
 
             # Same-version lockfile changes (Stage 7h)
