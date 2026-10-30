@@ -38,12 +38,12 @@ LOCKFILE_V1 = json.dumps({
         "lodash": {
             "version": "4.17.20",
             "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
-            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501
+            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
         },
         "chalk": {
             "version": "4.1.0",
             "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz",
-            "integrity": "sha512-qwx12ZsWLofyMT8FccNeBCSWi9GUMziFQ+RwBKFVPKUWhjjIIFBYD9vNPnQ8GbpFXVW302U4L4XrSDy6aW4RnA==",  # noqa: E501
+            "integrity": "sha512-qwx12ZsWLofyMT8FccNeBCSWi9GUMziFQ+RwBKFVPKUWhjjIIFBYD9vNPnQ8GbpFXVW302U4L4XrSDy6aW4RnA==",  # noqa: E501  # noqa: E501
             "dependencies": {
                 "ansi-styles": {
                     "version": "4.3.0",
@@ -66,12 +66,12 @@ LOCKFILE_V2 = json.dumps({
         "node_modules/lodash": {
             "version": "4.17.21",
             "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
-            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501
+            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
         },
         "node_modules/express": {
             "version": "4.18.2",
             "resolved": "https://registry.npmjs.org/express/-/express-4.18.2.tgz",
-            "integrity": "sha512-5/psL6iVEKi52nK95Gsv5Mzh80BofcGZQ22lDYhXRyknHZg33Hphq9PcwUVCx4b0v50iTqE22/OOShxCvtgoOQ==",  # noqa: E501
+            "integrity": "sha512-5/psL6iVEKi52nK95Gsv5Mzh80BofcGZQ22lDYhXRyknHZg33Hphq9PcwUVCx4b0v50iTqE22/OOShxCvtgoOQ==",  # noqa: E501  # noqa: E501
         },
         "node_modules/@types/node": {
             "version": "20.11.0",
@@ -95,7 +95,7 @@ LOCKFILE_V3 = json.dumps({
         "node_modules/lodash": {
             "version": "4.17.21",
             "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
-            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501
+            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
         },
         "node_modules/chalk": {
             "version": "5.0.0",
@@ -254,7 +254,7 @@ class TestLockfileDiffScanning:
             "packages": {
                 "node_modules/lodash": {
                     "version": "4.17.21",
-                    "integrity": "sha512-fKT/8IBcj35qo6Q9skSbU/BH890j6k2W9aPInUQdecI7OPhTkUd2Xv/WFqggO0v7fY1Rz9ha8qrRihLqaMnRgw==",  # noqa: E501
+                    "integrity": "sha512-fKT/8IBcj35qo6Q9skSbU/BH890j6k2W9aPInUQdecI7OPhTkUd2Xv/WFqggO0v7fY1Rz9ha8qrRihLqaMnRgw==",  # noqa: E501  # noqa: E501
                 },
             },
         })
@@ -322,7 +322,7 @@ class TestLockfileDiffScanning:
             "packages": {
                 "node_modules/bad-pkg": {
                     "version": "1.0.0",
-                    "integrity": "sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",  # noqa: E501
+                    "integrity": "sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",  # noqa: E501  # noqa: E501
                 },
             },
         })
@@ -352,7 +352,7 @@ class TestLockfileDiffScanning:
             "packages": {
                 "node_modules/added-pkg": {
                     "version": "2.0.0",
-                    "integrity": "sha512-ILBGG5cRPZBU3O9DyuuRYA+PRPmNdXhOS29lKOCbotgLBcbcxVmUf6thnYxej1vfzsIZLPOwbuY78JwIc89vpg==",  # noqa: E501
+                    "integrity": "sha512-ILBGG5cRPZBU3O9DyuuRYA+PRPmNdXhOS29lKOCbotgLBcbcxVmUf6thnYxej1vfzsIZLPOwbuY78JwIc89vpg==",  # noqa: E501  # noqa: E501
                 },
             },
         })
@@ -407,3 +407,126 @@ class TestLockfileDiffScanning:
         assert pkg_res["old_version"] == "1.0.3"  # Resolved earlier version
         assert pkg_res["new_version"] == "2.0.0"
         assert pkg_res["decision"] == "ALLOW"
+
+
+
+class TestLockfileTamperingChecks:
+    """Document current behavior for lockfile tampering scenarios (Stage 7g Step 4)."""
+
+    def test_tamper_same_version_different_integrity_currently_allow(self):
+        """Case (a): Same name and version has different integrity than base.
+
+        Current behavior: diff_lockfiles keys purely by (name, version), so identical
+        Decision is ALLOW with 0 packages scanned.
+        """
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-TAMPERED_DIFFERENT_INTEGRITY==",
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.ALLOW
+        assert report.total_packages_scanned == 0
+        assert len(report.package_results) == 0
+
+    def test_tamper_same_version_different_resolved_url_currently_allow(self):
+        """Case (b): Same name and version has different resolved URL on npmjs.org.
+
+        Current behavior: diff_lockfiles keys purely by (name, version), so identical
+        Decision is ALLOW with 0 packages scanned.
+        """
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/tampered-lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.ALLOW
+        assert report.total_packages_scanned == 0
+        assert len(report.package_results) == 0
+
+    def test_tamper_bumped_version_resolved_points_to_old_tarball_blocks(self):
+        """Case (c): Bumped version whose resolved URL points to the old version's tarball.
+
+        Detected by lockfile_resolved_mismatch rule: immediately produces Decision.BLOCK
+        and evidence ['lockfile_resolved_mismatch'].
+        """
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.20"}},
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "": {"name": "demo-app", "version": "1.0.0", "dependencies": {"lodash": "4.17.21"}},
+                "node_modules/lodash": {
+                    "version": "4.17.21",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.BLOCK
+        assert report.total_packages_scanned == 1
+        assert len(report.package_results) == 1
+        pkg_res = report.package_results[0]
+        assert pkg_res["package"] == "lodash"
+        assert pkg_res["old_version"] == "4.17.20"
+        assert pkg_res["new_version"] == "4.17.21"
+        assert pkg_res["decision"] == "BLOCK"
+        assert pkg_res["evidence"] == ["lockfile_resolved_mismatch"]
+        assert pkg_res["status"] == "lockfile_resolved_mismatch"

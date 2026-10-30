@@ -183,3 +183,16 @@ GitHub Action execution relies on strict cryptographic supply-chain pinning (`re
 Release Sentinel analyzes updates differentially by comparing the target release against the immediately preceding baseline version.
 
 **Limitation**: If an attacker compromises a package in two successive releases, or publishes an intermediate malicious release shortly before the proposed update, diffing the update against that malicious baseline will baseline-subtract the attacker's newly introduced capabilities. For example, if version `1.2.0` introduces unauthorized network exfiltration, a subsequent diff between `1.2.0` and `1.2.1` will not flag `network_access` or `process_exec` as novel capabilities because they were already present in `1.2.0`. In dependency-aware analysis, newly added packages with single releases are inspected in full-scan mode, but established dependencies with continuous compromised releases rely on version history auditing and maturity heuristics rather than differential novelty alone.
+
+
+---
+
+## 20. Same-Version Lockfile Metadata Tampering (Integrity or URL Mutation Without Version Bump)
+
+Release Sentinel's lockfile diff engine (`diff_lockfiles`) computes changed packages by comparing declared `(package_name, version)` pairs between the base and head lockfiles (`added_pairs = new_pairs - old_pairs`).
+
+**Known Gap & Limitation**: If an attacker mutates a lockfile entry in-place without bumping its version—specifically by:
+1. Changing the `integrity` hash of an existing `(name, version)` entry to match a compromised tarball while leaving the version number unchanged; or
+2. Modifying the `resolved` URL of an existing `(name, version)` entry to point to an alternate endpoint on `registry.npmjs.org` without changing the version string:
+
+The diff engine treats the `(name, version)` pair as unchanged and does not schedule the package for re-inspection (`Decision.ALLOW`, 0 packages scanned). Conversely, if the version number is bumped, any URL pointing to an incongruent tarball is immediately detected and blocked by `lockfile_resolved_mismatch`. Detecting same-version in-place lockfile tampering requires full lockfile-wide hash re-verification rather than differential update auditing.
