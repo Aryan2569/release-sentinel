@@ -18,7 +18,7 @@ You can test Release Sentinel against this demo repository locally using the CLI
 
 1. **Install Release Sentinel**:
    ```bash
-   pip install release-sentinel
+   pip install git+https://github.com/Aryan2569/release-sentinel@v0.5.0
    ```
 
 2. **Simulate a dependency update**:
