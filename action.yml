@@ -151,22 +151,11 @@ runs:
 
         COMMENTS_JSON=$(gh api "/repos/$REPO/issues/$PR_NUMBER/comments" 2>/dev/null || echo "[]")
         EXISTING_ID=$(echo "$COMMENTS_JSON" | python -c "
-        import sys, json
+        import sys
+        from release_sentinel.lockfile import find_matching_pr_comment_id
         marker = sys.argv[1]
-        actor = sys.argv[2].lower() if len(sys.argv) > 2 else ''
-        trusted_authors = {'github-actions[bot]', 'github-actions'}
-        if actor:
-            trusted_authors.add(actor)
-        try:
-            data = json.load(sys.stdin)
-            found = [
-                str(c['id']) for c in data
-                if marker in c.get('body', '')
-                and c.get('user', {}).get('login', '').lower() in trusted_authors
-            ]
-            print(found[0] if found else '')
-        except Exception:
-            print('')
+        actor = sys.argv[2] if len(sys.argv) > 2 else ''
+        print(find_matching_pr_comment_id(sys.stdin.read(), marker=marker, actor=actor) or '')
         " "$MARKER" "$ACTOR")
 
         if [ -n "$EXISTING_ID" ]; then

@@ -11,7 +11,7 @@ from release_sentinel.cli import (
     _safe_print,
     format_lockfile_markdown,
 )
-from release_sentinel.lockfile import LockfileDiffReport
+from release_sentinel.lockfile import LockfileDiffReport, find_matching_pr_comment_id
 from release_sentinel.models import Decision, Evidence, ReleaseRef, Report, Severity
 from release_sentinel.sanitizer import (
     MAX_COMMENT_CHARS,
@@ -222,6 +222,8 @@ class TestHostileMarkdownFixtures:
         assert "&lt;!-- release-sentinel-pr-comment --&gt;" in md
 
     def test_action_comment_author_matching(self):
+        import json
+
         data = [
             {
                 "id": 101,
@@ -235,21 +237,26 @@ class TestHostileMarkdownFixtures:
             },
         ]
         marker = "<!-- release-sentinel-pr-comment -->"
-        trusted_authors = {"github-actions[bot]", "github-actions"}
-
-        # Attacker comment should be ignored
-        found = [
-            str(c["id"])
-            for c in data
-            if marker in c.get("body", "")
-            and c.get("user", {}).get("login", "").lower() in trusted_authors
+        # Real function with list of dicts
+        assert find_matching_pr_comment_id(data, marker=marker) == "202"
+        # Real function with JSON string input (like stdin in action.yml)
+        assert find_matching_pr_comment_id(json.dumps(data), marker=marker) == "202"
+        # Actor matching
+        actor_data = [
+            {
+                "id": 303,
+                "user": {"login": "ci-actor"},
+                "body": "<!-- release-sentinel-pr-comment -->",
+            }
         ]
-        assert found == ["202"]
+        assert find_matching_pr_comment_id(actor_data, marker=marker, actor="ci-actor") == "303"
+        assert find_matching_pr_comment_id(actor_data, marker=marker, actor="other-actor") is None
 
     def test_commonmark_hostile_fixtures_contain_no_injected_elements(self):
         from markdown_it import MarkdownIt
 
-        md = MarkdownIt("commonmark").enable("table")
+        md = MarkdownIt("commonmark").enable(["table", "linkify", "strikethrough"])
+        md.options["linkify"] = True
         hostiles = [
             "![x](https://evil.example/p.png)",
             "[click](https://evil.example)",
@@ -263,25 +270,45 @@ class TestHostileMarkdownFixtures:
             "#123",
             "<!-- release-sentinel-pr-comment -->",
             "::error::fake",
+            "www.evil.example",
+            "user@evil.example",
+            "mailto:x@evil.example",
+            "~~strike~~",
+            "- [ ] task",
+            "1. item",
+            "> quote",
+            "---",
+            "A" * 1000,
         ]
+
+        forbidden = [
+            "<a",
+            "<img",
+            "<del",
+            "<s",
+            "<strike",
+            "<input",
+            "<table>",
+            "<blockquote",
+            "<ul",
+            "<ol",
+            "<hr",
+        ]
+        for level in range(1, 7):
+            forbidden.append(f"<h{level}")
 
         for h in hostiles:
             sanitized = sanitize_untrusted_text(h)
             html = md.render(sanitized)
-            assert "<a " not in html, f"Link injected for {h}: {html}"
-            assert "<a>" not in html, f"Link injected for {h}: {html}"
-            assert "<img " not in html, f"Image injected for {h}: {html}"
-            assert "<img>" not in html, f"Image injected for {h}: {html}"
-            for level in range(1, 7):
-                assert f"<h{level}>" not in html, f"Heading h{level} injected for {h}: {html}"
-            assert "<table>" not in html, f"Table injected for {h}: {html}"
-            assert "<script" not in html, f"Script tag injected for {h}: {html}"
+            for tag in forbidden:
+                assert tag not in html, f"Forbidden tag {tag} produced for fixture {h!r}: {html}"
             assert "@octocat" not in html, f"Mention preserved without defanging for {h}: {html}"
 
     def test_full_markdown_rendering_hostile_containment(self):
         from markdown_it import MarkdownIt
 
-        md = MarkdownIt("commonmark").enable("table")
+        md = MarkdownIt("commonmark").enable(["table", "linkify", "strikethrough"])
+        md.options["linkify"] = True
         ev = [
             Evidence(
                 id="install_script_added",
@@ -305,13 +332,44 @@ class TestHostileMarkdownFixtures:
         rendered = _render_markdown(rep, ev)
         html = md.render(rendered)
 
-        # Confirm no evil links or images are in the HTML output
-        assert "evil.example" in html  # defanged text present
+        # Confirm evil.example is NOT in HTML and evil[.]example IS in HTML
+        assert "evil.example" not in html
+        assert "evil[.]example" in html
         assert 'href="https://evil.example"' not in html
         assert "<img" not in html
         assert "<script" not in html
         # Confirm no extra headings were created in limitations
         assert "<h1>" not in html
+
+        # Also verify lockfile markdown rendering defangs hostile URLs
+        lock_rep = LockfileDiffReport(
+            base_source="package-lock.json",
+            head_source="package-lock.json",
+            total_packages_scanned=1,
+            decision=Decision.BLOCK,
+            package_results=[
+                {
+                    "package": "@scope/evil-pkg",
+                    "old_version": "1.0.0",
+                    "new_version": "1.0.1",
+                    "decision": "BLOCK",
+                    "evidence": ["install_script_added"],
+                    "evidence_details": [
+                        {
+                            "id": "install_script_added",
+                            "severity": "HIGH",
+                            "explanation": "Hostile url https://evil.example/payload",
+                            "legitimate_use_note": "Docs at https://evil.example/safe",
+                        }
+                    ],
+                }
+            ],
+            limitations=["\n# Heading\n| a | b |\n[evil](https://evil.example)"],
+        )
+        lock_md = format_lockfile_markdown(lock_rep)
+        lock_html = md.render(lock_md)
+        assert "evil.example" not in lock_html
+        assert "evil[.]example" in lock_html
 
     def test_cap_comment_line_boundary_and_unclosed_tags(self):
         unclosed_comment = (
@@ -323,7 +381,7 @@ class TestHostileMarkdownFixtures:
         assert len(capped) <= 1000
         assert capped.endswith(TRUNCATION_NOTE)
         # Check clean closure of fence and details
-        assert "```\n</details>" in capped or ("```" in capped and "</details>" in capped)
+        assert "```\n</details>" in capped
         # Verify line boundary cut: no partial word like 'const some_varia'
         lines = capped.splitlines()
         # The line right before closing markers / note should be a full statement

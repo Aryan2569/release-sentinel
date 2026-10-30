@@ -23,27 +23,79 @@ COMMENT_MARKER: str = "<!-- release-sentinel-pr-comment -->"
 _MENTION_RE = re.compile(r"@([a-zA-Z0-9_-]+)")
 _ISSUE_RE = re.compile(r"#([0-9]+)")
 _CONSECUTIVE_BACKTICKS_RE = re.compile(r"`+")
-_URL_RE = re.compile(r"https?://[^\s)\]>\"'`]+")
 
 
 def defang_urls(text: str) -> str:
-    """Defang URLs in untrusted text so they cannot be parsed as links or autolinks.
+    """Defang URLs and hostnames in untrusted text so they cannot be parsed as links.
 
-    Converts https:// -> hxxps:// and http:// -> hxxp:// to prevent markdown linkifiers
-    or autolinkers from creating clickable links.
+    Converts:
+    - https:// -> hxxps://, http:// -> hxxp://, ftp:// -> fxp://
+    - Dots in hostnames/domains to [.] (e.g. evil.example -> evil[.]example)
+    - mailto: and bare email domains to [.]
+    - www. domains to www[.]
     """
     if not text:
         return text
 
+    # Defang scheme URLs: https://, http://, ftp://
     def _replace_url(match: re.Match[str]) -> str:
-        url = match.group(0)
-        if url.startswith("https://"):
-            return "hxxps://" + url[8:]
-        elif url.startswith("http://"):
-            return "hxxp://" + url[7:]
-        return url
+        proto = match.group(1)
+        rest = match.group(2)
+        lower_proto = proto.lower()
+        if lower_proto == "https":
+            new_proto = "hxxps"
+        elif lower_proto == "http":
+            new_proto = "hxxp"
+        elif lower_proto == "ftp":
+            new_proto = "fxp"
+        else:
+            new_proto = proto
 
-    return _URL_RE.sub(_replace_url, text)
+        # Split authority from path/query
+        parts = rest.split("/", 1)
+        host = parts[0].replace(".", "[.]")
+        if len(parts) > 1:
+            return f"{new_proto}://{host}/{parts[1]}"
+        return f"{new_proto}://{host}"
+
+    text = re.sub(
+        r"\b(https?|ftp)://([^\s)\]>\"'`]+)",
+        _replace_url,
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Defang mailto:
+    def _replace_mailto(match: re.Match[str]) -> str:
+        target = match.group(1).replace(".", "[.]")
+        return f"mailto\u200b:{target}"
+
+    text = re.sub(
+        r"\bmailto:([^\s)\]>\"'`]+)",
+        _replace_mailto,
+        text,
+        flags=re.IGNORECASE,
+    )
+
+    # Defang www.
+    def _replace_www(match: re.Match[str]) -> str:
+        return match.group(0).replace(".", "[.]")
+
+    text = re.sub(r"\bwww\.[a-zA-Z0-9_.-]+\b", _replace_www, text, flags=re.IGNORECASE)
+
+    # Defang bare emails: user@domain.tld
+    def _replace_email(match: re.Match[str]) -> str:
+        user = match.group(1)
+        domain = match.group(2).replace(".", "[.]")
+        return f"{user}@{domain}"
+
+    text = re.sub(
+        r"\b([a-zA-Z0-9_.+-]+)@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]*[a-zA-Z]{2,})\b",
+        _replace_email,
+        text,
+    )
+
+    return text
 
 
 def defang_gha_commands(text: str) -> str:
@@ -112,6 +164,11 @@ def sanitize_untrusted_text(
         s = s.replace("\\", "\\\\")
         for char in ("`", "*", "_", "[", "]", "(", ")", "!", "#", "~"):
             s = s.replace(char, "\\" + char)
+        # Defang bullet lists and horizontal rules / setext underlines
+        s = re.sub(r"(^|\n)(\s*)-(\s+)", r"\1\2\\-\3", s)
+        s = re.sub(r"-{3,}", lambda m: "\\-" * len(m.group(0)), s)
+        # Escape ordered list markers like '1. item'
+        s = re.sub(r"(^|\n)(\s*\d+)\.(\s+)", r"\1\2\\.\3", s)
         if not collapse_newlines:
             s = s.replace("|", "\\|")
         if not escape_html:

@@ -1045,3 +1045,43 @@ def scan_lockfile_diff(
         limitations=sorted(set(clean_limitations)),
         has_budget_exceeded=has_budget_exceeded,
     )
+
+
+
+def find_matching_pr_comment_id(
+    comments: list[dict[str, Any]] | str,
+    marker: str = "<!-- release-sentinel-pr-comment -->",
+    actor: str = "",
+) -> str | None:
+    """Find the existing PR comment ID matching marker and trusted author.
+
+    Matches comments where body contains marker and the author is trusted:
+    github-actions[bot], github-actions, or the specified workflow actor.
+    Accepts either a parsed list of comment dicts or a raw JSON string.
+    Returns the string ID of the first match, or None if not found.
+    """
+    if isinstance(comments, str):
+        try:
+            data = json.loads(comments)
+        except Exception:
+            return None
+    elif isinstance(comments, list):
+        data = comments
+    else:
+        return None
+
+    trusted_authors = {"github-actions[bot]", "github-actions"}
+    if actor:
+        trusted_authors.add(actor.lower())
+
+    for c in data:
+        if not isinstance(c, dict):
+            continue
+        body = c.get("body") or ""
+        author = (c.get("user") or {}).get("login") or ""
+        if marker in body and author.lower() in trusted_authors:
+            c_id = c.get("id")
+            if c_id is not None:
+                return str(c_id)
+
+    return None
