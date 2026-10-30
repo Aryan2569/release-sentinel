@@ -553,7 +553,7 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
     1. Baseline cache read: 0.041 – 0.087s (< 0.1s).
     2. Sample ZIP decryption (`zipfile.ZipFile.read()` pure-Python AES/ZipCrypto): **24.551 – 37.990s** (>85% of total elapsed time).
     3. In-memory archive extraction (`load_zip_release`): 25.046 – 41.789s.
-    4. Content scanning (`analyze_release` static AST/regex/diffing): **0.371 – 4.334s**.
+    4. Content scanning (`analyze_release` static regex/diffing): **0.371 – 4.334s**.
     5. Dependency resolution: < 0.002s.
   - *Conclusion*: Static inspection and policy evaluation take under 4.5 seconds even on 34–83 MB binary-heavy releases. The 26–52s execution latency is purely an evaluation harness artifact resulting from Python's standard library `zipfile` decrypting password-protected test fixtures in pure Python, which does not exist in production npm `.tgz` operation.
 

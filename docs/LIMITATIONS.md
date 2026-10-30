@@ -113,7 +113,7 @@ Release Sentinel classifies files into structural categories (`FileCategory`):
 - `.sh`, `.ps1`, `.bat`, `.cmd` are categorized as `FileCategory.EXECUTABLE`. When newly introduced in an update, they emit `notable_new_file` at `Severity.MEDIUM`. Furthermore, install-time script commands in `package.json` that execute shell scripts (e.g. `sh setup.sh`, `powershell -enc ...`, `cmd /c ...`) are audited by `_check_lifecycle_script_command`.
 - `.py` files are categorized as `FileCategory.SCRIPT`.
 
-**Limitation**: The deep static content scanner is specialized for JavaScript and TypeScript syntax (e.g., AST/regex matching on `process.env`, `require('child_process')`, `Buffer.from`, `eval()`). Non-JS scripts (`.sh`, `.ps1`, `.bat`, `.py`) are not parsed or scanned for language-specific constructs (such as Python `subprocess.Popen` or PowerShell `Invoke-Expression`). Detection of non-JS payloads relies on lifecycle script invocation auditing and file-addition warnings, rather than language-specific static AST parsing.
+**Limitation**: The deep static content scanner is specialized for JavaScript and TypeScript syntax (e.g., regex-based matching on `process.env`, `require('child_process')`, `Buffer.from`, `eval()`). Non-JS scripts (`.sh`, `.ps1`, `.bat`, `.py`) are not parsed or scanned for language-specific constructs (such as Python `subprocess.Popen` or PowerShell `Invoke-Expression`). Detection of non-JS payloads relies on lifecycle script invocation auditing and file-addition warnings, rather than language-specific static parsing.
 
 ---
 

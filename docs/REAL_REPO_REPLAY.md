@@ -6,7 +6,7 @@
 
 ## 1. Methodology & Safety Guarantees
 
-- **Zero Code Execution :** Repository code is never executed. Lockfiles and tarballs are analyzed via static AST/regex parsing and structural diffing.
+- **Zero Code Execution :** Repository code is never executed. Lockfiles and tarballs are analyzed via static regex-based scanning and structural diffing.
 - **Isolated Workspaces :** Repositories are cloned to temporary storage (`$env:TEMP/rs_replay_repos`) completely outside the project repository.
 - **Consecutive Pairwise Diffs:** For each repository, the last 25 commits touching `package-lock.json` are evaluated consecutively as $(C_{i-1} \to C_i)$, producing 24 sequential dependency update events per repository.
 - **Double Evaluation:** Every update is evaluated under both the **`strict`** profile (frozen v1.4 research evaluation baseline) and the **`default`** profile (production low-noise profile).

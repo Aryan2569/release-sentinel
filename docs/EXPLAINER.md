@@ -83,7 +83,7 @@ We tested Release Sentinel against three massive real-world benchmarks:
 ### The Results:
 - **Zero False Blocks on Updates**: Across all 800 clean package updates, Release Sentinel issued **0 false BLOCKs (0.00%)**.
 - **Over 81% High-Confidence Block Rate**: Out of 1,349 real attacks, Release Sentinel blocked over 81% with zero human intervention, and flagged over 90% for human review.
-- **Lightning Fast**: Inspecting a package takes less than **0.2 seconds** on average for static diffing and AST analysis.
+- **Lightning Fast**: Inspecting a package takes less than **0.2 seconds** on average for static diffing and regex-based analysis.
 
 Release Sentinel proves that software defenses can be both iron-clad against real attackers and completely silent during daily, legitimate software development.
 

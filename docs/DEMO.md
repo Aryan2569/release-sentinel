@@ -2,11 +2,14 @@
 
 This guide describes how to run the interactive demonstration of Release Sentinel on the real-world compromised release of **`axios` (1.14.0 → 1.14.1)** from the Datadog malicious software dataset.
 
+> [!NOTE]
+> **Dataset Prerequisite**: Running the interactive demo requires a local clone of the Datadog malicious software dataset. See [REPRODUCING.md](REPRODUCING.md) for instructions on downloading, placing, and configuring the encrypted dataset archives.
+
 ---
 
 ## 1. Safety Guarantees During Demo
 
-- **Never Executes Package Code :** The demo operates entirely via static AST/regex analysis and structural inspection. No scripts or modules are imported or run.
+- **Never Executes Package Code :** The demo operates entirely via static regex-based analysis and structural inspection. No scripts or modules are imported or run.
 - **In-Memory Decryption :** The encrypted sample archive is decrypted with password `infected` directly into memory buffers. The malicious payload is **never written to disk**. *(Note on encryption format: The test dataset sample archives utilize standard PKWARE ZipCrypto stream encryption, not AES-256; archive decryption is handled transparently in pure-Python memory streams via Python's standard library `zipfile` module without writing raw malicious binaries to disk).*
 
 ---
@@ -50,20 +53,22 @@ sentinel demo --pair axios 1.14.0 1.14.1 --format json
 
 ---
 
-## 4. Expected Output (Markdown)
+## 4. Expected Output (Sample Markdown)
+
+The command executes in memory and renders GitHub Flavored Markdown suitable for PR comments:
 
 ```markdown
 ## ⚠️ Release Sentinel: WARN
 
-> **Summary**: WARN: 2 evidence item(s) (1 high, 1 low) for axios (1.14.0 -> 1.14.1)
+> **Summary**: WARN: 2 evidence item(s) (1 high, 1 low) for axios (1.14.0 -&gt; 1.14.1)
 
 | Detail | Value |
 |---|---|
 | **Package** | `axios` |
-| **Old Version** | `1.14.0` (2026-10-22) |
-| **New Version** | `1.14.1` (2026-10-22) |
+| **Old Version** | `1.14.0` (2026-10-30) |
+| **New Version** | `1.14.1` (2026-10-30) |
 | **Decision** | **WARN** |
-| **As-Of** | `2026-10-22T21:43:03.072841+00:00` |
+| **As-Of** | `2026-10-30T07:16:13.095145+00:00` |
 
 ### Dependencies & Binaries Config
 | Severity | ID | File | Explanation |
@@ -79,7 +84,7 @@ sentinel demo --pair axios 1.14.0 1.14.1 --format json
 <summary><strong>Limitations & Scope</strong></summary>
 
 - JavaScript/TypeScript source is scanned with regex heuristics, not fully parsed — obfuscated code may evade detection.
-- Transitive (indirect) dependencies are not analysed.
+- Transitive (indirect) dependencies beyond depth-1 added dependencies are not analysed.
 - Known vulnerability databases (OSV, NVD, npm advisory) are not consulted.
 - Binary files (.node, .wasm, compiled extensions) cannot be inspected for malicious content.
 - 'No evidence found' does not mean 'safe' — it means nothing suspicious was detected by these specific checks at this point in time.

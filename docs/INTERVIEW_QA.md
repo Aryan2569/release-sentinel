@@ -28,7 +28,7 @@ Static diffing compares the abstract syntax and structural differences between t
 Rule 1 mandates that no package code is ever executed under any circumstances:
 - Neither `node`, `npm`, `npx`, nor shell interpreters are ever invoked on package contents.
 - Scripts in `package.json` are never run.
-- JavaScript and TypeScript files are analyzed using static AST parsers (via safe tokenizers) and regular expressions over string contents.
+- JavaScript and TypeScript files are analyzed using static regex-based tokenizers and heuristics over string contents.
 - Python never imports or evals any file from the untrusted tarball or zip archive.
 
 ---
@@ -288,7 +288,7 @@ During post-release auditing of v1.3, two measurement regressions were detected:
    - Baseline cache read: $< 0.1$ seconds.
    - Pure-Python ZIP decryption (`zipfile.ZipFile.read()` with `pwd=b'infected'` on 34–83 MB archives): **24.5 – 38.0 seconds** ($> 85\%$ of total time).
    - In-memory archive structuring: 25.0 – 41.8 seconds.
-   - Content scanning and AST/regex analysis: **0.37 – 4.33 seconds**.
+   - Content scanning and regex-based analysis: **0.37 – 4.33 seconds**.
    Static scanning executes in single-digit seconds even on 80 MB packages. The multi-second latency is an artifact of Python's standard library decrypting password-protected sample archives in pure software during benchmark runs, an overhead that does not exist in production npm `.tgz` operation.
 
 ---

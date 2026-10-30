@@ -3,7 +3,7 @@
 This document provides the definitive comparative evaluation of Release Sentinel **v1.0** (frozen at tag `v1.0`) against **v1.1** (frozen at tag `v1.1`).
 
 All evaluations adhere strictly to `docs/PROJECT_RULES.md`:
-- **Rule 1**: Zero code execution (static AST/regex inspection only; no `node`, `npm`, or build scripts executed).
+- **Rule 1**: Zero code execution (static regex-based inspection only; no `node`, `npm`, or build scripts executed).
 - **Rule 2**: Safe extraction with path traversal protection, file-count caps, and size limits.
 - **Rule 3**: Strict time-filtering via `as_of` metadata matching discovery date.
 - **Rule 4**: Evidence, not verdicts (fail-closed explicit `inspection_incomplete` tracking).
