@@ -20,12 +20,12 @@ Write-Host "==========================================================" -Foregro
 $hasErrors = $false
 
 # 1. Total Repository Size
-Write-Host "`n[1/5] Checking repository size..." -ForegroundColor Yellow
+Write-Host "`n[1/6] Checking repository size..." -ForegroundColor Yellow
 $countObj = git count-objects -vH
 $countObj | ForEach-Object { Write-Host "  $_" }
 
 # 2. 30 Largest Tracked Files
-Write-Host "`n[2/5] Inspecting 30 largest tracked files..." -ForegroundColor Yellow
+Write-Host "`n[2/6] Inspecting 30 largest tracked files..." -ForegroundColor Yellow
 $trackedFiles = git ls-files | ForEach-Object {
     if (Test-Path $_ -PathType Leaf) {
         $item = Get-Item $_
@@ -54,7 +54,7 @@ if ($over10MB) {
 }
 
 # 3. Forbidden File Extensions and Paths
-Write-Host "`n[3/5] Checking for forbidden archives, cache, and log files..." -ForegroundColor Yellow
+Write-Host "`n[3/6] Checking for forbidden archives, cache, and log files..." -ForegroundColor Yellow
 $forbidden = git ls-files | Where-Object {
     $_ -match '\.(zip|tgz|tar\.gz|log)$' -or
     $_ -match '^data/cache' -or
@@ -70,7 +70,7 @@ if ($forbidden) {
 }
 
 # 4. Secret & Hardcoded Path Scan
-Write-Host "`n[4/5] Scanning tracked files for secrets and hardcoded paths..." -ForegroundColor Yellow
+Write-Host "`n[4/6] Scanning tracked files for secrets and hardcoded paths..." -ForegroundColor Yellow
 $secretHits = python -c "
 import subprocess, re
 from pathlib import Path
@@ -132,8 +132,42 @@ if ($secretHits) {
     Write-Host "  [PASS] Zero tokens, secrets, or hardcoded paths found." -ForegroundColor Green
 }
 
+# 5. Control Character & U+FFFD Scan
+Write-Host "`n[5/6] Scanning tracked text files for control characters and U+FFFD..." -ForegroundColor Yellow
+$ctrlHits = python -c "
+import subprocess
+from pathlib import Path
+
+tracked = subprocess.check_output(['git', 'ls-files'], text=True, encoding='utf-8').splitlines()
+binary_exts = {'.png', '.jpg', '.jpeg', '.ico', '.pdf', '.zip', '.tar', '.gz', '.tgz', '.pyc'}
+hits = []
+for f in tracked:
+    p = Path(f)
+    if p.suffix.lower() in binary_exts or not p.is_file():
+        continue
+    try:
+        content = p.read_text(encoding='utf-8')
+    except Exception:
+        continue
+    for line_no, line in enumerate(content.splitlines(), 1):
+        for col_no, ch in enumerate(line, 1):
+            code = ord(ch)
+            if (code < 32 and code not in (9, 10, 13)) or code == 127 or (128 <= code <= 159) or code == 0xFFFD:
+                hits.append(f'{f}:{line_no}:{col_no}|{hex(code)}|{repr(ch)}')
+for h in hits[:20]:
+    print(h)
+"
+
+if ($ctrlHits) {
+    Write-Host "  [FAIL] Unexpected control characters or replacement characters found:" -ForegroundColor Red
+    $ctrlHits | ForEach-Object { Write-Host "    $_" -ForegroundColor Red }
+    $hasErrors = $true
+} else {
+    Write-Host "  [PASS] Zero control characters or U+FFFD found." -ForegroundColor Green
+}
+
 # 5. Required Community & Project Files
-Write-Host "`n[5/5] Verifying required community and packaging files..." -ForegroundColor Yellow
+Write-Host "`n[6/6] Verifying required community and packaging files..." -ForegroundColor Yellow
 $requiredFiles = @("LICENSE", "SECURITY.md", "CONTRIBUTING.md", "CHANGELOG.md", "README.md", "pyproject.toml", "action.yml")
 foreach ($rf in $requiredFiles) {
     if (Test-Path $rf) {
