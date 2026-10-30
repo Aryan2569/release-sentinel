@@ -55,6 +55,8 @@ def run_replay_for_profile(profile: str, max_commits_per_repo: int = 25) -> dict
     repo_summaries = []
     evidence_counter: collections.Counter[str] = collections.Counter()
     all_blocks = []
+    all_updates = []
+    skipped_updates = []
     t_start = time.perf_counter()
 
     for repo_cfg in REPOS_12:
@@ -146,7 +148,12 @@ def run_replay_for_profile(profile: str, max_commits_per_repo: int = 25) -> dict
                     }
                 except Exception as exc:
                     elapsed = time.perf_counter() - t0
-                    logger.warning("Error replaying %s on %s: %s", pair_key, repo_name, exc)
+                    logger.warning(
+                        "Skipped update %s on %s (lockfile git-show failure): %s",
+                        pair_key,
+                        repo_name,
+                        exc,
+                    )
                     update_res = {
                         "pair_key": pair_key,
                         "base_sha": base_commit["sha"],
@@ -156,6 +163,8 @@ def run_replay_for_profile(profile: str, max_commits_per_repo: int = 25) -> dict
                         "packages_scanned": 0,
                         "decision": "WARN",
                         "evidence": ["replay_error"],
+                        "skipped": True,
+                        "skip_reason": f"lockfile not present in commit: {exc}",
                         "blocks": [],
                         "warns": [],
                         "elapsed_sec": round(elapsed, 3),
@@ -172,6 +181,25 @@ def run_replay_for_profile(profile: str, max_commits_per_repo: int = 25) -> dict
                 repo_warn += 1
             else:
                 repo_allow += 1
+
+            if update_res.get("skipped"):
+                skipped_updates.append({
+                    "repo": repo_name,
+                    "pair_key": pair_key,
+                    "base_sha": update_res["base_sha"],
+                    "head_sha": update_res["head_sha"],
+                    "reason": update_res.get("skip_reason", "lockfile not present in commit"),
+                })
+
+            all_updates.append({
+                "repo": repo_name,
+                "pair_key": pair_key,
+                "base_sha": update_res["base_sha"],
+                "head_sha": update_res["head_sha"],
+                "decision": d,
+                "evidence": update_res.get("evidence", []),
+                "skipped": update_res.get("skipped", False),
+            })
 
             for ev in update_res.get("evidence", []):
                 evidence_counter[ev] += 1
@@ -221,6 +249,8 @@ def run_replay_for_profile(profile: str, max_commits_per_repo: int = 25) -> dict
         "total_time_sec": total_time,
         "repo_summaries": repo_summaries,
         "top_evidence": evidence_counter.most_common(15),
+        "skipped_updates": skipped_updates,
+        "updates": all_updates,
     }
 
 

@@ -197,7 +197,12 @@ def replay_single_repo(
             }
         except Exception as exc:
             elapsed = time.perf_counter() - t0
-            logger.warning("Error replaying %s on %s: %s", pair_key, repo_name, exc)
+            logger.warning(
+                "Skipped update %s on %s (lockfile git-show failure): %s",
+                pair_key,
+                repo_name,
+                exc,
+            )
             update_res = {
                 "pair_key": pair_key,
                 "base_sha": base_commit["sha"],
@@ -207,6 +212,8 @@ def replay_single_repo(
                 "packages_scanned": 0,
                 "decision": "WARN",
                 "evidence": ["replay_error"],
+                "skipped": True,
+                "skip_reason": f"lockfile not present in commit: {exc}",
                 "blocks": [],
                 "elapsed_sec": round(elapsed, 3),
             }
