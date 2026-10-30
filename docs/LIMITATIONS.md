@@ -37,11 +37,17 @@ npm allows packages to declare dependencies using alternative specifiers rather 
 
 ---
 
-## 4. Delisted Dependency Payloads
+## 4. Delisted Dependency Payloads & Hollow Injection Waves (`camp_0136`)
 
-In late-2026 attacks (including hollow-release campaigns), attackers split the malicious payload into an added runtime dependency. 
+In late-2026 attacks (including hollow-release campaigns), attackers split the malicious payload into an added runtime dependency without modifying package source code directly.
 
 **Limitation**: Release Sentinel's automated child package inspection requires the added dependency tarball to be retrievable from the npm registry (or an offline replay cache) as of the analysis timestamp. If the dependency was unpublished, deleted, or delisted prior to scanning, the payload within the child package cannot be inspected, and the release can only be evaluated based on top-level manifest signals (`dependency_added`, `hollow_dependency_injection`).
+
+### Hollow Dependency-Injection Detection Rates (`camp_0136` / Mastra Campaign)
+
+The Mastra attack wave (`camp_0136`, 118 packages in TEST-B) published hollow decoy releases containing empty package bodies that inject lookalike runtime dependencies without install lifecycle hooks:
+- **Canonical Benchmark Detection**: In canonical evaluation (`METRICS.json`, `data/eval_results_v11.jsonl`, `data/eval_results_default.jsonl`), member-level detection yields **4 / 118 WARN (3.39%)** under the `default` profile and **1 BLOCK / 3 WARN (4 / 118 WARN+, 3.39%)** under `strict`.
+- **Reconciliation with Earlier Reports**: An exploratory pre-freeze report quoted an 8 / 118 (6.78%) figure during early heuristic tuning of lookalike name patterns before final boundary stabilization. In the canonical frozen benchmark and current engine, exactly 4 of 118 members trigger the experimental `hollow_dependency_injection` rule; the remaining 114 members exhibit no static code anomalies or install hooks.
 
 ---
 
@@ -70,11 +76,11 @@ Release Sentinel currently parses and audits npm `package-lock.json` files acros
 
 ---
 
-## 8. 200-Package Safety Budget Cap
+## 8. 300-Package Safety Budget Cap
 
 In large mono-repositories or major framework upgrades, hundreds or thousands of packages can transition simultaneously in a single lockfile commit.
 
-**Limitation**: To prevent unbounded memory consumption, prolonged execution time, or potential denial-of-service from massive dependency graph updates, `sentinel check` enforces a default safety budget cap of `--max-packages 200`. If a lockfile diff changes more than 200 packages, Release Sentinel scans the first 200 packages, skips the remainder, records an explicit budget exceeded limitation, and fails closed to `WARN`. Teams managing large dependency updates can raise this threshold using `--max-packages <N>`.
+**Limitation**: To prevent unbounded memory consumption, prolonged execution time, or potential denial-of-service from massive dependency graph updates, `sentinel check` enforces a default safety budget cap of `--max-packages 300`. If a lockfile diff changes more than 300 packages, Release Sentinel scans the first 300 packages, skips the remainder, records an explicit budget exceeded limitation, and fails closed to `WARN`. Teams managing large dependency updates can raise this threshold using `--max-packages <N>`.
 
 ---
 

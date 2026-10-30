@@ -11,6 +11,7 @@ from datetime import UTC, datetime
 from pathlib import Path
 from unittest.mock import patch
 
+import pytest
 from typer.testing import CliRunner
 
 from release_sentinel.cli import (
@@ -370,7 +371,24 @@ class TestCliCheck:
         assert res_never.exit_code == 0
 
 
+def _has_axios_demo_sample() -> bool:
+    try:
+        from release_sentinel.eval import get_samples_root
+        root = get_samples_root()
+        if not root.exists():
+            return False
+        return bool(list(root.glob("**/axios/**/1.14.1/*.zip"))) or bool(
+            list(root.glob("**/*axios*1.14.1*.zip"))
+        )
+    except Exception:
+        return False
+
+
 class TestCliDemo:
+    @pytest.mark.skipif(
+        not _has_axios_demo_sample(),
+        reason="Requires untracked sample dataset (RS_SAMPLES_ROOT or data/samples)",
+    )
     def test_demo_axios_screen_recording_support(self):
         result = runner.invoke(app, ["demo", "--pair", "axios", "1.14.0", "1.14.1"])
         assert result.exit_code == 0

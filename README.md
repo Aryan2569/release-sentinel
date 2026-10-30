@@ -48,9 +48,9 @@ sentinel check --base-ref origin/main --head package-lock.json
   - **`2` (Usage / Input Error)**: Invalid arguments, malformed lockfiles, or unsupported formats (e.g. yarn/pnpm).
 - **`sentinel diff` (Package Comparator)**:
   - **`0` (ALLOW)**: Clean package difference.
-  - **`1` (WARN)**: Suspicious signals detected.
-  - **`2` (BLOCK)**: Severe security violations detected.
-  - **`1` (Input / Usage Error)**: Invalid options or unparseable versions.
+  - **`1` (WARN / Usage Error)**: Suspicious signals detected (`WARN` decision), or input/usage error (invalid `--format`, invalid `--as-of`, or invalid `--min-severity`).
+  - **`2` (BLOCK / Registry Error)**: Severe security violations detected (`BLOCK` decision), or upstream registry retrieval failure (`RegistryError`).
+  - **`3` (Internal Error)**: Unexpected unhandled exception.
 
 ---
 
@@ -106,7 +106,10 @@ jobs:
 | :---- | :---------- | :------ | :------------- |
 | `lockfile` | Path to npm `package-lock.json` file | `package-lock.json` | Valid file path |
 | `fail-on` | Threshold that causes the CI job to fail | `block` | `block`, `warn`, `never` |
+| `comment` | Whether to post or update a GitHub PR comment with findings | `true` | `true`, `false` |
 | `comment-on` | Condition to post or update PR comments. Teams wanting a quiet setup should set `comment-on: block`, because `notable` comments on ~30% of real-world dependency updates (mostly benign postinstall additions and network access). | `notable` | `block`, `notable`, `warn`, `always` |
+| `experimental-hollow` | Enable experimental hollow-release detection (post-hoc WARN-only heuristic) | `true` | `true`, `false` |
+| `policy` | Path to a custom TOML policy file to overlay | `""` | Valid file path or empty string |
 | `profile` | Policy configuration profile | `default` | `default` (low-noise), `strict` (research baseline) |
 | `max-packages`| Maximum changed packages to analyze before capping | `300` | Integer $\ge 1$ |
 | `github-token`| Token for posting pull request comments | `${{ github.token }}` | GitHub token with PR write access |
@@ -190,7 +193,7 @@ To protect production CI against denial-of-service and evasive attacks, Release 
 
 ## Empirical Evaluation
 
-Release Sentinel's detection efficacy and false alarm rates are continuously validated against the public [DataDog Malicious Software Packages Dataset](https://github.com/DataDog/malicious-software-packages-dataset) and real-world repository update histories.
+Release Sentinel's detection efficacy and false alarm rates are evaluated on a frozen snapshot against the public [DataDog Malicious Software Packages Dataset](https://github.com/DataDog/malicious-software-packages-dataset) and real-world repository update histories.
 
 ### Malicious Recall Benchmark (1,349 Evaluation Pairs)
 
@@ -204,7 +207,7 @@ All metrics below are generated directly by [`scripts/verify_metrics.py`](script
 | **TEST-B** (Aggregate) | 124 pairs / 5 camp. | 7.26% WARN+ / 2.42% BLOCK | 7.26% WARN+ / 1.61% BLOCK | 4/5 (80.00%) [28.36%, 99.49%] |
 | **ALL** | 1,349 pairs / 140 camp. | 89.99% WARN+ / 81.69% BLOCK | 89.99% WARN+ / 67.83% BLOCK | 127/140 (90.71%) [84.64%, 94.96%] |
 
-> **Note on Test Splits**: The `default` profile maintains **100% of WARN+ detection coverage** (1,214 of 1,349 pairs; 127 of 140 campaigns) while demoting ambiguous single-signal heuristics to reduce CI noise. TEST-B is dominated by the hollow dependency-injection wave (metadata-only releases that add runtime dependencies without package code). The hollow-release and lookalike detection rules are experimental, post-hoc, and WARN-only.
+> **Note on Test Splits**: The `default` profile provides the **same WARN+ coverage as strict (89.99%)** (1,214 of 1,349 pairs; 127 of 140 campaigns) while demoting ambiguous single-signal heuristics to reduce CI noise. TEST-B is dominated by the hollow dependency-injection wave (metadata-only releases that add runtime dependencies without package code). The hollow-release and lookalike detection rules are experimental, post-hoc, and WARN-only.
 
 ### Attack Wave Breakdown: 2025 Install Hooks vs. 2026 Runtime Obfuscation
 
@@ -216,10 +219,10 @@ Supply chain attacks underwent a significant tactical shift between 2025 and 202
 | **`camp_0048`** | 2025 | 351 pkgs | Install-hook execution (`postinstall`) | 351 BLOCK / 351 WARN | **349 BLOCK** / 351 WARN | 🛑 Automated BLOCK (99.4%) |
 | **`camp_0065`** | 2026 | 103 pkgs | Runtime obfuscation / dynamic loader | 103 BLOCK / 103 WARN | **0 BLOCK** / **103 WARN** | ⚠️ PR Review Advisory (100%) |
 | **`camp_0066`** | 2026 | 60 pkgs | Encoded payload without install script | 0 BLOCK / 60 WARN | **0 BLOCK** / **60 WARN** | ⚠️ PR Review Advisory (100%) |
-| **`camp_0136`** | 2026 | 118 pkgs | Hollow dependency-injection wave | 1 BLOCK / 4 WARN | **0 BLOCK** / **4 WARN** | ⚠️ PR Review Advisory (4/118) |
+| **`camp_0136`** | 2026 | 118 pkgs | Hollow dependency-injection wave | 1 BLOCK / 3 WARN (4 WARN+) | **0 BLOCK** / **4 WARN** | ⚠️ PR Review Advisory (4/118) |
 
 - **2025 Install Hooks**: The two largest 2025 waves (`camp_0052` and `camp_0048`) rely on automated execution during `npm install`. The default profile BLOCKs both waves almost completely (394/407 and 349/351).
-- **2026 Waves**: Late-2025 and 2026 waves abandoned install scripts entirely. Waves like `camp_0065` (103 pkgs) and `camp_0066` (60 pkgs) rely on runtime obfuscation, while `camp_0136` (118 pkgs) is a hollow dependency-injection wave that injects lookalike dependencies. In the low-noise `default` profile, single uncorroborated heuristics cap at **WARN** to eliminate false-BLOCKs on production build tools. Consequently, Release Sentinel WARNs on all three waves (0/103, 0/60, and 4/118 BLOCKs), flagging them for human review via PR comments.
+- **2026 Waves**: Late-2025 and 2026 waves abandoned install scripts entirely. Waves like `camp_0065` (103 pkgs) and `camp_0066` (60 pkgs) rely on runtime obfuscation, while `camp_0136` (118 pkgs) is a hollow dependency-injection wave that injects lookalike dependencies. In the low-noise `default` profile, single uncorroborated heuristics cap at **WARN** to eliminate false-BLOCKs on production build tools. Consequently, Release Sentinel flags members of all three waves for human review via PR comments (warning on 103/103 members in `camp_0065`, 60/60 in `camp_0066`, and 4/118 in `camp_0136`).
 
 ### Real-World Replay Burden & PR Comment Optimization
 
@@ -262,7 +265,7 @@ Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 
 - **Alternative Package Managers (Yarn / pnpm)**: Only npm `package-lock.json` (v1, v2, v3) is supported. `yarn.lock` and `pnpm-lock.yaml` are unsupported and rejected.
 - **Private/Mirror Registries & Non-Registry Sources**: By default, only packages from the public npm registry (`https://registry.npmjs.org`) are inspected. Packages pointing to alternative registry mirrors (such as `registry.yarnpkg.com`), private registries, git repositories, or arbitrary remote URLs produce an unscanned non-registry source `WARN` (`unscanned_non_registry_source`) rather than being downloaded from untrusted endpoints.
 - **No Live Remote GitHub Commit/Tag Validation**: Does not query GitHub or GitLab APIs to verify whether published npm tarballs correspond to signed commits or GitHub Actions OIDC provenance attestations (`npm provenance`).
-- **Live Malware Dataset Warning**: The DataDog research dataset contains real, live malicious npm packages. In accordance with Rules 1 and 7, Release Sentinel reads them solely in memory as inert data for static inspection; malicious code is never extracted to disk or executed.
+- **Live Malware Dataset Warning**: The DataDog research dataset contains real, live malicious npm packages. Release Sentinel reads them solely in memory as inert data for static inspection; malicious code is never extracted to disk or executed.
 
 For full technical specifications of evasion boundaries and mitigations, consult [`docs/LIMITATIONS.md`](docs/LIMITATIONS.md).
 

@@ -693,3 +693,16 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   - *Max-Packages Option Help Text*: Corrected `--max-packages` help text to reflect `DEFAULT_MAX_PACKAGES = 300`.
   - *Registry Source Constraints*: Documented that by default only packages from the official public npm registry (`https://registry.npmjs.org`) are fetched; alternative mirrors (e.g. `registry.yarnpkg.com`), private registries, and direct URLs emit an unscanned non-registry source `WARN` (`unscanned_non_registry_source`).
 
+- **Part 5: Dual PR Comment Examples**:
+  - Maintained canonical Axios WARN example with an explicit note explaining the removed payload file in the evaluation sample archive.
+  - Added real-world BLOCK example from 2025 install hook waves (@ahmedhfarag/ngx-perfect-scrollbar in camp_0048), rendering only evidence IDs and short explanations without payload content.
+  - Added fixture tests in tests/test_readme_example.py ensuring the README examples byte-match scripts/render_readme_example.py.
+
+- **Addendum: Pre-Push Hardening & Packaging Security**:
+  - *Identity & Packaging Metadata*: Verified package authors in pyproject.toml and action author in action.yml are set to Aryan Kumar.
+  - *Vulnerability Reporting*: Updated SECURITY.md to GitHub Private Vulnerability Reporting with realistic alpha expectations ("best effort; this is a solo-maintained alpha") and fixed disclosure phrasing.
+  - *Documentation & Metrics Truth Pass*: Aligned README, LIMITATIONS, and verify_metrics on camp_0136 (4/118 WARN under default, 1 BLOCK / 3 WARN under strict); updated test splits coverage wording; clarified sentinel diff dual exit code semantics; and expanded the action inputs options table.
+  - *Build Backend Isolation in Action and CI*: Added hatchling and its dependencies (packaging, pathspec, pluggy, tomlkit, trove-classifiers) to requirements-action.lock, enabling --no-build-isolation during local wheel builds and eliminating unhashed downloads from PyPI.
+  - *Workflow Actor Hardening*: Passed actor strictly via environment variables (ACTOR: ${{ github.actor }}) instead of inlining expressions in bash scripts.
+  - *CI Timeout and Offline Test Safety*: Added timeout-minutes: 20 and canonical metric verification in CI workflow; added defensive skipif on demo CLI tests requiring untracked malware archives.
+

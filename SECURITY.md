@@ -13,7 +13,7 @@ Release Sentinel is currently in active development. Only the latest minor relea
 
 **Please do not report security vulnerabilities through public GitHub issues.**
 
-If you believe you have discovered a vulnerability in Release Sentinel:
+Vulnerabilities are reported through GitHub Private Vulnerability Reporting. If you believe you have discovered a vulnerability in Release Sentinel:
 
 1. **GitHub Private Vulnerability Reporting**: Use the **Security** tab on the repository and select **Report a vulnerability**.
 2. **Details to include**:
@@ -23,9 +23,7 @@ If you believe you have discovered a vulnerability in Release Sentinel:
 
 ### Response Timeline
 
-- **Initial Response**: Within 48 hours acknowledging receipt.
-- **Triage & Assessment**: Within 7 business days with confirmation of validity and severity.
-- **Fix & Advisory**: We coordinate coordinated disclosure and release patches promptly.
+Response, triage, and patch delivery are best effort; this is a solo-maintained alpha. When vulnerabilities are confirmed, we coordinate responsible disclosure and release patches promptly.
 
 ## Security Principles
 
