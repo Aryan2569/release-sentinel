@@ -30,79 +30,85 @@ from release_sentinel.models import Decision
 # Sample Fixtures
 # ---------------------------------------------------------------------------
 
-LOCKFILE_V1 = json.dumps({
-    "name": "example-app",
-    "version": "1.0.0",
-    "lockfileVersion": 1,
-    "dependencies": {
-        "lodash": {
-            "version": "4.17.20",
-            "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
-            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
-        },
-        "chalk": {
-            "version": "4.1.0",
-            "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz",
-            "integrity": "sha512-qwx12ZsWLofyMT8FccNeBCSWi9GUMziFQ+RwBKFVPKUWhjjIIFBYD9vNPnQ8GbpFXVW302U4L4XrSDy6aW4RnA==",  # noqa: E501  # noqa: E501
-            "dependencies": {
-                "ansi-styles": {
-                    "version": "4.3.0",
-                    "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz",
-                }
+LOCKFILE_V1 = json.dumps(
+    {
+        "name": "example-app",
+        "version": "1.0.0",
+        "lockfileVersion": 1,
+        "dependencies": {
+            "lodash": {
+                "version": "4.17.20",
+                "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
+            },
+            "chalk": {
+                "version": "4.1.0",
+                "resolved": "https://registry.npmjs.org/chalk/-/chalk-4.1.0.tgz",
+                "integrity": "sha512-qwx12ZsWLofyMT8FccNeBCSWi9GUMziFQ+RwBKFVPKUWhjjIIFBYD9vNPnQ8GbpFXVW302U4L4XrSDy6aW4RnA==",  # noqa: E501  # noqa: E501
+                "dependencies": {
+                    "ansi-styles": {
+                        "version": "4.3.0",
+                        "resolved": "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz",
+                    }
+                },
             },
         },
-    },
-})
+    }
+)
 
-LOCKFILE_V2 = json.dumps({
-    "name": "example-app",
-    "version": "1.0.0",
-    "lockfileVersion": 2,
-    "packages": {
-        "": {
-            "name": "example-app",
-            "version": "1.0.0",
+LOCKFILE_V2 = json.dumps(
+    {
+        "name": "example-app",
+        "version": "1.0.0",
+        "lockfileVersion": 2,
+        "packages": {
+            "": {
+                "name": "example-app",
+                "version": "1.0.0",
+            },
+            "node_modules/lodash": {
+                "version": "4.17.21",
+                "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+                "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
+            },
+            "node_modules/express": {
+                "version": "4.18.2",
+                "resolved": "https://registry.npmjs.org/express/-/express-4.18.2.tgz",
+                "integrity": "sha512-5/psL6iVEKi52nK95Gsv5Mzh80BofcGZQ22lDYhXRyknHZg33Hphq9PcwUVCx4b0v50iTqE22/OOShxCvtgoOQ==",  # noqa: E501  # noqa: E501
+            },
+            "node_modules/@types/node": {
+                "version": "20.11.0",
+                "resolved": "https://registry.npmjs.org/@types/node/-/node-20.11.0.tgz",
+            },
         },
-        "node_modules/lodash": {
-            "version": "4.17.21",
-            "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
-            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
+        "dependencies": {
+            "lodash": {"version": "4.17.21"},
         },
-        "node_modules/express": {
-            "version": "4.18.2",
-            "resolved": "https://registry.npmjs.org/express/-/express-4.18.2.tgz",
-            "integrity": "sha512-5/psL6iVEKi52nK95Gsv5Mzh80BofcGZQ22lDYhXRyknHZg33Hphq9PcwUVCx4b0v50iTqE22/OOShxCvtgoOQ==",  # noqa: E501  # noqa: E501
-        },
-        "node_modules/@types/node": {
-            "version": "20.11.0",
-            "resolved": "https://registry.npmjs.org/@types/node/-/node-20.11.0.tgz",
-        },
-    },
-    "dependencies": {
-        "lodash": {"version": "4.17.21"},
-    },
-})
+    }
+)
 
-LOCKFILE_V3 = json.dumps({
-    "name": "example-app",
-    "version": "1.0.0",
-    "lockfileVersion": 3,
-    "packages": {
-        "": {
-            "name": "example-app",
-            "version": "1.0.0",
+LOCKFILE_V3 = json.dumps(
+    {
+        "name": "example-app",
+        "version": "1.0.0",
+        "lockfileVersion": 3,
+        "packages": {
+            "": {
+                "name": "example-app",
+                "version": "1.0.0",
+            },
+            "node_modules/lodash": {
+                "version": "4.17.21",
+                "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
+                "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
+            },
+            "node_modules/chalk": {
+                "version": "5.0.0",
+                "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.0.0.tgz",
+            },
         },
-        "node_modules/lodash": {
-            "version": "4.17.21",
-            "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz",
-            "integrity": "sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==",  # noqa: E501  # noqa: E501
-        },
-        "node_modules/chalk": {
-            "version": "5.0.0",
-            "resolved": "https://registry.npmjs.org/chalk/-/chalk-5.0.0.tgz",
-        },
-    },
-})
+    }
+)
 
 
 # ---------------------------------------------------------------------------
@@ -195,7 +201,7 @@ class TestLockfileDiffing:
         }
         head_pkgs = {
             "lodash": LockfilePackage("lodash", "4.17.21"),  # upgraded
-            "chalk": LockfilePackage("chalk", "4.1.0"),   # downgraded
+            "chalk": LockfilePackage("chalk", "4.1.0"),  # downgraded
             "new-pkg": LockfilePackage("new-pkg", "1.0.0"),  # added
             "same-pkg": LockfilePackage("same-pkg", "2.0.0"),  # unchanged
         }
@@ -240,24 +246,28 @@ class TestLockfileDiffing:
 
 class TestLockfileDiffScanning:
     def test_scan_diff_clean_upgrade_allows(self, monkeypatch, tmp_path: Path):
-        base_json = json.dumps({
-            "lockfileVersion": 3,
-            "packages": {
-                "node_modules/lodash": {
-                    "version": "4.17.20",
-                    "integrity": "sha512-olddummy",
+        base_json = json.dumps(
+            {
+                "lockfileVersion": 3,
+                "packages": {
+                    "node_modules/lodash": {
+                        "version": "4.17.20",
+                        "integrity": "sha512-olddummy",
+                    },
                 },
-            },
-        })
-        head_json = json.dumps({
-            "lockfileVersion": 3,
-            "packages": {
-                "node_modules/lodash": {
-                    "version": "4.17.21",
-                    "integrity": "sha512-fKT/8IBcj35qo6Q9skSbU/BH890j6k2W9aPInUQdecI7OPhTkUd2Xv/WFqggO0v7fY1Rz9ha8qrRihLqaMnRgw==",  # noqa: E501  # noqa: E501
+            }
+        )
+        head_json = json.dumps(
+            {
+                "lockfileVersion": 3,
+                "packages": {
+                    "node_modules/lodash": {
+                        "version": "4.17.21",
+                        "integrity": "sha512-fKT/8IBcj35qo6Q9skSbU/BH890j6k2W9aPInUQdecI7OPhTkUd2Xv/WFqggO0v7fY1Rz9ha8qrRihLqaMnRgw==",  # noqa: E501  # noqa: E501
+                    },
                 },
-            },
-        })
+            }
+        )
 
         mock_client = MagicMock()
         # Mock tarball downloads returning ReleaseContents directly via extraction
@@ -265,23 +275,27 @@ class TestLockfileDiffScanning:
         new_tar = tmp_path / "new.tgz"
         old_tar.write_bytes(b"dummy-old")
         new_tar.write_bytes(b"dummy-new")
-        mock_client.download_tarball.side_effect = lambda name, version, *a, **kw: old_tar if version == "4.17.20" else new_tar  # noqa: E501
+        mock_client.download_tarball.side_effect = lambda name, version, *a, **kw: (
+            old_tar if version == "4.17.20" else new_tar
+        )  # noqa: E501
 
         # Mock extract_release_in_memory returning clean releases
         def mock_extract(tar_path, config=None):
             if tar_path == old_tar:
-                return ReleaseContents(files={
-                    "package.json": b'{"name": "lodash", "version": "4.17.20"}',
-                    "index.js": b"module.exports = {};",
-                })
-            return ReleaseContents(files={
-                "package.json": b'{"name": "lodash", "version": "4.17.21"}',
-                "index.js": b"module.exports = { a: 1 };",
-            })
+                return ReleaseContents(
+                    files={
+                        "package.json": b'{"name": "lodash", "version": "4.17.20"}',
+                        "index.js": b"module.exports = {};",
+                    }
+                )
+            return ReleaseContents(
+                files={
+                    "package.json": b'{"name": "lodash", "version": "4.17.21"}',
+                    "index.js": b"module.exports = { a: 1 };",
+                }
+            )
 
-        monkeypatch.setattr(
-            "release_sentinel.lockfile.extract_release_in_memory", mock_extract
-        )
+        monkeypatch.setattr("release_sentinel.lockfile.extract_release_in_memory", mock_extract)
 
         report = scan_lockfile_diff(
             base_content=base_json,
@@ -297,10 +311,12 @@ class TestLockfileDiffScanning:
 
     def test_budget_exceeded_fails_closed_to_warn(self):
         base_json = json.dumps({"lockfileVersion": 3, "packages": {}})
-        head_json = json.dumps({
-            "lockfileVersion": 3,
-            "packages": {f"node_modules/pkg-{i}": {"version": "1.0.0"} for i in range(250)},
-        })
+        head_json = json.dumps(
+            {
+                "lockfileVersion": 3,
+                "packages": {f"node_modules/pkg-{i}": {"version": "1.0.0"} for i in range(250)},
+            }
+        )
 
         mock_client = MagicMock()
         mock_client.download_tarball.return_value = Path("dummy.tgz")
@@ -317,15 +333,17 @@ class TestLockfileDiffScanning:
 
     def test_integrity_mismatch_fails_closed_to_block(self, monkeypatch, tmp_path: Path):
         base_json = json.dumps({"lockfileVersion": 3, "packages": {}})
-        head_json = json.dumps({
-            "lockfileVersion": 3,
-            "packages": {
-                "node_modules/bad-pkg": {
-                    "version": "1.0.0",
-                    "integrity": "sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",  # noqa: E501  # noqa: E501
+        head_json = json.dumps(
+            {
+                "lockfileVersion": 3,
+                "packages": {
+                    "node_modules/bad-pkg": {
+                        "version": "1.0.0",
+                        "integrity": "sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",  # noqa: E501  # noqa: E501
+                    },
                 },
-            },
-        })
+            }
+        )
 
         mock_client = MagicMock()
         tar = tmp_path / "bad.tgz"
@@ -347,15 +365,17 @@ class TestLockfileDiffScanning:
 
     def test_added_package_diffs_against_earlier_version(self, monkeypatch, tmp_path: Path):
         base_json = json.dumps({"lockfileVersion": 3, "packages": {}})
-        head_json = json.dumps({
-            "lockfileVersion": 3,
-            "packages": {
-                "node_modules/added-pkg": {
-                    "version": "2.0.0",
-                    "integrity": "sha512-ILBGG5cRPZBU3O9DyuuRYA+PRPmNdXhOS29lKOCbotgLBcbcxVmUf6thnYxej1vfzsIZLPOwbuY78JwIc89vpg==",  # noqa: E501  # noqa: E501
+        head_json = json.dumps(
+            {
+                "lockfileVersion": 3,
+                "packages": {
+                    "node_modules/added-pkg": {
+                        "version": "2.0.0",
+                        "integrity": "sha512-ILBGG5cRPZBU3O9DyuuRYA+PRPmNdXhOS29lKOCbotgLBcbcxVmUf6thnYxej1vfzsIZLPOwbuY78JwIc89vpg==",  # noqa: E501  # noqa: E501
+                    },
                 },
-            },
-        })
+            }
+        )
 
         mock_client = MagicMock()
         # Mock metadata showing an established package satisfying maturity rule (Stage 7a Part 0b)
@@ -380,18 +400,24 @@ class TestLockfileDiffScanning:
         new_tar = tmp_path / "2.0.0.tgz"
         old_tar.write_bytes(b"dummy-1")
         new_tar.write_bytes(b"dummy-2")
-        mock_client.download_tarball.side_effect = lambda name, version, *a, **kw: old_tar if version == "1.0.3" else new_tar  # noqa: E501
+        mock_client.download_tarball.side_effect = lambda name, version, *a, **kw: (
+            old_tar if version == "1.0.3" else new_tar
+        )  # noqa: E501
 
         def mock_extract(tar_path, config=None):
             if tar_path == old_tar:
-                return ReleaseContents(files={
-                    "package.json": b'{"name": "added-pkg", "version": "1.0.3"}',
-                    "index.js": b"module.exports = 1;",
-                })
-            return ReleaseContents(files={
-                "package.json": b'{"name": "added-pkg", "version": "2.0.0"}',
-                "index.js": b"module.exports = 2;",
-            })
+                return ReleaseContents(
+                    files={
+                        "package.json": b'{"name": "added-pkg", "version": "1.0.3"}',
+                        "index.js": b"module.exports = 1;",
+                    }
+                )
+            return ReleaseContents(
+                files={
+                    "package.json": b'{"name": "added-pkg", "version": "2.0.0"}',
+                    "index.js": b"module.exports = 2;",
+                }
+            )
 
         monkeypatch.setattr("release_sentinel.lockfile.extract_release_in_memory", mock_extract)
 
@@ -407,7 +433,6 @@ class TestLockfileDiffScanning:
         assert pkg_res["old_version"] == "1.0.3"  # Resolved earlier version
         assert pkg_res["new_version"] == "2.0.0"
         assert pkg_res["decision"] == "ALLOW"
-
 
 
 class TestLockfileTamperingChecks:
@@ -718,3 +743,240 @@ class TestLockfileTamperingChecks:
         report = scan_lockfile_diff(json.dumps(base_v1), json.dumps(head_v3))
         assert report.decision == Decision.ALLOW
         assert report.total_packages_scanned == 0
+
+    def test_rule_a_different_algorithm_sha1_vs_sha512_never_blocks(self):
+        """Rule (a): Upgrading from sha1 to sha512 must never BLOCK."""
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha1-abcdefghijklmnopqrstuvwx=",
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision != Decision.BLOCK
+        assert report.decision == Decision.ALLOW
+
+    def test_rule_a_multi_hash_overlapping_hashes_never_blocks(self):
+        """Rule (a): Multi-hash integrity field with overlapping valid hash must never BLOCK."""
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-VALID_HASH== sha1-OLD_HASH==",
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-VALID_HASH== sha256-NEW_HASH==",
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision != Decision.BLOCK
+        assert report.decision == Decision.ALLOW
+
+    def test_rule_a_same_algorithm_different_digest_blocks(self):
+        """Rule (a): Same algorithm with different digest must BLOCK."""
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-VALID_HASH==",
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-TAMPERED_HASH==",
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        assert report.decision == Decision.BLOCK
+        assert report.package_results[0]["evidence"] == ["lockfile_integrity_changed"]
+
+    def test_rule_b_excludes_link_true(self):
+        """Rule (b): Symlinked packages (link: true) legitimately omit integrity."""
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/pkg": {
+                    "version": "1.0.0",
+                    "resolved": "https://registry.npmjs.org/pkg/-/pkg-1.0.0.tgz",
+                    "integrity": "sha512-SOMEHASH==",
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/pkg": {
+                    "version": "1.0.0",
+                    "resolved": "packages/pkg",
+                    "link": True,
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        # Should not emit lockfile_missing_integrity
+        evs = [e for p in report.package_results for e in p.get("evidence", [])]
+        assert "lockfile_missing_integrity" not in evs
+
+    def test_rule_b_excludes_workspace_or_file_without_registry_url(self):
+        """Rule (b): Workspace or file entries without registry resolved URL
+        legitimately omit integrity.
+        """
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/pkg": {
+                    "version": "1.0.0",
+                    "resolved": "https://registry.npmjs.org/pkg/-/pkg-1.0.0.tgz",
+                    "integrity": "sha512-SOMEHASH==",
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/pkg": {
+                    "version": "1.0.0",
+                    # no resolved URL, no integrity
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        evs = [e for p in report.package_results for e in p.get("evidence", [])]
+        assert "lockfile_missing_integrity" not in evs
+
+    def test_rule_b_excludes_git_and_url_dependencies(self):
+        """Rule (b): Git or file dependencies have their own signals and do not trigger
+        lockfile_missing_integrity.
+        """
+        base_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/pkg": {
+                    "version": "1.0.0",
+                    "resolved": "https://registry.npmjs.org/pkg/-/pkg-1.0.0.tgz",
+                    "integrity": "sha512-SOMEHASH==",
+                },
+            },
+        }
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/pkg": {
+                    "version": "1.0.0",
+                    "resolved": "git+https://github.com/foo/pkg.git#v1.0.0",
+                },
+            },
+        }
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        evs = [e for p in report.package_results for e in p.get("evidence", [])]
+        assert "lockfile_missing_integrity" not in evs
+
+    def test_rule_d_multi_path_different_algo_does_not_warn(self):
+        """Rule (d): Multi-path entries with different algorithms (sha1 vs sha512)
+        do not conflict.
+        """
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha1-abcdefghijklmnopqrstuvwx=",
+                },
+                "node_modules/sub/node_modules/lodash": {
+                    "version": "4.17.20",
+                    "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.17.20.tgz",
+                    "integrity": "sha512-PlhdFcillOINfeV7Ni6GEITXcmSEVDzsjWnMQCRGqm5aM2+QQHPOOs89eV10/0aaaqVWTY240689XYdlau9AXgk==",  # noqa: E501
+                },
+            },
+        }
+        base_v3 = {"name": "demo-app", "version": "1.0.0", "lockfileVersion": 3, "packages": {}}
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        evs = [e for p in report.package_results for e in p.get("evidence", [])]
+        assert "lockfile_integrity_changed" not in evs
+
+    def test_rule_d_multi_path_npm_alias_does_not_warn(self):
+        """Rule (d): npm aliases (path name differs from declared name) do not
+        cause conflict.
+        """
+        head_v3 = {
+            "name": "demo-app",
+            "version": "1.0.0",
+            "lockfileVersion": 3,
+            "packages": {
+                "node_modules/marked": {
+                    "name": "marked",
+                    "version": "18.0.0",
+                    "resolved": "https://registry.npmjs.org/marked/-/marked-18.0.0.tgz",
+                    "integrity": "sha512-HASH_A==",
+                },
+                "node_modules/marked-repo": {
+                    "name": "marked",
+                    "version": "18.0.0",
+                    "resolved": "https://registry.npmjs.org/marked/-/marked-18.0.0.tgz",
+                    "integrity": "sha512-HASH_B==",
+                },
+            },
+        }
+        base_v3 = {"name": "demo-app", "version": "1.0.0", "lockfileVersion": 3, "packages": {}}
+        report = scan_lockfile_diff(json.dumps(base_v3), json.dumps(head_v3))
+        evs = [e for p in report.package_results for e in p.get("evidence", [])]
+        assert "lockfile_integrity_changed" not in evs

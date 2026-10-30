@@ -101,6 +101,7 @@ class LockfilePackage:
     integrity: str | None = None
     has_install_script: bool = False
     all_integrities: tuple[str, ...] = ()
+    link: bool = False
 
     def __post_init__(self) -> None:
         if not self.all_integrities and self.integrity:
@@ -121,6 +122,7 @@ class PackageChange:
     old_resolved: str | None = None
     old_integrity: str | None = None
     conflicting_integrities: tuple[str, ...] = ()
+    link: bool = False
 
 
 class LockfilePackages(dict[tuple[str, str], LockfilePackage]):
@@ -257,6 +259,64 @@ def check_supported_lockfile_path(path: str | Path) -> None:
         )
 
 
+def parse_integrity_hashes(integrity_str: str | None) -> dict[str, set[str]]:
+    """Parse an npm integrity string into a mapping of algorithm -> set of digests.
+
+    Handles single hashes ('sha512-...'), multiple space-separated hashes
+    ('sha512-... sha1-...'), and arbitrary whitespace.
+    """
+    if not integrity_str or not isinstance(integrity_str, str):
+        return {}
+    res: dict[str, set[str]] = {}
+    for token in integrity_str.strip().split():
+        if "-" in token:
+            algo, digest = token.split("-", 1)
+            algo = algo.strip().lower()
+            digest = digest.strip()
+            if algo and digest:
+                res.setdefault(algo, set()).add(digest)
+    return res
+
+
+def has_same_algo_integrity_diff(old_integrity: str | None, new_integrity: str | None) -> bool:
+    """Return True if base and head share at least one hash algorithm and their digests differ.
+
+    Returns False if algorithms differ entirely (e.g. sha1 vs sha512) or if they share
+    an overlapping digest for all common algorithms.
+    """
+    old_algos = parse_integrity_hashes(old_integrity)
+    new_algos = parse_integrity_hashes(new_integrity)
+    common_algos = set(old_algos.keys()) & set(new_algos.keys())
+    if not common_algos:
+        return False
+    return any(not (old_algos[algo] & new_algos[algo]) for algo in common_algos)
+
+
+def find_same_algo_integrity_conflicts(integrities: Iterable[str]) -> bool:
+    """Check if an iterable of integrity strings contains same-algorithm conflicts."""
+    algo_digests: dict[str, set[str]] = {}
+    for intg in integrities:
+        for algo, digests in parse_integrity_hashes(intg).items():
+            algo_digests.setdefault(algo, set()).update(digests)
+    return any(len(digests) > 1 for digests in algo_digests.values())
+
+
+def is_registry_resolved(resolved_url: str | None) -> bool:
+    """Check if resolved URL is hosted on registry.npmjs.org (and not git/file)."""
+    if not resolved_url or not isinstance(resolved_url, str):
+        return False
+    if resolved_url.startswith(("git+", "git://", "file:")):
+        return False
+    try:
+        parsed = urllib.parse.urlparse(resolved_url)
+        return (
+            parsed.scheme.lower() in ("https", "http")
+            and (parsed.hostname or "").lower() == "registry.npmjs.org"
+        )
+    except Exception:
+        return False
+
+
 def _extract_pkg_name_from_path(pkg_path: str) -> str | None:
     """Extract package name from node_modules key in lockfile v2/v3."""
     if not pkg_path:
@@ -348,9 +408,14 @@ def parse_lockfile_content(
                 continue
             if not pkg_key:  # Skip root package
                 continue
-            name = pkg_info.get("name")
+            declared_name = pkg_info.get("name")
+            path_name = _extract_pkg_name_from_path(pkg_key)
+            # Detect npm alias (path name differs from package's declared name)
+            is_alias = bool(declared_name and path_name and declared_name != path_name)
+
+            name = declared_name
             if not name:
-                name = _extract_pkg_name_from_path(pkg_key)
+                name = path_name
             if not name:
                 continue
 
@@ -366,6 +431,7 @@ def parse_lockfile_content(
             resolved = pkg_info.get("resolved")
             integrity = pkg_info.get("integrity")
             has_install = bool(pkg_info.get("hasInstallScript"))
+            is_link = bool(pkg_info.get("link"))
 
             key = (valid_name, version)
             if key not in packages:
@@ -376,25 +442,30 @@ def parse_lockfile_content(
                     integrity=integrity if isinstance(integrity, str) else None,
                     has_install_script=has_install,
                     all_integrities=(integrity,)
-                    if isinstance(integrity, str) and integrity
+                    if isinstance(integrity, str) and integrity and not is_alias
                     else (),
+                    link=is_link,
                 )
             else:
                 existing = packages[key]
+                new_all_integrities = existing.all_integrities
                 if (
-                    isinstance(integrity, str)
+                    not is_alias
+                    and isinstance(integrity, str)
                     and integrity
                     and integrity not in existing.all_integrities
                 ):
-                    packages[key] = LockfilePackage(
-                        name=existing.name,
-                        version=existing.version,
-                        resolved=existing.resolved
-                        or (resolved if isinstance(resolved, str) else None),
-                        integrity=existing.integrity or integrity,
-                        has_install_script=existing.has_install_script or has_install,
-                        all_integrities=existing.all_integrities + (integrity,),
-                    )
+                    new_all_integrities = existing.all_integrities + (integrity,)
+                packages[key] = LockfilePackage(
+                    name=existing.name,
+                    version=existing.version,
+                    resolved=existing.resolved or (resolved if isinstance(resolved, str) else None),
+                    integrity=existing.integrity
+                    or (integrity if isinstance(integrity, str) else None),
+                    has_install_script=existing.has_install_script or has_install,
+                    all_integrities=new_all_integrities,
+                    link=existing.link or is_link,
+                )
 
     # v1 (or v2 fallback) has 'dependencies'
     if not packages and "dependencies" in data and isinstance(data["dependencies"], dict):
@@ -443,15 +514,15 @@ def _normalize_pkg_map(
             for intg in p.all_integrities:
                 if intg and intg not in merged_integrities:
                     merged_integrities = merged_integrities + (intg,)
-            if merged_integrities != existing.all_integrities:
-                result[key] = LockfilePackage(
-                    name=existing.name,
-                    version=existing.version,
-                    resolved=existing.resolved or p.resolved,
-                    integrity=existing.integrity or p.integrity,
-                    has_install_script=existing.has_install_script or p.has_install_script,
-                    all_integrities=merged_integrities,
-                )
+            result[key] = LockfilePackage(
+                name=existing.name,
+                version=existing.version,
+                resolved=existing.resolved or p.resolved,
+                integrity=existing.integrity or p.integrity,
+                has_install_script=existing.has_install_script or p.has_install_script,
+                all_integrities=merged_integrities,
+                link=existing.link or p.link,
+            )
     return result
 
 
@@ -570,19 +641,27 @@ def diff_lockfiles(
                     )
                 )
 
-    # Compare entries whose (name, version) exist in BOTH base and head (Stage 7h)
+    # Compare entries whose (name, version) exist in BOTH base and head (Stage 7h / 7i)
     common_pairs = old_pairs & new_pairs
     for name, version in sorted(common_pairs):
         old_pkg = old_map[(name, version)]
         new_pkg = new_map[(name, version)]
 
-        has_conflicting = len(new_pkg.all_integrities) > 1
-        integrity_differs = False
-        if old_pkg.integrity and new_pkg.integrity:
-            if old_pkg.integrity.strip() != new_pkg.integrity.strip():
-                integrity_differs = True
+        # Rule (d): Multi-path conflicting integrities for the SAME algorithm in head
+        has_conflicting = find_same_algo_integrity_conflicts(new_pkg.all_integrities)
 
-        lost_integrity = bool(old_pkg.integrity and not new_pkg.integrity)
+        # Rule (a): In-place integrity difference for the SAME algorithm
+        integrity_differs = has_same_algo_integrity_diff(old_pkg.integrity, new_pkg.integrity)
+
+        # Rule (b): Registry-hosted head entry loses integrity that base had
+        lost_integrity = bool(
+            old_pkg.integrity
+            and not new_pkg.integrity
+            and not new_pkg.link
+            and is_registry_resolved(new_pkg.resolved)
+        )
+
+        # Rule (c): Resolved URL changed while integrity is equal
         resolved_changed = bool(
             old_pkg.resolved != new_pkg.resolved
             and (
@@ -604,6 +683,7 @@ def diff_lockfiles(
                     old_resolved=old_pkg.resolved,
                     old_integrity=old_pkg.integrity,
                     conflicting_integrities=new_pkg.all_integrities if has_conflicting else (),
+                    link=new_pkg.link,
                 )
             )
 
@@ -814,8 +894,10 @@ def scan_lockfile_diff(
             if not new_ver:
                 continue
 
-            # Rule (d): Multiple paths in head with conflicting integrities (downgraded to WARN)
-            if len(change.conflicting_integrities) > 1:
+            # Rule (d): Multiple paths in head with conflicting integrities for SAME algo -> WARN
+            if change.conflicting_integrities and find_same_algo_integrity_conflicts(
+                change.conflicting_integrities
+            ):
                 hashes_str = ", ".join(repr(h) for h in change.conflicting_integrities)
                 ev_conflict = Evidence(
                     id="lockfile_integrity_changed",
@@ -857,65 +939,45 @@ def scan_lockfile_diff(
                 )
                 continue
 
-            # Same-version lockfile changes (Stage 7h)
+            # Same-version lockfile changes (Stage 7h / 7i)
             if old_ver is not None and old_ver == new_ver:
-                # Rule (a): Both have integrity and values differ
-                if (
-                    change.old_integrity
-                    and change.integrity
-                    and change.old_integrity.strip() != change.integrity.strip()
+                # Rule (d): Conflicting integrities for SAME algorithm across paths in head -> WARN
+                if change.conflicting_integrities and find_same_algo_integrity_conflicts(
+                    change.conflicting_integrities
                 ):
-                    old_algo = change.old_integrity.split("-", 1)[0]
-                    new_algo = change.integrity.split("-", 1)[0]
-                    if old_algo == new_algo:
-                        sev = Severity.HIGH
-                        dec_name = Decision.BLOCK.name
-                        overall_decision = Decision.BLOCK
-                        note = (
-                            "The npm registry never serves two different tarballs for the "
-                            "same version; this indicates tarball tampering or a mirror issue."
-                        )
-                    else:
-                        # Algorithm changed (e.g. sha1 to sha512 during lockfile upgrade)
-                        sev = Severity.MEDIUM
-                        dec_name = Decision.WARN.name
-                        if overall_decision != Decision.BLOCK:
-                            overall_decision = Decision.WARN
-                        note = (
-                            f"Integrity algorithm changed from '{old_algo}' to "
-                            f"'{new_algo}'. This occurs during npm lockfile upgrades, "
-                            "but tarball content cannot be verified without re-downloading."
-                        )
-
-                    ev_int = Evidence(
+                    ev_conf = Evidence(
                         id="lockfile_integrity_changed",
-                        severity=sev,
+                        severity=Severity.MEDIUM,
                         file="package-lock.json",
                         explanation=(
-                            f"Lockfile entry for '{pkg_name}@{new_ver}' changed integrity from "
-                            f"'{change.old_integrity}' to '{change.integrity}'. {note}"
+                            f"Lockfile contains conflicting integrity hashes for "
+                            f"'{pkg_name}@{new_ver}' across dependency tree paths: "
+                            f"{', '.join(sorted(change.conflicting_integrities))}."
                         ),
                         legitimate_use_note=(
-                            "Lockfile re-generation after package unpublish/republish or upgrade."
+                            "Multiple installations or package alias resolutions "
+                            "with different hashes."
                         ),
                     )
+                    if overall_decision != Decision.BLOCK:
+                        overall_decision = Decision.WARN
                     package_results.append(
                         {
                             "package": pkg_name,
                             "old_version": old_ver,
                             "new_version": new_ver,
                             "change_type": change.change_type,
-                            "decision": dec_name,
-                            "evidence": [ev_int.id],
+                            "decision": Decision.WARN.name,
+                            "evidence": [ev_conf.id],
                             "evidence_details": [
                                 {
-                                    "id": ev_int.id,
-                                    "severity": ev_int.severity.name,
-                                    "raw_severity": ev_int.severity.name,
-                                    "effective_severity": ev_int.severity.name,
-                                    "file": ev_int.file,
-                                    "explanation": ev_int.explanation,
-                                    "legitimate_use_note": ev_int.legitimate_use_note,
+                                    "id": ev_conf.id,
+                                    "severity": ev_conf.severity.name,
+                                    "raw_severity": ev_conf.severity.name,
+                                    "effective_severity": ev_conf.severity.name,
+                                    "file": ev_conf.file,
+                                    "explanation": ev_conf.explanation,
+                                    "legitimate_use_note": ev_conf.legitimate_use_note,
                                 }
                             ],
                             "limitations": [],
@@ -924,8 +986,56 @@ def scan_lockfile_diff(
                     )
                     continue
 
-                # Rule (b): Head lacks integrity while base had it
-                if change.old_integrity and not change.integrity:
+                # Rule (a): Same algorithm has a different digest -> BLOCK
+                if change.old_integrity and change.integrity:
+                    if has_same_algo_integrity_diff(change.old_integrity, change.integrity):
+                        ev_int = Evidence(
+                            id="lockfile_integrity_changed",
+                            severity=Severity.HIGH,
+                            file="package-lock.json",
+                            explanation=(
+                                f"Lockfile entry for '{pkg_name}@{new_ver}' changed integrity from "
+                                f"'{change.old_integrity}' to '{change.integrity}'. "
+                                "The npm registry never serves two different tarballs for the "
+                                "same version; this indicates tarball tampering or a mirror issue."
+                            ),
+                            legitimate_use_note=(
+                                "Tarball republishing or registry metadata synchronization."
+                            ),
+                        )
+                        overall_decision = Decision.BLOCK
+                        package_results.append(
+                            {
+                                "package": pkg_name,
+                                "old_version": old_ver,
+                                "new_version": new_ver,
+                                "change_type": change.change_type,
+                                "decision": Decision.BLOCK.name,
+                                "evidence": [ev_int.id],
+                                "evidence_details": [
+                                    {
+                                        "id": ev_int.id,
+                                        "severity": ev_int.severity.name,
+                                        "raw_severity": ev_int.severity.name,
+                                        "effective_severity": ev_int.severity.name,
+                                        "file": ev_int.file,
+                                        "explanation": ev_int.explanation,
+                                        "legitimate_use_note": ev_int.legitimate_use_note,
+                                    }
+                                ],
+                                "limitations": [],
+                                "status": "lockfile_integrity_changed",
+                            }
+                        )
+                        continue
+
+                # Rule (b): Registry-hosted head entry lacks integrity while base had it -> WARN
+                if (
+                    change.old_integrity
+                    and not change.integrity
+                    and not change.link
+                    and is_registry_resolved(change.resolved)
+                ):
                     ev_lost = Evidence(
                         id="lockfile_missing_integrity",
                         severity=Severity.MEDIUM,
