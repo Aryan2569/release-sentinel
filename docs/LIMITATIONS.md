@@ -187,12 +187,26 @@ Release Sentinel analyzes updates differentially by comparing the target release
 
 ---
 
-## 20. Same-Version Lockfile Metadata Tampering (Integrity or URL Mutation Without Version Bump)
+## 20. Same-Version Lockfile Tampering & Unchanged Dependency Boundary
 
-Release Sentinel's lockfile diff engine (`diff_lockfiles`) computes changed packages by comparing declared `(package_name, version)` pairs between the base and head lockfiles (`added_pairs = new_pairs - old_pairs`).
+Release Sentinel audits lockfile diffs for both version bumps and same-version metadata mutations (`(package_name, version)` pairs present in both base and head lockfiles).
 
-**Known Gap & Limitation**: If an attacker mutates a lockfile entry in-place without bumping its version—specifically by:
-1. Changing the `integrity` hash of an existing `(name, version)` entry to match a compromised tarball while leaving the version number unchanged; or
-2. Modifying the `resolved` URL of an existing `(name, version)` entry to point to an alternate endpoint on `registry.npmjs.org` without changing the version string:
+### What Is Defended
+1. **In-Place Integrity Tampering (`lockfile_integrity_changed`)**:
+   If a pull request modifies the `integrity` cryptographic hash of an existing `(name, version)` entry using the same hash algorithm (e.g., replacing one SHA-512 hash with another), Release Sentinel emits `lockfile_integrity_changed` (HIGH severity) and immediately issues a **BLOCK** verdict under both `default` and `strict` profiles. The public npm registry never serves two distinct tarballs for a single immutable release version; a modified integrity string indicates either lockfile tampering or package repository poisoning.
+2. **Conflicting Multi-Path Integrities (`lockfile_integrity_changed`)**:
+   If the head lockfile specifies conflicting integrity hashes for the same package version across different dependency tree paths or aliases (such as aliased workspace packages), Release Sentinel emits `lockfile_integrity_changed` with MEDIUM severity (**WARN**).
+3. **Integrity Stripping (`lockfile_missing_integrity`)**:
+   If a head entry lacks an `integrity` hash while the base entry had one, Release Sentinel emits `lockfile_missing_integrity` (**WARN**). Upgrades from lockfile v1 to v3 where base lacked integrity and head adds one are safely allowed.
+4. **Resolved URL Mutation (`lockfile_resolved_changed`)**:
+   If an existing package's `resolved` URL changes while its cryptographic integrity remains identical (for example, migrating from a registry mirror to `registry.npmjs.org`), Release Sentinel emits `lockfile_resolved_changed` (**WARN**).
+5. **Bumped Version URL Mismatch (`lockfile_resolved_mismatch`)**:
+   When a version is updated or added, any incongruence between the package entry and its resolved tarball URL (e.g., `lodash@4.17.21` resolving to `lodash-4.17.20.tgz`) triggers `lockfile_resolved_mismatch` and **BLOCK**s under both profiles.
 
-The diff engine treats the `(name, version)` pair as unchanged and does not schedule the package for re-inspection (`Decision.ALLOW`, 0 packages scanned). Conversely, if the version number is bumped, any URL pointing to an incongruent tarball is immediately detected and blocked by `lockfile_resolved_mismatch`. Detecting same-version in-place lockfile tampering requires full lockfile-wide hash re-verification rather than differential update auditing.
+These checks are performed purely on lockfile metadata without downloading tarballs.
+
+### What Is Not Defended / Boundary
+1. **Cryptographic Preimage Collisions**:
+   An attacker cannot modify tarball contents while preserving the existing SHA-512 `integrity` hash; doing so would require a cryptographic preimage collision against SHA-512, which is computationally infeasible.
+2. **Unchanged Dependencies Are Not Re-Scanned**:
+   For `(name, version)` entries whose lockfile metadata (`integrity` and `resolved` URL) is identical between base and head, Release Sentinel does not download or re-scan their tarball contents. Release Sentinel is a differential pull-request security gate designed for fast CI feedback, not a whole-dependency-tree deep AST re-scanner. If a dependency was already compromised in the base branch and remains unaltered in the PR, it is not re-flagged unless its lockfile entry is modified.

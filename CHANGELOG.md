@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - **Risk-Prioritized Package Scanning**: Scans added packages and install-hook modifications first; raised default package scan budget to 300 packages with fail-closed limitations on caps.
 - **Noise Control (`comment-on`)**: Added PR commenting gate (`block`, `notable`, `warn`, `always`) cutting visible noise on pull requests by 31.7% while preserving all critical warnings.
 - **GitHub Action Caching**: Composite action cache step for `~/.cache/release_sentinel` keyed on lockfile hash, dropping cached scan times from ~30s to ~2s.
+- **Same-Version Lockfile Tampering Defenses**: Audits lockfile diffs for in-place metadata tampering on existing packages without version bumps (`lockfile_integrity_changed`, `lockfile_missing_integrity`, `lockfile_resolved_changed`).
 - **Audit & Documentation**: Added `SECURITY.md`, `CONTRIBUTING.md`, reproducible benchmark instructions, and complete public documentation.
 
 ---

@@ -707,3 +707,24 @@ Across the 179 unlocked clusters (DEV: 69, VAL: 12, TEST-A: 98; 1,249 pairs), v1
   - *Workflow Actor Hardening*: Passed actor strictly via environment variables (ACTOR: ${{ github.actor }}) instead of inlining expressions in bash scripts.
   - *CI Timeout and Offline Test Safety*: Added timeout-minutes: 20 and canonical metric verification in CI workflow; added defensive skipif on demo CLI tests requiring untracked malware archives.
 
+---
+
+## Stage 7h: Same-Version Lockfile Tampering & Real-Repo Replay Verification
+
+- **Part 1: Same-Version Lockfile Detection Rules**:
+  - Closed the same-version lockfile tamper gap documented in `LIMITATIONS.md` Section 20 by comparing packages present in both base and head lockfiles (`(name, version)` intersection):
+    - **Rule (a) In-Place Integrity Mutation (`lockfile_integrity_changed`)**: Emits `Severity.HIGH` and produces `Decision.BLOCK` under both `default` and `strict` profiles when both base and head declare integrity under matching algorithms and the hashes differ.
+    - **Rule (b) Stripped Integrity (`lockfile_missing_integrity`)**: Emits `Severity.MEDIUM` (WARN) when head entry omits integrity while base entry declared it. (Upgrades from lockfile v1 to v3 where base lacked integrity and head added it are safely permitted as ALLOW/INFO).
+    - **Rule (c) Resolved URL Changed (`lockfile_resolved_changed`)**: Emits `Severity.MEDIUM` (WARN) when the resolved registry endpoint changes but the cryptographic integrity remains equal.
+    - **Rule (d) Multi-Path Conflicting Integrities (`lockfile_integrity_changed`)**: Evaluates packages declared at multiple dependency tree paths with conflicting integrity hashes. Downgraded to `Severity.MEDIUM` (WARN) after empirical replay verification revealed false BLOCKs on package aliasing in real repositories.
+  - Metadata-Only Auditing: These checks operate strictly on lockfile diff metadata and do not download or scan package tarballs. Overall scan verdict and individual package row decisions agree.
+
+- **Part 2: Real-World Replay Measurement (288 Historical Updates)**:
+  - Re-ran the real-world replay across all 288 historical dependency updates in 12 reference repositories (284 evaluable updates, 5,965 scanned packages):
+    - `lockfile_integrity_changed` (BLOCK): **0 updates (0.0%)**, 0 package instances.
+    - `lockfile_integrity_changed` (WARN): **29 updates (10.2%)**, 163 package instances (140 from SHA-1 to SHA-512 algorithm migrations in `socket.io`, `winston`, `nodemon`; 23 from `marked-repo` aliasing in `marked`).
+    - `lockfile_missing_integrity` (WARN): **19 updates (6.7%)**, 1,304 package instances (where npm v3 stripped integrity for devDependencies/workspaces in `superagent`, `marked`, `nodemon`).
+    - `lockfile_resolved_changed` (WARN): **0 updates (0.0%)**, 0 package instances.
+    - False BLOCKs on real history: **0 across all 288 updates** under both `default` and `strict` profiles.
+  - Confirmed PR comment rate is unchanged: Single MEDIUM lockfile metadata findings do not satisfy the `notable` comment gating threshold unless corroborated by HIGH/CRITICAL severity or $\ge 2$ distinct MEDIUM signals, resulting in 0 additional PR comments.
+  - Confirmed zero impact on frozen v1.4 malicious benchmark metrics (1,349 evaluation pairs and `scripts/verify_metrics.py` remain 100% invariant).

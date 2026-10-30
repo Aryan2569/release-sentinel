@@ -187,8 +187,11 @@ Supply chain attacks frequently inject malicious behavior by adding runtime depe
 - **`strict` (Research Baseline)**: The frozen v1.4 research policy evaluated across academic datasets. Alerts broadly on single indicators for high-assurance audits.
 
 ### 4. Lockfile Injection Defenses & Registry Hardening
-- **Resolved URL Verification**: Verifies that any registry `resolved` URL matches the entry's declared name and version (`https://registry.npmjs.org/<name>/-/<basename>-<version>.tgz`). Mismatches emit `lockfile_resolved_mismatch` and BLOCK immediately under all profiles.
-- **Integrity Requirement**: Entries omitting `integrity` hashes emit `lockfile_missing_integrity` (WARN).
+Release Sentinel audits lockfile diffs for both version bumps and same-version tampering:
+- **Resolved URL Verification (Changed Entries)**: For changed or added entries, verifies that any registry `resolved` URL matches the entry's declared name and version (`https://registry.npmjs.org/<name>/-/<basename>-<version>.tgz`). Mismatches (e.g., pointing a bumped version to an incongruent tarball) emit `lockfile_resolved_mismatch` and BLOCK immediately under all profiles.
+- **Same-Version Integrity Verification**: Compares entries present in both base and head lockfiles. If the cryptographic `integrity` string was modified under the same algorithm, it emits `lockfile_integrity_changed` and BLOCKs under both profiles. If different paths in head declare conflicting integrities for the same version, it emits `lockfile_integrity_changed` (WARN).
+- **Integrity Requirement & Stripping Detection**: Entries omitting `integrity` hashes in head, or where head dropped an integrity hash present in base, emit `lockfile_missing_integrity` (WARN). (Safe lockfile v1-to-v3 format upgrades that add missing integrity hashes are permitted).
+- **Same-Version Resolved URL Mutation**: If an existing package's `resolved` URL changes while its cryptographic integrity remains identical (e.g. migrating registry mirror endpoints), it emits `lockfile_resolved_changed` (WARN).
 - **Cryptographic Cache Binding**: Cache keys are bound to `(name, version, integrity or url hash)`. Corrupted downloads are purged immediately.
 - **Streaming Tarball Limits**: Downloads are streamed in 64 KB chunks, enforcing a 100 MB per-tarball limit and a 500 MB session budget during download.
 - **Metadata TTL**: Live registry lookups refresh cached metadata older than 1 hour.
@@ -265,8 +268,10 @@ Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 
 - Environment variable enumeration and credential harvesting (`.npmrc`, `~/.ssh`, `~/.aws/credentials`).
 - CI/CD workflow modifications attempting to capture GitHub repository tokens or workflow secrets.
 - Newly introduced runtime dependencies carrying suspicious or uninspected payloads.
+- Lockfile tampering, including incongruent `resolved` URLs on updated packages (`lockfile_resolved_mismatch`), same-version in-place `integrity` hash replacement (`lockfile_integrity_changed`), stripped integrity hashes (`lockfile_missing_integrity`), and changed resolved registry endpoints (`lockfile_resolved_changed`).
 
 ### What Release Sentinel Does Not Catch
+- **Unchanged Lockfile Entries**: For `(name, version)` entries whose lockfile metadata (`integrity` and `resolved` URL) is identical between base and head, their tarballs are not re-downloaded or re-inspected. Cryptographic preimage resistance guarantees that tarball contents cannot change without modifying the integrity hash. If a dependency was already compromised in the base commit, it is not flagged unless altered in the PR.
 - **Capability-Novelty Blind Spot**: Static capability signals (`eval()`, `child_process.exec()`, `http.get()`) are baseline-subtracted. If a package legitimately used those APIs in its baseline version, adding further calls to those same APIs in an update does not trigger new capability evidence unless accompanied by new unlisted hosts, encoded payloads, or install scripts.
 - **Non-JavaScript Scripting Payloads**: Content analysis is specialized for JavaScript and TypeScript syntax. Scripts in `.sh`, `.ps1`, `.bat`, or `.py` trigger file-addition notices (`notable_new_file`) or lifecycle command warnings, but their internal script bodies are not parsed or scanned for language-specific constructs.
 - **Hollow Dependency-Injection Waves (Metadata-Only)**: The newest wave of supply-chain attacks publishes hollow releases with empty bodies that inject lookalike runtime dependencies. In the low-noise default profile, these are warned on (4 of 118 members in `camp_0136`) under experimental, post-hoc rules.
