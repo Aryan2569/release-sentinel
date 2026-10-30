@@ -1025,7 +1025,7 @@ def demo(
             raise typer.Exit(code=2)
         zip_path = candidates[0]
 
-        # Load new release in-memory from encrypted sample 
+        # Load new release in-memory from encrypted sample
         rc_new = load_zip_release(zip_path, password=b"infected")
 
         # Baseline: try from sample, else download from cache/registry

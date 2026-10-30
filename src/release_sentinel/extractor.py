@@ -1,6 +1,6 @@
 """Safe tarball extraction for Release Sentinel.
 
-Hard rules enforced here 
+Security constraints enforced here:
 -------------------------------------------------------
 * Reject absolute paths (starting with ``/`` or a Windows drive letter).
 * Reject path traversal (any component that is ``..``).

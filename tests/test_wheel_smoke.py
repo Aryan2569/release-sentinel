@@ -100,5 +100,6 @@ def test_wheel_installation_and_smoke_check(tmp_path: Path):
         encoding="utf-8",
         errors="replace",
     )
-    assert proc_check.returncode == 0, f"check failed with {proc_check.returncode}:\nstdout: {proc_check.stdout}\nstderr: {proc_check.stderr}"
+    msg = f"check failed ({proc_check.returncode}):\n{proc_check.stdout}\n{proc_check.stderr}"
+    assert proc_check.returncode == 0, msg
     assert "Release Sentinel" in proc_check.stdout, "Expected 'Release Sentinel' in stdout"
