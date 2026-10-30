@@ -302,4 +302,4 @@ See [`docs/REPRODUCING.md`](docs/REPRODUCING.md) for step-by-step instructions o
 
 Release Sentinel is licensed under the [MIT License](LICENSE).
 
-We gratefully acknowledge the researchers and maintainers of the [DataDog Malicious Software Packages Dataset](https://github.com/DataDog/malicious-software-packages-dataset) and the public [npm Registry](https://registry.npmjs.org) for enabling open, reproducible security research.
+We gratefully acknowledge the researchers and maintainers of the [DataDog Malicious Software Packages Dataset](https://github.com/DataDog/malicious-software-packages-dataset) and the public [npm Registry](https://registry.npmjs.org) for enabling open, reproducible security research. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for detailed third-party licensing and dataset derivation notices.
