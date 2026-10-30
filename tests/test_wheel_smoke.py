@@ -27,7 +27,10 @@ def test_wheel_installation_and_smoke_check(tmp_path: Path):
     if not wheels:
         # Build wheel if not present
         cmd_b = [sys.executable, "-m", "build", "--wheel"]
-        subprocess.run(cmd_b, check=True, capture_output=True)  # noqa: S603
+        res = subprocess.run(cmd_b, capture_output=True, text=True)  # noqa: S603
+        if res.returncode != 0:
+            msg = f"build failed ({res.returncode}):\nstdout: {res.stdout}\nstderr: {res.stderr}"
+            raise RuntimeError(msg)
         wheels = glob.glob("dist/*.whl")
 
     assert len(wheels) > 0, "No built wheel found in dist/"
