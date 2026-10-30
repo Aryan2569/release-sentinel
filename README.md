@@ -261,6 +261,13 @@ Under `comment-on: notable` (Variant B), noisy PR comments are reduced from 126 
 | **Rule (c)** | Registry resolved URL changed (integrity equal) | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Audit warning for registry mirror migration or proxy routing |
 | **Rule (d)** | Multi-path same-algorithm conflicting integrities | MEDIUM / **WARN** | **0 / 288 (0.00%)** | Evaluates conflicts under the same algorithm; ignores npm package aliases |
 
+> **Replay Methodology & Skipped Updates Footnote**:
+> - **Skipped Monorepo Updates**: 4 of the 288 updates in `socket.io` (`5a31aaf9..42480e9a`, `42480e9a..c7144920`, `0c431243..27fd420e`, and `27fd420e..0ae76360`) could not be evaluated on package diffs because historical monorepo migrations moved root `package-lock.json` to subdirectories (`packages/*/package-lock.json`). Under fail-closed design, these 4 updates are recorded as fail-closed `WARN` with `evidence: ["replay_error"]` (0 packages scanned).
+> - **Impact on Noise Reduction**: These 4 updates are counted among the 126 non-ALLOW (`WARN` + `BLOCK`) updates, but none of them trigger the `notable` threshold (0 comments). Consequently:
+>   - Across all **288 total updates**, noisy PR comments decrease from 126 updates (43.75%) to 86 updates (29.86%), representing a **31.7% noise reduction** (40 noisy updates silenced).
+>   - Across the **284 evaluable updates** (excluding monorepo lockfile moves), non-ALLOW updates total 122 (42.96%) and decrease to 86 comments (30.28%), representing a **29.5% noise reduction** (36 noisy updates silenced).
+> - **Lockfile Tamper Rule Validation**: The four lockfile-tamper rules were validated comprehensively against synthetic malicious lockfiles in the unit test suite (`tests/test_lockfile.py`). They fire on **0 of 288 real updates (0.00%)** because benign open-source project histories contain no tampering, confirming zero false alarms on legitimate development workflows.
+
 ### Attack Style Evolution Over Time
 
 ![Attack Style Over Time](docs/attack_style_over_time.png)
