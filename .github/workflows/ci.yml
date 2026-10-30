@@ -11,9 +11,12 @@ permissions:
 
 jobs:
   test:
-    name: "Lint, Test & Verify"
+    name: "Lint, Test & Verify (${{ matrix.python-version }})"
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
@@ -21,7 +24,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@39cd14951b08e74b54015e9e001cdefcf80e669f # v5.1.1
         with:
-          python-version: "3.12"
+          python-version: ${{ matrix.python-version }}
           cache: "pip"
           cache-dependency-path: requirements-action.lock
 
@@ -56,7 +59,3 @@ jobs:
         run: |
           sentinel --version
           python -m release_sentinel check --help
-
-      - name: Test Wheel Installation Smoke
-        run: |
-          pytest tests/test_wheel_smoke.py

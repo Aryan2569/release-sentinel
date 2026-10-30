@@ -7,7 +7,7 @@ name = "release-sentinel"
 dynamic = ["version"]
 description = "Time-aware static security gate for npm package-lock.json dependency updates."
 readme = "README.md"
-license = { text = "MIT" }
+license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.12"
 authors = [{ name = "Aryan Kumar" }]
@@ -16,7 +16,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
@@ -47,6 +46,7 @@ dev = [
     "ruff>=0.4",
     "pyyaml>=6.0",
     "build>=1.2",
+    "markdown-it-py[linkify]>=3.0.0",
 ]
 
 [tool.hatch.version]

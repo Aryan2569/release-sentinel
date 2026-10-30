@@ -22,7 +22,7 @@ import pytest
 
 @pytest.mark.skipif(sys.platform == "win32" and "CI" in os.environ, reason="Heavy venv test on CI")
 def test_wheel_installation_and_smoke_check(tmp_path: Path):
-    # 1. Find built wheel
+    # 1. Find built wheel (choose newest by mtime)
     wheels = glob.glob("dist/*.whl")
     if not wheels:
         # Build wheel if not present
@@ -34,7 +34,7 @@ def test_wheel_installation_and_smoke_check(tmp_path: Path):
         wheels = glob.glob("dist/*.whl")
 
     assert len(wheels) > 0, "No built wheel found in dist/"
-    wheel_path = Path(wheels[0]).resolve()
+    wheel_path = max([Path(w).resolve() for w in wheels], key=os.path.getmtime)
 
     # 2. Create fresh virtual environment
     venv_dir = tmp_path / "venv"
@@ -78,19 +78,11 @@ def test_wheel_installation_and_smoke_check(tmp_path: Path):
     )
     assert "0.5.0" in proc.stdout or "0.5.0" in proc.stderr
 
-    # 6. Test `sentinel check` on fixture lockfiles from empty directory
+    # 6. Test `sentinel check` on fixture lockfiles from empty directory (network-free diff)
     base_lock = isolated_dir / "base.json"
     head_lock = isolated_dir / "head.json"
     base_lock.write_text(json.dumps({"lockfileVersion": 3, "packages": {}}), encoding="utf-8")
-    head_lock.write_text(json.dumps({
-        "lockfileVersion": 3,
-        "packages": {
-            "node_modules/clean-pkg": {
-                "version": "1.0.0",
-                "resolved": "https://registry.npmjs.org/clean-pkg/-/clean-pkg-1.0.0.tgz",
-            }
-        },
-    }), encoding="utf-8")
+    head_lock.write_text(json.dumps({"lockfileVersion": 3, "packages": {}}), encoding="utf-8")
 
     check_cmd = [
         str(sentinel_exe) if sentinel_exe.exists() else str(venv_python),
@@ -108,8 +100,5 @@ def test_wheel_installation_and_smoke_check(tmp_path: Path):
         encoding="utf-8",
         errors="replace",
     )
-    assert (
-        "Release Sentinel" in proc_check.stdout
-        or "Release Sentinel" in proc_check.stderr
-        or proc_check.returncode in (0, 1)
-    )
+    assert proc_check.returncode == 0, f"check failed with {proc_check.returncode}:\nstdout: {proc_check.stdout}\nstderr: {proc_check.stderr}"
+    assert "Release Sentinel" in proc_check.stdout, "Expected 'Release Sentinel' in stdout"
